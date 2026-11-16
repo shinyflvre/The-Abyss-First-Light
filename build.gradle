@@ -1,181 +1,43 @@
 plugins {
-    id 'java-library'
-    id 'net.neoforged.moddev' version '2.0.148'
-    id 'idea'
+    id 'net.neoforged.moddev' version '2.0.148' apply false
+    id 'net.fabricmc.fabric-loom' version "${loom_version}" apply false
 }
 
-version = mod_version
-group = mod_group_id
+subprojects {
+    apply plugin: 'java-library'
 
-base {
-    archivesName = mod_id
-}
+    version = mod_version
+    group = mod_group_id
 
-// Minecraft 26.3 ships Java 25; Gradle provisions it automatically through the foojay toolchain resolver.
-java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+    java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
-sourceSets.main.resources {
-    srcDir('src/generated/resources')
-    exclude('**/*.bbmodel')
-    exclude('src/generated/**/.cache')
-}
-
-// Development-only test harness (separate mod "theabyss_devtest"): server self test + scripted client run.
-// It is only loaded by the devTest* runs and never packaged into the mod jar.
-sourceSets {
-    devtest {
-        // compiles against the mod (e.g. the possession test reads player variables); at runtime the mod is its own mod
-        compileClasspath += sourceSets.main.output
-    }
-}
-
-repositories {
-    maven {
-        name = 'GeckoLib'
-        url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
-        content { includeGroup('com.geckolib') }
-    }
-    maven {
-        name = 'BlameJared (JEI)'
-        url = 'https://maven.blamejared.com/'
-        content { includeGroup('mezz.jei'); includeGroup('net.mezzdev.config') }
-    }
-    maven {
-        name = 'Modrinth'
-        url = 'https://api.modrinth.com/maven'
-        content { includeGroup('maven.modrinth') }
-    }
-}
-
-neoForge {
-    version = project.neo_version
-    addModdingDependenciesTo sourceSets.devtest
-
-    mods {
-        theabyss {
-            sourceSet(sourceSets.main)
+    repositories {
+        mavenCentral()
+        exclusiveContent {
+            forRepository { maven { name = 'GeckoLib'; url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' } }
+            filter { includeGroup 'com.geckolib' }
         }
-        theabyss_devtest {
-            sourceSet(sourceSets.devtest)
+        exclusiveContent {
+            forRepository { maven { name = 'BlameJared (JEI)'; url = 'https://maven.blamejared.com/' } }
+            filter { includeGroup 'mezz.jei'; includeGroup 'net.mezzdev.config' }
+        }
+        exclusiveContent {
+            forRepository { maven { name = 'Modrinth'; url = 'https://api.modrinth.com/maven' } }
+            filter { includeGroup 'maven.modrinth' }
+        }
+        exclusiveContent {
+            forRepository { maven { name = 'Fuzs Mod Resources'; url = 'https://raw.githubusercontent.com/Fuzss/modresources/main/maven/' } }
+            filter { includeGroup 'fuzs.forgeconfigapiport' }
+        }
+        exclusiveContent {
+            forRepository { maven { name = 'Fabric'; url = 'https://maven.fabricmc.net/' } }
+            filter { includeGroup 'net.fabricmc'; includeGroup 'net.fabricmc.fabric-api' }
         }
     }
 
-    runs {
-        client {
-            client()
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-        }
-
-        server {
-            server()
-            programArgument '--nogui'
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-        }
-
-        gameTestServer {
-            type = 'gameTestServer'
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-        }
-
-        data {
-            clientData()
-            programArguments.addAll '--mod', project.mod_id, '--all',
-                    '--output', file('src/generated/resources/').getAbsolutePath(),
-                    '--existing', file('src/main/resources/').getAbsolutePath()
-        }
-
-        // Scripted client run: creates a test world, visits every dimension, lines up all mobs, opens the
-        // workstation GUIs, runs /abysstest and stores screenshots in run-devtest/screenshots, then quits.
-        devTestClient {
-            client()
-            gameDirectory = file('run-devtest')
-            systemProperty 'theabyss.devtest.client', 'true'
-            // ./gradlew runDevTestClient -PdevtestScenario=possession  runs only the Ring of Possession test
-            systemProperty 'theabyss.devtest.scenario', providers.gradleProperty('devtestScenario').getOrElse('all')
-            loadedMods = [mods.theabyss, mods.theabyss_devtest]
-        }
-
-        // Same scripted run, but connected to a dedicated server (start runDevTestServer first and "op Dev" there).
-        devTestClientMp {
-            client()
-            gameDirectory = file('run-devtest-mp')
-            systemProperty 'theabyss.devtest.client', 'true'
-            systemProperty 'theabyss.devtest.mp', 'localhost:25565'
-            loadedMods = [mods.theabyss, mods.theabyss_devtest]
-        }
-
-        // Dedicated server with the /abysstest command (run "abysstest all" in the console).
-        devTestServer {
-            server()
-            gameDirectory = file('run-devtest-server')
-            programArgument '--nogui'
-            loadedMods = [mods.theabyss, mods.theabyss_devtest]
-        }
-
-        configureEach {
-            systemProperty 'forge.logging.markers', 'REGISTRIES'
-            logLevel = org.slf4j.event.Level.INFO
-            if (!name.startsWith('devTest')) {
-                loadedMods = [mods.theabyss]
-            }
-        }
-    }
-
-}
-
-configurations {
-    runtimeClasspath.extendsFrom localRuntime
-}
-
-dependencies {
-    // GeckoLib drives the Hummingbird and Infected Dragonfly animations.
-    implementation "com.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
-
-    // JEI integration is optional at runtime; only the API is needed to compile.
-    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
-    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
-    localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
-}
-
-var generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
-    var replaceProperties = [
-            minecraft_version      : minecraft_version,
-            minecraft_version_range: minecraft_version_range,
-            neo_version_range      : neo_version_range,
-            mod_id                 : mod_id,
-            mod_name               : mod_name,
-            mod_license            : mod_license,
-            mod_version            : mod_version,
-            mod_authors            : mod_authors,
-            geckolib_version       : geckolib_version,
-    ]
-    inputs.properties replaceProperties
-    expand replaceProperties
-    from 'src/main/templates'
-    into 'build/generated/sources/modMetadata'
-}
-sourceSets.main.resources.srcDir generateModMetadata
-neoForge.ideSyncTask generateModMetadata
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-    options.compilerArgs << '-Xmaxerrs' << '100000'
-}
-
-idea {
-    module {
-        downloadSources = true
-        downloadJavadoc = true
-    }
-}
-
-// Helper for tools/compile_check.py: writes the resolved compile classpath.
-tasks.register('writeCompileClasspath') {
-    def cp = sourceSets.main.compileClasspath
-    def out = layout.buildDirectory.file('compileClasspath.txt')
-    inputs.files(cp)
-    outputs.file(out)
-    doLast {
-        out.get().asFile.text = cp.files.collect { it.absolutePath }.join('\n')
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+        options.release = 25
+        options.compilerArgs << '-Xmaxerrs' << '100000'
     }
 }

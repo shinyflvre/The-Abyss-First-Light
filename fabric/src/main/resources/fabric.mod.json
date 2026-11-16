@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "authors": [
+    "${mod_authors}"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/members/y4z0n/followers"
+  },
+  "license": "${mod_license}",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.yezon.theabyss.fabric.TheabyssFabric"
+    ],
+    "client": [
+      "net.yezon.theabyss.fabric.client.TheabyssFabricClient"
+    ],
+    "jei_mod_plugin": [
+      "net.yezon.theabyss.init.TheabyssModJeiPlugin"
+    ]
+  },
+  "mixins": [
+    "theabyss.mixins.json",
+    "theabyss.fabric.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${fabric_loader_version}",
+    "minecraft": "${minecraft_version}",
+    "java": ">=25",
+    "fabric-api": "*",
+    "forgeconfigapiport": "*",
+    "geckolib": ">=${geckolib_version}"
+  },
+  "suggests": {
+    "jei": "*"
+  }
+}

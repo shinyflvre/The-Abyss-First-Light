@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "theabyss_check",
+  "version": "1.0.0",
+  "name": "The Abyss check",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["net.yezon.theabyss.fabric.check.MixinAuditCheck"],
+    "client": ["net.yezon.theabyss.fabric.check.MixinAuditCheckClient"]
+  },
+  "depends": {
+    "theabyss": "*"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.yezon.theabyss.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "EndermanMixin",
+    "EntityMixin",
+    "ItemMixin",
+    "LivingEntityMixin",
+    "MobMixin",
+    "PlayerMixin",
+    "ProjectileMixin",
+    "platform.AttachmentHolderMixin",
+    "accessor.MobSelectorsAccessor",
+    "accessor.StairBlockInvoker",
+    "accessor.DoorBlockInvoker",
+    "accessor.TrapDoorBlockInvoker",
+    "accessor.ButtonBlockInvoker",
+    "accessor.PressurePlateBlockInvoker",
+    "accessor.HangingRootsBlockInvoker",
+    "accessor.FlowerBedBlockInvoker",
+    "accessor.NonNullListInvoker",
+    "accessor.BlockSetTypeInvoker",
+    "accessor.WoodTypeInvoker",
+    "accessor.RecipeManagerAccessor"
+  ],
+  "client": [
+    "client.CameraMixin",
+    "client.InventoryScreenMixin",
+    "client.LocalPlayerMixin",
+    "accessor.client.RenderPipelinesAccessor",
+    "accessor.client.RenderTypeAccessor",
+    "accessor.client.SpriteContentsAccessor",
+    "accessor.client.TextureAtlasAccessor",
+    "accessor.client.LivingEntityRendererAccessor",
+    "accessor.client.KeyMappingAccessor",
+    "accessor.client.GuiGraphicsExtractorAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

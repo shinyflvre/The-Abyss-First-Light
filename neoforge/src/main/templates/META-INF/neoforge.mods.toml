@@ -1,0 +1,58 @@
+license="${mod_license}"
+
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+displayURL="https://www.curseforge.com/members/y4z0n/followers"
+bannerFile="logo.png"
+iconFile="icon.png"
+iconBlur=false
+credits="Mod by Y3Z0N"
+authors="${mod_authors}"
+description='''
+The Abyss adds a brand new dimension to explore full of unique adventures and dangers! It's a dimension of darkness the only light comes from magical blocks and the various flora, fungi, and fauna of the dimension.
+'''
+
+[[mixins]]
+config="theabyss.mixins.json"
+
+[[mixins]]
+config="theabyss.neoforge.mixins.json"
+
+[[dependencies.${mod_id}]]
+    modId="neoforge"
+    type="required"
+    versionRange="${neo_version_range}"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="minecraft"
+    type="required"
+    versionRange="${minecraft_version_range}"
+    ordering="NONE"
+    side="BOTH"
+
+# GeckoLib animates the Hummingbird and the Infected Dragonfly. The 1.20.1 metadata declared it optional,
+# but the entity registration links against GeckoLib classes, so the mod cannot load without it.
+[[dependencies.${mod_id}]]
+    modId="geckolib"
+    type="required"
+    versionRange="[${geckolib_version},)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="jei"
+    type="optional"
+    versionRange="[0,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="patchouli"
+    type="optional"
+    versionRange="[0,)"
+    ordering="NONE"
+    side="BOTH"

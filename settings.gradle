@@ -1,6 +1,8 @@
 pluginManagement {
     repositories {
+        maven { name = 'Fabric'; url = 'https://maven.fabricmc.net/' }
         gradlePluginPortal()
+        mavenCentral()
     }
 }
 
@@ -9,3 +11,7 @@ plugins {
 }
 
 rootProject.name = 'theabyss'
+
+include 'common'
+include 'neoforge'
+include 'fabric'

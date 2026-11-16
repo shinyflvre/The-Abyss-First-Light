@@ -1,0 +1,179 @@
+plugins {
+    id 'net.neoforged.moddev'
+    id 'idea'
+}
+
+base {
+    archivesName = mod_id
+}
+
+configurations {
+    commonJava {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+    commonResources {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+}
+
+sourceSets {
+    devtest {
+        compileClasspath += sourceSets.main.output
+    }
+}
+
+neoForge {
+    version = project.neo_version
+    addModdingDependenciesTo sourceSets.devtest
+
+    mods {
+        theabyss {
+            sourceSet(sourceSets.main)
+        }
+        theabyss_devtest {
+            sourceSet(sourceSets.devtest)
+        }
+    }
+
+    runs {
+        client {
+            client()
+            gameDirectory = rootProject.file('run')
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        server {
+            server()
+            gameDirectory = rootProject.file('run')
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        gameTestServer {
+            type = 'gameTestServer'
+            gameDirectory = rootProject.file('run')
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        data {
+            clientData()
+            gameDirectory = rootProject.file('run')
+            programArguments.addAll '--mod', project.mod_id, '--all',
+                    '--output', rootProject.file('common/src/generated/resources/').getAbsolutePath(),
+                    '--existing', rootProject.file('common/src/main/resources/').getAbsolutePath()
+        }
+
+        devTestClient {
+            client()
+            gameDirectory = rootProject.file('run-devtest')
+            systemProperty 'theabyss.devtest.client', 'true'
+            systemProperty 'theabyss.devtest.scenario', providers.gradleProperty('devtestScenario').getOrElse('all')
+            systemProperty 'theabyss.devtest.background', providers.gradleProperty('devtestBackground').getOrElse('false')
+            loadedMods = [mods.theabyss, mods.theabyss_devtest]
+        }
+
+        devTestClientMp {
+            client()
+            gameDirectory = rootProject.file('run-devtest-mp')
+            systemProperty 'theabyss.devtest.client', 'true'
+            systemProperty 'theabyss.devtest.mp', 'localhost:25565'
+            loadedMods = [mods.theabyss, mods.theabyss_devtest]
+        }
+
+        devTestServer {
+            server()
+            gameDirectory = rootProject.file('run-devtest-server')
+            programArgument '--nogui'
+            loadedMods = [mods.theabyss, mods.theabyss_devtest]
+        }
+
+        checkServer {
+            server()
+            gameDirectory = rootProject.file('run-check/neoforge-server')
+            programArgument '--nogui'
+        }
+
+        checkClient {
+            client()
+            gameDirectory = rootProject.file('run-check/neoforge-client')
+            programArguments.addAll '--quickPlaySingleplayer', 'check'
+        }
+
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.INFO
+            if (!name.startsWith('devTest')) {
+                loadedMods = [mods.theabyss]
+            }
+        }
+    }
+}
+
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
+
+dependencies {
+    commonJava project(path: ':common', configuration: 'commonJava')
+    commonResources project(path: ':common', configuration: 'commonResources')
+
+    implementation "com.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
+    devtestCompileOnly "com.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
+
+    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+    localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+}
+
+tasks.named('compileJava', JavaCompile) {
+    dependsOn configurations.commonJava
+    source configurations.commonJava
+}
+
+tasks.named('processResources', ProcessResources) {
+    dependsOn configurations.commonResources
+    from(configurations.commonResources) {
+        exclude '**/*.bbmodel'
+    }
+}
+
+var generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
+    var replaceProperties = [
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neo_version_range      : neo_version_range,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_license            : mod_license,
+            mod_version            : mod_version,
+            mod_authors            : mod_authors,
+            geckolib_version       : geckolib_version,
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from 'src/main/templates'
+    into 'build/generated/sources/modMetadata'
+}
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}
+
+tasks.register('writeCompileClasspath') {
+    def cp = sourceSets.main.compileClasspath
+    def out = layout.buildDirectory.file('compileClasspath.txt')
+    inputs.files(cp)
+    outputs.file(out)
+    doLast {
+        out.get().asFile.text = cp.files.collect { it.absolutePath }.join('\n')
+    }
+}
+
+tasks.matching { it.name == 'runServer' || it.name == 'runDevTestServer' || it.name == 'runCheckServer' }.configureEach { standardInput = System.in }

@@ -12,7 +12,9 @@
 !/gradlew.bat
 !/gradle/
 !/start.bat
-!/src/
+!/common/
+!/neoforge/
+!/fabric/
 
 ### Gradle ###
 .gradle/

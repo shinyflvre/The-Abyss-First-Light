@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "fabric:type": "fabric:difference",
+      "base": "#minecraft:planks",
+      "subtracted": "#theabyss:chest_planks"
+    }
+  },
+  "pattern": [
+    "###",
+    "# #",
+    "###"
+  ],
+  "result": {
+    "id": "minecraft:chest"
+  }
+}
