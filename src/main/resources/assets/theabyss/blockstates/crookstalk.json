@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "part=lower": {
+      "model": "theabyss:block/crookstalk_bottom"
+    },
+    "part=middle": {
+      "model": "theabyss:block/crookstalk_middle"
+    },
+    "part=upper": {
+      "model": "theabyss:block/crookstalk_top"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "theabyss:vigilant_forest"
+  ],
+  "features": "theabyss:vigilant_forest/vigilant_trees",
+  "step": "vegetal_decoration"
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:slimed_planks",
+    "b": "#c:rods/wooden"
+  },
+  "pattern": [
+    "aba",
+    "aba"
+  ],
+  "result": {
+    "id": "theabyss:slimed_fence",
+    "count": 3
+  }
+}

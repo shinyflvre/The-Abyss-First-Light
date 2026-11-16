@@ -1,0 +1,12 @@
+{
+  "type": "theabyss:dripstone_spires",
+  "mode": "ground",
+  "min_height": 1,
+  "max_height": 3,
+  "ground": [
+    "theabyss:slimed_moss",
+    "theabyss:stone",
+    "theabyss:stone_rackle",
+    "theabyss:gravel"
+  ]
+}

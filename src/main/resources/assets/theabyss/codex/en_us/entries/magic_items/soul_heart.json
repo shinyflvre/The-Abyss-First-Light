@@ -1,0 +1,19 @@
+{
+  "name": "Soul Heart",
+  "icon": "theabyss:soul_heart",
+  "category": "magic_items",
+  "order": 14,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:soul_heart",
+      "title": "Soul Heart",
+      "text": "A Soul Heart still burns with the spirit of its former owner. Right click a Brick Stone Pillar with a Soul Heart in your main hand to ignite it, the heart is consumed. Ignite all eight pillars around a Night Altar to prepare the ritual for the Eye of Abyss. Soul Hearts are also needed for the Somnium Usage Upgrade."
+    },
+    {
+      "type": "text",
+      "title": "Where to Find",
+      "text": "Every Soul Guard drops a Soul Heart when it falls. They roam the Blue Mountains and the Nightgrove of The Abyss, often in groups, and slaying them with Looting can yield an extra heart."
+    }
+  ]
+}

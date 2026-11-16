@@ -1,0 +1,13 @@
+{
+  "name": "1. The Crossing",
+  "icon": "minecraft:paper",
+  "category": "chronicles",
+  "order": 1,
+  "chronicle": 1,
+  "pages": [
+    {
+      "type": "text",
+      "text": "I closed my eyes, held the Dream Shifter tight, and let it pull. The world folded like wet paper, and for a moment there was nothing at all. Then everything came back, but it was not my world anymore. There is no sun here. There is no sky I would call a sky, only a slow, deep colour high above, like the bottom of a lake seen from below. And yet nothing is dark. The grass glows, the stones glow, the water glows, and all of it from beneath, as if the light rises out of the ground instead of falling onto it. The air tastes of sleep. Every breath feels like the moment just before waking. I have never seen anything so beautiful, and I have never felt so far from home. I am writing this down so that I remember the way back. I will need to remember the way back."
+    }
+  ]
+}

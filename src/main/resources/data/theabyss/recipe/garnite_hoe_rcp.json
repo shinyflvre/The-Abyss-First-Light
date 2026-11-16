@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:garnite_ingot",
+    "b": "#c:rods/wooden"
+  },
+  "pattern": [
+    "aa",
+    "b ",
+    "b "
+  ],
+  "result": {
+    "id": "theabyss:garnite_hoe"
+  }
+}

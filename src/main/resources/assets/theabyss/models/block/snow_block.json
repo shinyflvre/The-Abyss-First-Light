@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "theabyss:block/snow",
+    "particle": "theabyss:block/snow"
+  },
+  "render_type": "solid"
+}

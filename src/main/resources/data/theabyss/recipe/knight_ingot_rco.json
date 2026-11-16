@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:bricked_knight_ingot",
+    "b": "theabyss:loran_energy"
+  },
+  "pattern": [
+    "aaa",
+    "aba",
+    "aaa"
+  ],
+  "result": {
+    "id": "theabyss:knight_ingot"
+  }
+}

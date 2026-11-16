@@ -1,0 +1,18 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 731940266,
+    "separation": 8,
+    "spacing": 22
+  },
+  "structures": [
+    {
+      "structure": "theabyss:blue_mountain_arch",
+      "weight": 1
+    },
+    {
+      "structure": "theabyss:phantom_crate_arch",
+      "weight": 1
+    }
+  ]
+}

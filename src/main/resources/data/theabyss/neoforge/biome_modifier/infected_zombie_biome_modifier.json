@@ -1,0 +1,17 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "theabyss:blue_mountain",
+    "theabyss:phantom_crate",
+    "theabyss:mud_plains"
+  ],
+  "spawners": {
+    "type": "theabyss:infected_zombie",
+    "weight": 9,
+    "count": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 5,
+      "min_inclusive": 2
+    }
+  }
+}

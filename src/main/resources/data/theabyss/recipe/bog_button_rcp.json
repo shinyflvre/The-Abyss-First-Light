@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:bog_planks"
+  },
+  "pattern": [
+    "a"
+  ],
+  "result": {
+    "id": "theabyss:bog_button"
+  }
+}

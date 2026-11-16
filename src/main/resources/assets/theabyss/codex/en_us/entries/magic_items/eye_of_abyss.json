@@ -1,0 +1,38 @@
+{
+  "name": "Eye Of Abyss",
+  "icon": "theabyss:eye_of_abyss",
+  "category": "magic_items",
+  "order": 13,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:eye_of_abyss",
+      "title": "Eye Of Abyss",
+      "text": "The Eye of Abyss is the key to the Nightblade's prison. Seek out a Night Altar, found in the Phantom Crate, Blue Mountains, Blaru Forest, Nightgrove and Plains of The Abyss, and ignite all eight Brick Stone Pillars around it with Soul Hearts."
+    },
+    {
+      "type": "text",
+      "title": "Summoning the Nightblade",
+      "text": "Then right click the altar with the Eye of Abyss in your main hand. The eye is consumed, the pillars die out one after another with flashes of lightning, and a few seconds later the Nightblade rises from the altar. If even one pillar is still unlit, the altar refuses the eye. Prepare yourself well before you begin."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:eye_of_abyss_rcp",
+      "title": "Recipe",
+      "text": "The Roka Horn is dropped by The Roka of the Nightgrove, the Crystal Hand by the Crystal Golem of the Slime Forest and the Elder Eye by the Elder of the Blue Mountains.",
+      "grid": [
+        "",
+        "theabyss:roka_horn",
+        "",
+        "theabyss:crystal_hand",
+        "minecraft:ender_eye",
+        "theabyss:elder_eye",
+        "",
+        "minecraft:ghast_tear",
+        ""
+      ],
+      "result": "theabyss:eye_of_abyss",
+      "count": 1
+    }
+  ]
+}

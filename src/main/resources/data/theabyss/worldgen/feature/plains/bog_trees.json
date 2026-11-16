@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:simple_random_selector",
+  "features": [
+    {
+      "feature": "theabyss:plains/bog_tree_tall",
+      "placement": []
+    },
+    {
+      "feature": "theabyss:plains/bog_tree_leaning",
+      "placement": []
+    },
+    {
+      "feature": "theabyss:plains/bog_tree_forked",
+      "placement": []
+    },
+    {
+      "feature": "theabyss:plains/bog_tree_hooked",
+      "placement": []
+    }
+  ]
+}

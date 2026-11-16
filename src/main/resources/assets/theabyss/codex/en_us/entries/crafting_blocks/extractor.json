@@ -1,0 +1,58 @@
+{
+  "name": "Somnium Extractor",
+  "icon": "theabyss:somnium_extractor",
+  "category": "crafting_blocks",
+  "order": 0,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:somnium_extractor",
+      "title": "Somnium Extractor",
+      "text": "Somnium is a valuable resource for activating ancient artifacts and magical rings. It can be stored in bottles for later use, and with the right enhancements, you can even regenerate and use Somnium more efficiently. So don't underestimate the power of Somnium - it's an essential part of your arsenal."
+    },
+    {
+      "type": "block",
+      "block": "theabyss:somnium_extractor",
+      "title": "Somnium Extractor",
+      "text": "You need this to extract somnium from loran."
+    },
+    {
+      "type": "crafting",
+      "title": "Somnium Extractor",
+      "result": "theabyss:loran_energy",
+      "count": 1,
+      "grid": [
+        "theabyss:loran",
+        "theabyss:loran",
+        "theabyss:loran",
+        "theabyss:loran",
+        "theabyss:incorythe_gem",
+        "theabyss:loran",
+        "theabyss:loran",
+        "theabyss:loran",
+        "theabyss:loran"
+      ]
+    },
+    {
+      "type": "text",
+      "text": "Use Loran and Loran Catalyst to extract somnium. If you have extracted somnium you can make a bottle of somnium to charge your somnium!"
+    },
+    {
+      "type": "crafting",
+      "title": "Bottle Of Somnium",
+      "result": "theabyss:bottle_of_somnium",
+      "count": 1,
+      "grid": [
+        "theabyss:somnium",
+        "",
+        "",
+        "minecraft:glass_bottle",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ]
+    }
+  ]
+}

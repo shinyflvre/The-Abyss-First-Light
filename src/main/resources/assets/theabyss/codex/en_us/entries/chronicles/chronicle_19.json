@@ -1,0 +1,13 @@
+{
+  "name": "19. The Journal",
+  "icon": "minecraft:paper",
+  "category": "chronicles",
+  "order": 19,
+  "chronicle": 19,
+  "pages": [
+    {
+      "type": "text",
+      "text": "The Dream Shifter brought me back to the world above, and the light up here hurts my eyes now. I sat down in the grass and read this journal again from the beginning. Every page is in my own handwriting. I never noticed. The figure at the edge of the mist never came closer. It never hunted me. I hunted it. I lit its pillars and gave its altar the eye and called it down to die. It never broke the Abyss. It only stood between that place and this one, alone, for longer than anyone should stand anywhere. It was not guarding a lie. It was guarding the world from me. And now there is nobody left to guard it."
+    }
+  ]
+}

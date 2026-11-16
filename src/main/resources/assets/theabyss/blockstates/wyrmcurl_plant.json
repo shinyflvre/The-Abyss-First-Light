@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "top=false": {
+      "model": "theabyss:block/wyrmcurl_plant"
+    },
+    "top=true": {
+      "model": "theabyss:block/wyrmcurl_plant_base"
+    }
+  }
+}

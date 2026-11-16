@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:stone"
+  },
+  "pattern": [
+    "a  ",
+    "aa ",
+    "aaa"
+  ],
+  "result": {
+    "id": "theabyss:stone_stairs",
+    "count": 4
+  }
+}

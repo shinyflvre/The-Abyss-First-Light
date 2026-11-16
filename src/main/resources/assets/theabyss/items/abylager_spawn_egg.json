@@ -1,0 +1,16 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "theabyss:item/abylager_spawn_egg",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -16751514
+      },
+      {
+        "type": "minecraft:constant",
+        "value": -8257571
+      }
+    ]
+  }
+}

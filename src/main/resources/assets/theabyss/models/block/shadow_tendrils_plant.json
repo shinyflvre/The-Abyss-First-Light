@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "theabyss:block/shadow_tendrils_middle"
+  },
+  "render_type": "cutout"
+}

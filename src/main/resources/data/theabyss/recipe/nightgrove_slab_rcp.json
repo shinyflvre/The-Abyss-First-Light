@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:nightgrove_planks"
+  },
+  "pattern": [
+    "aaa"
+  ],
+  "result": {
+    "id": "theabyss:nightgrove_slab",
+    "count": 6
+  }
+}

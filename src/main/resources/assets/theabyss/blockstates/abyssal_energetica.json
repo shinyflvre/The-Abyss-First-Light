@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "charged=false": {
+      "model": "theabyss:block/abyssal_energetica"
+    },
+    "charged=true": {
+      "model": "theabyss:block/abyssal_energetica"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "parent": "block/slab",
+  "textures": {
+    "bottom": "theabyss:block/blaru_planks",
+    "top": "theabyss:block/blaru_planks",
+    "side": "theabyss:block/blaru_planks"
+  },
+  "render_type": "solid"
+}

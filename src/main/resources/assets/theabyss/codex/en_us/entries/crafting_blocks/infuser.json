@@ -1,0 +1,62 @@
+{
+  "name": "Somnium Infuser",
+  "icon": "theabyss:somnium_infuser",
+  "category": "crafting_blocks",
+  "order": 0,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:somnium_infuser",
+      "title": "Somnium Infuser",
+      "text": "The Somnium Infuser is a magical device that imbues mixtures with the power of somnium, a valuable energy source. With the infuser, you can create potions that enhance your ability to regenerate somnium, improve your channeling efficiency, and even protect you from fear. It's like a brewing stand, but for potions with a little extra kick!"
+    },
+    {
+      "type": "text",
+      "text": "Who knows what other potions can be infused with Somnium for an incredibly powerful result?"
+    },
+    {
+      "type": "block",
+      "block": "theabyss:somnium_infuser",
+      "title": "Somnium Infuser",
+      "text": "To build a somnium infuser you need Test Tube and Test Tube Head"
+    },
+    {
+      "type": "crafting",
+      "title": "Somnium Infuser",
+      "result": "theabyss:test_tube_head",
+      "count": 1,
+      "grid": [
+        "theabyss:cobble_stone",
+        "",
+        "",
+        "theabyss:bottle_of_somnium",
+        "",
+        "",
+        "minecraft:glass_bottle",
+        "",
+        ""
+      ]
+    },
+    {
+      "type": "text",
+      "text": "If you have both materials you can now build a somnium infuser!"
+    },
+    {
+      "type": "crafting",
+      "title": "Somnium Infuser",
+      "result": "theabyss:somnium_infuser",
+      "count": 1,
+      "grid": [
+        "",
+        "theabyss:test_tube_head",
+        "",
+        "theabyss:test_tube",
+        "theabyss:cobble_stone",
+        "theabyss:test_tube",
+        "theabyss:cobble_stone",
+        "theabyss:cobble_stone",
+        "theabyss:cobble_stone"
+      ]
+    }
+  ]
+}

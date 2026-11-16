@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:bog_planks"
+  },
+  "pattern": [
+    "aaa"
+  ],
+  "result": {
+    "id": "theabyss:bog_slab",
+    "count": 6
+  }
+}

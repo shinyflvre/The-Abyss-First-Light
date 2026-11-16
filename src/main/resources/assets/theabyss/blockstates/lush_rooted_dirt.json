@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "theabyss:block/lush_rooted_dirt"
+      },
+      {
+        "model": "theabyss:block/lush_rooted_dirt",
+        "y": 90
+      },
+      {
+        "model": "theabyss:block/lush_rooted_dirt",
+        "y": 180
+      },
+      {
+        "model": "theabyss:block/lush_rooted_dirt",
+        "y": 270
+      }
+    ]
+  }
+}

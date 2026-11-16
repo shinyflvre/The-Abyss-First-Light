@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/tinted_cross",
+  "textures": {
+    "cross": "theabyss:block/tall_infected_grass_bottom"
+  },
+  "render_type": "cutout"
+}

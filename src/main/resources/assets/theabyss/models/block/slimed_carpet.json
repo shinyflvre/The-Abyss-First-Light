@@ -1,0 +1,9 @@
+{
+  "parent": "theabyss:custom/fallen_leaves",
+  "textures": {
+    "all": "theabyss:block/slimed_log_crystal",
+    "particle": "theabyss:block/slimed_log_crystal",
+    "texture": "theabyss:block/slime_block"
+  },
+  "render_type": "cutout"
+}

@@ -1,0 +1,33 @@
+{
+  "name": "Unorithe Sword",
+  "icon": "theabyss:unorithe_sword",
+  "category": "weapons",
+  "order": 7,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:unorithe_sword",
+      "title": "Unorithe Sword",
+      "text": "Take your Phantom Sword to the next level by fusing it with an Unorithe Ingot. The result is a blade with 11 attack damage, a swift attack speed of 2.0 and 3000 uses. A true weapon for those who have mastered the ghostly arts of the phantoms."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:unorithe_sword_rcp",
+      "title": "Recipe",
+      "text": "Place a Phantom Sword next to an Unorithe Ingot.",
+      "grid": [
+        "theabyss:phantom_sword",
+        "theabyss:unorithe_ingot",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:unorithe_sword",
+      "count": 1
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "name": "Abyssal Energetica",
+  "icon": "theabyss:abyssal_energetica",
+  "category": "crafting_blocks",
+  "order": 1,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:abyssal_energetica",
+      "title": "Abyssal Energetica",
+      "text": "The Arcane Workbench does not work on its own. It draws its power from four Abyssal Energetica pillars. Place one on each diagonal corner, two blocks away from the workbench and on the same level."
+    },
+    {
+      "type": "multiblock",
+      "title": "Setup",
+      "pattern": [
+        [
+          "GGGGG",
+          "GGGGG",
+          "GGGGG",
+          "GGGGG",
+          "GGGGG"
+        ],
+        [
+          "P...P",
+          ".....",
+          "..A..",
+          ".....",
+          "P...P"
+        ]
+      ],
+      "mapping": {
+        "G": "minecraft:grass_block",
+        "A": "theabyss:arcane_workbench",
+        "P": "theabyss:abyssal_energetica"
+      },
+      "text": "The workbench in the middle, an Abyssal Energetica on each diagonal corner, two blocks away and on the same level."
+    },
+    {
+      "type": "text",
+      "title": "Charging",
+      "text": "Right click a pillar with a Loran Energy (eight Loran round an Incorythe Gem, recipe below) to set it into the bowl, where it floats and slowly turns. Once all four pillars hold their energy, bands of light flow into the workbench and it can craft. The energy is only lent: it is never used up, and an empty hand takes it back out."
+    },
+    {
+      "type": "crafting",
+      "title": "Abyssal Energetica",
+      "recipe": "theabyss:abyssal_energetica",
+      "grid": [
+        "theabyss:stone_brick_chiseled",
+        "theabyss:loran",
+        "theabyss:stone_brick_chiseled",
+        "",
+        "theabyss:stone_brick_pillar",
+        "",
+        "theabyss:stone_brick_chiseled",
+        "theabyss:stone_brick_pillar",
+        "theabyss:stone_brick_chiseled"
+      ],
+      "result": "theabyss:abyssal_energetica",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "title": "Loran Energy",
+      "recipe": "theabyss:loran_energy_rcp",
+      "grid": [
+        "theabyss:loran",
+        "theabyss:loran",
+        "theabyss:loran",
+        "theabyss:loran",
+        "theabyss:incorythe_gem",
+        "theabyss:loran",
+        "theabyss:loran",
+        "theabyss:loran",
+        "theabyss:loran"
+      ],
+      "result": "theabyss:loran_energy",
+      "count": 1
+    }
+  ]
+}

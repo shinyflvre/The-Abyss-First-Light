@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/template_azalea",
+  "textures": {
+    "side": "theabyss:block/lush_flowering_azalea_side",
+    "top": "theabyss:block/lush_flowering_azalea_top",
+    "particle": "theabyss:block/lush_azalea_plant",
+    "plant": "theabyss:block/lush_azalea_plant"
+  }
+}

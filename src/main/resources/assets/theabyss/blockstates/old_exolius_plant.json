@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "half=upper": {
+      "model": "theabyss:block/old_exolius_plant"
+    },
+    "half=lower": {
+      "model": "theabyss:block/old_exolius_plant_bottom"
+    }
+  }
+}

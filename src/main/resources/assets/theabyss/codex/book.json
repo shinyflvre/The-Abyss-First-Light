@@ -1,0 +1,13 @@
+{
+  "title": "codex.theabyss.title",
+  "landing_text": "codex.theabyss.landing_text",
+  "texture": "theabyss:textures/gui/guide_book.png",
+  "background": "theabyss:textures/gui/codex_book.png",
+  "filler": "theabyss:textures/gui/page_filler.png",
+  "text_color": "000000",
+  "header_color": "333333",
+  "link_color": "00AAAA",
+  "nameplate_color": "FFAA00",
+  "edition": "codex.theabyss.edition",
+  "font": "default"
+}

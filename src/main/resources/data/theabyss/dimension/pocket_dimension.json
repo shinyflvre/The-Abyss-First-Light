@@ -1,0 +1,10 @@
+{
+  "type": "theabyss:pocket_dimension",
+  "generator": {
+    "type": "theabyss:pocket_cells",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "theabyss:pocket_biome"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:ore",
+  "discard_chance_on_air_exposure": 0,
+  "size": 60,
+  "targets": [
+    {
+      "state": {
+        "id": "theabyss:nightgrove_moss"
+      },
+      "target": {
+        "predicate_type": "minecraft:blockstate_match",
+        "block_state": {
+          "id": "theabyss:roma_mud"
+        }
+      }
+    }
+  ]
+}

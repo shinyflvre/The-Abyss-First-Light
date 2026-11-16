@@ -1,0 +1,32 @@
+{
+  "name": "Totem Of Time",
+  "icon": "theabyss:totem_of_time",
+  "category": "magic_items",
+  "order": 3,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:totem_of_time",
+      "title": "Totem Of Time",
+      "text": "The Totem of Time saves you from death, cancelling your death and restoring your health completely, even from anywhere in your inventory. In that very moment it stops time around you. Every creature within 20 blocks is frozen in place for 10 seconds, while you are free to move, recover and turn the tide. Other players caught in its reach are frozen as well."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:totem_of_time_rcp",
+      "title": "Recipe",
+      "grid": [
+        "theabyss:loran",
+        "theabyss:loran_energy",
+        "theabyss:loran",
+        "",
+        "minecraft:totem_of_undying",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:totem_of_time",
+      "count": 1
+    }
+  ]
+}

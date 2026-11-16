@@ -1,0 +1,16 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "theabyss:item/night_blade_boss_clone_spawn_egg",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -15980237
+      },
+      {
+        "type": "minecraft:constant",
+        "value": -9240622
+      }
+    ]
+  }
+}

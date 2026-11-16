@@ -1,0 +1,36 @@
+{
+  "anvil_cost": 4,
+  "description": {
+    "translate": "enchantment.theabyss.phantom_reach"
+  },
+  "max_cost": {
+    "base": 65,
+    "per_level_above_first": 9
+  },
+  "max_level": 1,
+  "min_cost": {
+    "base": 15,
+    "per_level_above_first": 9
+  },
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#theabyss:enchantable/reach",
+  "weight": 1,
+  "effects": {
+    "minecraft:attributes": [
+      {
+        "amount": 2.0,
+        "attribute": "minecraft:block_interaction_range",
+        "id": "theabyss:enchantment.phantom_reach_block",
+        "operation": "add_value"
+      },
+      {
+        "amount": 2.0,
+        "attribute": "minecraft:entity_interaction_range",
+        "id": "theabyss:enchantment.phantom_reach_entity",
+        "operation": "add_value"
+      }
+    ]
+  }
+}

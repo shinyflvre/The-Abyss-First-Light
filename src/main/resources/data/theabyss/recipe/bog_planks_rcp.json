@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:bog_shroom_log"
+  },
+  "pattern": [
+    "a"
+  ],
+  "result": {
+    "id": "theabyss:bog_planks",
+    "count": 4
+  }
+}

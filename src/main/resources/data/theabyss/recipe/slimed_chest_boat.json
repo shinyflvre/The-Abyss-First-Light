@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "chest_boat",
+  "ingredients": [
+    "theabyss:slimed_chest",
+    "theabyss:slimed_boat"
+  ],
+  "result": {
+    "id": "theabyss:slimed_chest_boat"
+  }
+}

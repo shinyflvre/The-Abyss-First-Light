@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "top=false": {
+      "model": "theabyss:block/twisted_bloom_plant"
+    },
+    "top=true": {
+      "model": "theabyss:block/twisted_bloom_plant_base"
+    }
+  }
+}

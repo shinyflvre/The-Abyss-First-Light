@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "#c:rods/wooden",
+    "b": "theabyss:bog_planks"
+  },
+  "pattern": [
+    "aba",
+    "aba"
+  ],
+  "result": {
+    "id": "theabyss:bog_fence_gate"
+  }
+}

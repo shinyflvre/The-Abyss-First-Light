@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "half=upper": {
+      "model": "theabyss:block/tall_shroomland_grass"
+    },
+    "half=lower": {
+      "model": "theabyss:block/tall_shroomland_grass_bottom"
+    }
+  }
+}

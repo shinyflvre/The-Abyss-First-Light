@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:phantom_ingot"
+  },
+  "pattern": [
+    "a a",
+    "a a"
+  ],
+  "result": {
+    "id": "theabyss:phantom_armor_boots"
+  }
+}

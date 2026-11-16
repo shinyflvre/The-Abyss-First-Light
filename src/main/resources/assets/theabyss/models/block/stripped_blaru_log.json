@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "theabyss:block/stripped_blaru_log_top",
+    "up": "theabyss:block/stripped_blaru_log_top",
+    "north": "theabyss:block/stripped_blaru_log",
+    "east": "theabyss:block/stripped_blaru_log",
+    "south": "theabyss:block/stripped_blaru_log",
+    "west": "theabyss:block/stripped_blaru_log",
+    "particle": "theabyss:block/stripped_blaru_log_top"
+  },
+  "render_type": "solid"
+}

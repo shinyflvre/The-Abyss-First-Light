@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "theabyss:blaru_forest",
+    "theabyss:phantom_crate"
+  ],
+  "features": "theabyss:anima_fire",
+  "step": "vegetal_decoration"
+}

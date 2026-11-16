@@ -1,0 +1,7 @@
+{
+  "type": "theabyss:structure_feature",
+  "structure": "theabyss:nightgrove_melon",
+  "random_rotation": true,
+  "random_mirror": true,
+  "ignored_blocks": "minecraft:structure_block"
+}

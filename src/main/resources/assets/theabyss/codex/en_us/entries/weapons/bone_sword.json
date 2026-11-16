@@ -1,0 +1,33 @@
+{
+  "name": "Bone Sword",
+  "icon": "theabyss:bone_sword_item",
+  "category": "weapons",
+  "order": 1,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:bone_sword_item",
+      "title": "Bone Sword",
+      "text": "Every hunter in the Abyss starts somewhere, and this sturdy blade carved from Titan Bones is a fine first step. It deals 5 attack damage with a swift attack speed of 2.0 and lasts for 512 uses. The Ice Skeletons and Soul Guards of the Abyss carry the very same blade, so you know it has seen many battles."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:bone_sword_rcp",
+      "title": "Recipe",
+      "text": "Two Titan Bones on top of a stick.",
+      "grid": [
+        "theabyss:fixed_bone",
+        "",
+        "",
+        "theabyss:fixed_bone",
+        "",
+        "",
+        "#c:rods/wooden",
+        "",
+        ""
+      ],
+      "result": "theabyss:bone_sword_item",
+      "count": 1
+    }
+  ]
+}

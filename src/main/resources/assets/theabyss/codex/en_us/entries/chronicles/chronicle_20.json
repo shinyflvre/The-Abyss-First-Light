@@ -1,0 +1,13 @@
+{
+  "name": "20. The End",
+  "icon": "minecraft:paper",
+  "category": "chronicles",
+  "order": 20,
+  "chronicle": 20,
+  "pages": [
+    {
+      "type": "text",
+      "text": "Not every story has a happy ending."
+    }
+  ]
+}

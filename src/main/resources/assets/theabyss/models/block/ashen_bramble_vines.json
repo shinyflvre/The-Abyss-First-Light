@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "theabyss:block/ashen_bramble_vines_bottom"
+  },
+  "render_type": "cutout"
+}

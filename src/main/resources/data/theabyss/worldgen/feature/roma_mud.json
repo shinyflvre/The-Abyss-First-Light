@@ -1,0 +1,51 @@
+{
+  "type": "minecraft:ore",
+  "discard_chance_on_air_exposure": 0,
+  "size": 32,
+  "targets": [
+    {
+      "state": {
+        "id": "theabyss:roma_mud"
+      },
+      "target": {
+        "predicate_type": "minecraft:blockstate_match",
+        "block_state": {
+          "id": "theabyss:blaru_moss"
+        }
+      }
+    },
+    {
+      "state": {
+        "id": "theabyss:roma_mud"
+      },
+      "target": {
+        "predicate_type": "minecraft:blockstate_match",
+        "block_state": {
+          "id": "theabyss:slimed_moss"
+        }
+      }
+    },
+    {
+      "state": {
+        "id": "theabyss:roma_mud"
+      },
+      "target": {
+        "predicate_type": "minecraft:blockstate_match",
+        "block_state": {
+          "id": "theabyss:infected_grass"
+        }
+      }
+    },
+    {
+      "state": {
+        "id": "theabyss:roma_mud"
+      },
+      "target": {
+        "predicate_type": "minecraft:blockstate_match",
+        "block_state": {
+          "id": "theabyss:nightgrove_moss"
+        }
+      }
+    }
+  ]
+}

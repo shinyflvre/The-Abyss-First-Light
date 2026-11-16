@@ -1,0 +1,8 @@
+{
+  "parent": "block/fence_side",
+  "textures": {
+    "texture": "theabyss:block/frost_planks",
+    "particle": "theabyss:block/frost_planks"
+  },
+  "render_type": "solid"
+}

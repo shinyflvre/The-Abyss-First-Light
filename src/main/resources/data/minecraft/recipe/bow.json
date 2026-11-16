@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#c:rods/wooden",
+      "subtracted": [
+        "theabyss:nightgrove_stick",
+        "theabyss:luna_stick"
+      ]
+    },
+    "X": "minecraft:string"
+  },
+  "pattern": [
+    " #X",
+    "# X",
+    " #X"
+  ],
+  "result": {
+    "id": "minecraft:bow"
+  }
+}

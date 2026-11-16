@@ -1,0 +1,15 @@
+{
+  "type": "theabyss:infuser_recipe_type",
+  "ingredients": [
+    "theabyss:soul_heart",
+    "theabyss:roka_horn",
+    "theabyss:soul_heart",
+    "theabyss:roka_horn",
+    "theabyss:somnium",
+    "theabyss:loran_energy"
+  ],
+  "output": {
+    "id": "theabyss:shared_heart",
+    "count": 1
+  }
+}

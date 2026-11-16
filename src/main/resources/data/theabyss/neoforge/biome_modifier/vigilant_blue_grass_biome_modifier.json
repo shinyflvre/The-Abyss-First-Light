@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "theabyss:vigilant_forest",
+  "features": "theabyss:vigilant_blue_grass",
+  "step": "vegetal_decoration"
+}

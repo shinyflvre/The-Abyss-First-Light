@@ -1,0 +1,13 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "theabyss:nightgrove",
+  "spawners": {
+    "type": "theabyss:jungle_lurker",
+    "weight": 40,
+    "count": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 4,
+      "min_inclusive": 1
+    }
+  }
+}

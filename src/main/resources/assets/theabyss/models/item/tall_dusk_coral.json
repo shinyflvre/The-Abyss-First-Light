@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "theabyss:block/tall_dusk_coral_top"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "theabyss:block/hanging_plant_vigilant"
+  }
+}

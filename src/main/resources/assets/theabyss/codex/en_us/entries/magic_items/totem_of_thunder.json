@@ -1,0 +1,32 @@
+{
+  "name": "Totem Of Thunder",
+  "icon": "theabyss:totem_of_thunder",
+  "category": "magic_items",
+  "order": 2,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:totem_of_thunder",
+      "title": "Totem Of Thunder",
+      "text": "The Totem of Thunder saves you from death just like the Totem of Abyss, cancelling your death and restoring your health completely, even from anywhere in your inventory. Then it unleashes the storm. Every creature within 10 blocks of you is struck by lightning and takes 10 damage, punishing anyone who dared to bring you down."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:totem_of_thunder_rcp",
+      "title": "Recipe",
+      "grid": [
+        "theabyss:thunder_stone",
+        "theabyss:loran",
+        "theabyss:thunder_stone",
+        "",
+        "minecraft:totem_of_undying",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:totem_of_thunder",
+      "count": 1
+    }
+  ]
+}

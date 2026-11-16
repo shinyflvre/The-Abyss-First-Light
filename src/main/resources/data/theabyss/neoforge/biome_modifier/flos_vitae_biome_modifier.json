@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "theabyss:blaru_forest",
+  "features": "theabyss:flos_vitae",
+  "step": "vegetal_decoration"
+}

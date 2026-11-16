@@ -1,0 +1,9 @@
+{
+  "parent": "block/stairs",
+  "textures": {
+    "bottom": "theabyss:block/stone_1",
+    "top": "theabyss:block/stone_1",
+    "side": "theabyss:block/stone_1"
+  },
+  "render_type": "solid"
+}

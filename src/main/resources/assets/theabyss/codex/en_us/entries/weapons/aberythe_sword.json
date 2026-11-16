@@ -1,0 +1,33 @@
+{
+  "name": "Aberythe Sword",
+  "icon": "theabyss:aberythe_sword",
+  "category": "weapons",
+  "order": 2,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:aberythe_sword",
+      "title": "Aberythe Sword",
+      "text": "Forged from the shimmering Aberythe gem, this blade is a reliable companion for your first steps into the dark. It deals 8 attack damage with an attack speed of 1.8 and holds up for 1750 uses. Simple, sharp and dependable, it will serve you well until you find rarer treasures."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:aberythe_sword_rcp",
+      "title": "Recipe",
+      "text": "Two Aberythe Gems on top of a stick.",
+      "grid": [
+        "theabyss:aberythe_gem",
+        "",
+        "",
+        "theabyss:aberythe_gem",
+        "",
+        "",
+        "#c:rods/wooden",
+        "",
+        ""
+      ],
+      "result": "theabyss:aberythe_sword",
+      "count": 1
+    }
+  ]
+}

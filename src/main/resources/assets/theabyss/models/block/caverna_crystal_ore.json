@@ -1,0 +1,9 @@
+{
+  "parent": "theabyss:custom/crystal",
+  "textures": {
+    "all": "theabyss:block/caverna_crystal_ore",
+    "particle": "theabyss:block/caverna_crystal_ore",
+    "0": "theabyss:block/caverna_crystal_ore"
+  },
+  "render_type": "cutout"
+}

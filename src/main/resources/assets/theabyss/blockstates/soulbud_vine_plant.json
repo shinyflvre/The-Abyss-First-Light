@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "top=false": {
+      "model": "theabyss:block/soulbud_vine_plant"
+    },
+    "top=true": {
+      "model": "theabyss:block/soulbud_vine_plant_top"
+    }
+  }
+}

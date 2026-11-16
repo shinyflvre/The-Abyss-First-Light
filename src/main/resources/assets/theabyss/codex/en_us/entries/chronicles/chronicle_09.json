@@ -1,0 +1,13 @@
+{
+  "name": "9. In Black Ink",
+  "icon": "minecraft:ink_sac",
+  "category": "chronicles",
+  "order": 9,
+  "chronicle": 9,
+  "pages": [
+    {
+      "type": "text",
+      "text": "You died down there, and you came back. They always come back. That is what the roots want, do you understand? Not your death. Your return. Every time you fall and rise again, a little less of you comes back and a little more of them. I have watched it happen to others before you. The voice will tell you that you are strong, that the Abyss has chosen you. It told me the same thing, a long time ago. Stop listening to it."
+    }
+  ]
+}

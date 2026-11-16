@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "minecraft:iron_nugget",
+    "b": "minecraft:redstone_torch"
+  },
+  "pattern": [
+    "aaa",
+    "aba",
+    "aaa"
+  ],
+  "result": {
+    "id": "theabyss:hoglin_lantern",
+    "count": 2
+  }
+}

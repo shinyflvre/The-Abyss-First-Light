@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "theabyss:block/lush_big_dripleaf_stem",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "theabyss:block/lush_big_dripleaf_stem"
+    },
+    "facing=south": {
+      "model": "theabyss:block/lush_big_dripleaf_stem",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "theabyss:block/lush_big_dripleaf_stem",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "feature": "theabyss:abyss_cave_crystals",
+  "placement": [
+    {
+      "type": "minecraft:heightmap",
+      "heightmap": "WORLD_SURFACE_WG"
+    },
+    {
+      "type": "minecraft:rarity_filter",
+      "chance": 7
+    }
+  ]
+}

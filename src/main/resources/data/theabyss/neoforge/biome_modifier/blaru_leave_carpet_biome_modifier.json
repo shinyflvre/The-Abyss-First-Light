@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "theabyss:blaru_forest",
+  "features": "theabyss:blaru_leave_carpet",
+  "step": "vegetal_decoration"
+}

@@ -1,0 +1,14 @@
+{
+  "type": "theabyss:mortar_recipe_type",
+  "ingredients": [
+    "theabyss:warped_crystal_shard",
+    "theabyss:warped_crystal_shard",
+    "theabyss:warped_crystal_shard",
+    "theabyss:warped_crystal_shard",
+    "theabyss:bottle_of_somnium"
+  ],
+  "output": {
+    "id": "theabyss:warped_powder",
+    "count": 2
+  }
+}

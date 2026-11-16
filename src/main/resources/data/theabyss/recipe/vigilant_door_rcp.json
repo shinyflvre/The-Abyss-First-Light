@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:vigilant_planks"
+  },
+  "pattern": [
+    "aa",
+    "aa",
+    "aa"
+  ],
+  "result": {
+    "id": "theabyss:vigilant_door",
+    "count": 3
+  }
+}

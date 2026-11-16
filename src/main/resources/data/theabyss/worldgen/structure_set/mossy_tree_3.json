@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 1074316637,
+    "separation": 0,
+    "spacing": 2
+  },
+  "structures": [
+    {
+      "structure": "theabyss:mossy_tree_3",
+      "weight": 1
+    }
+  ]
+}

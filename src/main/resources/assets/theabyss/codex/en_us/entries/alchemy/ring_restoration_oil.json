@@ -1,0 +1,36 @@
+{
+  "name": "Ring Restoration Oil",
+  "icon": "theabyss:ring_restoration_oil",
+  "category": "alchemy",
+  "order": 0,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:ring_restoration_oil",
+      "title": "Ring Restoration Oil",
+      "text": "Infected slime and node shards boil down into a thick, golden oil. Anoint your rings with it and 100 durability returns to them."
+    },
+    {
+      "type": "text",
+      "title": "How it works",
+      "text": "The oil is shared fairly among every worn ring you carry: in your hands, in your bag and inside your gauntlet. If none of your rings is worn, the oil stays in its bottle."
+    },
+    {
+      "type": "infuser",
+      "title": "Recipe",
+      "recipe": "theabyss:ring_restoration_oil_rcp",
+      "notes": [
+        "Place Somnium and loran energy in the upper input slots.",
+        "Place the required items in the test tubes on the left and right."
+      ],
+      "inputs": [
+        "theabyss:infected_slime",
+        "theabyss:node_shard",
+        "theabyss:infected_slime",
+        "theabyss:node_shard"
+      ],
+      "somnium": "theabyss:somnium",
+      "energy": "theabyss:loran_energy"
+    }
+  ]
+}

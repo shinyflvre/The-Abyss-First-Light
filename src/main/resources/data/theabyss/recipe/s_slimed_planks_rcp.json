@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "theabyss:stripped_slimed_log"
+  ],
+  "result": {
+    "id": "theabyss:slimed_planks",
+    "count": 4
+  }
+}

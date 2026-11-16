@@ -1,0 +1,46 @@
+{
+  "variants": {
+    "type=bottom": [
+      {
+        "model": "theabyss:block/stone_brick_slab"
+      },
+      {
+        "model": "theabyss:block/stone_brick_slab_1"
+      },
+      {
+        "model": "theabyss:block/stone_brick_slab_2"
+      },
+      {
+        "model": "theabyss:block/stone_brick_slab_3"
+      }
+    ],
+    "type=top": [
+      {
+        "model": "theabyss:block/stone_brick_slab_top"
+      },
+      {
+        "model": "theabyss:block/stone_brick_slab_top_1"
+      },
+      {
+        "model": "theabyss:block/stone_brick_slab_top_2"
+      },
+      {
+        "model": "theabyss:block/stone_brick_slab_top_3"
+      }
+    ],
+    "type=double": [
+      {
+        "model": "theabyss:block/stone_brick_slab_full"
+      },
+      {
+        "model": "theabyss:block/stone_brick_slab_full_1"
+      },
+      {
+        "model": "theabyss:block/stone_brick_slab_full_2"
+      },
+      {
+        "model": "theabyss:block/stone_brick_slab_full_3"
+      }
+    ]
+  }
+}

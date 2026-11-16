@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "theabyss:block/rena_wall_hanging_sign",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "theabyss:block/rena_wall_hanging_sign",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "theabyss:block/rena_wall_hanging_sign"
+    },
+    "facing=west": {
+      "model": "theabyss:block/rena_wall_hanging_sign",
+      "y": 90
+    }
+  }
+}

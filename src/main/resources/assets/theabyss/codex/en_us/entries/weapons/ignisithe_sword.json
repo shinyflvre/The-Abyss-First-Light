@@ -1,0 +1,38 @@
+{
+  "name": "Ignisithe Sword",
+  "icon": "theabyss:ignisithe_sword",
+  "category": "weapons",
+  "order": 4,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:ignisithe_sword",
+      "title": "Ignisithe Sword",
+      "text": "Harness the burning heart of the Ignisithe gem with this fiery blade. It deals 8.5 attack damage with a quick attack speed of 2.0 and lasts for 1024 uses. Under a clear sky, every hit sets your foe ablaze for 15 seconds. The Guards of the Abyss trust this very blade to defend their homes."
+    },
+    {
+      "type": "text",
+      "title": "Storm Strike",
+      "text": "The flame of this sword does not fear the rain. While it is raining, each hit has a 30% chance to call down a flash of lightning on your target. The struck creature is set on fire for 15 seconds, slowed with Slowness II for 10 seconds and cursed with Bad Luck II for 22 seconds. Wait for the storm and turn the weather into your weapon!"
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:ignisithe_sword_rcp",
+      "title": "Recipe",
+      "text": "An Ignisithe Gem on top and one in the middle, flanked by two Anima Nuggets, with a stick below.",
+      "grid": [
+        "",
+        "theabyss:ignisithe_gem",
+        "",
+        "theabyss:anima_nugget",
+        "theabyss:ignisithe_gem",
+        "theabyss:anima_nugget",
+        "",
+        "#c:rods/wooden",
+        ""
+      ],
+      "result": "theabyss:ignisithe_sword",
+      "count": 1
+    }
+  ]
+}

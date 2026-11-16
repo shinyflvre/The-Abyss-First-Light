@@ -1,0 +1,18 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "theabyss:block/stone_brick_chiseled"
+      },
+      {
+        "model": "theabyss:block/stone_brick_chiseled_1"
+      },
+      {
+        "model": "theabyss:block/stone_brick_chiseled_2"
+      },
+      {
+        "model": "theabyss:block/stone_brick_chiseled_3"
+      }
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "theabyss:waywardsea",
+    "theabyss:forgottenmountains"
+  ],
+  "spawners": {
+    "type": "theabyss:ice_knight",
+    "weight": 4,
+    "count": 1
+  }
+}

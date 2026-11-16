@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "theabyss:block/crookstalk_top"
+  },
+  "render_type": "cutout"
+}

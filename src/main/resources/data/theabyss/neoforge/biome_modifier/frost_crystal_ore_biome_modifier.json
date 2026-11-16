@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "theabyss:forgottenmountains",
+    "theabyss:waywardsea"
+  ],
+  "features": "theabyss:frost_crystal_ore",
+  "step": "vegetal_decoration"
+}

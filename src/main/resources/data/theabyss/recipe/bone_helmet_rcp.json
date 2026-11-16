@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:fixed_bone"
+  },
+  "pattern": [
+    "aaa",
+    "a a"
+  ],
+  "result": {
+    "id": "theabyss:bone_armor_helmet"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "theabyss:infuser_recipe_type",
+  "ingredients": [
+    "theabyss:rotten_flesh",
+    "theabyss:rotten_flesh",
+    "theabyss:rotten_flesh",
+    "theabyss:rotten_flesh",
+    "theabyss:somnium",
+    "theabyss:loran_energy"
+  ],
+  "output": {
+    "id": "theabyss:anti_infect_essence",
+    "count": 1
+  }
+}

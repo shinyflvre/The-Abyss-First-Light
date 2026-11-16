@@ -1,0 +1,46 @@
+package net.yezon.theabyss.item;
+
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.level.block.Block;
+
+public final class TheabyssModToolMaterials {
+    public static final ToolMaterial ABERYTHE = family(1750, 20, TheabyssModItemTags.REPAIRS_ABERYTHE);
+    public static final ToolMaterial ABYSS = family(4000, 40, TheabyssModItemTags.REPAIRS_NONE);
+    public static final ToolMaterial BONE = family(512, 20, TheabyssModItemTags.REPAIRS_BONE);
+    public static final ToolMaterial BRICKED_KNIGHT = family(1664, 10, TheabyssModItemTags.REPAIRS_NONE);
+    public static final ToolMaterial FUSION = family(2228, 20, TheabyssModItemTags.REPAIRS_FUSION);
+    public static final ToolMaterial GARNITE = family(1800, 20, TheabyssModItemTags.REPAIRS_GARNITE);
+    public static final ToolMaterial IGNISITHE = family(1024, 25, TheabyssModItemTags.REPAIRS_IGNISITHE);
+    public static final ToolMaterial INCORYTHE = family(3512, 20, TheabyssModItemTags.REPAIRS_INCORYTHE);
+    public static final ToolMaterial KNIGHT = family(1664, 5, TheabyssModItemTags.REPAIRS_KNIGHT);
+    public static final ToolMaterial NOSAJ = family(10000, 40, TheabyssModItemTags.REPAIRS_NONE);
+    public static final ToolMaterial PHANTOM = family(2512, 20, TheabyssModItemTags.REPAIRS_PHANTOM);
+    public static final ToolMaterial PHANTOM_SWORD = family(2512, 20, TheabyssModItemTags.REPAIRS_PHANTOM_SWORD);
+    public static final ToolMaterial UNORITHE = family(3000, 20, TheabyssModItemTags.REPAIRS_UNORITHE);
+
+    private TheabyssModToolMaterials() {
+    }
+
+    private static ToolMaterial family(int durability, int enchantmentValue, TagKey<Item> repairItems) {
+        return new ToolMaterial(BlockTags.INCORRECT_FOR_WOODEN_TOOL, durability, 0.0F, 0.0F, enchantmentValue, repairItems);
+    }
+
+    public static ToolMaterial mining(ToolMaterial family, int miningLevel, float miningSpeed) {
+        return new ToolMaterial(
+            incorrectBlocksForDrops(miningLevel), family.durability(), miningSpeed, family.attackDamageBonus(), family.enchantmentValue(), family.repairItems()
+        );
+    }
+
+    public static TagKey<Block> incorrectBlocksForDrops(int miningLevel) {
+        return switch (miningLevel) {
+            case 0 -> BlockTags.INCORRECT_FOR_WOODEN_TOOL;
+            case 1 -> BlockTags.INCORRECT_FOR_STONE_TOOL;
+            case 2 -> BlockTags.INCORRECT_FOR_IRON_TOOL;
+            case 3 -> BlockTags.INCORRECT_FOR_DIAMOND_TOOL;
+            default -> BlockTags.INCORRECT_FOR_NETHERITE_TOOL;
+        };
+    }
+}

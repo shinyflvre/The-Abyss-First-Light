@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:somnium",
+    "b": "minecraft:glass_bottle"
+  },
+  "pattern": [
+    "a",
+    "b"
+  ],
+  "result": {
+    "id": "theabyss:bottle_of_somnium"
+  }
+}

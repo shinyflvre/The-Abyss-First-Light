@@ -1,0 +1,8 @@
+{
+  "parent": "block/crop",
+  "textures": {
+    "crop": "theabyss:block/exolius_plant",
+    "particle": "theabyss:block/exolius_plant"
+  },
+  "render_type": "cutout"
+}

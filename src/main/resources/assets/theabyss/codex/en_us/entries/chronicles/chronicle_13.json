@@ -1,0 +1,13 @@
+{
+  "name": "13. In Black Ink",
+  "icon": "minecraft:ink_sac",
+  "category": "chronicles",
+  "order": 13,
+  "chronicle": 13,
+  "pages": [
+    {
+      "type": "text",
+      "text": "You woke the old pillars. I built pillars like these once, long ago, when I still believed the power down here could be shaped without shaping me. It cannot. Every spark of Somnium you bind to your will binds a little of your will to the roots. I see the light in your hand from far away now. It is brighter than mine ever was. I was once where you are now. I heard the same voice. I chose to stand against it, and I have stood ever since, between this place and yours, so that nothing from below follows you home. If you go on like this, I will have to stop you."
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "theabyss:block/twisted_bloom_bottom",
+    "particle": "theabyss:block/twisted_bloom_bottom"
+  },
+  "render_type": "cutout"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Clock Of Time",
+  "icon": "theabyss:clock_of_time",
+  "category": "magic_items",
+  "order": 4,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:clock_of_time",
+      "title": "Clock Of Time",
+      "text": "Bend time to your will with the Clock of Time. Right click it once to set a timestamp, and the clock remembers your position, your health and your hunger. Right click it a second time and you are pulled back to that moment, returning to the saved place with the health and hunger you had back then. This clock consumes 50.0 somnium when it carries you back, and you need at least that much somnium for both uses. Every use costs one point of durability, so the clock lasts for 100 uses."
+    }
+  ]
+}

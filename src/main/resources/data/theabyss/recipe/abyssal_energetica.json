@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CLC",
+    " P ",
+    "CPC"
+  ],
+  "key": {
+    "C": "theabyss:stone_brick_chiseled",
+    "L": "theabyss:loran",
+    "P": "theabyss:stone_brick_pillar"
+  },
+  "result": {
+    "id": "theabyss:abyssal_energetica",
+    "count": 1
+  }
+}

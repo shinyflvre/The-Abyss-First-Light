@@ -1,0 +1,95 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "down": "theabyss:block/nightgrove_melon_top",
+    "up": "theabyss:block/nightgrove_melon_top",
+    "north": "theabyss:block/nightgrove_melon_side",
+    "east": "theabyss:block/nightgrove_melon_side",
+    "south": "theabyss:block/nightgrove_melon_side",
+    "west": "theabyss:block/nightgrove_melon_side",
+    "particle": "theabyss:block/nightgrove_melon_top",
+    "glow_jungle_melon_top": "theabyss:block/glow/nightgrove_melon_top",
+    "glow_jungle_melon_side": "theabyss:block/glow/nightgrove_melon_side"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#down",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#up",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#north",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#south",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#west",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#east",
+          "cullface": "east"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#glow_jungle_melon_top",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#glow_jungle_melon_top",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#glow_jungle_melon_side",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#glow_jungle_melon_side",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#glow_jungle_melon_side",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#glow_jungle_melon_side",
+          "cullface": "east"
+        }
+      },
+      "light_emission": 15,
+      "shade": false
+    }
+  ],
+  "render_type": "cutout"
+}

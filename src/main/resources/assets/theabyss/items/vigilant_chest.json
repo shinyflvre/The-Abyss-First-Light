@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "theabyss:item/vigilant_chest",
+    "model": {
+      "type": "theabyss:abyss_chest",
+      "wood": "vigilant"
+    }
+  }
+}

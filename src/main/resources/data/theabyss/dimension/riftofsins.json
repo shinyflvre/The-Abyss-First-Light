@@ -1,0 +1,18 @@
+{
+  "type": "theabyss:riftofsins",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "biome": "theabyss:rift_of_sins",
+      "features": false,
+      "lakes": false,
+      "layers": [
+        {
+          "block": "minecraft:air",
+          "height": 1
+        }
+      ],
+      "structure_overrides": []
+    }
+  }
+}

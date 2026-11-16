@@ -1,0 +1,18 @@
+{
+  "type": "theabyss:arcane_recipe_type",
+  "ingredients": [
+    "theabyss:ring_of_slide",
+    "theabyss:ender_crystal_shard",
+    "theabyss:ender_powder",
+    "theabyss:ender_crystal_shard",
+    "theabyss:ender_powder",
+    "theabyss:ender_crystal_shard",
+    "theabyss:ender_powder",
+    "theabyss:ender_crystal_shard",
+    "theabyss:ender_powder"
+  ],
+  "output": {
+    "id": "theabyss:ring_of_flight",
+    "count": 1
+  }
+}

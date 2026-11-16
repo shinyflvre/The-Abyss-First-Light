@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "top=false": {
+      "model": "theabyss:block/shadow_tendrils_plant"
+    },
+    "top=true": {
+      "model": "theabyss:block/shadow_tendrils_plant_top"
+    }
+  }
+}

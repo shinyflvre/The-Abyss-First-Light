@@ -1,0 +1,7 @@
+{
+  "parent": "block/pressure_plate_up",
+  "textures": {
+    "texture": "theabyss:block/rena_planks"
+  },
+  "render_type": "solid"
+}

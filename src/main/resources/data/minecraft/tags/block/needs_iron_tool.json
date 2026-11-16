@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "theabyss:aberythe_ore",
+    "theabyss:diamond_variant",
+    "theabyss:emerald_variant",
+    "theabyss:garnite_ore",
+    "theabyss:glacerythe_ore",
+    "theabyss:gold_variant",
+    "theabyss:loran_end_ore",
+    "theabyss:unstable_obsidian"
+  ]
+}

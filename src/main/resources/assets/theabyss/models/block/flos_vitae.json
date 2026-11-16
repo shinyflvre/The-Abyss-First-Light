@@ -1,0 +1,8 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "theabyss:block/flos_vitae",
+    "particle": "theabyss:block/flos_vitae"
+  },
+  "render_type": "cutout"
+}

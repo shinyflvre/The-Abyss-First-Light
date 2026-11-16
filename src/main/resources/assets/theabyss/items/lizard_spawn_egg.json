@@ -1,0 +1,16 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "theabyss:item/lizard_spawn_egg",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -11300647
+      },
+      {
+        "type": "minecraft:constant",
+        "value": -13555106
+      }
+    ]
+  }
+}

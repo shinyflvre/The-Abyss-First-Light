@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "theabyss:block/nightgrove_planks",
+    "particle": "theabyss:block/nightgrove_planks"
+  },
+  "render_type": "solid"
+}

@@ -1,0 +1,24 @@
+package net.yezon.theabyss.events;
+
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+
+public class NightgroveMelonEffectEvents {
+    public static void execute(Entity entity) {
+        if (entity != null) {
+            if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
+                _entity.addEffect(new MobEffectInstance(MobEffects.INSTANT_HEALTH, 60, 1));
+            }
+
+            if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
+                _entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 250, 1));
+            }
+
+            if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
+                _entity.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 350, 1));
+            }
+        }
+    }
+}

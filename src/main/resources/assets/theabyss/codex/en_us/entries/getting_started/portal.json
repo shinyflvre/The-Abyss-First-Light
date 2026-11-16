@@ -1,0 +1,87 @@
+{
+  "name": "Switching the Reality",
+  "icon": "minecraft:paper",
+  "category": "getting_started",
+  "order": 0,
+  "pages": [
+    {
+      "type": "text",
+      "text": "Explore the depths of the Abyss, a dimension filled with unique adventures and dangers. Illuminated only by glowing magical blocks and the diverse array of flora, fungi, and fauna that inhabit it, this shadowy world holds countless secrets waiting to be uncovered."
+    },
+    {
+      "type": "text",
+      "text": "To navigate this treacherous world, it is imperative to outfit yourself with superior armor and tools, fortifying against the array of creatures you'll confront on your expedition! Delve into the secrets of employing the Dream Shifter item to transition between realities, detailed in the following pages. Uncover the necessary components and the steps to seamlessly shift your existence. Embark on your journey into alternate realities with the Dream Shifter!"
+    },
+    {
+      "type": "item",
+      "item": "theabyss:crimson_crystal_ore",
+      "title": "Crimson Crystal",
+      "text": "The vivid Crimson Crystal is discovered within the crimson forests, nestled in the depths of the nether dimension. Unearth its power amidst the fiery landscapes."
+    },
+    {
+      "type": "item",
+      "item": "theabyss:warped_crystal_ore",
+      "title": "Warped Crystal",
+      "text": "Enigmatic and alluring, the Warped Crystal is sourced from the mysterious warped forests within the nether dimension. Traverse the otherworldly terrain to harness its unique properties."
+    },
+    {
+      "type": "item",
+      "item": "minecraft:ghast_tear",
+      "title": "Ghast Tear",
+      "text": "Extracted from the haunting presence of ghasts in the blazing expanses of the nether dimension, the Ghast Tear is a precious substance with mystical properties. Face the fiery challenges to obtain this rare tear."
+    },
+    {
+      "type": "item",
+      "item": "theabyss:loran",
+      "title": "Loran",
+      "text": "Flourishing abundantly across the end islands, Loran is a plant that thrives in the surreal landscapes of the end dimension. Explore the otherworldly beauty as you encounter Loran growing nearly everywhere in this mysterious realm."
+    },
+    {
+      "type": "item",
+      "item": "theabyss:ender_crystal_ore",
+      "title": "Ender Crystal",
+      "text": "Sprouting in scattered beauty throughout the expansive end dimension, Ender Crystals are uncommon but not elusive. Discover these crystalline wonders as they contribute to the unique enchantment of the end dimension."
+    },
+    {
+      "type": "text",
+      "text": "In the enigmatic realm where dimensions converge, the lore of the Dream Shifter unfolds, a tale woven with threads of mystery and caution. To unlock its secrets, one must first gather the elusive materials scattered across diverse landscapes, each imbued with a trace of the extraordinary. Crafting the Dream Shifter becomes a meticulous process, a fusion of arcane elements that culminate in a device capable of transcending the boundaries of reality. "
+    },
+    {
+      "type": "text",
+      "text": "Once assembled, the Dream Shifter beckons the daring adventurer to venture into the interstice between time and space. This realm, a liminal space, mirrors the familiar contours of the overworld with intriguing aberrations. Trees and structures take on ethereal forms, and the ebb and flow of water defy the norms of the terrestrial realm."
+    },
+    {
+      "type": "text",
+      "text": "Caution becomes the watchword as the Dream Shifter is activated. Deploy it in secure locales, for the Other Side harbors dangers. Walls may constrict, threatening suffocation, or seas may rise unexpectedly, posing a risk of drowning. The Dream Shifter, in its capricious nature, reveals itself as both a conduit and a trickster."
+    },
+    {
+      "type": "text",
+      "text": "Yet, beyond the surface dangers lies a more insidious aspect. The Dream Shifter is not merely a tool; it bears a consciousness of its own. At times, it refuses to release the wanderer from its grasp, tempting fate with an unspoken desire for demise. The Other Side, it seems, holds secrets untold and dangers unseen, and the Dream Shifter, with its toxic allure, acts as both guide and adversary."
+    },
+    {
+      "type": "text",
+      "text": "Thus, the lore of the Dream Shifter serves as a cautionary tale, an exploration of the unknown that beckons the brave to tread carefully into the blurred boundaries of existence."
+    },
+    {
+      "type": "crafting",
+      "title": "The Dream Shifter",
+      "result": "theabyss:dream_shifter",
+      "count": 1,
+      "grid": [
+        "theabyss:ender_crystal_ore",
+        "theabyss:crimson_crystal_ore",
+        "theabyss:ender_crystal_ore",
+        "theabyss:loran",
+        "minecraft:ghast_tear",
+        "theabyss:loran",
+        "theabyss:ender_crystal_ore",
+        "theabyss:warped_crystal_ore",
+        "theabyss:ender_crystal_ore"
+      ]
+    },
+    {
+      "type": "text",
+      "text": "Activate the Dream Shifter with a simple right-click to manipulate reality around you. Exercise caution by ensuring you stand in wide, open areas before its use, as the shifting dimensions may pose dangers such as suffocation in structures or drowning in altered sea levels below 63."
+    }
+  ]
+}

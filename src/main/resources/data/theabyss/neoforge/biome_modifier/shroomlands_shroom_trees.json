@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "theabyss:shroomlands"
+  ],
+  "features": "theabyss:shroomlands/shroom_trees",
+  "step": "vegetal_decoration"
+}

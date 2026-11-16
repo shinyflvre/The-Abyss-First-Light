@@ -1,0 +1,88 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "theabyss:block/chiseled_gravity_stone_side",
+    "front": "theabyss:block/chiseled_gravity_stone_front",
+    "front_glow": "theabyss:block/chiseled_gravity_stone_front_glow",
+    "side": "theabyss:block/chiseled_gravity_stone_side",
+    "side_glow": "theabyss:block/chiseled_gravity_stone_side_glow",
+    "back": "theabyss:block/chiseled_stone_bricks"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "up": {
+          "texture": "#front",
+          "cullface": "up"
+        },
+        "down": {
+          "texture": "#back",
+          "cullface": "down"
+        },
+        "north": {
+          "texture": "#side",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#side",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#side",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#side",
+          "cullface": "east"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "shade": false,
+      "light_emission": 15,
+      "faces": {
+        "up": {
+          "texture": "#front_glow",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#side_glow",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#side_glow",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#side_glow",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#side_glow",
+          "cullface": "east"
+        }
+      }
+    }
+  ]
+}

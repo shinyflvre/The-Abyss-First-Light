@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:rena_planks"
+  },
+  "pattern": [
+    "a  ",
+    "aa ",
+    "aaa"
+  ],
+  "result": {
+    "id": "theabyss:rena_stairs",
+    "count": 4
+  }
+}

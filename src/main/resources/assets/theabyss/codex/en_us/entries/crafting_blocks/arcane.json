@@ -1,0 +1,103 @@
+{
+  "name": "Arcane",
+  "icon": "theabyss:arcane_workbench",
+  "category": "crafting_blocks",
+  "order": 0,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:arcane_workbench",
+      "title": "Arcane",
+      "text": "Unleash your inner magician with the Arcane Workbench! This special crafting table allows you to create powerful magical artifacts, such as rings that enable you to cast spells. It only works while four charged Abyssal Energetica pillars stand round it, see the next chapter. Install JEI to view all recipes."
+    },
+    {
+      "type": "multiblock",
+      "title": "Setup",
+      "pattern": [
+        [
+          "GGGGG",
+          "GGGGG",
+          "GGGGG",
+          "GGGGG",
+          "GGGGG"
+        ],
+        [
+          "P...P",
+          ".....",
+          "..A..",
+          ".....",
+          "P...P"
+        ]
+      ],
+      "mapping": {
+        "G": "minecraft:grass_block",
+        "A": "theabyss:arcane_workbench",
+        "P": "theabyss:abyssal_energetica"
+      },
+      "text": "The workbench in the middle, an Abyssal Energetica on each diagonal corner, two blocks away and on the same level."
+    },
+    {
+      "type": "text",
+      "title": "Powering it",
+      "text": "Four Abyssal Energetica pillars power the workbench. Craft four (the recipes follow) and place one on each diagonal corner, two blocks away and on the same level, as in the setup. Then right click every pillar with a Loran Energy: it floats above the bowl. When all four are charged, bands of light flow into the workbench and it can craft. The energy is never used up, an empty hand takes it back."
+    },
+    {
+      "type": "crafting",
+      "title": "Abyssal Energetica",
+      "recipe": "theabyss:abyssal_energetica",
+      "grid": [
+        "theabyss:stone_brick_chiseled",
+        "theabyss:loran",
+        "theabyss:stone_brick_chiseled",
+        "",
+        "theabyss:stone_brick_pillar",
+        "",
+        "theabyss:stone_brick_chiseled",
+        "theabyss:stone_brick_pillar",
+        "theabyss:stone_brick_chiseled"
+      ],
+      "result": "theabyss:abyssal_energetica",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "title": "Loran Energy",
+      "recipe": "theabyss:loran_energy_rcp",
+      "grid": [
+        "theabyss:loran",
+        "theabyss:loran",
+        "theabyss:loran",
+        "theabyss:loran",
+        "theabyss:incorythe_gem",
+        "theabyss:loran",
+        "theabyss:loran",
+        "theabyss:loran",
+        "theabyss:loran"
+      ],
+      "result": "theabyss:loran_energy",
+      "count": 1
+    },
+    {
+      "type": "block",
+      "block": "theabyss:arcane_workbench",
+      "title": "Arcane"
+    },
+    {
+      "type": "crafting",
+      "title": "Arcane",
+      "result": "theabyss:arcane_workbench",
+      "count": 1,
+      "grid": [
+        "theabyss:cobble_stone",
+        "theabyss:blaru_planks",
+        "theabyss:cobble_stone",
+        "theabyss:blaru_planks",
+        "theabyss:loran_energy",
+        "theabyss:blaru_planks",
+        "theabyss:cobble_stone",
+        "theabyss:blaru_planks",
+        "theabyss:cobble_stone"
+      ]
+    }
+  ]
+}

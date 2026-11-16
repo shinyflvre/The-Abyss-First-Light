@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "theabyss:block/rena_log_side",
+    "side": "theabyss:block/rena_log_side"
+  }
+}

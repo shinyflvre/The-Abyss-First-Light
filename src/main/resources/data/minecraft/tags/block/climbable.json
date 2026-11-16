@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "theabyss:lush_cave_vines",
+    "theabyss:lush_cave_vines_plant",
+    "theabyss:lumen_strands",
+    "theabyss:lumen_strands_plant",
+    "theabyss:ashen_bramble_vines",
+    "theabyss:ashen_bramble_vines_plant",
+    "theabyss:soulbud_vine",
+    "theabyss:soulbud_vine_plant",
+    "theabyss:violet_weeper",
+    "theabyss:violet_weeper_plant",
+    "theabyss:coilvine",
+    "theabyss:coilvine_plant",
+    "theabyss:shadow_tendrils",
+    "theabyss:shadow_tendrils_plant",
+    "theabyss:standing_lumen_strands",
+    "theabyss:standing_lumen_strands_plant"
+  ]
+}

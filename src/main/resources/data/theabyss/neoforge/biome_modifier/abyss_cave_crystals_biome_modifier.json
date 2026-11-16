@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "theabyss:blaru_forest",
+  "features": "theabyss:abyss_cave_crystals",
+  "step": "underground_decoration"
+}

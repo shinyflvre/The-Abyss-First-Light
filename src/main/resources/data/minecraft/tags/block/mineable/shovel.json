@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "values": [
+    "theabyss:snow_block",
+    "theabyss:dirt",
+    "theabyss:infected_peat",
+    "theabyss:gravel",
+    "theabyss:infected_grass",
+    "theabyss:blaru_moss",
+    "theabyss:vigilant_moss",
+    "theabyss:lush_clay",
+    "theabyss:lush_rooted_dirt",
+    "theabyss:nightgrove_farmland",
+    "theabyss:infected_farmland",
+    "theabyss:nightgrove_path",
+    "theabyss:infected_path"
+  ]
+}

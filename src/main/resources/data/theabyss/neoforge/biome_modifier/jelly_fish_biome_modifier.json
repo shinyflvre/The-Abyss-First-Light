@@ -1,0 +1,24 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "theabyss:phantom_crate",
+    "theabyss:blue_mountain",
+    "theabyss:mud_plains",
+    "theabyss:slime_forest",
+    "theabyss:nightgrove",
+    "theabyss:plains",
+    "theabyss:vigilant_forest",
+    "theabyss:ocean",
+    "theabyss:river",
+    "theabyss:beach"
+  ],
+  "spawners": {
+    "type": "theabyss:jelly_fish",
+    "weight": 2,
+    "count": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 30,
+      "min_inclusive": 20
+    }
+  }
+}

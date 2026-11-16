@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "minecraft:iron_nugget",
+    "b": "theabyss:anima_dust"
+  },
+  "pattern": [
+    "ab"
+  ],
+  "result": {
+    "id": "theabyss:anima_nugget"
+  }
+}

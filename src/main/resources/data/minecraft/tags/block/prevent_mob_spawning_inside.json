@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "theabyss:blaru_leaves",
+    "theabyss:nightgrove_leaves",
+    "theabyss:frozen_leaves",
+    "theabyss:vigilant_leaves",
+    "theabyss:rena_shroom_leave",
+    "theabyss:luna_shroom_leave"
+  ]
+}

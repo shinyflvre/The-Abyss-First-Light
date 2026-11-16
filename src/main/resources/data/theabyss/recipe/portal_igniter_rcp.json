@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:loran",
+    "b": "#c:rods/wooden"
+  },
+  "pattern": [
+    "aaa",
+    " b ",
+    " a "
+  ],
+  "result": {
+    "id": "theabyss:the_abyss"
+  }
+}

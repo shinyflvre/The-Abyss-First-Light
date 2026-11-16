@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:icora_stone",
+    "b": "theabyss:knight_ingot",
+    "c": "#c:rods/wooden"
+  },
+  "pattern": [
+    "abb",
+    " cb",
+    " ca"
+  ],
+  "result": {
+    "id": "theabyss:knight_axe"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "theabyss:arcane_recipe_type",
+  "ingredients": [
+    "theabyss:infected_slime",
+    "theabyss:abyss_crystal_shard",
+    "theabyss:infected_leather",
+    "theabyss:abyss_crystal_shard",
+    "theabyss:infected_leather",
+    "theabyss:abyss_crystal_shard",
+    "theabyss:infected_leather",
+    "theabyss:abyss_crystal_shard",
+    "theabyss:infected_leather"
+  ],
+  "output": {
+    "id": "theabyss:infected_gauntlet",
+    "count": 1
+  }
+}

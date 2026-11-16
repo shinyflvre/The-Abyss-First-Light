@@ -1,0 +1,18 @@
+{
+  "type": "theabyss:arcane_recipe_type",
+  "ingredients": [
+    "theabyss:ring_of_ring",
+    "minecraft:bone",
+    "minecraft:bone",
+    "minecraft:bone",
+    "minecraft:bone",
+    "minecraft:bone",
+    "minecraft:bone",
+    "minecraft:bone",
+    "minecraft:bone"
+  ],
+  "output": {
+    "id": "theabyss:ring_of_nature",
+    "count": 1
+  }
+}

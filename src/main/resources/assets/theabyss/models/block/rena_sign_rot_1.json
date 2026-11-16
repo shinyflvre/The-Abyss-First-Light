@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_sign_rot_1",
+  "textures": {
+    "all": "theabyss:block/rena_sign",
+    "particle": "theabyss:block/rena_planks"
+  }
+}

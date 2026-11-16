@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "theabyss:blaru_wall_sign",
+    "theabyss:nightgrove_wall_sign",
+    "theabyss:bog_wall_sign",
+    "theabyss:sal_wall_sign",
+    "theabyss:slimed_wall_sign",
+    "theabyss:frozen_wall_sign",
+    "theabyss:rena_wall_sign",
+    "theabyss:luna_wall_sign",
+    "theabyss:vigilant_wall_sign"
+  ]
+}

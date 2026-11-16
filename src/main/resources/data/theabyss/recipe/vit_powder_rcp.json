@@ -1,0 +1,14 @@
+{
+  "type": "theabyss:mortar_recipe_type",
+  "ingredients": [
+    "theabyss:vitae_nugget",
+    "theabyss:vitae_nugget",
+    "theabyss:vitae_nugget",
+    "theabyss:vitae_nugget",
+    "theabyss:bottle_of_somnium"
+  ],
+  "output": {
+    "id": "theabyss:vit_powder",
+    "count": 2
+  }
+}

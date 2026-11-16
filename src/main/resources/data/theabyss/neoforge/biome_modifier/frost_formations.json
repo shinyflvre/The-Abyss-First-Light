@@ -1,0 +1,14 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "theabyss:waywardsea",
+    "theabyss:forgottenmountains"
+  ],
+  "features": [
+    "theabyss:frost/foundation",
+    "theabyss:frost/arch",
+    "theabyss:frost/giant_spike",
+    "theabyss:frost/spike_field"
+  ],
+  "step": "local_modifications"
+}

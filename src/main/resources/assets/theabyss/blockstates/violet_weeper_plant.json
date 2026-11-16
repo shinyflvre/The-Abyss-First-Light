@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "top=false": {
+      "model": "theabyss:block/violet_weeper_plant"
+    },
+    "top=true": {
+      "model": "theabyss:block/violet_weeper_plant_top"
+    }
+  }
+}

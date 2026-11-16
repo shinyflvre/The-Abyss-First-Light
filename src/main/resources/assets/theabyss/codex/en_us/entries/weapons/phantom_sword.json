@@ -1,0 +1,33 @@
+{
+  "name": "Phantom Sword",
+  "icon": "theabyss:phantom_sword",
+  "category": "weapons",
+  "order": 6,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:phantom_sword",
+      "title": "Phantom Sword",
+      "text": "Bound with the souls of phantoms, this ghostly blade deals 10 attack damage with an attack speed of 1.8 and endures 2512 uses. But its story does not end here: the Phantom Sword is also the base for the mighty Unorithe Sword."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:phantom_sword_rcp",
+      "title": "Recipe",
+      "text": "A Phantom Ingot on top and one in the middle, flanked by two Phantom Souls, with a stick below.",
+      "grid": [
+        "",
+        "theabyss:phantom_ingot",
+        "",
+        "theabyss:phantom_soul_item",
+        "theabyss:phantom_ingot",
+        "theabyss:phantom_soul_item",
+        "",
+        "#c:rods/wooden",
+        ""
+      ],
+      "result": "theabyss:phantom_sword",
+      "count": 1
+    }
+  ]
+}

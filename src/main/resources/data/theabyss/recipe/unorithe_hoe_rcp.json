@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:phantom_hoe",
+    "b": "theabyss:unorithe_ingot"
+  },
+  "pattern": [
+    "ab"
+  ],
+  "result": {
+    "id": "theabyss:unorithe_hoe"
+  }
+}

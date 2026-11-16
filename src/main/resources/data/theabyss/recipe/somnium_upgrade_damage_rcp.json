@@ -1,0 +1,15 @@
+{
+  "type": "theabyss:infuser_recipe_type",
+  "ingredients": [
+    "theabyss:roka_horn",
+    "theabyss:elder_eye",
+    "theabyss:crystal_hand",
+    "theabyss:creeper_dust",
+    "theabyss:somnium",
+    "theabyss:loran_energy"
+  ],
+  "output": {
+    "id": "theabyss:somnium_damage_upragde",
+    "count": 1
+  }
+}

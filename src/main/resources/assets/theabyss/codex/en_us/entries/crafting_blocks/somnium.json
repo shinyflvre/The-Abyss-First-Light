@@ -1,0 +1,20 @@
+{
+  "name": "Somnium",
+  "icon": "theabyss:somnium",
+  "category": "crafting_blocks",
+  "order": 0,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:somnium",
+      "title": "Somnium",
+      "text": "Somnium is a valuable energy source extracted from loran using specialized equipment and Loran Catalyst. Only the skilled Somnic Masters fully understand the process of converting loran into usable somnium. With its potential to change the way we power our world, somnium is highly sought after."
+    },
+    {
+      "type": "block",
+      "block": "theabyss:loran_flower",
+      "title": "Loran Flower",
+      "text": "Somnium can be extracted from loran."
+    }
+  ]
+}

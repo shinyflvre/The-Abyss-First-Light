@@ -1,0 +1,8 @@
+{
+  "parent": "block/fence_inventory",
+  "textures": {
+    "texture": "theabyss:block/nightgrove_planks",
+    "particle": "theabyss:block/nightgrove_planks"
+  },
+  "render_type": "solid"
+}

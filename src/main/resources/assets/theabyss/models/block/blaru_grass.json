@@ -1,0 +1,8 @@
+{
+  "parent": "block/crop",
+  "textures": {
+    "crop": "theabyss:block/blaru_grass",
+    "particle": "theabyss:block/blaru_grass"
+  },
+  "render_type": "cutout"
+}

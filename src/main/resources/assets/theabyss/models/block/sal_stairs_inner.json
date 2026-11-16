@@ -1,0 +1,9 @@
+{
+  "parent": "block/inner_stairs",
+  "textures": {
+    "bottom": "theabyss:block/sal_planks",
+    "top": "theabyss:block/sal_planks",
+    "side": "theabyss:block/sal_planks"
+  },
+  "render_type": "solid"
+}

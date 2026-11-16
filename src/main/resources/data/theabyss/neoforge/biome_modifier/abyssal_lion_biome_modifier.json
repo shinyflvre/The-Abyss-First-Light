@@ -1,0 +1,16 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "theabyss:blue_mountain",
+    "theabyss:phantom_crate"
+  ],
+  "spawners": {
+    "type": "theabyss:abyssal_lion",
+    "weight": 10,
+    "count": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 2,
+      "min_inclusive": 1
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:ore",
+  "discard_chance_on_air_exposure": 0,
+  "size": 7,
+  "targets": [
+    {
+      "state": {
+        "id": "theabyss:iron_variant"
+      },
+      "target": {
+        "predicate_type": "minecraft:blockstate_match",
+        "block_state": {
+          "id": "theabyss:stone"
+        }
+      }
+    }
+  ]
+}

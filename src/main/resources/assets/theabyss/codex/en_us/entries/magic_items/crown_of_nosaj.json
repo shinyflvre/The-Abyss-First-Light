@@ -1,0 +1,14 @@
+{
+  "name": "Crown Of Nosaj",
+  "icon": "theabyss:crown_of_nosaj",
+  "category": "magic_items",
+  "order": 8,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:crown_of_nosaj",
+      "title": "Crown Of Nosaj",
+      "text": "The Crown of Nosaj holds the might of a forgotten ruler. You do not need to wear it, simply carrying it anywhere in your inventory grants you Strength and Luck. The effects renew themselves constantly for as long as the crown is with you."
+    }
+  ]
+}

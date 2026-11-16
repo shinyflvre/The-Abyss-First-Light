@@ -1,0 +1,13 @@
+{
+  "name": "8. The Voice",
+  "icon": "minecraft:paper",
+  "category": "chronicles",
+  "order": 8,
+  "chronicle": 8,
+  "pages": [
+    {
+      "type": "text",
+      "text": "I pushed the ring too far today. I kept casting until there was nothing left in me, until the Somnium was gone and my hands went cold and the world turned grey at the edges. And in that silence, where the hum of this place should have been, something spoke to me. A quiet voice, very kind, from somewhere far below. It knew my name. It said I did not have to be afraid of being empty, that it would always fill me up again. It told me the Abyss did not always look like this, that it was once whole and bright and free. It told me someone broke it. Someone with a black blade, who keeps everything here locked away in the dark. When the Somnium came back, the voice was gone. But I can still feel where it was, like warmth on a stone after the sun has set."
+    }
+  ]
+}

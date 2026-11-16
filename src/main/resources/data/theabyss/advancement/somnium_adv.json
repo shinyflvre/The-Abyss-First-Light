@@ -1,0 +1,26 @@
+{
+  "parent": "theabyss:magic_adv",
+  "display": {
+    "icon": {
+      "id": "theabyss:somnium"
+    },
+    "title": {
+      "translate": "advancements.somnium_adv.title"
+    },
+    "description": {
+      "translate": "advancements.somnium_adv.descr"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "somnium_adv": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "experience": 20
+  }
+}

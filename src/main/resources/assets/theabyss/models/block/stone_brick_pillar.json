@@ -1,0 +1,11 @@
+{
+  "parent": "theabyss:custom/briked_pillar",
+  "textures": {
+    "all": "theabyss:block/stone_bricks",
+    "particle": "theabyss:block/stone_bricks",
+    "pillar": "theabyss:block/stone_bricks",
+    "top": "theabyss:block/stone_bricks",
+    "base": "theabyss:block/stone_bricks"
+  },
+  "render_type": "solid"
+}

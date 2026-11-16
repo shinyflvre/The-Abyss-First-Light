@@ -1,0 +1,276 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "facing": "down"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone",
+        "x": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "up"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone"
+      }
+    },
+    {
+      "when": {
+        "facing": "north"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone",
+        "x": 90,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone",
+        "x": 90,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "east"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone",
+        "x": 90,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "down",
+        "north": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_down_north"
+      }
+    },
+    {
+      "when": {
+        "facing": "down",
+        "south": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_down_south"
+      }
+    },
+    {
+      "when": {
+        "facing": "down",
+        "west": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_down_west"
+      }
+    },
+    {
+      "when": {
+        "facing": "down",
+        "east": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_down_east"
+      }
+    },
+    {
+      "when": {
+        "facing": "up",
+        "north": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_up_north"
+      }
+    },
+    {
+      "when": {
+        "facing": "up",
+        "south": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_up_south"
+      }
+    },
+    {
+      "when": {
+        "facing": "up",
+        "west": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_up_west"
+      }
+    },
+    {
+      "when": {
+        "facing": "up",
+        "east": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_up_east"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "down": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_north_down"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "up": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_north_up"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "west": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_north_west"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "east": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_north_east"
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "down": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_south_down"
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "up": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_south_up"
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "west": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_south_west"
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "east": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_south_east"
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "down": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_west_down"
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "up": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_west_up"
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "north": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_west_north"
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "south": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_west_south"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "down": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_east_down"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "up": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_east_up"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "north": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_east_north"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "south": "true"
+      },
+      "apply": {
+        "model": "theabyss:block/chiseled_gravity_stone_rim_east_south"
+      }
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "name": "Bone Armor",
+  "icon": "theabyss:bone_armor_chestplate",
+  "category": "armors",
+  "order": 0,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:bone_armor_chestplate",
+      "title": "Bone Armor",
+      "text": "Forged from the mighty Titan Bones, this rugged set is your first real step into the Abyss. Every piece grants 4 armor points, for a total of 16 armor with 2.0 toughness per piece and 10 percent knockback resistance each. You may even spot the restless Soul Guards wearing it from head to toe."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:bone_helmet_rcp",
+      "title": "Helmet",
+      "text": "Titan Bones are made from nine Broken Titan Bones each.",
+      "grid": [
+        "theabyss:fixed_bone",
+        "theabyss:fixed_bone",
+        "theabyss:fixed_bone",
+        "theabyss:fixed_bone",
+        "",
+        "theabyss:fixed_bone",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:bone_armor_helmet",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:bone_chestplate_rcp",
+      "title": "Chestplate",
+      "grid": [
+        "theabyss:fixed_bone",
+        "",
+        "theabyss:fixed_bone",
+        "theabyss:fixed_bone",
+        "theabyss:fixed_bone",
+        "theabyss:fixed_bone",
+        "theabyss:fixed_bone",
+        "theabyss:fixed_bone",
+        "theabyss:fixed_bone"
+      ],
+      "result": "theabyss:bone_armor_chestplate",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:bone_leggings_rcp",
+      "title": "Leggings",
+      "grid": [
+        "theabyss:fixed_bone",
+        "theabyss:fixed_bone",
+        "theabyss:fixed_bone",
+        "theabyss:fixed_bone",
+        "",
+        "theabyss:fixed_bone",
+        "theabyss:fixed_bone",
+        "",
+        "theabyss:fixed_bone"
+      ],
+      "result": "theabyss:bone_armor_leggings",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:bone_boots_rcp",
+      "title": "Boots",
+      "grid": [
+        "theabyss:fixed_bone",
+        "",
+        "theabyss:fixed_bone",
+        "theabyss:fixed_bone",
+        "",
+        "theabyss:fixed_bone",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:bone_armor_boots",
+      "count": 1
+    }
+  ]
+}

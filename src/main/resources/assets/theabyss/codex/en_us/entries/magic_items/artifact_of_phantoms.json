@@ -1,0 +1,14 @@
+{
+  "name": "Artifact Of Phantoms",
+  "icon": "theabyss:artifact_of_phantoms",
+  "category": "magic_items",
+  "order": 6,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:artifact_of_phantoms",
+      "title": "Artifact Of Phantoms",
+      "text": "Draw the Artifact of Phantoms like a bow and release it to spit the venom bolt of the Infected Phantoms. Every shot drains 5.0 somnium and wears the staff a little, it holds out for 500 shots. After each shot the staff needs two seconds to gather its venom again. The bolt flies fast and straight, deals 4.0 magic damage and poisons its victim for three seconds. Very rarely the staff lies in one of the caches of the Phantom Crate, chests guarded by a ring of dark dripstone."
+    }
+  ]
+}

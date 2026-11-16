@@ -1,0 +1,9 @@
+{
+  "parent": "theabyss:custom/crystal",
+  "textures": {
+    "all": "theabyss:block/ender_crystal",
+    "particle": "theabyss:block/ender_crystal",
+    "0": "theabyss:block/ender_crystal"
+  },
+  "render_type": "cutout"
+}

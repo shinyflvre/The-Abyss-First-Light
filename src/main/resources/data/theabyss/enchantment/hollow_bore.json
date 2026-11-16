@@ -1,0 +1,30 @@
+{
+  "anvil_cost": 4,
+  "description": {
+    "translate": "enchantment.theabyss.hollow_bore"
+  },
+  "max_cost": {
+    "base": 65,
+    "per_level_above_first": 9
+  },
+  "max_level": 1,
+  "min_cost": {
+    "base": 15,
+    "per_level_above_first": 9
+  },
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#theabyss:enchantable/bore",
+  "weight": 1,
+  "effects": {
+    "minecraft:attributes": [
+      {
+        "amount": 0.25,
+        "attribute": "minecraft:block_break_speed",
+        "id": "theabyss:enchantment.hollow_bore",
+        "operation": "add_multiplied_total"
+      }
+    ]
+  }
+}

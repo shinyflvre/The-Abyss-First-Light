@@ -1,0 +1,14 @@
+{
+  "name": "Amulet of Nosaj",
+  "icon": "theabyss:amuled_of_nosaj",
+  "category": "magic_items",
+  "order": 7,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:amuled_of_nosaj",
+      "title": "Amulet of Nosaj",
+      "text": "Carry the blessing of Nosaj with you. While this amulet rests anywhere in your inventory, it wraps you in Resistance, Fire Resistance, Water Breathing and Haste. The blessings renew themselves constantly, so you stay protected for as long as you keep the amulet with you."
+    }
+  ]
+}

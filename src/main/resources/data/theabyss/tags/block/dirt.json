@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "theabyss:dirt",
+    "theabyss:blaru_moss",
+    "theabyss:vigilant_moss",
+    "theabyss:infected_grass",
+    "theabyss:infected_peat",
+    "theabyss:gravel",
+    "theabyss:roma_mud",
+    "theabyss:nightgrove_dirt",
+    "theabyss:nightgrove_moss",
+    "theabyss:shroomland_moss"
+  ]
+}

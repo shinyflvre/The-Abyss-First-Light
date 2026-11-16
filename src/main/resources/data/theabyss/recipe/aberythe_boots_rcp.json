@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:aberythe_gem"
+  },
+  "pattern": [
+    "a a",
+    "a a"
+  ],
+  "result": {
+    "id": "theabyss:aberythe_armor_boots"
+  }
+}

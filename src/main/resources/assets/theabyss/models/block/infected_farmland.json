@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/template_cube_bottom_top_indented",
+  "textures": {
+    "bottom": "theabyss:block/infected_dirt",
+    "side": "theabyss:block/infected_dirt",
+    "top": "theabyss:block/infected_farmland"
+  }
+}

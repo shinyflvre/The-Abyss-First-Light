@@ -1,0 +1,14 @@
+{
+  "type": "theabyss:mortar_recipe_type",
+  "ingredients": [
+    "theabyss:crimson_crystal_shard",
+    "theabyss:crimson_crystal_shard",
+    "theabyss:crimson_crystal_shard",
+    "theabyss:crimson_crystal_shard",
+    "theabyss:bottle_of_somnium"
+  ],
+  "output": {
+    "id": "theabyss:crimson_powder",
+    "count": 2
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "theabyss:phantom_crate",
+  "features": "theabyss:hollow_crystal_ore",
+  "step": "vegetal_decoration"
+}

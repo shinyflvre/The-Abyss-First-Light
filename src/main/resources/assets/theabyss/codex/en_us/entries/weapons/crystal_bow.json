@@ -1,0 +1,33 @@
+{
+  "name": "Crystal Bow",
+  "icon": "theabyss:crystal_bow",
+  "category": "weapons",
+  "order": 23,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:crystal_bow",
+      "title": "Crystal Bow",
+      "text": "Abyss crystal shards bound to a Luna wood grip turn this bow into a lance of light. Its arrows fly 25 percent farther than those of a common bow and strike for 1 more damage, and with 576 uses it lasts half again as long. It takes the same enchantments as any bow."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:crystal_bow",
+      "title": "Recipe",
+      "text": "Two Abyss Crystal Shards as the limbs, a Luna Stick as the grip and three strings. Luna Sticks will not make a common bow.",
+      "grid": [
+        "",
+        "theabyss:abyss_crystal_shard",
+        "minecraft:string",
+        "theabyss:luna_stick",
+        "",
+        "minecraft:string",
+        "",
+        "theabyss:abyss_crystal_shard",
+        "minecraft:string"
+      ],
+      "result": "theabyss:crystal_bow",
+      "count": 1
+    }
+  ]
+}

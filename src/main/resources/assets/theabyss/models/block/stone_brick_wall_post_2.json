@@ -1,0 +1,8 @@
+{
+  "parent": "block/template_wall_post",
+  "textures": {
+    "wall": "theabyss:block/stone_bricks_2",
+    "particle": "theabyss:block/stone_bricks_2"
+  },
+  "render_type": "solid"
+}

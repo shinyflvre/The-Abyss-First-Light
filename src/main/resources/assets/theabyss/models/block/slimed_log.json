@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "theabyss:block/slimed_log_top",
+    "up": "theabyss:block/slimed_log_top",
+    "north": "theabyss:block/slimed_log",
+    "east": "theabyss:block/slimed_log",
+    "south": "theabyss:block/slimed_log",
+    "west": "theabyss:block/slimed_log",
+    "particle": "theabyss:block/slimed_log_top"
+  },
+  "render_type": "solid"
+}

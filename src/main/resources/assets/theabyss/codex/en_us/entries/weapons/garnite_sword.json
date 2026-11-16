@@ -1,0 +1,33 @@
+{
+  "name": "Garnite Sword",
+  "icon": "theabyss:garnite_sword",
+  "category": "weapons",
+  "order": 3,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:garnite_sword",
+      "title": "Garnite Sword",
+      "text": "Garnite is a tough metal, and a sword made of it will not let you down. With 8.5 attack damage, an attack speed of 1.8 and 1800 uses, this blade is a solid upgrade for any adventurer who wants to strike a little harder."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:garnite_sword_rcp",
+      "title": "Recipe",
+      "text": "Two Garnite Ingots on top of a stick.",
+      "grid": [
+        "theabyss:garnite_ingot",
+        "",
+        "",
+        "theabyss:garnite_ingot",
+        "",
+        "",
+        "#c:rods/wooden",
+        "",
+        ""
+      ],
+      "result": "theabyss:garnite_sword",
+      "count": 1
+    }
+  ]
+}

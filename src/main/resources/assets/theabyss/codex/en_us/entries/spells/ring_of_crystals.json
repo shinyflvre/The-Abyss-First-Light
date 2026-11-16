@@ -1,0 +1,40 @@
+{
+  "name": "Ring Of Crystals",
+  "icon": "theabyss:ring_of_crystals",
+  "category": "spells",
+  "order": 0,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:ring_of_crystals",
+      "title": "Ring Of Crystals",
+      "text": "Shape the pink crystals of the Abyss into weapons with this beautiful ring! A right click sends a crescent of crystal light flying, growing wider and wider as it cuts through every creature in its way, for 12.0 somnium. Once your somnium damage upgrade reaches level 3, the middle mouse button forms five crystal needles around your head, all striking the very spot you are looking at, for 15.0 somnium."
+    },
+    {
+      "type": "text",
+      "title": "Crystal Hunger",
+      "text": "The crystals hunger for life. A part of every wound they cut flows back to you and heals you, so the longer you fight, the longer you stand. Both crystal arts grow stronger with your somnium damage upgrade, and in the mode Only Mobs they pass every player by."
+    },
+    {
+      "type": "text",
+      "title": "Crafting",
+      "text": "Embark on a journey of magic and creation with this special artifact! To craft it, you'll need to harness the power of the Arcane, a mysterious and ancient force that holds the secrets of the universe. The Crystal Hand of the Crystal Golem and the Node Shards of the Slime Forest give it its pink crystal heart."
+    },
+    {
+      "type": "arcane",
+      "title": "Recipe",
+      "recipe": "theabyss:ring_of_crystals_rcp",
+      "result": "theabyss:ring_of_ring",
+      "inputs": [
+        "theabyss:crystal_hand",
+        "theabyss:node_shard",
+        "theabyss:crystal_hand",
+        "theabyss:node_shard",
+        "theabyss:crystal_hand",
+        "theabyss:node_shard",
+        "theabyss:crystal_hand",
+        "theabyss:node_shard"
+      ]
+    }
+  ]
+}

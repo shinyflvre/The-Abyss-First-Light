@@ -1,0 +1,15 @@
+{
+  "type": "theabyss:infuser_recipe_type",
+  "ingredients": [
+    "theabyss:infected_slime",
+    "theabyss:node_shard",
+    "theabyss:infected_slime",
+    "theabyss:node_shard",
+    "theabyss:somnium",
+    "theabyss:loran_energy"
+  ],
+  "output": {
+    "id": "theabyss:ring_restoration_oil",
+    "count": 1
+  }
+}

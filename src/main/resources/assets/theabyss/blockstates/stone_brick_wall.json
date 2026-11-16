@@ -1,0 +1,231 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "up": "true"
+      },
+      "apply": [
+        {
+          "model": "theabyss:block/stone_brick_wall_post"
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_post_1"
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_post_2"
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_post_3"
+        }
+      ]
+    },
+    {
+      "when": {
+        "north": "low"
+      },
+      "apply": [
+        {
+          "model": "theabyss:block/stone_brick_wall",
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_1",
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_2",
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_3",
+          "uvlock": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "east": "low"
+      },
+      "apply": [
+        {
+          "model": "theabyss:block/stone_brick_wall",
+          "y": 90,
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_1",
+          "y": 90,
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_2",
+          "y": 90,
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_3",
+          "y": 90,
+          "uvlock": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "south": "low"
+      },
+      "apply": [
+        {
+          "model": "theabyss:block/stone_brick_wall",
+          "y": 180,
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_1",
+          "y": 180,
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_2",
+          "y": 180,
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_3",
+          "y": 180,
+          "uvlock": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "west": "low"
+      },
+      "apply": [
+        {
+          "model": "theabyss:block/stone_brick_wall",
+          "y": 270,
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_1",
+          "y": 270,
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_2",
+          "y": 270,
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_3",
+          "y": 270,
+          "uvlock": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "north": "tall"
+      },
+      "apply": [
+        {
+          "model": "theabyss:block/stone_brick_wall_side_tall",
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_side_tall_1",
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_side_tall_2",
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_side_tall_3",
+          "uvlock": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "east": "tall"
+      },
+      "apply": [
+        {
+          "model": "theabyss:block/stone_brick_wall_side_tall",
+          "y": 90,
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_side_tall_1",
+          "y": 90,
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_side_tall_2",
+          "y": 90,
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_side_tall_3",
+          "y": 90,
+          "uvlock": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "south": "tall"
+      },
+      "apply": [
+        {
+          "model": "theabyss:block/stone_brick_wall_side_tall",
+          "y": 180,
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_side_tall_1",
+          "y": 180,
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_side_tall_2",
+          "y": 180,
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_side_tall_3",
+          "y": 180,
+          "uvlock": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "west": "tall"
+      },
+      "apply": [
+        {
+          "model": "theabyss:block/stone_brick_wall_side_tall",
+          "y": 270,
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_side_tall_1",
+          "y": 270,
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_side_tall_2",
+          "y": 270,
+          "uvlock": true
+        },
+        {
+          "model": "theabyss:block/stone_brick_wall_side_tall_3",
+          "y": 270,
+          "uvlock": true
+        }
+      ]
+    }
+  ]
+}

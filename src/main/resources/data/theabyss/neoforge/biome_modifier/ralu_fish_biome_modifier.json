@@ -1,0 +1,24 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "theabyss:phantom_crate",
+    "theabyss:blue_mountain",
+    "theabyss:mud_plains",
+    "theabyss:slime_forest",
+    "theabyss:nightgrove",
+    "theabyss:plains",
+    "theabyss:vigilant_forest",
+    "theabyss:ocean",
+    "theabyss:river",
+    "theabyss:beach"
+  ],
+  "spawners": {
+    "type": "theabyss:ralu_fish",
+    "weight": 1,
+    "count": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 6,
+      "min_inclusive": 3
+    }
+  }
+}

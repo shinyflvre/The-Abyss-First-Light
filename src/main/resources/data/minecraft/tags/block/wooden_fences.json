@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "theabyss:blaru_fence",
+    "theabyss:nightgrove_fence",
+    "theabyss:bog_fence",
+    "theabyss:sal_fence",
+    "theabyss:frozen_fence",
+    "theabyss:slimed_fence",
+    "theabyss:vigilant_fence"
+  ]
+}

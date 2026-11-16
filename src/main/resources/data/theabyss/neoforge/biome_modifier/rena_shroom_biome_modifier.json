@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "theabyss:shroomlands",
+  "features": "theabyss:rena_shroom",
+  "step": "vegetal_decoration"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "6. In Black Ink",
+  "icon": "minecraft:ink_sac",
+  "category": "chronicles",
+  "order": 6,
+  "chronicle": 6,
+  "pages": [
+    {
+      "type": "text",
+      "text": "That wolf followed someone through the border once. It slept at their feet and growled at the dark for them. Then they stayed too long, both of them, and the roots took what they were and left what you just killed. Every creature you have fought down here once stood where you stand now. The hounds, the cattle, the walking dead, the great old beasts of the lowlands. None of them were born in this world. They came through the same border you did. Look at them closely next time, before you raise your weapon. Then ask yourself how long you have already stayed."
+    }
+  ]
+}

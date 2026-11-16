@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:test_tube_head",
+    "b": "theabyss:test_tube",
+    "c": "theabyss:cobble_stone"
+  },
+  "pattern": [
+    " a ",
+    "bcb",
+    "ccc"
+  ],
+  "result": {
+    "id": "theabyss:somnium_infuser"
+  }
+}

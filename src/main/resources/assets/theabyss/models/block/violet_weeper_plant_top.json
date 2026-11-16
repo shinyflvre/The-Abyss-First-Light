@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "theabyss:block/violet_weeper_top"
+  },
+  "render_type": "cutout"
+}

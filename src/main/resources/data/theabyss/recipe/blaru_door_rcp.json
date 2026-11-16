@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:blaru_planks"
+  },
+  "pattern": [
+    "aa",
+    "aa",
+    "aa"
+  ],
+  "result": {
+    "id": "theabyss:blaru_door",
+    "count": 3
+  }
+}

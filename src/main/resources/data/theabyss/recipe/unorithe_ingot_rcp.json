@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:fixed_bone",
+    "b": "minecraft:netherite_ingot",
+    "c": "theabyss:phantom_ingot"
+  },
+  "pattern": [
+    "aaa",
+    "bcb",
+    "aaa"
+  ],
+  "result": {
+    "id": "theabyss:unorithe_ingot"
+  }
+}

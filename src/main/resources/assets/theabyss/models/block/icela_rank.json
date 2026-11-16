@@ -1,0 +1,8 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "theabyss:block/icela_rank",
+    "particle": "theabyss:block/icela_rank"
+  },
+  "render_type": "cutout"
+}

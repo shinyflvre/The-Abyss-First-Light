@@ -1,0 +1,182 @@
+{
+  "type": "minecraft:simple_random_selector",
+  "features": [
+    {
+      "feature": {
+        "type": "minecraft:random_selector",
+        "default": {
+          "feature": {
+            "type": "minecraft:simple_block",
+            "to_place": {
+              "id": "theabyss:nightgrove_log",
+              "properties": {
+                "axis": "y"
+              }
+            }
+          },
+          "placement": [
+            {
+              "type": "minecraft:block_predicate_filter",
+              "predicate": {
+                "type": "minecraft:all_of",
+                "predicates": [
+                  {
+                    "type": "minecraft:replaceable"
+                  },
+                  {
+                    "type": "minecraft:any_of",
+                    "predicates": [
+                      {
+                        "type": "minecraft:matching_blocks",
+                        "blocks": "#theabyss:dirt",
+                        "offset": [
+                          0,
+                          -1,
+                          0
+                        ]
+                      },
+                      {
+                        "type": "minecraft:matching_blocks",
+                        "blocks": "theabyss:nightgrove_log",
+                        "offset": [
+                          0,
+                          -1,
+                          0
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "features": [
+          {
+            "chance": 0.075,
+            "feature": {
+              "feature": {
+                "type": "minecraft:simple_block",
+                "to_place": {
+                  "id": "theabyss:nightgrove_leave_carpet"
+                }
+              },
+              "placement": [
+                {
+                  "type": "minecraft:offset",
+                  "x": 0,
+                  "y": 1,
+                  "z": 0
+                },
+                {
+                  "type": "minecraft:block_predicate_filter",
+                  "predicate": {
+                    "type": "minecraft:all_of",
+                    "predicates": [
+                      {
+                        "type": "minecraft:matching_blocks",
+                        "blocks": [
+                          "minecraft:air",
+                          "minecraft:vine"
+                        ]
+                      },
+                      {
+                        "type": "minecraft:matching_blocks",
+                        "blocks": "theabyss:nightgrove_log",
+                        "offset": [
+                          0,
+                          -1,
+                          0
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "placement": [
+        {
+          "type": "minecraft:count",
+          "count": 36
+        },
+        {
+          "type": "minecraft:offset",
+          "x": {
+            "type": "minecraft:uniform",
+            "min_inclusive": -2,
+            "max_inclusive": 2
+          },
+          "y": {
+            "type": "minecraft:uniform",
+            "min_inclusive": -2,
+            "max_inclusive": 3
+          },
+          "z": {
+            "type": "minecraft:uniform",
+            "min_inclusive": -2,
+            "max_inclusive": 2
+          }
+        },
+        {
+          "type": "minecraft:block_predicate_filter",
+          "predicate": {
+            "type": "minecraft:any_of",
+            "predicates": [
+              {
+                "type": "minecraft:matching_blocks",
+                "blocks": [
+                  "theabyss:nightgrove_log",
+                  "theabyss:nightgrove_log"
+                ],
+                "offset": [
+                  1,
+                  2,
+                  0
+                ]
+              },
+              {
+                "type": "minecraft:matching_blocks",
+                "blocks": [
+                  "theabyss:nightgrove_log",
+                  "theabyss:nightgrove_log"
+                ],
+                "offset": [
+                  0,
+                  2,
+                  1
+                ]
+              },
+              {
+                "type": "minecraft:matching_blocks",
+                "blocks": [
+                  "theabyss:nightgrove_log",
+                  "theabyss:nightgrove_log"
+                ],
+                "offset": [
+                  -1,
+                  2,
+                  0
+                ]
+              },
+              {
+                "type": "minecraft:matching_blocks",
+                "blocks": [
+                  "theabyss:nightgrove_log",
+                  "theabyss:nightgrove_log"
+                ],
+                "offset": [
+                  0,
+                  2,
+                  -1
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

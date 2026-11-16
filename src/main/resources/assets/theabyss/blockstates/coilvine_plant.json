@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "top=false": {
+      "model": "theabyss:block/coilvine_plant"
+    },
+    "top=true": {
+      "model": "theabyss:block/coilvine_plant_top"
+    }
+  }
+}

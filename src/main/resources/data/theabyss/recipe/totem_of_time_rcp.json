@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:loran",
+    "b": "theabyss:loran_energy",
+    "c": "minecraft:totem_of_undying"
+  },
+  "pattern": [
+    "aba",
+    " c "
+  ],
+  "result": {
+    "id": "theabyss:totem_of_time"
+  }
+}

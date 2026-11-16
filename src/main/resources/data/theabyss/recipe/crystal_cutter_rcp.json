@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:loran",
+    "b": "theabyss:cobble_stone",
+    "c": "minecraft:stonecutter"
+  },
+  "pattern": [
+    " a ",
+    "bcb"
+  ],
+  "result": {
+    "id": "theabyss:crystal_cutter"
+  }
+}

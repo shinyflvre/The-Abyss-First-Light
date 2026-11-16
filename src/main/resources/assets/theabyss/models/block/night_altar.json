@@ -1,0 +1,9 @@
+{
+  "parent": "theabyss:custom/altar_unactivated",
+  "textures": {
+    "all": "theabyss:block/stone_bricks",
+    "particle": "theabyss:block/stone_bricks",
+    "1": "theabyss:block/altar_unactivated_texture"
+  },
+  "render_type": "solid"
+}

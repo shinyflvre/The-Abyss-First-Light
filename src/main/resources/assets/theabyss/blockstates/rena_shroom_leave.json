@@ -1,0 +1,9 @@
+{
+  "variants": {
+    "": [
+      { "model": "theabyss:block/rena_shroom_leave" },
+      { "model": "theabyss:block/rena_shroom_leave_2" },
+      { "model": "theabyss:block/rena_shroom_leave_3" }
+    ]
+  }
+}

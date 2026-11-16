@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "theabyss:waywardsea",
+    "theabyss:forgottenmountains"
+  ],
+  "features": "theabyss:icela_rank",
+  "step": "vegetal_decoration"
+}

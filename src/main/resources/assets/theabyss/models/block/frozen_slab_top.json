@@ -1,0 +1,9 @@
+{
+  "parent": "block/slab_top",
+  "textures": {
+    "bottom": "theabyss:block/frost_planks",
+    "top": "theabyss:block/frost_planks",
+    "side": "theabyss:block/frost_planks"
+  },
+  "render_type": "solid"
+}

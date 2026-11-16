@@ -1,0 +1,28 @@
+{
+  "type": "theabyss:giant_arch",
+  "biomes": "#theabyss:has_structure/frost_arch",
+  "spawn_overrides": {},
+  "step": "raw_generation",
+  "terrain_adaptation": "none",
+  "span": {
+    "type": "minecraft:uniform",
+    "min_inclusive": 70,
+    "max_inclusive": 180
+  },
+  "height": {
+    "type": "minecraft:uniform",
+    "min_inclusive": 40,
+    "max_inclusive": 110
+  },
+  "thickness": 1.0,
+  "materials": {
+    "rock": "theabyss:dark_stone",
+    "band": "theabyss:stone",
+    "seam": "minecraft:packed_ice",
+    "vein": "minecraft:blue_ice",
+    "top": "theabyss:snow_block",
+    "drip": "minecraft:packed_ice",
+    "drip_tip": "minecraft:ice",
+    "crown": "theabyss:frost_crystal_ore"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "Incorythe MKII",
+  "icon": "theabyss:incorythe_sword_mkii",
+  "category": "weapons",
+  "order": 9,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:incorythe_sword_mkii",
+      "title": "Incorythe MKII",
+      "text": "Not satisfied with your Incorythe MKI? Surround it with Incorythe Gems and diamonds to forge the Incorythe MKII. This refined blade deals 14.5 attack damage with a blazing attack speed of 2.2 and keeps the 3512 uses of its predecessor. Few blades strike as fast and as hard."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:incorythe_sword_mkii_rcp",
+      "title": "Recipe",
+      "text": "An Incorythe MKI in the centre, diamonds on the sides and Incorythe Gems in the corners.",
+      "grid": [
+        "theabyss:incorythe_gem",
+        "minecraft:diamond",
+        "theabyss:incorythe_gem",
+        "minecraft:diamond",
+        "theabyss:incorythe_sword",
+        "minecraft:diamond",
+        "theabyss:incorythe_gem",
+        "minecraft:diamond",
+        "theabyss:incorythe_gem"
+      ],
+      "result": "theabyss:incorythe_sword_mkii",
+      "count": 1
+    }
+  ]
+}

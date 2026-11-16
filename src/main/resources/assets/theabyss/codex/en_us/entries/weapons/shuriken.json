@@ -1,0 +1,33 @@
+{
+  "name": "Shuriken",
+  "icon": "theabyss:shuriken",
+  "category": "weapons",
+  "order": 20,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:shuriken",
+      "title": "Shuriken",
+      "text": "Strike your enemies from afar with this sharp throwing star. Right click to hurl a spinning Shuriken in the direction you are looking. A Shuriken can be used 32 times before it breaks, and in close combat it still hits for 3.2 attack damage."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:shuriken_rcp",
+      "title": "Recipe",
+      "text": "Four iron ingots in the corners around a piece of Loran in the centre.",
+      "grid": [
+        "minecraft:iron_ingot",
+        "",
+        "minecraft:iron_ingot",
+        "",
+        "theabyss:loran",
+        "",
+        "minecraft:iron_ingot",
+        "",
+        "minecraft:iron_ingot"
+      ],
+      "result": "theabyss:shuriken",
+      "count": 1
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "type": "theabyss:arcane_recipe_type",
+  "ingredients": [
+    "theabyss:ring_of_invisibility",
+    "theabyss:phantom_essence",
+    "theabyss:hollow_powder",
+    "theabyss:phantom_essence",
+    "theabyss:hollow_powder",
+    "theabyss:phantom_essence",
+    "theabyss:hollow_powder",
+    "theabyss:phantom_essence",
+    "theabyss:hollow_powder"
+  ],
+  "output": {
+    "id": "theabyss:ring_of_spectral",
+    "count": 1
+  }
+}

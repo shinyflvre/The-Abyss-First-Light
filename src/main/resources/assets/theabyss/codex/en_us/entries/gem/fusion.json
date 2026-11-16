@@ -1,0 +1,20 @@
+{
+  "name": "Fusion Ingot",
+  "icon": "theabyss:fusion_ingot",
+  "category": "gem",
+  "order": 0,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:fusion_ingot",
+      "title": "Fusion Ingot",
+      "text": "Fusion Ores can be found in the Blue Forest, Blue Mountains, Slime Forest. They are found at an altitude of 2 to 11. With Ignisithe you can make weapons, armor and other things."
+    },
+    {
+      "type": "block",
+      "block": "theabyss:fusion_ore",
+      "title": "Fusion Ore",
+      "text": "Fusion Ore."
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_sign_rot_3",
+  "textures": {
+    "all": "theabyss:block/blaru_sign",
+    "particle": "theabyss:block/blaru_planks"
+  }
+}

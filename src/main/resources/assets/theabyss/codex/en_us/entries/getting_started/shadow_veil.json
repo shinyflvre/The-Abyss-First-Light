@@ -1,0 +1,17 @@
+{
+  "name": "Shadow Veil",
+  "icon": "minecraft:echo_shard",
+  "category": "getting_started",
+  "order": 1,
+  "pages": [
+    {
+      "type": "text",
+      "text": "The Abyss teaches every wanderer to hide. Sneak while you are in The Abyss and a veil of shadow settles around you, six blocks wide. You see its edge glowing on the ground, and the world turns a little paler while it holds."
+    },
+    {
+      "type": "text",
+      "title": "How it works",
+      "text": "While the veil holds, hostile creatures outside of it cannot see you, and those already hunting you lose your trail. The veil lasts up to 10 seconds. Once it fades, it gathers its strength again, a tenth every 2 seconds, and it can only rise once it holds at least a fifth of its power. Should a creature step inside the veil, or should you strike, shoot or cast, it shatters at once. The veil answers only in The Abyss itself."
+    }
+  ]
+}

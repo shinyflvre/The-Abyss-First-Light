@@ -1,0 +1,29 @@
+{
+  "name": "Ring Of Silent Echoes",
+  "icon": "theabyss:ring_of_silent_echoes",
+  "category": "spells",
+  "order": 0,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:ring_of_silent_echoes",
+      "title": "Ring Of Silent Echoes",
+      "text": "Call a perfect copy of yourself out of the silence of the Abyss! Your echo wears the armor you wear, wields the weapon in your hand and carries exactly as much life as you do. It follows you, guards you and strikes at whatever threatens you, and it stays at your side until it falls. Use the ring again to send it back. Calling the echo consumes 60.0 somnium, and the ring rests for a minute once your echo is gone."
+    },
+    {
+      "type": "text",
+      "title": "Echo Vision",
+      "text": "Press the second magic key and your mind slips into your echo. You walk, fight and see as the echo while your own body stands still where you left it. Your body is not safe: should anything strike it, you are torn back at once and the blow lands for real. The leash is short at first, only 16 blocks, but grows with your Usage upgrade to 32, 64 and finally 128 blocks. Stray beyond it and the echo fades. Entering costs 20.0 somnium."
+    },
+    {
+      "type": "text",
+      "title": "The Silence",
+      "text": "While you walk as your echo the world grows quiet and pale around you. When the echo falls, your mind simply wakes inside your body again, so a fallen echo never costs you your life. Press the second magic key once more to return on your own and your echo stays behind to fight on."
+    },
+    {
+      "type": "text",
+      "title": "Lost Artifact",
+      "text": "No one remembers how this ring was made. The knowledge of its creation has been lost to the depths of the Abyss, and no Arcane recipe is known to bring it to life. Whoever owns one of these rings holds a true relic of a forgotten age. Very rarely one rests in the caches of the Phantom Crate, chests guarded by a ring of dark dripstone."
+    }
+  ]
+}

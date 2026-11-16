@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "top=false": {
+      "model": "theabyss:block/ashen_bramble_vines_plant"
+    },
+    "top=true": {
+      "model": "theabyss:block/ashen_bramble_vines_plant_top"
+    }
+  }
+}

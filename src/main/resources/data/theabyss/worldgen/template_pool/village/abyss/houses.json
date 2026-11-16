@@ -1,0 +1,377 @@
+{
+  "elements": [
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_small_house_1",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_small_house_2",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_small_house_3",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_small_house_4",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_small_house_5",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_small_house_6",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 1
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_small_house_7",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_small_house_8",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 3
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_medium_house_1",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_medium_house_2",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_big_house_1",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_butcher_shop_1",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_butcher_shop_2",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_tool_smith_1",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_fletcher_house_1",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_shepherds_house_1",
+        "processors": {
+          "processors": [
+            {
+              "processor_type": "theabyss:biome_path"
+            }
+          ]
+        },
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_armorer_house_1",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_fisher_cottage_1",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_tannery_1",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_cartographer_1",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 1
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_library_1",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 5
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_library_2",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 1
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_masons_house_1",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_weaponsmith_1",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_temple_3",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_temple_4",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_stable_1",
+        "processors": "theabyss:village_abyss_mossify_10_percent",
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_stable_2",
+        "processors": {
+          "processors": [
+            {
+              "processor_type": "theabyss:biome_path"
+            }
+          ]
+        },
+        "projection": "rigid"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_large_farm_1",
+        "processors": "theabyss:village_abyss_farm_plains",
+        "projection": "rigid"
+      },
+      "weight": 4
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_small_farm_1",
+        "processors": "theabyss:village_abyss_farm_plains",
+        "projection": "rigid"
+      },
+      "weight": 4
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_animal_pen_1",
+        "processors": {
+          "processors": [
+            {
+              "processor_type": "theabyss:biome_path"
+            }
+          ]
+        },
+        "projection": "rigid"
+      },
+      "weight": 1
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_animal_pen_2",
+        "processors": {
+          "processors": [
+            {
+              "processor_type": "theabyss:biome_path"
+            }
+          ]
+        },
+        "projection": "rigid"
+      },
+      "weight": 1
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_animal_pen_3",
+        "processors": {
+          "processors": [
+            {
+              "processor_type": "theabyss:biome_path"
+            }
+          ]
+        },
+        "projection": "rigid"
+      },
+      "weight": 5
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_accessory_1",
+        "processors": {
+          "processors": [
+            {
+              "processor_type": "theabyss:biome_path"
+            }
+          ]
+        },
+        "projection": "rigid"
+      },
+      "weight": 1
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_meeting_point_4",
+        "processors": "theabyss:village_abyss_mossify_70_percent",
+        "projection": "rigid"
+      },
+      "weight": 3
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/houses/plains_meeting_point_5",
+        "processors": {
+          "processors": [
+            {
+              "processor_type": "theabyss:biome_path"
+            }
+          ]
+        },
+        "projection": "rigid"
+      },
+      "weight": 1
+    },
+    {
+      "element": {
+        "element_type": "minecraft:empty_pool_element"
+      },
+      "weight": 10
+    }
+  ],
+  "fallback": "theabyss:village/abyss/terminators"
+}

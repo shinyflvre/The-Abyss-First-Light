@@ -1,0 +1,8 @@
+{
+  "parent": "block/template_orientable_trapdoor_open",
+  "textures": {
+    "texture": "theabyss:block/bog_trapdoor",
+    "particle": "theabyss:block/bog_trapdoor"
+  },
+  "render_type": "solid"
+}

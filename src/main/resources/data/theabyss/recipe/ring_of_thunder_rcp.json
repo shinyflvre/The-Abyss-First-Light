@@ -1,0 +1,18 @@
+{
+  "type": "theabyss:arcane_recipe_type",
+  "ingredients": [
+    "theabyss:ring_of_ring",
+    "theabyss:ardor_powder",
+    "theabyss:abyss_powder",
+    "theabyss:ardor_powder",
+    "theabyss:abyss_powder",
+    "theabyss:ardor_powder",
+    "theabyss:abyss_powder",
+    "theabyss:ardor_powder",
+    "theabyss:abyss_powder"
+  ],
+  "output": {
+    "id": "theabyss:ring_of_thunder",
+    "count": 1
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "type": "theabyss:triple_plant",
+  "state": {
+    "id": "theabyss:crookstalk",
+    "properties": {
+      "part": "lower"
+    }
+  }
+}

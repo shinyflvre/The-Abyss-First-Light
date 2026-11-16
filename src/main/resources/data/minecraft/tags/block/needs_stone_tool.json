@@ -1,0 +1,27 @@
+{
+  "replace": false,
+  "values": [
+    "theabyss:cobble_stone",
+    "theabyss:cobble_stone_slab",
+    "theabyss:cobble_stone_stairs",
+    "theabyss:cobble_stone_wall",
+    "theabyss:iron_variant",
+    "theabyss:loran_ore",
+    "theabyss:night_altar",
+    "theabyss:night_altar_activated",
+    "theabyss:snow_block",
+    "theabyss:stone",
+    "theabyss:stone_brick",
+    "theabyss:stone_brick_broken",
+    "theabyss:stone_brick_chiseled",
+    "theabyss:chiseled_gravity_stone",
+    "theabyss:stone_brick_pillar",
+    "theabyss:stone_brick_pillar_ignited",
+    "theabyss:stone_brick_slab",
+    "theabyss:stone_brick_stairs",
+    "theabyss:stone_brick_wall",
+    "theabyss:stone_rackle",
+    "theabyss:stone_slab",
+    "theabyss:stone_stairs"
+  ]
+}

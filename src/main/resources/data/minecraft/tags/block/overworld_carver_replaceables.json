@@ -1,0 +1,20 @@
+{
+  "replace": false,
+  "values": [
+    "theabyss:stone",
+    "theabyss:slimed_moss",
+    "theabyss:dirt",
+    "theabyss:roma_mud",
+    "theabyss:nightgrove_moss",
+    "theabyss:nightgrove_dirt",
+    "theabyss:infected_grass",
+    "theabyss:vigilant_moss",
+    "theabyss:blaru_moss",
+    "theabyss:gravel",
+    "theabyss:shroomland_moss",
+    "theabyss:dark_stone",
+    "theabyss:snow_block",
+    "theabyss:black_void",
+    "minecraft:snow_block"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "theabyss:block/rena_shroom",
+    "particle": "theabyss:block/rena_shroom"
+  },
+  "render_type": "cutout"
+}

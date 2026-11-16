@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:frozen_planks"
+  },
+  "pattern": [
+    "aa",
+    "aa",
+    "aa"
+  ],
+  "result": {
+    "id": "theabyss:frozen_door",
+    "count": 3
+  }
+}

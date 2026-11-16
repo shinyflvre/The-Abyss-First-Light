@@ -1,0 +1,33 @@
+{
+  "name": "Incorythe MKI",
+  "icon": "theabyss:incorythe_sword",
+  "category": "weapons",
+  "order": 8,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:incorythe_sword",
+      "title": "Incorythe MKI",
+      "text": "Incorythe is the rarest gem you can dig up, and a sword made of it is worth every second of the search. The Incorythe MKI deals 12.5 attack damage with an attack speed of 2.0 and lasts for an impressive 3512 uses. It is also the heart of its even stronger successor, the Incorythe MKII."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:incorythe_sword_rcp",
+      "title": "Recipe",
+      "text": "Two Incorythe Gems on top of a stick.",
+      "grid": [
+        "theabyss:incorythe_gem",
+        "",
+        "",
+        "theabyss:incorythe_gem",
+        "",
+        "",
+        "#c:rods/wooden",
+        "",
+        ""
+      ],
+      "result": "theabyss:incorythe_sword",
+      "count": 1
+    }
+  ]
+}

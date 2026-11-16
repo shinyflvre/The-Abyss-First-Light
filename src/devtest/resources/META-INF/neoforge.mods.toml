@@ -1,0 +1,16 @@
+license="Custom license"
+
+[[mods]]
+modId="theabyss_devtest"
+version="1.0.0"
+displayName="The Abyss - dev test harness"
+description='''
+Development-only test harness (server self test /abysstest, scripted client run). Not shipped.
+'''
+
+[[dependencies.theabyss_devtest]]
+    modId="theabyss"
+    type="required"
+    versionRange="[0,)"
+    ordering="AFTER"
+    side="BOTH"

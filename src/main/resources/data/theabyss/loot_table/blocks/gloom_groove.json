@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "theabyss:gloom_groove",
+            "state": {
+              "half": "lower"
+            }
+          },
+          "name": "theabyss:gloom_groove"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "theabyss:blocks/gloom_groove"
+}

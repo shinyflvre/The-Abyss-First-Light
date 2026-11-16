@@ -1,0 +1,9 @@
+{
+  "parent": "block/inner_stairs",
+  "textures": {
+    "bottom": "theabyss:block/rena_planks",
+    "top": "theabyss:block/rena_planks",
+    "side": "theabyss:block/rena_planks"
+  },
+  "render_type": "solid"
+}

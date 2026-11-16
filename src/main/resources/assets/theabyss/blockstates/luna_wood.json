@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "theabyss:block/luna_wood",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "theabyss:block/luna_wood"
+    },
+    "axis=z": {
+      "model": "theabyss:block/luna_wood",
+      "x": 90
+    }
+  }
+}

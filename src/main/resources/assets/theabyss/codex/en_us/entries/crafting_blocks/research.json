@@ -1,0 +1,36 @@
+{
+  "name": "Research Table",
+  "icon": "theabyss:research_table",
+  "category": "crafting_blocks",
+  "order": 0,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:research_table",
+      "title": "Research Table",
+      "text": "Unlock the secrets of the universe with the Research Table! This tool lets you research crystals, artifacts, and more before cutting them with the crystal cutter. Don't risk destroying your goods - make sure to research first."
+    },
+    {
+      "type": "block",
+      "block": "theabyss:research_table",
+      "title": "Research Table"
+    },
+    {
+      "type": "crafting",
+      "title": "Research Table",
+      "result": "theabyss:research_table",
+      "count": 1,
+      "grid": [
+        "minecraft:stick",
+        "minecraft:glass",
+        "theabyss:loran",
+        "minecraft:stick",
+        "theabyss:cobble_stone",
+        "",
+        "theabyss:loran",
+        "",
+        "minecraft:iron_pickaxe"
+      ]
+    }
+  ]
+}

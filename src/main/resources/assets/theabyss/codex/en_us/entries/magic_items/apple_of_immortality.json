@@ -1,0 +1,14 @@
+{
+  "name": "Apple Of Immortality",
+  "icon": "theabyss:apple_of_immortality",
+  "category": "magic_items",
+  "order": 9,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:apple_of_immortality",
+      "title": "Apple Of Immortality",
+      "text": "Bite into the Apple of Immortality and for a few precious heartbeats nothing can harm you. Eating it grants the Immortal effect for about five seconds, during which you are completely invulnerable. It also restores 4 points of hunger. Alchemists value it as the key ingredient of the Immortal Substance."
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "type": "theabyss:plant_patch",
+  "plant": "theabyss:standing_lumen_strands",
+  "count": {
+    "type": "minecraft:weighted_list",
+    "distribution": [
+      {
+        "data": 1,
+        "weight": 2
+      },
+      {
+        "data": {
+          "type": "minecraft:uniform",
+          "min_inclusive": 2,
+          "max_inclusive": 5
+        },
+        "weight": 3
+      }
+    ]
+  },
+  "spread": 2,
+  "height": {
+    "type": "minecraft:uniform",
+    "min_inclusive": 1,
+    "max_inclusive": 6
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "replace": false,
+  "values": [
+    "theabyss:blaru_log",
+    "theabyss:nightgrove_log",
+    "theabyss:bog_shroom_log",
+    "theabyss:sal_shroom_log",
+    "theabyss:slimed_log",
+    "theabyss:frozen_log",
+    "theabyss:vigilant_log",
+    "theabyss:stripped_blaru_log",
+    "theabyss:stripped_nightgrove_log",
+    "theabyss:stripped_bog_shroom_log",
+    "theabyss:stripped_sal_shroom_log",
+    "theabyss:stripped_slimed_log",
+    "theabyss:stripped_frozen_log",
+    "theabyss:luna_log",
+    "theabyss:rena_log",
+    "theabyss:stripped_luna_log",
+    "theabyss:stripped_rena_log",
+    "theabyss:luna_wood",
+    "theabyss:stripped_luna_wood",
+    "theabyss:rena_wood",
+    "theabyss:stripped_rena_wood"
+  ]
+}

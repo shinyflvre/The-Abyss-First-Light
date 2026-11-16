@@ -1,0 +1,27 @@
+{
+  "type": "theabyss:giant_arch",
+  "biomes": "#theabyss:has_structure/phantom_crate_arch",
+  "spawn_overrides": {},
+  "step": "raw_generation",
+  "terrain_adaptation": "none",
+  "span": {
+    "type": "minecraft:uniform",
+    "min_inclusive": 42,
+    "max_inclusive": 108
+  },
+  "height": {
+    "type": "minecraft:uniform",
+    "min_inclusive": 24,
+    "max_inclusive": 66
+  },
+  "thickness": 0.75,
+  "materials": {
+    "rock": "theabyss:stone",
+    "band": "theabyss:stone_rackle",
+    "seam": "theabyss:unstable_obsidian",
+    "top": "theabyss:gravel",
+    "drip": "theabyss:pointed_abyss_dripstone",
+    "pillar": "theabyss:stone_brick_chiseled",
+    "pillar_cap": "theabyss:stone_brick_wall"
+  }
+}

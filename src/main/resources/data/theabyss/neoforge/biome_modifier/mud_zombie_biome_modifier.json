@@ -1,0 +1,13 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "theabyss:mud_plains",
+  "spawners": {
+    "type": "theabyss:mud_zombie",
+    "weight": 12,
+    "count": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 5,
+      "min_inclusive": 3
+    }
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "attributes": {
+    "minecraft:audio/ambient_sounds": {
+      "loop": "theabyss:blaru_forest",
+      "mood": {
+        "block_search_extent": 2,
+        "offset": 8,
+        "sound": "theabyss:random_fx",
+        "tick_delay": 300
+      }
+    },
+    "minecraft:audio/background_music": {
+      "default": {
+        "max_delay": 24000,
+        "min_delay": 12000,
+        "sound": "theabyss:theabyss_dimension_music",
+        "replace_current_music": true
+      }
+    },
+    "minecraft:gameplay/natural_mob_spawns": {
+      "argument": {
+        "spawn_costs": {},
+        "spawns_by_category": {
+          "monster": [
+            {
+              "type": "theabyss:infected_wolf",
+              "count": {
+                "type": "minecraft:uniform",
+                "max_inclusive": 3,
+                "min_inclusive": 1
+              },
+              "weight": 4
+            },
+            {
+              "type": "theabyss:powered_wolf",
+              "count": {
+                "type": "minecraft:uniform",
+                "max_inclusive": 3,
+                "min_inclusive": 1
+              },
+              "weight": 2
+            },
+            {
+              "type": "theabyss:glow_pug",
+              "count": {
+                "type": "minecraft:uniform",
+                "max_inclusive": 4,
+                "min_inclusive": 2
+              },
+              "weight": 8
+            },
+            {
+              "type": "theabyss:hummingbird",
+              "count": {
+                "type": "minecraft:uniform",
+                "max_inclusive": 4,
+                "min_inclusive": 1
+              },
+              "weight": 4
+            },
+            {
+              "type": "theabyss:infected_dragonfly",
+              "count": {
+                "type": "minecraft:uniform",
+                "max_inclusive": 4,
+                "min_inclusive": 2
+              },
+              "weight": 4
+            }
+          ]
+        }
+      },
+      "modifier": "overlay"
+    },
+    "minecraft:visual/ambient_particles": {
+      "argument": [
+        {
+          "particle": {
+            "type": "theabyss:spurs_fx"
+          },
+          "probability": 0.03
+        }
+      ],
+      "modifier": "append"
+    },
+    "minecraft:visual/fog_color": "#00272f",
+    "minecraft:visual/water_fog_color": "#003333"
+  },
+  "carvers": [
+    "minecraft:cave",
+    "minecraft:cave_extra_underground",
+    "minecraft:canyon"
+  ],
+  "downfall": 0.3,
+  "effects": {
+    "foliage_color": "#003333",
+    "grass_color": "#0d8795",
+    "water_color": "#002d33"
+  },
+  "features": [
+    [],
+    [
+      "minecraft:lake_lava_underground"
+    ]
+  ],
+  "has_precipitation": false,
+  "temperature": 0.6
+}

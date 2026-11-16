@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "theabyss:item/spawn_egg_base",
+    "layer1": "theabyss:item/spawn_egg_spots"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_shelf_unconnected",
+  "textures": {
+    "all": "theabyss:block/luna_shelf",
+    "particle": "theabyss:block/stripped_luna_log"
+  }
+}

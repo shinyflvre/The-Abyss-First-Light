@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 631546900,
+    "separation": 0,
+    "spacing": 2
+  },
+  "structures": [
+    {
+      "structure": "theabyss:slimed_tree_3",
+      "weight": 1
+    }
+  ]
+}

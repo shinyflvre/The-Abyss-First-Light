@@ -1,0 +1,19 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "theabyss:blue_mountain",
+    "theabyss:mud_plains",
+    "theabyss:slime_forest",
+    "theabyss:nightgrove",
+    "theabyss:plains"
+  ],
+  "spawners": {
+    "type": "theabyss:end_spider",
+    "weight": 8,
+    "count": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 4,
+      "min_inclusive": 2
+    }
+  }
+}

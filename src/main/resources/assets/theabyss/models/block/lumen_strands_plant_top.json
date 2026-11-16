@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "theabyss:block/lumen_strands_top"
+  },
+  "render_type": "cutout"
+}

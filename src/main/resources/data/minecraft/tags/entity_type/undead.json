@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "theabyss:end_spider",
+    "theabyss:frost_spider",
+    "theabyss:guard",
+    "theabyss:infected_creeper",
+    "theabyss:infected_spider",
+    "theabyss:nightblade_boss",
+    "theabyss:night_blade_boss_clone",
+    "theabyss:scorpion",
+    "theabyss:slime_spider",
+    "theabyss:soul_guard"
+  ]
+}

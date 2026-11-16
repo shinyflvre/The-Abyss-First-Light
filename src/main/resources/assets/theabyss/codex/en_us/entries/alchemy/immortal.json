@@ -1,0 +1,41 @@
+{
+  "name": "Immortal Substance",
+  "icon": "theabyss:immortal_substance",
+  "category": "alchemy",
+  "order": 0,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:immortal_substance",
+      "title": "Immortal Substance",
+      "text": "The Immortal Substance is a mysterious essence that grants the user immortality, making them invulnerable to death. However, this power comes with a warning: be careful with this essence, as it may bring unintended consequences. "
+    },
+    {
+      "type": "text",
+      "title": "Crafting",
+      "text": "The Immortal Substance can be crafted in a Somnium Infuser using loran energy and somnium as ingredients."
+    },
+    {
+      "type": "infuser",
+      "title": "Recipe",
+      "somnium": "theabyss:somnium",
+      "energy": "theabyss:loran_energy",
+      "inputs": [
+        "theabyss:apple_of_immortality",
+        "minecraft:apple",
+        "theabyss:apple_of_immortality",
+        "minecraft:apple"
+      ],
+      "notes": [
+        "Place Somnium and loran energy in the upper input slots.",
+        "To craft Immortal Essence, place the required items in the test tubes on the left and right."
+      ]
+    },
+    {
+      "type": "image",
+      "image": "theabyss:textures/guide/infuser/somnium_usage.png",
+      "title": "Infuser GUI",
+      "border": true
+    }
+  ]
+}

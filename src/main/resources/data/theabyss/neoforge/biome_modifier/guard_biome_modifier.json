@@ -1,0 +1,19 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "theabyss:blue_mountain",
+    "theabyss:phantom_crate",
+    "theabyss:slime_forest",
+    "theabyss:nightgrove",
+    "theabyss:blaru_forest"
+  ],
+  "spawners": {
+    "type": "theabyss:guard",
+    "weight": 3,
+    "count": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 3,
+      "min_inclusive": 1
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "theabyss:block/fortis_ultima",
+    "particle": "theabyss:block/fortis_ultima"
+  },
+  "render_type": "cutout"
+}

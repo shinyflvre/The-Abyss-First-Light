@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "theabyss:shroomlands",
+  "features": "theabyss:shroomlands/crookstalk",
+  "step": "vegetal_decoration"
+}

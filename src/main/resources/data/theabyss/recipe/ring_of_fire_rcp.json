@@ -1,0 +1,18 @@
+{
+  "type": "theabyss:arcane_recipe_type",
+  "ingredients": [
+    "theabyss:ring_of_ring",
+    "theabyss:crimson_powder",
+    "minecraft:blaze_powder",
+    "theabyss:crimson_powder",
+    "minecraft:blaze_powder",
+    "theabyss:crimson_powder",
+    "minecraft:blaze_powder",
+    "theabyss:crimson_powder",
+    "minecraft:blaze_powder"
+  ],
+  "output": {
+    "id": "theabyss:ring_of_fire",
+    "count": 1
+  }
+}

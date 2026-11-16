@@ -1,0 +1,10 @@
+{
+  "pack": {
+    "description": "The Abyss adds a brand new dimension to explore full of unique adventures and dangers! It's a dimension of darkness the only light comes from magical blocks and the various flora, fungi, and fauna of the dimension.",
+    "min_format": [
+      97,
+      1
+    ],
+    "max_format": 121
+  }
+}

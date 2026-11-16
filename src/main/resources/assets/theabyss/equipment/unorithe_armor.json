@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "theabyss:unorithe_armor"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "theabyss:unorithe_armor"
+      }
+    ]
+  }
+}

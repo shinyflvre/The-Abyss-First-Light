@@ -1,0 +1,17 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "theabyss:nightgrove",
+    "theabyss:mud_plains",
+    "theabyss:blaru_forest"
+  ],
+  "spawners": {
+    "type": "theabyss:shattered_zombie",
+    "weight": 5,
+    "count": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 4,
+      "min_inclusive": 1
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "variants": {
+    "": [
+      { "model": "theabyss:block/luna_shroom_leave" },
+      { "model": "theabyss:block/luna_shroom_leave_2" },
+      { "model": "theabyss:block/luna_shroom_leave_3" }
+    ]
+  }
+}

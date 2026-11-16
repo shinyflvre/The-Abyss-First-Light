@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "theabyss:block/infected_dirt",
+    "up": "theabyss:block/blaru_moss_top_4",
+    "north": "theabyss:block/blaru_moss_side",
+    "east": "theabyss:block/blaru_moss_side",
+    "south": "theabyss:block/blaru_moss_side",
+    "west": "theabyss:block/blaru_moss_side",
+    "particle": "theabyss:block/infected_dirt"
+  },
+  "render_type": "solid"
+}

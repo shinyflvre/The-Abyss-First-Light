@@ -1,0 +1,13 @@
+{
+  "name": "10. The Hand",
+  "icon": "minecraft:paper",
+  "category": "chronicles",
+  "order": 10,
+  "chronicle": 10,
+  "pages": [
+    {
+      "type": "text",
+      "text": "My hand glows. A soft cyan, just beneath the skin, running along the veins like light poured into a riverbed. It started the moment the Somnium settled in me, and it has not faded since. It does not hurt. If anything, it feels warm, the way the roots feel warm. The voice says it is a gift, a sign that this world has accepted me. It says the creatures fear the light because they know what it means. I keep my hand in my sleeve when I sleep, so I do not have to look at it. I am not sure what I am afraid of seeing. I think I believe the voice. It is easier to believe it."
+    }
+  ]
+}

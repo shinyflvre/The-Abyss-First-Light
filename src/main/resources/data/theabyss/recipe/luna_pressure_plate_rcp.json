@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:luna_planks"
+  },
+  "pattern": [
+    "aa"
+  ],
+  "result": {
+    "id": "theabyss:luna_pressure_plate"
+  }
+}

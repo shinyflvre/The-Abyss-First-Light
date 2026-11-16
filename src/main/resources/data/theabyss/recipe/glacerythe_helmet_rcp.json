@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:glacerythe_gem"
+  },
+  "pattern": [
+    "aaa",
+    "a a"
+  ],
+  "result": {
+    "id": "theabyss:glacerythe_armor_helmet"
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "name": "Unorithe Armor",
+  "icon": "theabyss:unorithe_armor_chestplate",
+  "category": "armors",
+  "order": 8,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:unorithe_armor_chestplate",
+      "title": "Unorithe Armor",
+      "text": "The ultimate armor of the Abyss! Unorithe armor is the strongest and most durable set you can wear. The helmet gives 6 armor, the chestplate 8, the leggings 7 and the boots 5, for a total of 26 armor. Each piece adds 3.0 toughness and 40 percent knockback resistance, and it lasts longer than any other armor."
+    },
+    {
+      "type": "text",
+      "title": "Abilities",
+      "text": "Move like the wind! While you wear the Unorithe Leggings you are granted Speed, and the Unorithe Boots grant you Jump Boost, letting you leap higher than ever before."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:unorithe_helmet_rcp",
+      "title": "Helmet",
+      "text": "Combine each piece of Phantom armor with an Unorithe Ingot. Unorithe Ingots are crafted from Titan Bones, netherite ingots and a Phantom Ingot.",
+      "grid": [
+        "theabyss:phantom_armor_helmet",
+        "theabyss:unorithe_ingot",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:unorithe_armor_helmet",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:unorithe_chestplate_rcp",
+      "title": "Chestplate",
+      "grid": [
+        "theabyss:phantom_armor_chestplate",
+        "theabyss:unorithe_ingot",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:unorithe_armor_chestplate",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:unorithe_leggings_rcp",
+      "title": "Leggings",
+      "grid": [
+        "theabyss:phantom_armor_leggings",
+        "theabyss:unorithe_ingot",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:unorithe_armor_leggings",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:unorithe_boots_rcp",
+      "title": "Boots",
+      "grid": [
+        "theabyss:phantom_armor_boots",
+        "theabyss:unorithe_ingot",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:unorithe_armor_boots",
+      "count": 1
+    }
+  ]
+}

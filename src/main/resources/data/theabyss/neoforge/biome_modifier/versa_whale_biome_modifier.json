@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "theabyss:blue_mountain",
+    "theabyss:plains"
+  ],
+  "spawners": {
+    "type": "theabyss:versa_whale",
+    "weight": 15,
+    "count": 1
+  }
+}

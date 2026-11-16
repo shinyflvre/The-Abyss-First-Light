@@ -1,0 +1,8 @@
+{
+  "parent": "block/door_bottom_right",
+  "textures": {
+    "bottom": "theabyss:block/vigilant_door_bottom",
+    "top": "theabyss:block/vigilant_door_top"
+  },
+  "render_type": "cutout"
+}

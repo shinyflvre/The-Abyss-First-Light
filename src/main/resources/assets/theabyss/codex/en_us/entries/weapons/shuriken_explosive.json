@@ -1,0 +1,33 @@
+{
+  "name": "Explosive Shuriken",
+  "icon": "theabyss:shuriken_explosive",
+  "category": "weapons",
+  "order": 21,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:shuriken_explosive",
+      "title": "Explosive Shuriken",
+      "text": "Why settle for a simple cut when you can make it go boom? This throwing star is packed with TNT and explodes the moment it hits a creature or a block, damaging everything nearby and breaking blocks around the impact. Right click to throw it. It can be used 8 times, so choose your targets wisely!"
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:shuriken_explosive_rcp",
+      "title": "Recipe",
+      "text": "Place a Shuriken next to a block of TNT.",
+      "grid": [
+        "theabyss:shuriken",
+        "minecraft:tnt",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:shuriken_explosive",
+      "count": 1
+    }
+  ]
+}

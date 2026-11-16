@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "theabyss:block/luna_log",
+    "up": "theabyss:block/luna_log",
+    "north": "theabyss:block/luna_log_side",
+    "east": "theabyss:block/luna_log_side",
+    "south": "theabyss:block/luna_log_side",
+    "west": "theabyss:block/luna_log_side",
+    "particle": "theabyss:block/luna_log"
+  },
+  "render_type": "solid"
+}

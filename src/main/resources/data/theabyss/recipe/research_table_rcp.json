@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "#c:rods/wooden",
+    "b": "minecraft:glass",
+    "c": "theabyss:loran",
+    "d": "theabyss:cobble_stone",
+    "e": "minecraft:iron_pickaxe"
+  },
+  "pattern": [
+    "abc",
+    "ad ",
+    "c e"
+  ],
+  "result": {
+    "id": "theabyss:research_table"
+  }
+}

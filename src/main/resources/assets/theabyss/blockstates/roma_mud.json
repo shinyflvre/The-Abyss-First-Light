@@ -1,0 +1,15 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "theabyss:block/roma_mud"
+      },
+      {
+        "model": "theabyss:block/roma_mud_1"
+      },
+      {
+        "model": "theabyss:block/roma_mud_2"
+      }
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Bricked Knight Sword",
+  "icon": "theabyss:bricked_knight_sword",
+  "category": "weapons",
+  "order": 10,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:bricked_knight_sword",
+      "title": "Bricked Knight Sword",
+      "text": "This heavy frozen blade is the weapon of the Ice Knights. It deals 15 attack damage with an attack speed of 1.7 and lasts for 1664 uses. Ice Knights roam the Wayward Seas and the Forgotten Mountains with this sword in hand, and with a bit of luck one of them will leave it behind when you defeat it."
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:luna_planks"
+  },
+  "pattern": [
+    "aaa"
+  ],
+  "result": {
+    "id": "theabyss:luna_slab",
+    "count": 6
+  }
+}

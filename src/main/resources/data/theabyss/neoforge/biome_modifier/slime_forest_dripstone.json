@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "theabyss:slime_forest",
+  "features": "theabyss:slime_forest/dripstone",
+  "step": "top_layer_modification"
+}

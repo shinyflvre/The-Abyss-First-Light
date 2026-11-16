@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:fusion_ingot"
+  },
+  "pattern": [
+    "a a",
+    "a a"
+  ],
+  "result": {
+    "id": "theabyss:fusion_armor_boots"
+  }
+}

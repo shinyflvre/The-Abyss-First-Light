@@ -1,0 +1,15 @@
+{
+  "type": "theabyss:infuser_recipe_type",
+  "ingredients": [
+    "theabyss:apple_of_immortality",
+    "minecraft:apple",
+    "theabyss:apple_of_immortality",
+    "minecraft:apple",
+    "theabyss:somnium",
+    "theabyss:loran_energy"
+  ],
+  "output": {
+    "id": "theabyss:immortal_substance",
+    "count": 1
+  }
+}

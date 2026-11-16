@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "#c:rods/wooden",
+    "b": "theabyss:stone"
+  },
+  "pattern": [
+    "  a",
+    "bab",
+    " b "
+  ],
+  "result": {
+    "id": "theabyss:mortar_and_pestle"
+  }
+}

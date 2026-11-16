@@ -1,0 +1,32 @@
+{
+  "name": "Totem Of Abyss",
+  "icon": "theabyss:totem_of_abyss",
+  "category": "magic_items",
+  "order": 1,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:totem_of_abyss",
+      "title": "Totem Of Abyss",
+      "text": "The Totem of Abyss is a totem reforged with the power of Loran. When a blow would end your life, it breaks in your place, cancels your death and restores your health completely. Unlike an ordinary totem it does not have to rest in your hand, it guards you from anywhere in your inventory. Be careful, if you carry several different Abyss totems, all of them break at the same moment."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:totem_of_abyss_rcp",
+      "title": "Recipe",
+      "grid": [
+        "theabyss:loran_ingot",
+        "theabyss:loran",
+        "theabyss:loran_ingot",
+        "",
+        "minecraft:totem_of_undying",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:totem_of_abyss",
+      "count": 1
+    }
+  ]
+}

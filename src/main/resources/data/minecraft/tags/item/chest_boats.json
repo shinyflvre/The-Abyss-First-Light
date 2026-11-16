@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "theabyss:blaru_chest_boat",
+    "theabyss:nightgrove_chest_boat",
+    "theabyss:bog_chest_boat",
+    "theabyss:sal_chest_boat",
+    "theabyss:slimed_chest_boat",
+    "theabyss:frozen_chest_boat",
+    "theabyss:rena_chest_boat",
+    "theabyss:luna_chest_boat",
+    "theabyss:vigilant_chest_boat"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "theabyss:blaru_forest"
+  ],
+  "features": "theabyss:blaru_starpetals",
+  "step": "vegetal_decoration"
+}

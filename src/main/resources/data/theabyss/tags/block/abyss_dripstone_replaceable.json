@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:base_stone_overworld",
+    "theabyss:stone",
+    "theabyss:dark_stone",
+    "theabyss:stone_rackle",
+    "theabyss:dirt",
+    "theabyss:gravel",
+    "theabyss:abyss_dripstone_block"
+  ]
+}

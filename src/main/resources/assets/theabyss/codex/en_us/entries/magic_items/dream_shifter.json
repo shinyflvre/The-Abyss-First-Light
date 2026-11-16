@@ -1,0 +1,37 @@
+{
+  "name": "Dream Shifter",
+  "icon": "theabyss:dream_shifter",
+  "category": "magic_items",
+  "order": 0,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:dream_shifter",
+      "title": "Dream Shifter",
+      "text": "Step between worlds with the Dream Shifter. Right click it in the Overworld and you are carried into The Abyss at the very same coordinates. Use it again in The Abyss and it brings you back home the same way. After every shift the Dream Shifter needs 30 seconds to gather its strength before it can be used again."
+    },
+    {
+      "type": "text",
+      "title": "A Word of Caution",
+      "text": "Since you arrive at exactly the same place in the other world, always shift from wide open ground. The other side may hide a wall where you stand, or water where there was dry land, and you could suffocate or drown on arrival."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:dream_shifter_rcp",
+      "title": "Recipe",
+      "grid": [
+        "theabyss:ender_crystal_ore",
+        "theabyss:crimson_crystal_ore",
+        "theabyss:ender_crystal_ore",
+        "theabyss:loran",
+        "minecraft:ghast_tear",
+        "theabyss:loran",
+        "theabyss:ender_crystal_ore",
+        "theabyss:warped_crystal_ore",
+        "theabyss:ender_crystal_ore"
+      ],
+      "result": "theabyss:dream_shifter",
+      "count": 1
+    }
+  ]
+}

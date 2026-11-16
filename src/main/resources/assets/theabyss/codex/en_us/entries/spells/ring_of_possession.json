@@ -1,0 +1,40 @@
+{
+  "name": "Ring Of Possession",
+  "icon": "theabyss:ring_of_possession",
+  "category": "spells",
+  "order": 0,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:ring_of_possession",
+      "title": "Ring Of Possession",
+      "text": "Leave your own body behind and take control of another creature with this haunting ring! Look at any creature up to 20 blocks away and your spirit slips right into it. Walk, jump and fight as the creature itself and even use its own powers, from the fireballs of a blaze to the arrows of a skeleton. The ring consumes 20.0 somnium to possess a creature and 2.0 somnium every second you stay inside."
+    },
+    {
+      "type": "text",
+      "title": "The Spirit",
+      "text": "While you control the creature, your body waits motionless where you left it and cannot be harmed. Sneak to let go and your spirit returns to your body. Should the creature die, your spirit is pulled back unharmed. Mighty bosses and creatures that are already carrying a rider resist the ring."
+    },
+    {
+      "type": "text",
+      "title": "Crafting",
+      "text": "Long thought lost, the ring can be made again at the Arcane Workbench: a Ring of Curse in the middle, the Soul Hearts of the dead and Tenebris Powder laid round it in turn."
+    },
+    {
+      "type": "arcane",
+      "title": "Recipe",
+      "recipe": "theabyss:ring_of_possession_rcp",
+      "result": "theabyss:ring_of_curse",
+      "inputs": [
+        "theabyss:soul_heart",
+        "theabyss:tenebris_powder",
+        "theabyss:soul_heart",
+        "theabyss:tenebris_powder",
+        "theabyss:soul_heart",
+        "theabyss:tenebris_powder",
+        "theabyss:soul_heart",
+        "theabyss:tenebris_powder"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "name": "Incorythe Armor",
+  "icon": "theabyss:incorythe_armor_chestplate",
+  "category": "armors",
+  "order": 7,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:incorythe_armor_chestplate",
+      "title": "Incorythe Armor",
+      "text": "Made from Incorythe, the rarest gem of the Abyss, this set is built around iron armor and turns you into an unstoppable warrior. The helmet gives 5 armor, the chestplate 8, the leggings 7 and the boots 5, for a total of 25 armor. Each piece adds 5.0 toughness, the highest of all armors, and 30 percent knockback resistance."
+    },
+    {
+      "type": "text",
+      "title": "Abilities",
+      "text": "Harness the power of the rarest gem! While you wear the Incorythe Chestplate you are granted Strength, making every blow hit harder. The Incorythe Boots grant you Speed, letting you outrun any foe. Wear both to become a true force of nature."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:incorythe_helmet_rcp",
+      "title": "Helmet",
+      "text": "Each piece is crafted from Incorythe Gems around the matching iron armor piece.",
+      "grid": [
+        "theabyss:incorythe_gem",
+        "theabyss:incorythe_gem",
+        "theabyss:incorythe_gem",
+        "theabyss:incorythe_gem",
+        "minecraft:iron_helmet",
+        "theabyss:incorythe_gem",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:incorythe_armor_helmet",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:incorythe_chestplate_rcp",
+      "title": "Chestplate",
+      "grid": [
+        "theabyss:incorythe_gem",
+        "minecraft:iron_chestplate",
+        "theabyss:incorythe_gem",
+        "theabyss:incorythe_gem",
+        "theabyss:incorythe_gem",
+        "theabyss:incorythe_gem",
+        "theabyss:incorythe_gem",
+        "theabyss:incorythe_gem",
+        "theabyss:incorythe_gem"
+      ],
+      "result": "theabyss:incorythe_armor_chestplate",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:incorythe_leggings_rcp",
+      "title": "Leggings",
+      "grid": [
+        "theabyss:incorythe_gem",
+        "theabyss:incorythe_gem",
+        "theabyss:incorythe_gem",
+        "theabyss:incorythe_gem",
+        "minecraft:iron_leggings",
+        "theabyss:incorythe_gem",
+        "theabyss:incorythe_gem",
+        "",
+        "theabyss:incorythe_gem"
+      ],
+      "result": "theabyss:incorythe_armor_leggings",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:incorythe_boots_rcp",
+      "title": "Boots",
+      "grid": [
+        "theabyss:incorythe_gem",
+        "minecraft:iron_boots",
+        "theabyss:incorythe_gem",
+        "theabyss:incorythe_gem",
+        "",
+        "theabyss:incorythe_gem",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:incorythe_armor_boots",
+      "count": 1
+    }
+  ]
+}

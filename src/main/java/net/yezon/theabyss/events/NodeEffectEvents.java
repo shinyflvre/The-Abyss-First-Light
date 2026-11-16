@@ -1,0 +1,20 @@
+package net.yezon.theabyss.events;
+
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+
+public class NodeEffectEvents {
+    public static void execute(Entity entity) {
+        if (entity != null) {
+            if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
+                _entity.addEffect(new MobEffectInstance(MobEffects.SPEED, 200, 4));
+            }
+
+            if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
+                _entity.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, 200, 1));
+            }
+        }
+    }
+}

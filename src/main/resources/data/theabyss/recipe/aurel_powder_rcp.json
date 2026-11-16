@@ -1,0 +1,14 @@
+{
+  "type": "theabyss:mortar_recipe_type",
+  "ingredients": [
+    "theabyss:aurel_crystal_shard",
+    "theabyss:aurel_crystal_shard",
+    "theabyss:aurel_crystal_shard",
+    "theabyss:aurel_crystal_shard",
+    "theabyss:bottle_of_somnium"
+  ],
+  "output": {
+    "id": "theabyss:aurel_powder",
+    "count": 2
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:nightgrove_planks"
+  },
+  "pattern": [
+    "aa"
+  ],
+  "result": {
+    "id": "theabyss:nightgrove_pressure_plate"
+  }
+}

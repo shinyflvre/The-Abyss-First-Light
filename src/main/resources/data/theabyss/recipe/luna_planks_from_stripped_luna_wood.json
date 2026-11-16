@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:stripped_luna_wood"
+  },
+  "pattern": [
+    "a"
+  ],
+  "result": {
+    "id": "theabyss:luna_planks",
+    "count": 4
+  }
+}

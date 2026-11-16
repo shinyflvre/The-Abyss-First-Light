@@ -1,0 +1,8 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "theabyss:block/icora_flower",
+    "particle": "theabyss:block/icora_flower"
+  },
+  "render_type": "cutout"
+}

@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 86824805,
+    "separation": 2,
+    "spacing": 13
+  },
+  "structures": [
+    {
+      "structure": "theabyss:ruined_portal",
+      "weight": 1
+    }
+  ]
+}

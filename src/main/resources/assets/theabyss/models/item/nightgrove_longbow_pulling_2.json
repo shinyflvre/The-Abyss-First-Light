@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/bow",
+  "textures": {
+    "layer0": "theabyss:item/nightgrove_longbow_pulling_2"
+  }
+}

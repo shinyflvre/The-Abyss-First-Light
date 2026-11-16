@@ -1,0 +1,19 @@
+{
+  "name": "Phantom Soul",
+  "icon": "theabyss:phantom_soul_item",
+  "category": "magic_items",
+  "order": 15,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:phantom_soul_item",
+      "title": "Phantom Soul",
+      "text": "The restless soul of a Phantom. As long as you carry it, its spirit clings to you and gives you Bad Luck. Still, it is a precious ingredient for Phantom Essence, the Phantom Lantern, the Phantom Sword and the Somnium Usage Upgrade."
+    },
+    {
+      "type": "text",
+      "title": "Where to Find",
+      "text": "Every Phantom drops a Phantom Soul when it is slain. Phantoms haunt the Phantom Crate of The Abyss."
+    }
+  ]
+}

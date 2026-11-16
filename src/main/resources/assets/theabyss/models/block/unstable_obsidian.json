@@ -1,0 +1,95 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "all": "theabyss:block/unstable_obsidian",
+    "particle": "theabyss:block/unstable_obsidian",
+    "down": "#all",
+    "up": "#all",
+    "north": "#all",
+    "south": "#all",
+    "west": "#all",
+    "east": "#all",
+    "glow_unstable_obsidian": "theabyss:block/glow/unstable_obsidian"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#down",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#up",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#north",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#south",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#west",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#east",
+          "cullface": "east"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#glow_unstable_obsidian",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#glow_unstable_obsidian",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#glow_unstable_obsidian",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#glow_unstable_obsidian",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#glow_unstable_obsidian",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#glow_unstable_obsidian",
+          "cullface": "east"
+        }
+      },
+      "light_emission": 15,
+      "shade": false
+    }
+  ],
+  "render_type": "cutout"
+}

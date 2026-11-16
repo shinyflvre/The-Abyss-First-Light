@@ -1,0 +1,9 @@
+{
+  "parent": "theabyss:custom/rycilian_mushroom",
+  "textures": {
+    "all": "theabyss:block/item_rycilian_mushroom",
+    "particle": "theabyss:block/item_rycilian_mushroom",
+    "0": "theabyss:block/rycilian_mushroom"
+  },
+  "render_type": "cutout"
+}

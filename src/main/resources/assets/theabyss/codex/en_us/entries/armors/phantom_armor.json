@@ -1,0 +1,92 @@
+{
+  "name": "Phantom Armor",
+  "icon": "theabyss:phantom_armor_chestplate",
+  "category": "armors",
+  "order": 5,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:phantom_armor_chestplate",
+      "title": "Phantom Armor",
+      "text": "Woven from the souls of fallen phantoms, this ghostly set brings fortune to its wearer. The helmet gives 4 armor, the chestplate 8, the leggings 6 and the boots 5, for a total of 23 armor. Each piece adds 4.0 toughness and 20 percent knockback resistance."
+    },
+    {
+      "type": "text",
+      "title": "Abilities",
+      "text": "Fortune favors the bold! While you wear the Phantom Chestplate you are blessed with Luck, improving the treasures you find. The Phantom set is also the foundation of the legendary Unorithe armor."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:phantom_helmet_rcp",
+      "title": "Helmet",
+      "text": "Phantom Ingots are crafted from iron ingots and Phantom Essence.",
+      "grid": [
+        "theabyss:phantom_ingot",
+        "theabyss:phantom_ingot",
+        "theabyss:phantom_ingot",
+        "theabyss:phantom_ingot",
+        "",
+        "theabyss:phantom_ingot",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:phantom_armor_helmet",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:phantom_chestplate_rcp",
+      "title": "Chestplate",
+      "grid": [
+        "theabyss:phantom_ingot",
+        "",
+        "theabyss:phantom_ingot",
+        "theabyss:phantom_ingot",
+        "theabyss:phantom_ingot",
+        "theabyss:phantom_ingot",
+        "theabyss:phantom_ingot",
+        "theabyss:phantom_ingot",
+        "theabyss:phantom_ingot"
+      ],
+      "result": "theabyss:phantom_armor_chestplate",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:phantom_leggings_rcp",
+      "title": "Leggings",
+      "grid": [
+        "theabyss:phantom_ingot",
+        "theabyss:phantom_ingot",
+        "theabyss:phantom_ingot",
+        "theabyss:phantom_ingot",
+        "",
+        "theabyss:phantom_ingot",
+        "theabyss:phantom_ingot",
+        "",
+        "theabyss:phantom_ingot"
+      ],
+      "result": "theabyss:phantom_armor_leggings",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:phantom_boots_rcp",
+      "title": "Boots",
+      "grid": [
+        "theabyss:phantom_ingot",
+        "",
+        "theabyss:phantom_ingot",
+        "theabyss:phantom_ingot",
+        "",
+        "theabyss:phantom_ingot",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:phantom_armor_boots",
+      "count": 1
+    }
+  ]
+}

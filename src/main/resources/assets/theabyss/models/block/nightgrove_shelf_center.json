@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_shelf_center",
+  "textures": {
+    "all": "theabyss:block/nightgrove_shelf",
+    "particle": "theabyss:block/stripped_nightgrove_log"
+  }
+}

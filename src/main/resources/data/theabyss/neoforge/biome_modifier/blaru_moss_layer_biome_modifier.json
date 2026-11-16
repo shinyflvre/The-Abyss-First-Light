@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "theabyss:blaru_forest",
+  "features": "theabyss:blaru_moss_layer",
+  "step": "vegetal_decoration"
+}

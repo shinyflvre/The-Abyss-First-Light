@@ -1,0 +1,19 @@
+{
+  "name": "Node Shard",
+  "icon": "theabyss:node_shard",
+  "category": "magic_items",
+  "order": 12,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:node_shard",
+      "title": "Node Shard",
+      "text": "Node Shards are glowing fragments of raw energy. Eat one in an instant and the Node effect surges through you for 10 seconds, granting Speed V and Jump Boost II. They stack up to 8 and are also needed for the Ring of Speed and some Somnium upgrades."
+    },
+    {
+      "type": "text",
+      "title": "Where to Find",
+      "text": "Node Shards grow as Node Crystals on the slimy trees and fallen logs of the Slime Forest. Break a Node Crystal to collect three Node Shards."
+    }
+  ]
+}

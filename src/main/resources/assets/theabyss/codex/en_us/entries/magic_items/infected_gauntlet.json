@@ -1,0 +1,58 @@
+{
+  "name": "Infected Gauntlet",
+  "icon": "theabyss:infected_gauntlet",
+  "category": "magic_items",
+  "order": 0,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:infected_gauntlet",
+      "title": "Infected Gauntlet",
+      "text": "A gauntlet overgrown by the crystals of The Abyss. It can wear up to five of your rings at once. Lay it into the middle of a Gauntlet Station and set your rings onto its five fingers around it."
+    },
+    {
+      "type": "arcane",
+      "recipe": "theabyss:infected_gauntlet_rcp",
+      "title": "Infected Gauntlet",
+      "notes": [
+        "Only the hand is needed.",
+        "Shape it in the Arcane Workbench."
+      ],
+      "result": "theabyss:infected_slime",
+      "inputs": [
+        "theabyss:abyss_crystal_shard",
+        "theabyss:infected_leather",
+        "theabyss:abyss_crystal_shard",
+        "theabyss:infected_leather",
+        "theabyss:abyss_crystal_shard",
+        "theabyss:infected_leather",
+        "theabyss:abyss_crystal_shard",
+        "theabyss:infected_leather"
+      ]
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:gauntlet_station_rcp",
+      "title": "Gauntlet Station",
+      "text": "Your gauntlet in the middle, your five rings around it. Rings are only put on and taken off here.",
+      "grid": [
+        "theabyss:abyss_crystal_shard",
+        "theabyss:loran_energy",
+        "theabyss:abyss_crystal_shard",
+        "",
+        "theabyss:abyss_crystal_shard",
+        "",
+        "theabyss:cobble_stone",
+        "theabyss:cobble_stone",
+        "theabyss:cobble_stone"
+      ],
+      "result": "theabyss:gauntlet_station",
+      "count": 1
+    },
+    {
+      "type": "text",
+      "title": "The Spell Wheel",
+      "text": "Hold R while the gauntlet is in your hand and a wheel of your rings appears. Point at a ring and let go of R to choose it. Right click casts the chosen ring, the middle mouse button its second magic if it has one. Both keys can be changed in the controls of The Abyss."
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "parent": "block/slab",
+  "textures": {
+    "bottom": "theabyss:block/cobblestone",
+    "top": "theabyss:block/cobblestone",
+    "side": "theabyss:block/cobblestone"
+  },
+  "render_type": "solid"
+}

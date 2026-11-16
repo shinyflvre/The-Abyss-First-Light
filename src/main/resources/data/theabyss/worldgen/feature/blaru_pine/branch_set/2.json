@@ -1,0 +1,65 @@
+{
+  "type": "minecraft:simple_random_selector",
+  "features": [
+    {
+      "feature": "theabyss:blaru_pine/branch/2_east",
+      "placement": [
+        {
+          "type": "minecraft:offset",
+          "x": 0,
+          "y": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 0,
+            "max_inclusive": 1
+          },
+          "z": 0
+        }
+      ]
+    },
+    {
+      "feature": "theabyss:blaru_pine/branch/2_south",
+      "placement": [
+        {
+          "type": "minecraft:offset",
+          "x": 0,
+          "y": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 0,
+            "max_inclusive": 1
+          },
+          "z": 0
+        }
+      ]
+    },
+    {
+      "feature": "theabyss:blaru_pine/branch/2_west",
+      "placement": [
+        {
+          "type": "minecraft:offset",
+          "x": 0,
+          "y": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 0,
+            "max_inclusive": 1
+          },
+          "z": 0
+        }
+      ]
+    },
+    {
+      "feature": "theabyss:blaru_pine/branch/2_north",
+      "placement": [
+        {
+          "type": "minecraft:offset",
+          "x": 0,
+          "y": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 0,
+            "max_inclusive": 1
+          },
+          "z": 0
+        }
+      ]
+    }
+  ]
+}

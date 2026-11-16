@@ -1,0 +1,19 @@
+{
+  "name": "Artifact Of After Life",
+  "icon": "theabyss:artifact_of_after_life",
+  "category": "magic_items",
+  "order": 5,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:artifact_of_after_life",
+      "title": "Artifact Of After Life",
+      "text": "Cheat death itself with the Artifact of After Life. As long as it rests anywhere in your inventory, death has no hold on you. Instead of dying, your spirit is torn away to a random place up to 128 blocks away, while your lifeless body stays behind where you fell."
+    },
+    {
+      "type": "text",
+      "title": "The Afterlife",
+      "text": "For 40 seconds you wander as a spirit, drifting freely through blocks, and a message tells you when your body is nearby. Reach your body in time and you return to life with ten full hearts. Fail, and death claims you after all. The artifact crumbles once it has carried you through the afterlife, so treasure every one you find."
+    }
+  ]
+}

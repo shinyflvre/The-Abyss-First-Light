@@ -1,0 +1,9 @@
+{
+  "type": "theabyss:surface_chest",
+  "block": "theabyss:nightgrove_chest",
+  "loot_table": "theabyss:chests/phantom_crate_cache",
+  "spires_min": 5,
+  "spires_max": 9,
+  "spire_min_height": 2,
+  "spire_max_height": 7
+}

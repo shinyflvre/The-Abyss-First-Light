@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:slimed_planks"
+  },
+  "pattern": [
+    "aaa"
+  ],
+  "result": {
+    "id": "theabyss:slimed_slab",
+    "count": 6
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "theabyss:blaru_forest",
+  "features": "theabyss:fortis_ultima",
+  "step": "vegetal_decoration"
+}

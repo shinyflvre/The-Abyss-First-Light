@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:lush_ground_replaceable",
+    "theabyss:stone",
+    "theabyss:dirt",
+    "theabyss:gravel",
+    "theabyss:lush_clay",
+    "theabyss:lush_moss_block",
+    "theabyss:lush_rooted_dirt"
+  ]
+}

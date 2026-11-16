@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "theabyss:slime_forest",
+  "spawners": {
+    "type": "theabyss:slime_spider",
+    "weight": 35,
+    "count": 1
+  }
+}

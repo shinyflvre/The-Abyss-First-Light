@@ -1,0 +1,14 @@
+{
+  "type": "theabyss:mortar_recipe_type",
+  "ingredients": [
+    "theabyss:roka_horn",
+    "theabyss:roka_horn",
+    "theabyss:roka_horn",
+    "theabyss:roka_horn",
+    "theabyss:bottle_of_somnium"
+  ],
+  "output": {
+    "id": "theabyss:fear_powder",
+    "count": 2
+  }
+}

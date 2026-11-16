@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#is_end",
+  "features": "theabyss:ender_crystal_ore",
+  "step": "vegetal_decoration"
+}

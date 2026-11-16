@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "warped_forest",
+  "features": "theabyss:warped_crystal_ore",
+  "step": "vegetal_decoration"
+}

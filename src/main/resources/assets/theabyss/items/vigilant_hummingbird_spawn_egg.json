@@ -1,0 +1,16 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "theabyss:item/vigilant_hummingbird_spawn_egg",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -12174753
+      },
+      {
+        "type": "minecraft:constant",
+        "value": -6239274
+      }
+    ]
+  }
+}

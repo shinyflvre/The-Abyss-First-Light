@@ -1,0 +1,10 @@
+{
+  "parent": "theabyss:custom/glowing_blaru_moss",
+  "textures": {
+    "all": "theabyss:block/glowing_blaru_moss_top",
+    "particle": "theabyss:block/glowing_blaru_moss_top",
+    "side": "theabyss:block/glowing_blaru_moss_side",
+    "top": "theabyss:block/glowing_blaru_moss_top"
+  },
+  "render_type": "cutout"
+}

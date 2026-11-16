@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "theabyss:block/luna_slab"
+    },
+    "type=top": {
+      "model": "theabyss:block/luna_slab_top"
+    },
+    "type=double": {
+      "model": "theabyss:block/luna_slab_full"
+    }
+  }
+}

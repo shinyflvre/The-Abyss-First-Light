@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "theabyss:blue_mountain",
+    "theabyss:plains"
+  ],
+  "features": "theabyss:saturnia_versa",
+  "step": "vegetal_decoration"
+}

@@ -1,0 +1,36 @@
+{
+  "name": "Mortar And Pestle",
+  "icon": "theabyss:mortar_and_pestle",
+  "category": "crafting_blocks",
+  "order": 0,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:mortar_and_pestle",
+      "title": "Mortar And Pestle",
+      "text": "The mortar and pestle is a handy kitchen tool used to grind and crush a variety of materials, such as crystals, into fine powders. Simply place your ingredients in the mortar and use the pestle to grind them into a fragrant powder. This versatile tool is great for making all sorts of powders and dusts for use in recipes and remedies."
+    },
+    {
+      "type": "block",
+      "block": "theabyss:mortar_and_pestle",
+      "title": "Mortar And Pestle"
+    },
+    {
+      "type": "crafting",
+      "title": "Mortar And Pestle",
+      "result": "theabyss:mortar_and_pestle",
+      "count": 1,
+      "grid": [
+        "",
+        "",
+        "minecraft:stick",
+        "theabyss:stone",
+        "minecraft:stick",
+        "theabyss:stone",
+        "",
+        "theabyss:stone",
+        ""
+      ]
+    }
+  ]
+}

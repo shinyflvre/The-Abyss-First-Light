@@ -1,0 +1,14 @@
+{
+  "name": "Enchanted Bottle Of Somnium",
+  "icon": "theabyss:enchanted_bottle_of_somnium",
+  "category": "magic_items",
+  "order": 10,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:enchanted_bottle_of_somnium",
+      "title": "Enchanted Bottle Of Somnium",
+      "text": "This glowing bottle holds a far stronger draught than the common Bottle of Somnium. Drinking it restores 50 somnium at once. If your somnium is already above 81, the draught has no effect. It also restores 4 points of hunger, can be drunk even when you are not hungry, and stacks up to 16."
+    }
+  ]
+}

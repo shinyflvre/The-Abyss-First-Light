@@ -1,0 +1,11 @@
+{
+  "type": "theabyss:crystal_cutter_recipe_type",
+  "ingredients": [
+    "theabyss:ender_crystal_ore",
+    "theabyss:loran_energy"
+  ],
+  "output": {
+    "id": "theabyss:ender_crystal_shard",
+    "count": 1
+  }
+}

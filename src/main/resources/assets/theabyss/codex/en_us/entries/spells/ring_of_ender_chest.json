@@ -1,0 +1,19 @@
+{
+  "name": "Ring Of Ender Chest",
+  "icon": "theabyss:ring_of_ender_chest",
+  "category": "spells",
+  "order": 0,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:ring_of_ender_chest",
+      "title": "Ring Of Ender Chest",
+      "text": "Carry the ultimate in storage convenience with this amazing ring! Not only is it a portable ender chest, allowing you to access all of your stored items at a moment's notice, but it also doesn't require any somnium to use. Never be caught without your essential items again with this handy ring!"
+    },
+    {
+      "type": "text",
+      "title": "Lost Artifact",
+      "text": "No one remembers how this ring was made. The knowledge of its creation has been lost to the depths of the Abyss, and no Arcane recipe is known to bring it to life. Whoever owns one of these rings holds a true relic of a forgotten age."
+    }
+  ]
+}

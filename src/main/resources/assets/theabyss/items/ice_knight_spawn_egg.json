@@ -1,0 +1,16 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "theabyss:item/ice_knight_spawn_egg",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -14539993
+      },
+      {
+        "type": "minecraft:constant",
+        "value": -16711720
+      }
+    ]
+  }
+}

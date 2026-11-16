@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:cobble_stone",
+    "b": "theabyss:bottle_of_somnium",
+    "c": "minecraft:glass_bottle"
+  },
+  "pattern": [
+    " a ",
+    " b ",
+    "bcb"
+  ],
+  "result": {
+    "id": "theabyss:test_tube"
+  }
+}

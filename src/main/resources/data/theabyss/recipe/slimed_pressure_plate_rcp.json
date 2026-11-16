@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:slimed_planks"
+  },
+  "pattern": [
+    "aa"
+  ],
+  "result": {
+    "id": "theabyss:slimed_pressure_plate"
+  }
+}

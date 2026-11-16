@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "theabyss:tall_dusk_coral",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "theabyss:tall_dusk_coral",
+            "state": {
+              "half": "lower"
+            }
+          }
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "theabyss:blocks/tall_dusk_coral"
+}

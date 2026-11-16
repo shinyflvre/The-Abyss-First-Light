@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "theabyss:block/rena_slab"
+    },
+    "type=top": {
+      "model": "theabyss:block/rena_slab_top"
+    },
+    "type=double": {
+      "model": "theabyss:block/rena_slab_full"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "3. In Black Ink",
+  "icon": "minecraft:ink_sac",
+  "category": "chronicles",
+  "order": 3,
+  "chronicle": 3,
+  "pages": [
+    {
+      "type": "text",
+      "text": "You came back. Good. Now stay here. I know what you saw down there, and I know how it called to you. The light, the warm air, the feeling that the world is breathing with you. It feels like a gift. It is not a gift. This place keeps what it is given, and it has been given so much already. Every step you take down there is a step it remembers. That little shifter in your hand opens a door in both directions, and not everything that passes through it is you. If you cross again, you cross on your own account. I will not ask twice."
+    }
+  ]
+}

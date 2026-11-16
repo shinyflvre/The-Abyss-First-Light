@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "theabyss:block/nightgrove_bush",
+    "particle": "theabyss:block/nightgrove_bush"
+  },
+  "render_type": "cutout"
+}

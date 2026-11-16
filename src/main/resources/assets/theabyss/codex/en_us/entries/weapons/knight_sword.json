@@ -1,0 +1,33 @@
+{
+  "name": "Knight Sword",
+  "icon": "theabyss:knight_sword",
+  "category": "weapons",
+  "order": 11,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:knight_sword",
+      "title": "Knight Sword",
+      "text": "Forged from the Knight Ingot, this massive sword hits harder than any common blade. It deals 16 attack damage with a slow but crushing attack speed of 1.6 and endures 1664 uses. Every swing is a blow your enemies will remember."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:knight_sword_rcp",
+      "title": "Recipe",
+      "text": "A Knight Ingot on top and one in the middle, flanked by two Icora Stones, with a stick below.",
+      "grid": [
+        "",
+        "theabyss:knight_ingot",
+        "",
+        "theabyss:icora_stone",
+        "theabyss:knight_ingot",
+        "theabyss:icora_stone",
+        "",
+        "#c:rods/wooden",
+        ""
+      ],
+      "result": "theabyss:knight_sword",
+      "count": 1
+    }
+  ]
+}

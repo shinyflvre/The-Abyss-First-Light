@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "half=lower": {
+      "model": "theabyss:block/tall_rena_shroom_bottom"
+    },
+    "half=upper": {
+      "model": "theabyss:block/tall_rena_shroom_top"
+    }
+  }
+}

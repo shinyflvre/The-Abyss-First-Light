@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "theabyss:vigilant_forest",
+  "features": "theabyss:vigilant_laying_tree_feature",
+  "step": "surface_structures"
+}

@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2029369303,
+    "separation": 2,
+    "spacing": 12
+  },
+  "structures": [
+    {
+      "structure": "theabyss:abylager_hut",
+      "weight": 1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "theabyss:block/rena_log",
+    "up": "theabyss:block/rena_log",
+    "north": "theabyss:block/rena_log_side",
+    "east": "theabyss:block/rena_log_side",
+    "south": "theabyss:block/rena_log_side",
+    "west": "theabyss:block/rena_log_side",
+    "particle": "theabyss:block/rena_log"
+  },
+  "render_type": "solid"
+}

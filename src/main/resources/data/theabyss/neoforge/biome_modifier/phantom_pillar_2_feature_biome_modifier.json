@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "theabyss:phantom_crate",
+    "theabyss:waywardsea"
+  ],
+  "features": "theabyss:phantom_pillar_2_feature",
+  "step": "surface_structures"
+}

@@ -1,0 +1,36 @@
+{
+  "name": "Shared Heart",
+  "icon": "theabyss:shared_heart",
+  "category": "alchemy",
+  "order": 0,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:shared_heart",
+      "title": "Shared Heart",
+      "text": "Two hearts of soul guards and two Roka horns bind your heart to everyone who dares to wound you. The draught lasts 1 minute."
+    },
+    {
+      "type": "text",
+      "title": "How it works",
+      "text": "Every creature that strikes you suffers half of the harm it poured into you, whether it comes at you with claws, blades or arrows. A shield that catches the blow catches its echo too."
+    },
+    {
+      "type": "infuser",
+      "title": "Recipe",
+      "recipe": "theabyss:shared_heart_rcp",
+      "notes": [
+        "Place Somnium and loran energy in the upper input slots.",
+        "Place the required items in the test tubes on the left and right."
+      ],
+      "inputs": [
+        "theabyss:soul_heart",
+        "theabyss:roka_horn",
+        "theabyss:soul_heart",
+        "theabyss:roka_horn"
+      ],
+      "somnium": "theabyss:somnium",
+      "energy": "theabyss:loran_energy"
+    }
+  ]
+}

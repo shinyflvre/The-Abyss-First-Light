@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "theabyss:phantom_crate",
+  "features": [
+    "theabyss:phantom_crate/dripstone_rock",
+    "theabyss:phantom_crate/dripstone_ground"
+  ],
+  "step": "top_layer_modification"
+}

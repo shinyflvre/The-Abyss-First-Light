@@ -1,0 +1,16 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "theabyss:slime_forest",
+    "theabyss:phantom_crate",
+    "theabyss:blue_mountain",
+    "theabyss:mud_plains",
+    "theabyss:nightgrove",
+    "theabyss:plains",
+    "theabyss:vigilant_forest",
+    "theabyss:blaru_forest",
+    "theabyss:lush_glow_cave"
+  ],
+  "features": "theabyss:aberythe_ore",
+  "step": "underground_ores"
+}

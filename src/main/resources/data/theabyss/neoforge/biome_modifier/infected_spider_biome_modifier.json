@@ -1,0 +1,13 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "theabyss:blaru_forest",
+  "spawners": {
+    "type": "theabyss:infected_spider",
+    "weight": 34,
+    "count": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 5,
+      "min_inclusive": 2
+    }
+  }
+}

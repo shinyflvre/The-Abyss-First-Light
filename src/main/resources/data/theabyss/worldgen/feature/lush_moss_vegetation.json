@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:simple_block",
+  "to_place": {
+    "type": "minecraft:weighted",
+    "entries": [
+      {
+        "data": "theabyss:lush_flowering_azalea",
+        "weight": 4
+      },
+      {
+        "data": "theabyss:lush_azalea",
+        "weight": 7
+      },
+      {
+        "data": "theabyss:lush_moss_carpet",
+        "weight": 25
+      },
+      {
+        "data": "theabyss:blaru_grass",
+        "weight": 50
+      },
+      {
+        "data": "theabyss:tall_blaru_grass",
+        "weight": 10
+      }
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "block/button_pressed",
+  "textures": {
+    "texture": "theabyss:block/blaru_planks"
+  },
+  "render_type": "solid"
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_sign_rot_2",
+  "textures": {
+    "all": "theabyss:block/slimed_sign",
+    "particle": "theabyss:block/slimed_planks"
+  }
+}

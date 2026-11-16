@@ -1,0 +1,14 @@
+{
+  "type": "theabyss:mortar_recipe_type",
+  "ingredients": [
+    "theabyss:frost_crystal_shard",
+    "theabyss:frost_crystal_shard",
+    "theabyss:frost_crystal_shard",
+    "theabyss:frost_crystal_shard",
+    "theabyss:bottle_of_somnium"
+  ],
+  "output": {
+    "id": "theabyss:frost_powder",
+    "count": 2
+  }
+}

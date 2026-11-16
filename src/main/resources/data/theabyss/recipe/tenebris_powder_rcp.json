@@ -1,0 +1,14 @@
+{
+  "type": "theabyss:mortar_recipe_type",
+  "ingredients": [
+    "theabyss:roka_horn",
+    "theabyss:caverna_powder",
+    "theabyss:roka_horn",
+    "theabyss:caverna_powder",
+    "theabyss:anti_fear_essence"
+  ],
+  "output": {
+    "id": "theabyss:tenebris_powder",
+    "count": 2
+  }
+}

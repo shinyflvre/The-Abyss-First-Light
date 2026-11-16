@@ -1,0 +1,13 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "theabyss:phantom_crate",
+  "spawners": {
+    "type": "theabyss:infected_phantom",
+    "weight": 60,
+    "count": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 2,
+      "min_inclusive": 1
+    }
+  }
+}

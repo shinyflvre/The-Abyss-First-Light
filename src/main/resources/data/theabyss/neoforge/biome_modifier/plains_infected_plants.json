@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "theabyss:plains"
+  ],
+  "features": [
+    "theabyss:plains/tall_infected_grass",
+    "theabyss:plains/infected_bush",
+    "theabyss:plains/infected_short_grass"
+  ],
+  "step": "vegetal_decoration"
+}

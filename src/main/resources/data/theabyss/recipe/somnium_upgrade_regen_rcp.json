@@ -1,0 +1,15 @@
+{
+  "type": "theabyss:infuser_recipe_type",
+  "ingredients": [
+    "theabyss:roka_horn",
+    "theabyss:phantom_essence",
+    "theabyss:phantom_essence",
+    "theabyss:infected_slime",
+    "theabyss:somnium",
+    "theabyss:loran_energy"
+  ],
+  "output": {
+    "id": "theabyss:somnium_regen_upgrade",
+    "count": 1
+  }
+}

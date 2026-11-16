@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "theabyss:item/jump_scare_face_icon"
+  }
+}

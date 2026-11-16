@@ -1,0 +1,24 @@
+{
+  "values": [
+    "theabyss:fusion_ore",
+    "theabyss:loran_ore",
+    "theabyss:garnite_ore",
+    "theabyss:ignisithe_ore",
+    "theabyss:glacerythe_ore",
+    "theabyss:aberythe_ore",
+    "theabyss:incorythe_ore",
+    "theabyss:loran_end_ore",
+    "theabyss:crimson_crystal_ore",
+    "theabyss:warped_crystal_ore",
+    "theabyss:aurel_crystal_ore",
+    "theabyss:caverna_crystal_ore",
+    "theabyss:ender_crystal_ore",
+    "theabyss:frost_crystal_ore",
+    "theabyss:abyss_crystal_ore",
+    "theabyss:hollow_crystal_ore",
+    "theabyss:iron_variant",
+    "theabyss:gold_variant",
+    "theabyss:diamond_variant",
+    "theabyss:emerald_variant"
+  ]
+}

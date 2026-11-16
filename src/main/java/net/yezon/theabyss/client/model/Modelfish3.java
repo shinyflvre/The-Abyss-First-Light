@@ -1,0 +1,64 @@
+package net.yezon.theabyss.client.model;
+
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.resources.Identifier;
+
+public class Modelfish3<S extends EntityRenderState> extends EntityModel<S> {
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath("theabyss", "modelfish_3"), "main");
+    public final ModelPart body;
+
+    public Modelfish3(ModelPart root) {
+        super(root);
+        this.body = root.getChild("body");
+    }
+
+    public static LayerDefinition createBodyLayer() {
+        MeshDefinition meshdefinition = new MeshDefinition();
+        PartDefinition partdefinition = meshdefinition.getRoot();
+        PartDefinition body = partdefinition.addOrReplaceChild(
+            "body",
+            CubeListBuilder.create().texOffs(0, 0).addBox(-1.0F, -5.0F, -3.0F, 2.0F, 5.0F, 6.0F, new CubeDeformation(0.0F)),
+            PartPose.offset(0.0F, 24.0F, 0.0F)
+        );
+        PartDefinition cube_r1 = body.addOrReplaceChild(
+            "cube_r1",
+            CubeListBuilder.create().texOffs(0, 6).addBox(0.0F, -3.0F, 0.0F, 0.0F, 5.0F, 5.0F, new CubeDeformation(0.0F)),
+            PartPose.offsetAndRotation(0.0F, -2.0F, 3.0F, 0.0F, 0.0044F, 0.0F)
+        );
+        PartDefinition cube_r2 = body.addOrReplaceChild(
+            "cube_r2",
+            CubeListBuilder.create().texOffs(0, 6).mirror().addBox(0.0F, -3.0F, 0.0F, 0.0F, 5.0F, 5.0F, new CubeDeformation(0.0F)).mirror(false),
+            PartPose.offsetAndRotation(0.0F, -2.0F, 3.0F, 0.0F, -0.0044F, 0.0F)
+        );
+        PartDefinition cube_r3 = body.addOrReplaceChild(
+            "cube_r3",
+            CubeListBuilder.create().texOffs(0, 10).mirror().addBox(0.0F, -1.0F, -3.0F, 0.0F, 1.0F, 6.0F, new CubeDeformation(0.0F)).mirror(false),
+            PartPose.offsetAndRotation(0.0F, -5.0F, 0.0F, 0.0F, 0.0F, -0.0044F)
+        );
+        PartDefinition cube_r4 = body.addOrReplaceChild(
+            "cube_r4",
+            CubeListBuilder.create().texOffs(0, 10).addBox(0.0F, -1.0F, -3.0F, 0.0F, 1.0F, 6.0F, new CubeDeformation(0.0F)),
+            PartPose.offsetAndRotation(0.0F, -5.0F, 0.0F, 0.0F, 0.0F, 0.0044F)
+        );
+        PartDefinition cube_r5 = body.addOrReplaceChild(
+            "cube_r5",
+            CubeListBuilder.create().texOffs(0, 2).mirror().addBox(0.0F, -1.0F, 0.0F, 0.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false),
+            PartPose.offsetAndRotation(-1.0F, -1.5F, -1.0F, 0.0F, -0.5672F, 0.0F)
+        );
+        PartDefinition cube_r6 = body.addOrReplaceChild(
+            "cube_r6",
+            CubeListBuilder.create().texOffs(0, 2).addBox(0.0F, -1.0F, 0.0F, 0.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)),
+            PartPose.offsetAndRotation(1.0F, -1.5F, -1.0F, 0.0F, 0.5672F, 0.0F)
+        );
+        return LayerDefinition.create(meshdefinition, 32, 32);
+    }
+}

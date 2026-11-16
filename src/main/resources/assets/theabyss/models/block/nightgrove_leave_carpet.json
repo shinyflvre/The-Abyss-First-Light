@@ -1,0 +1,9 @@
+{
+  "parent": "theabyss:custom/fallen_leaves",
+  "textures": {
+    "all": "theabyss:block/nightgrove_leave",
+    "particle": "theabyss:block/nightgrove_leave",
+    "texture": "theabyss:block/nightgrove_leave"
+  },
+  "render_type": "cutout"
+}

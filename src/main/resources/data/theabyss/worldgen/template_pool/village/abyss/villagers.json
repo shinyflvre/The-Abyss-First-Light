@@ -1,0 +1,50 @@
+{
+  "elements": [
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/villagers/nitwit",
+        "processors": {
+          "processors": [
+            {
+              "processor_type": "theabyss:biome_path"
+            }
+          ]
+        },
+        "projection": "rigid"
+      },
+      "weight": 1
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/villagers/baby",
+        "processors": {
+          "processors": [
+            {
+              "processor_type": "theabyss:biome_path"
+            }
+          ]
+        },
+        "projection": "rigid"
+      },
+      "weight": 1
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "theabyss:village/abyss/villagers/unemployed",
+        "processors": {
+          "processors": [
+            {
+              "processor_type": "theabyss:biome_path"
+            }
+          ]
+        },
+        "projection": "rigid"
+      },
+      "weight": 10
+    }
+  ],
+  "fallback": "minecraft:empty"
+}

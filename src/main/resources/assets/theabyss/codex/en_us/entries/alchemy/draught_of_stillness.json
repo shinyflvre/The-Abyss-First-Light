@@ -1,0 +1,36 @@
+{
+  "name": "Draught of Stillness",
+  "icon": "theabyss:draught_of_stillness",
+  "category": "alchemy",
+  "order": 0,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:draught_of_stillness",
+      "title": "Draught of Stillness",
+      "text": "Frost shards and node shards, steeped in Somnium, make a draught as calm as a frozen lake. For 3 minutes it lets your Somnium flow back three times as fast."
+    },
+    {
+      "type": "text",
+      "title": "How it works",
+      "text": "The gift only answers patience. You must stand perfectly still and your hearts must be full, or the flow stops at once. Even if you never learned to regenerate Somnium, stillness lets it return to you."
+    },
+    {
+      "type": "infuser",
+      "title": "Recipe",
+      "recipe": "theabyss:draught_of_stillness_rcp",
+      "notes": [
+        "Place Somnium and loran energy in the upper input slots.",
+        "Place the required items in the test tubes on the left and right."
+      ],
+      "inputs": [
+        "theabyss:frost_crystal_shard",
+        "theabyss:node_shard",
+        "theabyss:frost_crystal_shard",
+        "theabyss:node_shard"
+      ],
+      "somnium": "theabyss:somnium",
+      "energy": "theabyss:loran_energy"
+    }
+  ]
+}

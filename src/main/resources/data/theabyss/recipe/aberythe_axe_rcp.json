@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:aberythe_gem",
+    "b": "#c:rods/wooden"
+  },
+  "pattern": [
+    "aa",
+    "ba",
+    "b "
+  ],
+  "result": {
+    "id": "theabyss:aberythe_axe"
+  }
+}

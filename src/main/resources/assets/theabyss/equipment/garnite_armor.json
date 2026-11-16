@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "theabyss:garnite_armor"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "theabyss:garnite_armor"
+      }
+    ]
+  }
+}

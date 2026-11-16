@@ -1,0 +1,18 @@
+{
+  "type": "theabyss:arcane_recipe_type",
+  "ingredients": [
+    "theabyss:ring_of_ring",
+    "theabyss:aurel_powder",
+    "theabyss:vitae_nugget",
+    "theabyss:aurel_powder",
+    "theabyss:vitae_nugget",
+    "theabyss:aurel_powder",
+    "theabyss:vitae_nugget",
+    "theabyss:aurel_powder",
+    "theabyss:vitae_nugget"
+  ],
+  "output": {
+    "id": "theabyss:ring_of_reg",
+    "count": 1
+  }
+}

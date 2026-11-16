@@ -1,0 +1,33 @@
+{
+  "name": "Fusion Sword",
+  "icon": "theabyss:fusion_sword",
+  "category": "weapons",
+  "order": 5,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:fusion_sword",
+      "title": "Fusion Sword",
+      "text": "Born from the power of Fusion Ingots, this blade hits with 9 attack damage at an attack speed of 1.8. With 2228 uses it will stay by your side for a long time, cutting through the creatures of the Abyss with ease."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:fusion_sword_rcp",
+      "title": "Recipe",
+      "text": "Two Fusion Ingots on top of a stick.",
+      "grid": [
+        "theabyss:fusion_ingot",
+        "",
+        "",
+        "theabyss:fusion_ingot",
+        "",
+        "",
+        "#c:rods/wooden",
+        "",
+        ""
+      ],
+      "result": "theabyss:fusion_sword",
+      "count": 1
+    }
+  ]
+}

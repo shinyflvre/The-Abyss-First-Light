@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:stone_brick"
+  },
+  "pattern": [
+    "aaa",
+    " a ",
+    "aaa"
+  ],
+  "result": {
+    "id": "theabyss:stone_brick_pillar",
+    "count": 3
+  }
+}

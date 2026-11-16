@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "theabyss:block/frozen_leave",
+    "particle": "theabyss:block/frozen_leave"
+  },
+  "render_type": "cutout"
+}

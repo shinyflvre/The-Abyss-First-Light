@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "theabyss:block/frost_log_top",
+    "up": "theabyss:block/frost_log_top",
+    "north": "theabyss:block/frost_log",
+    "east": "theabyss:block/frost_log",
+    "south": "theabyss:block/frost_log",
+    "west": "theabyss:block/frost_log",
+    "particle": "theabyss:block/frost_log_top"
+  },
+  "render_type": "solid"
+}

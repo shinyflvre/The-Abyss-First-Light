@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "top=false": {
+      "model": "theabyss:block/standing_lumen_strands_plant"
+    },
+    "top=true": {
+      "model": "theabyss:block/standing_lumen_strands_plant_base"
+    }
+  }
+}

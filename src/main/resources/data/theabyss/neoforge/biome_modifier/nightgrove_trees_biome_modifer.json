@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "theabyss:nightgrove",
+  "features": "theabyss:nightgrove_jungle/trees/layer_1",
+  "step": "top_layer_modification"
+}

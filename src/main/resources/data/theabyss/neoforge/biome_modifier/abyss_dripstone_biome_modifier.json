@@ -1,0 +1,24 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "theabyss:beach",
+    "theabyss:blaru_forest",
+    "theabyss:nightgrove",
+    "theabyss:blue_mountain",
+    "theabyss:mud_plains",
+    "theabyss:ocean",
+    "theabyss:phantom_crate",
+    "theabyss:plains",
+    "theabyss:river",
+    "theabyss:shroomlands",
+    "theabyss:slime_forest",
+    "theabyss:vigilant_forest",
+    "theabyss:lush_glow_cave"
+  ],
+  "features": [
+    "theabyss:abyss_dripstone/cluster",
+    "theabyss:abyss_dripstone/stalactites",
+    "theabyss:abyss_dripstone/stalagmites"
+  ],
+  "step": "underground_decoration"
+}

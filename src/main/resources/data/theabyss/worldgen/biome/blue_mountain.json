@@ -1,0 +1,63 @@
+{
+  "attributes": {
+    "minecraft:audio/ambient_sounds": {
+      "loop": "theabyss:blue_mountains_ambience",
+      "mood": {
+        "block_search_extent": 2,
+        "offset": 8,
+        "sound": "theabyss:random_fx",
+        "tick_delay": 300
+      }
+    },
+    "minecraft:audio/background_music": {
+      "default": {
+        "max_delay": 24000,
+        "min_delay": 12000,
+        "sound": "theabyss:theabyss_dimension_music",
+        "replace_current_music": true
+      }
+    },
+    "minecraft:visual/ambient_particles": {
+      "argument": [
+        {
+          "particle": {
+            "type": "theabyss:spurs_fx"
+          },
+          "probability": 0.03
+        }
+      ],
+      "modifier": "append"
+    },
+    "minecraft:visual/fog_color": "#0e202e",
+    "minecraft:visual/water_fog_color": "#666666"
+  },
+  "carvers": [
+    "minecraft:cave",
+    "minecraft:cave_extra_underground",
+    "minecraft:canyon"
+  ],
+  "downfall": 0.2,
+  "effects": {
+    "foliage_color": "#000000",
+    "grass_color": "#003333",
+    "water_color": "#333333"
+  },
+  "features": [
+    [],
+    [
+      "minecraft:lake_lava_underground"
+    ],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "minecraft:patch_grass_forest"
+    ]
+  ],
+  "has_precipitation": false,
+  "temperature": 0.4
+}

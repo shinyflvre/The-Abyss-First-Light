@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:incorythe_gem",
+    "b": "minecraft:diamond",
+    "c": "theabyss:incorythe_sword"
+  },
+  "pattern": [
+    "aba",
+    "bcb",
+    "aba"
+  ],
+  "result": {
+    "id": "theabyss:incorythe_sword_mkii"
+  }
+}

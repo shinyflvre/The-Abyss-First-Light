@@ -1,0 +1,8 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "theabyss:block/toxic_sun_flower",
+    "particle": "theabyss:block/toxic_sun_flower"
+  },
+  "render_type": "cutout"
+}

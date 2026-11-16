@@ -1,0 +1,20 @@
+{
+  "name": "Garnite Ingot",
+  "icon": "theabyss:garnite_ingot",
+  "category": "gem",
+  "order": 0,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:garnite_ingot",
+      "title": "Garnite Ingot",
+      "text": "Garnite Ores can be found in the Slime Forest and Nightgroves. They are found at an altitude of 5 to 12. With Ignisithe you can make weapons, armor and other things."
+    },
+    {
+      "type": "block",
+      "block": "theabyss:garnite_ore",
+      "title": "Garnite Ore",
+      "text": "Garnite Ore."
+    }
+  ]
+}

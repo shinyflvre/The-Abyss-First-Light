@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "theabyss:block/nightgrove_slab"
+    },
+    "type=top": {
+      "model": "theabyss:block/nightgrove_slab_top"
+    },
+    "type=double": {
+      "model": "theabyss:block/nightgrove_slab_full"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "theabyss:stripped_frozen_log"
+  ],
+  "result": {
+    "id": "theabyss:frozen_planks",
+    "count": 4
+  }
+}

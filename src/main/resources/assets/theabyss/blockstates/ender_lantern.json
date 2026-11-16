@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "hanging=false": {
+      "model": "theabyss:block/ender_lantern"
+    },
+    "hanging=true": {
+      "model": "theabyss:block/ender_hanging_lantern"
+    }
+  }
+}

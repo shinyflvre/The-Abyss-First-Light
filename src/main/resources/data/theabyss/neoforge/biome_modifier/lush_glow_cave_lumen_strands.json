@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "theabyss:lush_glow_cave",
+  "features": "theabyss:lush_glow_cave/lumen_strands",
+  "step": "vegetal_decoration"
+}

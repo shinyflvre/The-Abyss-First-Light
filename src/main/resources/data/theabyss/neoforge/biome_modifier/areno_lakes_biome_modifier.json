@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "theabyss:blaru_forest",
+    "theabyss:blue_mountain",
+    "theabyss:slime_forest"
+  ],
+  "features": "theabyss:areno_lakes",
+  "step": "surface_structures"
+}

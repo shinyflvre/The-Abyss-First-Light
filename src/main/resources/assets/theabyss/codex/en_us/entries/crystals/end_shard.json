@@ -1,0 +1,18 @@
+{
+  "name": "Ender Crystal Shard",
+  "icon": "theabyss:ender_crystal_shard",
+  "category": "crystals",
+  "order": 0,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:ender_crystal_shard",
+      "title": "Ender Crystal Shard",
+      "text": "Have you ever ventured into the mysterious End dimension in Minecraft? If so, you may have stumbled upon Ender Crystal Shards, which are scattered throughout this strange and otherworldly landscape. These sparkling crystals are quite common in the End, and they can be found glowing brightly in various locations. "
+    },
+    {
+      "type": "text",
+      "text": "Some players believe that the Ender Crystal Shards hold great power and mystery, and they go to great lengths to collect as many as they can. Who knows what secrets these mystical crystals may hold?"
+    }
+  ]
+}

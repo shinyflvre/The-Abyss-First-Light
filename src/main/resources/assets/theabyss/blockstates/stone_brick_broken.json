@@ -1,0 +1,18 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "theabyss:block/stone_brick_broken"
+      },
+      {
+        "model": "theabyss:block/stone_brick_broken_1"
+      },
+      {
+        "model": "theabyss:block/stone_brick_broken_2"
+      },
+      {
+        "model": "theabyss:block/stone_brick_broken_3"
+      }
+    ]
+  }
+}

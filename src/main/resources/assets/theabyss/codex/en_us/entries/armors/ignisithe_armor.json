@@ -1,0 +1,92 @@
+{
+  "name": "Ignisithe Armor",
+  "icon": "theabyss:ignisithe_armor_chestplate",
+  "category": "armors",
+  "order": 2,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:ignisithe_armor_chestplate",
+      "title": "Ignisithe Armor",
+      "text": "Born from the burning Ignisithe gem, this armor laughs in the face of flames. The helmet gives 5 armor, the chestplate 6, the leggings 5 and the boots 4, for a total of 20 armor. Each piece adds 3.5 toughness and 10 percent knockback resistance."
+    },
+    {
+      "type": "text",
+      "title": "Abilities",
+      "text": "Walk through fire and lava like it is nothing! As long as you wear the Ignisithe Chestplate, you are granted Fire Resistance, keeping you safe from burning and from the heat of lava."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:ignisithe_helmet_rcp",
+      "title": "Helmet",
+      "text": "Ignisithe Gems are mined from Ignisithe Ore, found at an altitude of 2 to 30.",
+      "grid": [
+        "theabyss:ignisithe_gem",
+        "theabyss:ignisithe_gem",
+        "theabyss:ignisithe_gem",
+        "theabyss:ignisithe_gem",
+        "",
+        "theabyss:ignisithe_gem",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:ignisithe_armor_helmet",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:ignisithe_chestplate_rcp",
+      "title": "Chestplate",
+      "grid": [
+        "theabyss:ignisithe_gem",
+        "",
+        "theabyss:ignisithe_gem",
+        "theabyss:ignisithe_gem",
+        "theabyss:ignisithe_gem",
+        "theabyss:ignisithe_gem",
+        "theabyss:ignisithe_gem",
+        "theabyss:ignisithe_gem",
+        "theabyss:ignisithe_gem"
+      ],
+      "result": "theabyss:ignisithe_armor_chestplate",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:ignisithe_leggings_rcp",
+      "title": "Leggings",
+      "grid": [
+        "theabyss:ignisithe_gem",
+        "theabyss:ignisithe_gem",
+        "theabyss:ignisithe_gem",
+        "theabyss:ignisithe_gem",
+        "",
+        "theabyss:ignisithe_gem",
+        "theabyss:ignisithe_gem",
+        "",
+        "theabyss:ignisithe_gem"
+      ],
+      "result": "theabyss:ignisithe_armor_leggings",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:ignisithe_boots_rcp",
+      "title": "Boots",
+      "grid": [
+        "theabyss:ignisithe_gem",
+        "",
+        "theabyss:ignisithe_gem",
+        "theabyss:ignisithe_gem",
+        "",
+        "theabyss:ignisithe_gem",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:ignisithe_armor_boots",
+      "count": 1
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "Sword Of Abyss",
+  "icon": "theabyss:abyss_sword",
+  "category": "weapons",
+  "order": 12,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:abyss_sword",
+      "title": "Sword Of Abyss",
+      "text": "The blade of the Nightblade himself. It deals 20 attack damage with an attack speed of 2.0 and lasts for 4000 uses. While you hold it, dark particles and smoke swirl around you. To claim it, summon the Nightblade at the Night Altar with an Eye Of Abyss and defeat him. He drops this sword when he falls."
+    },
+    {
+      "type": "text",
+      "title": "Blade Arts",
+      "text": "Each strike has a 40% chance to unleash a combo of four rapid slices that deal 2 extra damage each. Right click to dash in the direction you are looking, even through the air, with a cooldown of 2.5 seconds. Press the middle mouse button while aiming at a creature within 24 blocks to call the Abyss Echoes: two echoes of you rise from the shadows, blink around your target and strike through it for 10 damage each. This consumes 40.0 somnium and recharges in 15 seconds."
+    }
+  ]
+}

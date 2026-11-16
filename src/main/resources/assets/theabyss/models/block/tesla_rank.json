@@ -1,0 +1,8 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "theabyss:block/tesla_flower",
+    "particle": "theabyss:block/tesla_flower"
+  },
+  "render_type": "cutout"
+}

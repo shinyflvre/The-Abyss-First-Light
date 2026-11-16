@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#is_end",
+  "features": "theabyss:loran_end_ore",
+  "step": "underground_ores"
+}

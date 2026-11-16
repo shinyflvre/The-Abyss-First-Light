@@ -1,0 +1,33 @@
+{
+  "name": "Nightgrove Longbow",
+  "icon": "theabyss:nightgrove_longbow",
+  "category": "weapons",
+  "order": 22,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:nightgrove_longbow",
+      "title": "Nightgrove Longbow",
+      "text": "Carved from the dark heartwood of the Nightgrove, this longbow carries a faint cyan glow that wakes whenever you draw it. Every arrow it looses strikes for 2 more damage than one from a common bow, and with 576 uses it lasts half again as long. It takes the same enchantments as any bow."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:nightgrove_longbow",
+      "title": "Recipe",
+      "text": "Three Nightgrove Sticks and three strings, laid out like a common bow. Nightgrove Sticks will not make a common bow.",
+      "grid": [
+        "",
+        "theabyss:nightgrove_stick",
+        "minecraft:string",
+        "theabyss:nightgrove_stick",
+        "",
+        "minecraft:string",
+        "",
+        "theabyss:nightgrove_stick",
+        "minecraft:string"
+      ],
+      "result": "theabyss:nightgrove_longbow",
+      "count": 1
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "block/fence_side",
+  "textures": {
+    "texture": "theabyss:block/bog_planks",
+    "particle": "theabyss:block/bog_planks"
+  },
+  "render_type": "solid"
+}

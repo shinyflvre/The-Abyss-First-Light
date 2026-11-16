@@ -1,0 +1,11 @@
+{
+  "parent": "block/grass_block",
+  "textures": {
+    "bottom": "theabyss:block/infected_dirt",
+    "top": "theabyss:block/grass_block_top",
+    "side": "theabyss:block/infected_dirt",
+    "overlay": "theabyss:block/grass_block_layer",
+    "particle": "theabyss:block/infected_dirt"
+  },
+  "render_type": "cutout_mipped"
+}

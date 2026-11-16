@@ -1,0 +1,87 @@
+{
+  "name": "Aberythe Armor",
+  "icon": "theabyss:aberythe_armor_chestplate",
+  "category": "armors",
+  "order": 3,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:aberythe_armor_chestplate",
+      "title": "Aberythe Armor",
+      "text": "Forged from precious Aberythe gems, this set is a solid and reliable companion on your journey. The helmet gives 4 armor, the chestplate 7, the leggings 6 and the boots 4, for a total of 21 armor. Each piece adds 3.5 toughness and 10 percent knockback resistance. It holds no hidden powers, but it will protect you well against the creatures of the Abyss."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:aberythe_helmet_rcp",
+      "title": "Helmet",
+      "text": "Aberythe Gems are mined from Aberythe Ore, found at an altitude of 2 to 14.",
+      "grid": [
+        "theabyss:aberythe_gem",
+        "theabyss:aberythe_gem",
+        "theabyss:aberythe_gem",
+        "theabyss:aberythe_gem",
+        "",
+        "theabyss:aberythe_gem",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:aberythe_armor_helmet",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:aberythe_chestplate_rcp",
+      "title": "Chestplate",
+      "grid": [
+        "theabyss:aberythe_gem",
+        "",
+        "theabyss:aberythe_gem",
+        "theabyss:aberythe_gem",
+        "theabyss:aberythe_gem",
+        "theabyss:aberythe_gem",
+        "theabyss:aberythe_gem",
+        "theabyss:aberythe_gem",
+        "theabyss:aberythe_gem"
+      ],
+      "result": "theabyss:aberythe_armor_chestplate",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:aberythe_leggings_rcp",
+      "title": "Leggings",
+      "grid": [
+        "theabyss:aberythe_gem",
+        "theabyss:aberythe_gem",
+        "theabyss:aberythe_gem",
+        "theabyss:aberythe_gem",
+        "",
+        "theabyss:aberythe_gem",
+        "theabyss:aberythe_gem",
+        "",
+        "theabyss:aberythe_gem"
+      ],
+      "result": "theabyss:aberythe_armor_leggings",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:aberythe_boots_rcp",
+      "title": "Boots",
+      "grid": [
+        "theabyss:aberythe_gem",
+        "",
+        "theabyss:aberythe_gem",
+        "theabyss:aberythe_gem",
+        "",
+        "theabyss:aberythe_gem",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:aberythe_armor_boots",
+      "count": 1
+    }
+  ]
+}

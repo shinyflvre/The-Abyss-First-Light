@@ -1,0 +1,10 @@
+{
+  "parent": "theabyss:custom/lungo_plant",
+  "textures": {
+    "all": "theabyss:block/lungo_stem",
+    "particle": "theabyss:block/lungo_stem",
+    "shroom": "theabyss:block/lungo_rank_shroom",
+    "stem": "theabyss:block/lungo_stem"
+  },
+  "render_type": "cutout"
+}

@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "theabyss:plains",
+    "theabyss:blaru_forest"
+  ],
+  "spawners": {
+    "type": "theabyss:ancient_seeker",
+    "weight": 10,
+    "count": 1
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "theabyss:item/end_spider_spawn_egg",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -13234622
+      },
+      {
+        "type": "minecraft:constant",
+        "value": -65317
+      }
+    ]
+  }
+}

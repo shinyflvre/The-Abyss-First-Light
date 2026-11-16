@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:blaru_planks"
+  },
+  "pattern": [
+    "a  ",
+    "aa ",
+    "aaa"
+  ],
+  "result": {
+    "id": "theabyss:blaru_stairs",
+    "count": 4
+  }
+}

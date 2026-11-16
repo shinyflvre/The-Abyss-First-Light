@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "berries=false": {
+      "model": "theabyss:block/lush_cave_vines"
+    },
+    "berries=true": {
+      "model": "theabyss:block/lush_cave_vines_lit"
+    }
+  }
+}

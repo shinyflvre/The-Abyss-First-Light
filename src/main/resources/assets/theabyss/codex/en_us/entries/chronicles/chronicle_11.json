@@ -1,0 +1,13 @@
+{
+  "name": "11. Old Giants",
+  "icon": "minecraft:paper",
+  "category": "chronicles",
+  "order": 11,
+  "chronicle": 11,
+  "pages": [
+    {
+      "type": "text",
+      "text": "It was enormous, a beast from a time older than any story I know, with a jaw like the mouth of a cave and a tail that swept the ground clean. It roared until the mist shook, and it fought like something that had been fighting for a very long time. When it finally fell, the earth trembled, and the roots beneath it flared so brightly that I had to look away. Then the light flowed out of it and back into the ground, slowly, like a tide going out. Nothing in this world is ever truly finished, I think. It only returns to the roots. I stood there long after the light was gone, and the strangest thought came to me. I was not sad that I had killed it. I was sad that it had stopped being mine to fight."
+    }
+  ]
+}

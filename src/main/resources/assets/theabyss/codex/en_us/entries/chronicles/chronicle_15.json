@@ -1,0 +1,13 @@
+{
+  "name": "15. In Black Ink",
+  "icon": "minecraft:ink_sac",
+  "category": "chronicles",
+  "order": 15,
+  "chronicle": 15,
+  "pages": [
+    {
+      "type": "text",
+      "text": "Please. Do not light the others. Put down whatever you carry. Go back through the border while you still remember the sun, while you still remember your own name. You think I am guarding a lie. I am guarding a door, and you are what stands on the wrong side of it. I have stood here for longer than I can count, and I am so tired. I do not want to fight you. But if you call me, I will come."
+    }
+  ]
+}

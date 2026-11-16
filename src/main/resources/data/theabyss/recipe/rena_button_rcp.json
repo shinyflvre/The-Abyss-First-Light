@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:rena_planks"
+  },
+  "pattern": [
+    "a"
+  ],
+  "result": {
+    "id": "theabyss:rena_button"
+  }
+}

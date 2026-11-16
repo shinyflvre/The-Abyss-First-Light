@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "theabyss:block/vigilant_wall_sign",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "theabyss:block/vigilant_wall_sign",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "theabyss:block/vigilant_wall_sign"
+    },
+    "facing=west": {
+      "model": "theabyss:block/vigilant_wall_sign",
+      "y": 90
+    }
+  }
+}

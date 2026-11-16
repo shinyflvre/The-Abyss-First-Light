@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "theabyss:block/lush_azalea_leaves"
+  }
+}

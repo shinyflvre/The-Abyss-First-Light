@@ -1,0 +1,13 @@
+{
+  "name": "4. Somnium",
+  "icon": "minecraft:paper",
+  "category": "chronicles",
+  "order": 4,
+  "chronicle": 4,
+  "pages": [
+    {
+      "type": "text",
+      "text": "There is something in the air down here that you can almost hold. I call it Somnium, the stuff that dreams are made of. Today I learned to hold it. On that old table of stone, the one that was already waiting here as if it had been waiting for me, I bound a little of it into a ring. When it closed around my finger, I felt the whole world breathe in and out, slow and warm, and for one moment I knew exactly where every living thing around me was. It did not feel like power. It felt like belonging. I sat there for a long time afterwards, turning the ring in the glow. I did not think about home once. I only noticed that later, and it frightened me less than it should have."
+    }
+  ]
+}

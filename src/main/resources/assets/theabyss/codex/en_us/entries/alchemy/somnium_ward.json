@@ -1,0 +1,36 @@
+{
+  "name": "Somnium Ward",
+  "icon": "theabyss:somnium_ward",
+  "category": "alchemy",
+  "order": 0,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:somnium_ward",
+      "title": "Somnium Ward",
+      "text": "Phantom essence, a crystal shard and the heart of a soul guard give this draught its strength. Drink it and a cyan ward settles on your hearts for 2 minutes, covering as many of them as you have, up to 10."
+    },
+    {
+      "type": "text",
+      "title": "How it works",
+      "text": "Every blow strikes the ward before it reaches your life, and each one breaks a piece of it away. Watch the cyan outlines on your hearts: while they shine, you are shielded. Once the last of them fades, you bleed as usual."
+    },
+    {
+      "type": "infuser",
+      "title": "Recipe",
+      "recipe": "theabyss:somnium_ward_rcp",
+      "notes": [
+        "Place Somnium and loran energy in the upper input slots.",
+        "Place the required items in the test tubes on the left and right."
+      ],
+      "inputs": [
+        "theabyss:phantom_essence",
+        "theabyss:abyss_crystal_shard",
+        "theabyss:phantom_essence",
+        "theabyss:soul_heart"
+      ],
+      "somnium": "theabyss:somnium",
+      "energy": "theabyss:loran_energy"
+    }
+  ]
+}

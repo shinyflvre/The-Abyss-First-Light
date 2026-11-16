@@ -1,0 +1,8 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "theabyss:block/ralom_plant",
+    "particle": "theabyss:block/ralom_plant"
+  },
+  "render_type": "cutout"
+}

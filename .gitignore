@@ -1,0 +1,65 @@
+### Only the essential project is tracked ###
+# Everything in the project root is ignored except the entries below.
+# Local-only: backups, legacy, tools, docs, run folders, IDE folders, .claude, original jar.
+/*
+!/.gitignore
+!/.gitattributes
+!/README.md
+!/build.gradle
+!/settings.gradle
+!/gradle.properties
+!/gradlew
+!/gradlew.bat
+!/gradle/
+!/start.bat
+!/src/
+
+### Gradle ###
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/**/build/
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/**/out/
+.run/
+
+### Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/**/bin/
+
+### VS Code ###
+.vscode/
+
+### OS and editor junk ###
+.DS_Store
+Thumbs.db
+desktop.ini
+*.bak
+*.tmp
+*.log
+*.spv
+__pycache__/
+*.pyc
+
+### Minecraft Modding ###
+run/
+!**/src/**/run/
+**/src/generated/**/.cache/
+repo/
+!**/src/**/repo/
+run-devtest/
+run-devtest-server/
+run-devtest-mp/

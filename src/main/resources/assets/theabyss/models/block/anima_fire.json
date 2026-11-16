@@ -1,0 +1,9 @@
+{
+  "parent": "theabyss:custom/fire_square",
+  "textures": {
+    "all": "theabyss:block/anima_fire",
+    "particle": "theabyss:block/anima_fire",
+    "fire": "theabyss:block/anima_fire"
+  },
+  "render_type": "cutout"
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:ignisithe_gem",
+    "b": "theabyss:anima_nugget",
+    "c": "#c:rods/wooden"
+  },
+  "pattern": [
+    " a ",
+    "bab",
+    " c "
+  ],
+  "result": {
+    "id": "theabyss:ignisithe_sword"
+  }
+}

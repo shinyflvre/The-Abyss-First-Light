@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "#c:rods/wooden",
+    "b": "theabyss:ring_of_reg",
+    "c": "theabyss:nightgrove_log"
+  },
+  "pattern": [
+    " a ",
+    "aba",
+    "ccc"
+  ],
+  "result": {
+    "id": "theabyss:heal_camp_fire"
+  }
+}

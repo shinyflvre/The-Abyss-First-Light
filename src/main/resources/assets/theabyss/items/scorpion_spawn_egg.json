@@ -1,0 +1,16 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "theabyss:item/scorpion_spawn_egg",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -10832424
+      },
+      {
+        "type": "minecraft:constant",
+        "value": -14536889
+      }
+    ]
+  }
+}

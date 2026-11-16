@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "theabyss:nightgrove",
+  "spawners": {
+    "type": "theabyss:the_roka",
+    "weight": 6,
+    "count": 1
+  }
+}

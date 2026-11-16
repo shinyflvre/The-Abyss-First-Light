@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:thunder_stone",
+    "b": "theabyss:loran",
+    "c": "minecraft:totem_of_undying"
+  },
+  "pattern": [
+    "aba",
+    " c "
+  ],
+  "result": {
+    "id": "theabyss:totem_of_thunder"
+  }
+}

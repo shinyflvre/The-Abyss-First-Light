@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 1,
+  "ingredient": "theabyss:iron_variant",
+  "result": {
+    "id": "minecraft:iron_ingot"
+  }
+}

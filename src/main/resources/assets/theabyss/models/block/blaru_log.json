@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "theabyss:block/blaru_log_top",
+    "up": "theabyss:block/blaru_log_top",
+    "north": "theabyss:block/blaru_log",
+    "east": "theabyss:block/blaru_log",
+    "south": "theabyss:block/blaru_log",
+    "west": "theabyss:block/blaru_log",
+    "particle": "theabyss:block/blaru_log_top"
+  },
+  "render_type": "solid"
+}

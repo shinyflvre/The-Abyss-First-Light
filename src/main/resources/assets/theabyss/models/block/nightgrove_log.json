@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "theabyss:block/nightgrove_log_top",
+    "up": "theabyss:block/nightgrove_log_top",
+    "north": "theabyss:block/nightgrove_log",
+    "east": "theabyss:block/nightgrove_log",
+    "south": "theabyss:block/nightgrove_log",
+    "west": "theabyss:block/nightgrove_log",
+    "particle": "theabyss:block/nightgrove_log_top"
+  },
+  "render_type": "solid"
+}

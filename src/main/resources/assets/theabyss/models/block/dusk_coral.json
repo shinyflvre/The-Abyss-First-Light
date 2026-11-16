@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "theabyss:block/dusk_coral"
+  },
+  "render_type": "cutout"
+}

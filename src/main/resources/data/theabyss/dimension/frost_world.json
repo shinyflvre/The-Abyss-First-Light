@@ -1,0 +1,317 @@
+{
+  "type": "theabyss:frost_world",
+  "generator": {
+    "type": "minecraft:noise",
+    "biome_source": {
+      "type": "minecraft:multi_noise",
+      "biomes": [
+        {
+          "biome": "theabyss:waywardsea",
+          "parameters": {
+            "temperature": [
+              -1.2,
+              -0.8
+            ],
+            "humidity": [
+              0.8,
+              1.2
+            ],
+            "continentalness": [
+              0.28,
+              0.68
+            ],
+            "erosion": [
+              0.7,
+              1.1
+            ],
+            "weirdness": [
+              0.5100735104,
+              0.9100735104
+            ],
+            "depth": 0,
+            "offset": 0
+          }
+        },
+        {
+          "biome": "theabyss:forgottenmountains",
+          "parameters": {
+            "temperature": [
+              -1.2,
+              -0.8
+            ],
+            "humidity": [
+              -0.2,
+              0.2
+            ],
+            "continentalness": [
+              0.37,
+              0.77
+            ],
+            "erosion": [
+              -0.8,
+              -0.4
+            ],
+            "weirdness": [
+              -1.0021053619,
+              -0.6021053619
+            ],
+            "depth": 0,
+            "offset": 0
+          }
+        }
+      ]
+    },
+    "settings": {
+      "aquifers": {
+        "barrier": {
+          "type": "minecraft:noise",
+          "noise": "minecraft:aquifer_barrier",
+          "xz_scale": 1.0,
+          "y_scale": 0.5
+        },
+        "exclusion": {
+          "type": "minecraft:min",
+          "left": {
+            "type": "minecraft:sub",
+            "left": -0.225,
+            "right": "minecraft:overworld/erosion"
+          },
+          "right": {
+            "type": "minecraft:max",
+            "left": {
+              "type": "minecraft:sub",
+              "left": "minecraft:overworld_amplified/depth",
+              "right": 0.9
+            },
+            "right": 0.0
+          }
+        },
+        "fluid_level_floodedness": {
+          "type": "minecraft:noise",
+          "noise": "minecraft:aquifer_fluid_level_floodedness",
+          "xz_scale": 1.0,
+          "y_scale": 0.67
+        },
+        "fluid_level_spread": {
+          "type": "minecraft:noise",
+          "noise": "minecraft:aquifer_fluid_level_spread",
+          "xz_scale": 1.0,
+          "y_scale": 0.7142857142857143
+        },
+        "lava": {
+          "type": "minecraft:noise",
+          "noise": "minecraft:aquifer_lava",
+          "xz_scale": 1.0,
+          "y_scale": 1.0
+        },
+        "surface_level": "minecraft:overworld_amplified/preliminary_surface_level"
+      },
+      "default_block": {
+        "id": "theabyss:dark_stone"
+      },
+      "default_fluid": {
+        "id": "minecraft:frosted_ice",
+        "properties": {
+          "age": "0"
+        }
+      },
+      "disable_mob_generation": false,
+      "legacy_random_source": false,
+      "material_rule": {
+        "type": "theabyss:solid_terrain",
+        "density": "minecraft:overworld_amplified/final_density",
+        "rule": {
+          "type": "minecraft:sequence",
+          "sequence": [
+            "minecraft:overworld/copper_ore_vein",
+            "minecraft:overworld/iron_ore_vein",
+            {
+              "type": "minecraft:sequence",
+              "sequence": [
+                {
+                  "type": "minecraft:condition",
+                  "if_true": {
+                    "type": "minecraft:vertical_gradient",
+                    "false_at_and_above": {
+                      "above_bottom": 5
+                    },
+                    "random_name": "minecraft:bedrock_floor",
+                    "true_at_and_below": {
+                      "above_bottom": 0
+                    }
+                  },
+                  "then_run": {
+                    "type": "minecraft:block",
+                    "result_state": {
+                      "id": "minecraft:bedrock"
+                    }
+                  }
+                },
+                {
+                  "type": "minecraft:condition",
+                  "if_true": {
+                    "type": "minecraft:biome",
+                    "biome_is": [
+                      "theabyss:waywardsea"
+                    ]
+                  },
+                  "then_run": {
+                    "type": "minecraft:condition",
+                    "if_true": {
+                      "type": "minecraft:above_preliminary_surface"
+                    },
+                    "then_run": {
+                      "type": "minecraft:sequence",
+                      "sequence": [
+                        {
+                          "type": "minecraft:condition",
+                          "if_true": {
+                            "type": "minecraft:stone_depth",
+                            "add_surface_depth": false,
+                            "offset": 0,
+                            "secondary_depth_range": 0,
+                            "surface_type": "floor"
+                          },
+                          "then_run": {
+                            "type": "minecraft:sequence",
+                            "sequence": [
+                              {
+                                "type": "minecraft:condition",
+                                "if_true": {
+                                  "type": "minecraft:water",
+                                  "add_stone_depth": false,
+                                  "surface_depth_multiplier": 0,
+                                  "offset": -1
+                                },
+                                "then_run": {
+                                  "type": "minecraft:block",
+                                  "result_state": {
+                                    "id": "theabyss:snow_block"
+                                  }
+                                }
+                              },
+                              {
+                                "type": "minecraft:block",
+                                "result_state": {
+                                  "id": "theabyss:dark_stone"
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "type": "minecraft:condition",
+                          "if_true": {
+                            "type": "minecraft:stone_depth",
+                            "add_surface_depth": true,
+                            "offset": 0,
+                            "secondary_depth_range": 0,
+                            "surface_type": "floor"
+                          },
+                          "then_run": {
+                            "type": "minecraft:block",
+                            "result_state": {
+                              "id": "theabyss:dark_stone"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "type": "minecraft:condition",
+                  "if_true": {
+                    "type": "minecraft:biome",
+                    "biome_is": [
+                      "theabyss:forgottenmountains"
+                    ]
+                  },
+                  "then_run": {
+                    "type": "minecraft:condition",
+                    "if_true": {
+                      "type": "minecraft:above_preliminary_surface"
+                    },
+                    "then_run": {
+                      "type": "minecraft:sequence",
+                      "sequence": [
+                        {
+                          "type": "minecraft:condition",
+                          "if_true": {
+                            "type": "minecraft:stone_depth",
+                            "add_surface_depth": false,
+                            "offset": 0,
+                            "secondary_depth_range": 0,
+                            "surface_type": "floor"
+                          },
+                          "then_run": {
+                            "type": "minecraft:sequence",
+                            "sequence": [
+                              {
+                                "type": "minecraft:condition",
+                                "if_true": {
+                                  "type": "minecraft:water",
+                                  "add_stone_depth": false,
+                                  "surface_depth_multiplier": 0,
+                                  "offset": -1
+                                },
+                                "then_run": {
+                                  "type": "minecraft:block",
+                                  "result_state": {
+                                    "id": "theabyss:snow_block"
+                                  }
+                                }
+                              },
+                              {
+                                "type": "minecraft:block",
+                                "result_state": {
+                                  "id": "theabyss:dark_stone"
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "type": "minecraft:condition",
+                          "if_true": {
+                            "type": "minecraft:stone_depth",
+                            "add_surface_depth": true,
+                            "offset": 0,
+                            "secondary_depth_range": 0,
+                            "surface_type": "floor"
+                          },
+                          "then_run": {
+                            "type": "minecraft:block",
+                            "result_state": {
+                              "id": "theabyss:dark_stone"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "noise": {
+        "height": 384,
+        "min_y": -64
+      },
+      "noise_router": {
+        "chunk_surface_level": "minecraft:overworld_amplified/chunk_surface_level",
+        "continents": "minecraft:overworld/continents",
+        "depth": "minecraft:overworld_amplified/depth",
+        "erosion": "minecraft:overworld/erosion",
+        "final_density": "minecraft:overworld_amplified/final_density",
+        "ridges": "minecraft:overworld/ridges",
+        "temperature": "minecraft:overworld/temperature",
+        "vegetation": "minecraft:overworld/vegetation"
+      },
+      "sea_level": 63,
+      "spawn_target": []
+    }
+  }
+}

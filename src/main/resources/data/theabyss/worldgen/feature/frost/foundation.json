@@ -1,0 +1,6 @@
+{
+  "type": "theabyss:frost_formation",
+  "shape": "foundation",
+  "min_size": 18,
+  "max_size": 48
+}

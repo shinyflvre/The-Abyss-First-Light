@@ -1,0 +1,16 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "theabyss:phantom_crate",
+    "theabyss:blue_mountain",
+    "theabyss:blaru_forest",
+    "theabyss:mud_plains",
+    "theabyss:slime_forest",
+    "theabyss:nightgrove",
+    "theabyss:plains",
+    "theabyss:vigilant_forest",
+    "theabyss:shroomlands"
+  ],
+  "features": "theabyss:blue_cave_shroom",
+  "step": "vegetal_decoration"
+}

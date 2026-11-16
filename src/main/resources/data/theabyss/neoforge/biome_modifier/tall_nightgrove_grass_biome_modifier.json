@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "theabyss:nightgrove",
+    "theabyss:mud_plains"
+  ],
+  "features": "theabyss:tall_nightgrove_grass",
+  "step": "vegetal_decoration"
+}

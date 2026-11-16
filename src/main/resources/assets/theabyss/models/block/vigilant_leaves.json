@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "theabyss:block/leaves_vigilant",
+    "particle": "theabyss:block/leaves_vigilant"
+  },
+  "render_type": "solid"
+}

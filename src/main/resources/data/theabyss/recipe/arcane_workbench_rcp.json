@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:cobble_stone",
+    "b": "theabyss:blaru_planks",
+    "c": "theabyss:loran_energy"
+  },
+  "pattern": [
+    "aba",
+    "bcb",
+    "aba"
+  ],
+  "result": {
+    "id": "theabyss:arcane_workbench"
+  }
+}

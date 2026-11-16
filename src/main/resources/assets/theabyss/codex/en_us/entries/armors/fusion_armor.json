@@ -1,0 +1,87 @@
+{
+  "name": "Fusion Armor",
+  "icon": "theabyss:fusion_armor_chestplate",
+  "category": "armors",
+  "order": 6,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:fusion_armor_chestplate",
+      "title": "Fusion Armor",
+      "text": "Charged with the raw energy of the Fusion Ore, this armor is a dream for every enchanter. The helmet gives 5 armor, the body 7, the leggings 6 and the boots 6, for a total of 24 armor. Each piece adds 3.5 toughness and 20 percent knockback resistance. Its enchantability of 100 is the highest of all armors, so you'll get the very best enchantments on your enchanting table."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:fusion_helmet_rcp",
+      "title": "Helmet",
+      "text": "Surround Fusion Ore with iron ingots to craft an uncharged Fusion Ingot, then smelt it in a furnace to awaken its energy.",
+      "grid": [
+        "theabyss:fusion_ingot",
+        "theabyss:fusion_ingot",
+        "theabyss:fusion_ingot",
+        "theabyss:fusion_ingot",
+        "",
+        "theabyss:fusion_ingot",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:fusion_armor_helmet",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:fusion_chestplate_rcp",
+      "title": "Chestplate",
+      "grid": [
+        "theabyss:fusion_ingot",
+        "",
+        "theabyss:fusion_ingot",
+        "theabyss:fusion_ingot",
+        "theabyss:fusion_ingot",
+        "theabyss:fusion_ingot",
+        "theabyss:fusion_ingot",
+        "theabyss:fusion_ingot",
+        "theabyss:fusion_ingot"
+      ],
+      "result": "theabyss:fusion_armor_chestplate",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:fusion_leggings_rcp",
+      "title": "Leggings",
+      "grid": [
+        "theabyss:fusion_ingot",
+        "theabyss:fusion_ingot",
+        "theabyss:fusion_ingot",
+        "theabyss:fusion_ingot",
+        "",
+        "theabyss:fusion_ingot",
+        "theabyss:fusion_ingot",
+        "",
+        "theabyss:fusion_ingot"
+      ],
+      "result": "theabyss:fusion_armor_leggings",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:fusion_boots_rcp",
+      "title": "Boots",
+      "grid": [
+        "theabyss:fusion_ingot",
+        "",
+        "theabyss:fusion_ingot",
+        "theabyss:fusion_ingot",
+        "",
+        "theabyss:fusion_ingot",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:fusion_armor_boots",
+      "count": 1
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "theabyss:blue_mountain",
+    "theabyss:nightgrove"
+  ],
+  "spawners": {
+    "type": "theabyss:soul_guard",
+    "weight": 3,
+    "count": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 5,
+      "min_inclusive": 2
+    }
+  }
+}

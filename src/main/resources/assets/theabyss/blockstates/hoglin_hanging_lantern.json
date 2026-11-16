@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "hanging=false": {
+      "model": "theabyss:block/hoglin_lantern"
+    },
+    "hanging=true": {
+      "model": "theabyss:block/hoglin_hanging_lantern"
+    }
+  }
+}

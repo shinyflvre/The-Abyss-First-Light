@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "theabyss:stripped_bog_shroom_log"
+  ],
+  "result": {
+    "id": "theabyss:bog_planks",
+    "count": 4
+  }
+}

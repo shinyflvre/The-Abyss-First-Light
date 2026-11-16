@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "theabyss:glacerythe_armor"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "theabyss:glacerythe_armor"
+      }
+    ]
+  }
+}

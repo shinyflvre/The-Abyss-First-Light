@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "theabyss:plains"
+  ],
+  "features": "theabyss:plains/bog_trees",
+  "step": "vegetal_decoration"
+}

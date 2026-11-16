@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_shelf_left",
+  "textures": {
+    "all": "theabyss:block/sal_shelf",
+    "particle": "theabyss:block/stripped_sal_log"
+  }
+}

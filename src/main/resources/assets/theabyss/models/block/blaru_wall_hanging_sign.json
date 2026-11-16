@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_wall_hanging_sign",
+  "textures": {
+    "all": "theabyss:block/blaru_hanging_sign",
+    "particle": "theabyss:block/stripped_blaru_log"
+  }
+}

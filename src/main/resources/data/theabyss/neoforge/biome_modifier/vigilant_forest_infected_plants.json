@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "theabyss:vigilant_forest"
+  ],
+  "features": [
+    "theabyss:vigilant_forest/tall_infected_grass",
+    "theabyss:vigilant_forest/infected_bush",
+    "theabyss:vigilant_forest/infected_short_grass"
+  ],
+  "step": "vegetal_decoration"
+}

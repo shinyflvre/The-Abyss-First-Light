@@ -1,0 +1,18 @@
+{
+  "type": "theabyss:arcane_recipe_type",
+  "ingredients": [
+    "theabyss:ring_of_ring",
+    "theabyss:crystal_hand",
+    "theabyss:node_shard",
+    "theabyss:crystal_hand",
+    "theabyss:node_shard",
+    "theabyss:crystal_hand",
+    "theabyss:node_shard",
+    "theabyss:crystal_hand",
+    "theabyss:node_shard"
+  ],
+  "output": {
+    "id": "theabyss:ring_of_crystals",
+    "count": 1
+  }
+}

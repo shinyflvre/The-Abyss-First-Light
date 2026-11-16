@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:frozen_planks"
+  },
+  "pattern": [
+    "aa"
+  ],
+  "result": {
+    "id": "theabyss:frozen_pressure_plate"
+  }
+}

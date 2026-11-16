@@ -1,0 +1,16 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "theabyss:nightgrove",
+    "theabyss:mud_plains"
+  ],
+  "spawners": {
+    "type": "theabyss:raptor",
+    "weight": 12,
+    "count": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 3,
+      "min_inclusive": 1
+    }
+  }
+}

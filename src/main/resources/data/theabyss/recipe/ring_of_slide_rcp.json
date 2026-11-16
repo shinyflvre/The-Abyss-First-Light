@@ -1,0 +1,18 @@
+{
+  "type": "theabyss:arcane_recipe_type",
+  "ingredients": [
+    "theabyss:ring_of_ring",
+    "theabyss:ender_crystal_shard",
+    "minecraft:elytra",
+    "theabyss:ender_crystal_shard",
+    "minecraft:elytra",
+    "theabyss:ender_crystal_shard",
+    "minecraft:elytra",
+    "theabyss:ender_crystal_shard",
+    "minecraft:elytra"
+  ],
+  "output": {
+    "id": "theabyss:ring_of_slide",
+    "count": 1
+  }
+}

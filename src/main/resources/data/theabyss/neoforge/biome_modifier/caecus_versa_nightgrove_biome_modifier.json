@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "theabyss:nightgrove",
+  "features": "theabyss:caecus_versa_nightgrove",
+  "step": "vegetal_decoration"
+}

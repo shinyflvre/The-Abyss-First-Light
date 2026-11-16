@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:anima_nugget",
+    "b": "theabyss:loran",
+    "c": "minecraft:ender_pearl"
+  },
+  "pattern": [
+    "a b",
+    " c ",
+    "b a"
+  ],
+  "result": {
+    "id": "theabyss:mutated_enderpearl"
+  }
+}

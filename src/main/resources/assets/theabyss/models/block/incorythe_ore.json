@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "theabyss:block/incorythe_ore",
+    "particle": "theabyss:block/incorythe_ore"
+  },
+  "render_type": "solid"
+}

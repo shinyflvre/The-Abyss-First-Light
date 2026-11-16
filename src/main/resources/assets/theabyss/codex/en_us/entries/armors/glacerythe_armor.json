@@ -1,0 +1,92 @@
+{
+  "name": "Glacerythe Armor",
+  "icon": "theabyss:glacerythe_armor_chestplate",
+  "category": "armors",
+  "order": 1,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:glacerythe_armor_chestplate",
+      "title": "Glacerythe Armor",
+      "text": "Carved from frozen Glacerythe gems, this set was made for those who explore the deep waters. The helmet gives 3 armor, the chestplate 6, the leggings 5 and the boots 5, for a total of 19 armor. Each piece adds 4.0 toughness and 30 percent knockback resistance."
+    },
+    {
+      "type": "text",
+      "title": "Abilities",
+      "text": "Dive without fear! While you wear the Glacerythe Helmet you are blessed with Conduit Power, letting you breathe and see clearly underwater. The Glacerythe Boots grant you Dolphin's Grace, so you glide through the water with ease. Both buffs stay with you for as long as the pieces are worn."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:glacerythe_helmet_rcp",
+      "title": "Helmet",
+      "text": "Glacerythe Gems are mined from Glacerythe Ore, found at an altitude of 24 to 42.",
+      "grid": [
+        "theabyss:glacerythe_gem",
+        "theabyss:glacerythe_gem",
+        "theabyss:glacerythe_gem",
+        "theabyss:glacerythe_gem",
+        "",
+        "theabyss:glacerythe_gem",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:glacerythe_armor_helmet",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:glacerythe_chestplate_rcp",
+      "title": "Chestplate",
+      "grid": [
+        "theabyss:glacerythe_gem",
+        "",
+        "theabyss:glacerythe_gem",
+        "theabyss:glacerythe_gem",
+        "theabyss:glacerythe_gem",
+        "theabyss:glacerythe_gem",
+        "theabyss:glacerythe_gem",
+        "theabyss:glacerythe_gem",
+        "theabyss:glacerythe_gem"
+      ],
+      "result": "theabyss:glacerythe_armor_chestplate",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:glacerythe_leggings_rcp",
+      "title": "Leggings",
+      "grid": [
+        "theabyss:glacerythe_gem",
+        "theabyss:glacerythe_gem",
+        "theabyss:glacerythe_gem",
+        "theabyss:glacerythe_gem",
+        "",
+        "theabyss:glacerythe_gem",
+        "theabyss:glacerythe_gem",
+        "",
+        "theabyss:glacerythe_gem"
+      ],
+      "result": "theabyss:glacerythe_armor_leggings",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:glacerythe_boots_rcp",
+      "title": "Boots",
+      "grid": [
+        "theabyss:glacerythe_gem",
+        "",
+        "theabyss:glacerythe_gem",
+        "theabyss:glacerythe_gem",
+        "",
+        "theabyss:glacerythe_gem",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:glacerythe_armor_boots",
+      "count": 1
+    }
+  ]
+}

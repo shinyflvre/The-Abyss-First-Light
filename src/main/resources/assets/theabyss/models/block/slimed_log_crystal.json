@@ -1,0 +1,1719 @@
+{
+  "textures": {
+    "all": "theabyss:block/crystal_shard_ore",
+    "particle": "theabyss:block/crystal_shard_ore",
+    "0": "theabyss:block/crystal_shard_ore",
+    "glow_crystal_shard_ore": "theabyss:block/glow/crystal_shard_ore"
+  },
+  "elements": [
+    {
+      "name": "Cube",
+      "from": [
+        6.625,
+        5.55979,
+        10.81521
+      ],
+      "to": [
+        8.875,
+        7.80979,
+        17.56521
+      ],
+      "rotation": {
+        "angle": 22.5,
+        "axis": "x",
+        "origin": [
+          7.875,
+          6.75,
+          13.81521
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            7,
+            8,
+            5,
+            6
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            4,
+            0,
+            6,
+            6
+          ],
+          "rotation": 90,
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            9,
+            6,
+            7,
+            8
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            4,
+            0,
+            6,
+            6
+          ],
+          "rotation": 270,
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [
+            4,
+            0,
+            6,
+            6
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            4,
+            0,
+            6,
+            6
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        }
+      }
+    },
+    {
+      "from": [
+        6.375,
+        3.89219,
+        13.41123
+      ],
+      "to": [
+        8.625,
+        6.14219,
+        16.41123
+      ],
+      "rotation": {
+        "angle": 0,
+        "axis": "x",
+        "origin": [
+          7.875,
+          6.75,
+          13.81521
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            6.75,
+            7.75,
+            5.25,
+            6.25
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            4.5,
+            0,
+            6,
+            2
+          ],
+          "rotation": 90,
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            12,
+            5,
+            10.5,
+            6.5
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            4.5,
+            0,
+            6,
+            2
+          ],
+          "rotation": 270,
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [
+            4.5,
+            0,
+            6,
+            2
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            4.5,
+            0,
+            6,
+            2
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        }
+      }
+    },
+    {
+      "from": [
+        4.78702,
+        5.80979,
+        12.6291
+      ],
+      "to": [
+        7.03702,
+        8.05979,
+        17.1291
+      ],
+      "rotation": {
+        "angle": 22.5,
+        "axis": "x",
+        "origin": [
+          7.875,
+          6.75,
+          13.81521
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            6.75,
+            7.75,
+            5.25,
+            6.25
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            4,
+            0,
+            5.5,
+            3
+          ],
+          "rotation": 90,
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            12.5,
+            0,
+            11,
+            1.5
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            4,
+            0,
+            5.5,
+            3
+          ],
+          "rotation": 270,
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [
+            4,
+            0,
+            5.5,
+            3
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            4,
+            0,
+            5.5,
+            3
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        }
+      }
+    },
+    {
+      "from": [
+        6.75,
+        4.54541,
+        15.01447
+      ],
+      "to": [
+        9.75,
+        7.54541,
+        17.26447
+      ],
+      "rotation": {
+        "angle": -45,
+        "axis": "x",
+        "origin": [
+          7.875,
+          6.75,
+          13.81521
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            4,
+            0,
+            6,
+            2
+          ],
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            5.75,
+            0,
+            4.25,
+            2
+          ],
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            4,
+            0,
+            6,
+            2
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            4.25,
+            0,
+            5.75,
+            2
+          ],
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [
+            7,
+            7.75,
+            5,
+            6.25
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            11.5,
+            3.5,
+            9.5,
+            5
+          ],
+          "texture": "#0"
+        }
+      }
+    },
+    {
+      "from": [
+        8.74999,
+        5.18479,
+        14.072
+      ],
+      "to": [
+        10.99999,
+        8.18479,
+        17.072
+      ],
+      "rotation": {
+        "angle": 22.5,
+        "axis": "x",
+        "origin": [
+          7.875,
+          6.75,
+          13.81521
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            6.75,
+            8,
+            5.25,
+            6
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            4,
+            0,
+            6,
+            2
+          ],
+          "rotation": 90,
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            11.5,
+            8,
+            10,
+            10
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            4,
+            0,
+            6,
+            2
+          ],
+          "rotation": 270,
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [
+            4.25,
+            0,
+            5.75,
+            2
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            4.25,
+            0,
+            5.75,
+            2
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        }
+      }
+    },
+    {
+      "from": [
+        5.625,
+        5.05979,
+        16.06521
+      ],
+      "to": [
+        6.375,
+        5.80979,
+        17.56521
+      ],
+      "rotation": {
+        "angle": 22.5,
+        "axis": "x",
+        "origin": [
+          7.875,
+          6.75,
+          13.81521
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            6.25,
+            7.25,
+            5.75,
+            6.75
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            4.75,
+            0,
+            5.25,
+            1
+          ],
+          "rotation": 90,
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            6.25,
+            6.75,
+            5.75,
+            7.25
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            4.75,
+            0,
+            5.25,
+            1
+          ],
+          "rotation": 270,
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [
+            4.75,
+            0,
+            5.25,
+            1
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            4.75,
+            0,
+            5.25,
+            1
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        }
+      }
+    },
+    {
+      "from": [
+        7.625,
+        6.05979,
+        10.06521
+      ],
+      "to": [
+        8.375,
+        6.80979,
+        11.56521
+      ],
+      "rotation": {
+        "angle": 22.5,
+        "axis": "x",
+        "origin": [
+          7.875,
+          6.75,
+          13.81521
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            6.25,
+            7.25,
+            5.75,
+            6.75
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            4.75,
+            0,
+            5.25,
+            1
+          ],
+          "rotation": 90,
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            6.25,
+            6.75,
+            5.75,
+            7.25
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            4.75,
+            0,
+            5.25,
+            1
+          ],
+          "rotation": 270,
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [
+            4.75,
+            0,
+            5.25,
+            1
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            4.75,
+            0,
+            5.25,
+            1
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        }
+      }
+    },
+    {
+      "from": [
+        5.8125,
+        8.05979,
+        15.69021
+      ],
+      "to": [
+        7.3125,
+        8.80979,
+        17.19021
+      ],
+      "rotation": {
+        "angle": 22.5,
+        "axis": "x",
+        "origin": [
+          7.875,
+          6.75,
+          13.81521
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            6.25,
+            6.5,
+            5.25,
+            6
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            5,
+            0,
+            5.5,
+            1
+          ],
+          "rotation": 90,
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            6.5,
+            6.5,
+            5.5,
+            7
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            5,
+            0,
+            5.5,
+            1
+          ],
+          "rotation": 270,
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [
+            4.25,
+            0,
+            5.25,
+            1
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            4.5,
+            0,
+            5.5,
+            1
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        }
+      }
+    },
+    {
+      "from": [
+        9,
+        7.49729,
+        15.69021
+      ],
+      "to": [
+        10.5,
+        8.99729,
+        17.19021
+      ],
+      "rotation": {
+        "angle": 22.5,
+        "axis": "x",
+        "origin": [
+          7.875,
+          6.75,
+          13.81521
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            6,
+            1.5,
+            5,
+            0.5
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            4,
+            0,
+            5,
+            1
+          ],
+          "rotation": 90,
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            5.25,
+            0.75,
+            4.25,
+            1.75
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            5,
+            0,
+            6,
+            1
+          ],
+          "rotation": 270,
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [
+            4.25,
+            0,
+            5.25,
+            1
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            5,
+            0,
+            6,
+            1
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        }
+      }
+    },
+    {
+      "from": [
+        8.0625,
+        4.12229,
+        15.69021
+      ],
+      "to": [
+        9.5625,
+        5.62229,
+        17.19021
+      ],
+      "rotation": {
+        "angle": 22.5,
+        "axis": "x",
+        "origin": [
+          7.875,
+          6.75,
+          13.81521
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            6,
+            1,
+            5,
+            0
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            5,
+            0,
+            6,
+            1
+          ],
+          "rotation": 90,
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            5.5,
+            0,
+            4.5,
+            1
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            4,
+            0,
+            5,
+            1
+          ],
+          "rotation": 270,
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [
+            4.75,
+            0,
+            5.75,
+            1
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            4.25,
+            0,
+            5.25,
+            1
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        }
+      }
+    },
+    {
+      "name": "Cube",
+      "from": [
+        6.625,
+        5.55979,
+        10.81521
+      ],
+      "to": [
+        8.875,
+        7.80979,
+        17.56521
+      ],
+      "rotation": {
+        "angle": 22.5,
+        "axis": "x",
+        "origin": [
+          7.875,
+          6.75,
+          13.81521
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            7,
+            8,
+            5,
+            6
+          ],
+          "rotation": 180,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "east": {
+          "uv": [
+            4,
+            0,
+            6,
+            6
+          ],
+          "rotation": 90,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "south": {
+          "uv": [
+            9,
+            6,
+            7,
+            8
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "west": {
+          "uv": [
+            4,
+            0,
+            6,
+            6
+          ],
+          "rotation": 270,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "up": {
+          "uv": [
+            4,
+            0,
+            6,
+            6
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "down": {
+          "uv": [
+            4,
+            0,
+            6,
+            6
+          ],
+          "rotation": 180,
+          "texture": "#glow_crystal_shard_ore"
+        }
+      },
+      "light_emission": 15,
+      "shade": false
+    },
+    {
+      "from": [
+        6.375,
+        3.89219,
+        13.41123
+      ],
+      "to": [
+        8.625,
+        6.14219,
+        16.41123
+      ],
+      "rotation": {
+        "angle": 0,
+        "axis": "x",
+        "origin": [
+          7.875,
+          6.75,
+          13.81521
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            6.75,
+            7.75,
+            5.25,
+            6.25
+          ],
+          "rotation": 180,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "east": {
+          "uv": [
+            4.5,
+            0,
+            6,
+            2
+          ],
+          "rotation": 90,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "south": {
+          "uv": [
+            12,
+            5,
+            10.5,
+            6.5
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "west": {
+          "uv": [
+            4.5,
+            0,
+            6,
+            2
+          ],
+          "rotation": 270,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "up": {
+          "uv": [
+            4.5,
+            0,
+            6,
+            2
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "down": {
+          "uv": [
+            4.5,
+            0,
+            6,
+            2
+          ],
+          "rotation": 180,
+          "texture": "#glow_crystal_shard_ore"
+        }
+      },
+      "light_emission": 15,
+      "shade": false
+    },
+    {
+      "from": [
+        4.78702,
+        5.80979,
+        12.6291
+      ],
+      "to": [
+        7.03702,
+        8.05979,
+        17.1291
+      ],
+      "rotation": {
+        "angle": 22.5,
+        "axis": "x",
+        "origin": [
+          7.875,
+          6.75,
+          13.81521
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            6.75,
+            7.75,
+            5.25,
+            6.25
+          ],
+          "rotation": 180,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "east": {
+          "uv": [
+            4,
+            0,
+            5.5,
+            3
+          ],
+          "rotation": 90,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "south": {
+          "uv": [
+            12.5,
+            0,
+            11,
+            1.5
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "west": {
+          "uv": [
+            4,
+            0,
+            5.5,
+            3
+          ],
+          "rotation": 270,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "up": {
+          "uv": [
+            4,
+            0,
+            5.5,
+            3
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "down": {
+          "uv": [
+            4,
+            0,
+            5.5,
+            3
+          ],
+          "rotation": 180,
+          "texture": "#glow_crystal_shard_ore"
+        }
+      },
+      "light_emission": 15,
+      "shade": false
+    },
+    {
+      "from": [
+        6.75,
+        4.54541,
+        15.01447
+      ],
+      "to": [
+        9.75,
+        7.54541,
+        17.26447
+      ],
+      "rotation": {
+        "angle": -45,
+        "axis": "x",
+        "origin": [
+          7.875,
+          6.75,
+          13.81521
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            4,
+            0,
+            6,
+            2
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "east": {
+          "uv": [
+            5.75,
+            0,
+            4.25,
+            2
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "south": {
+          "uv": [
+            4,
+            0,
+            6,
+            2
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "west": {
+          "uv": [
+            4.25,
+            0,
+            5.75,
+            2
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "up": {
+          "uv": [
+            7,
+            7.75,
+            5,
+            6.25
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "down": {
+          "uv": [
+            11.5,
+            3.5,
+            9.5,
+            5
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        }
+      },
+      "light_emission": 15,
+      "shade": false
+    },
+    {
+      "from": [
+        8.74999,
+        5.18479,
+        14.072
+      ],
+      "to": [
+        10.99999,
+        8.18479,
+        17.072
+      ],
+      "rotation": {
+        "angle": 22.5,
+        "axis": "x",
+        "origin": [
+          7.875,
+          6.75,
+          13.81521
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            6.75,
+            8,
+            5.25,
+            6
+          ],
+          "rotation": 180,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "east": {
+          "uv": [
+            4,
+            0,
+            6,
+            2
+          ],
+          "rotation": 90,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "south": {
+          "uv": [
+            11.5,
+            8,
+            10,
+            10
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "west": {
+          "uv": [
+            4,
+            0,
+            6,
+            2
+          ],
+          "rotation": 270,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "up": {
+          "uv": [
+            4.25,
+            0,
+            5.75,
+            2
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "down": {
+          "uv": [
+            4.25,
+            0,
+            5.75,
+            2
+          ],
+          "rotation": 180,
+          "texture": "#glow_crystal_shard_ore"
+        }
+      },
+      "light_emission": 15,
+      "shade": false
+    },
+    {
+      "from": [
+        5.625,
+        5.05979,
+        16.06521
+      ],
+      "to": [
+        6.375,
+        5.80979,
+        17.56521
+      ],
+      "rotation": {
+        "angle": 22.5,
+        "axis": "x",
+        "origin": [
+          7.875,
+          6.75,
+          13.81521
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            6.25,
+            7.25,
+            5.75,
+            6.75
+          ],
+          "rotation": 180,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "east": {
+          "uv": [
+            4.75,
+            0,
+            5.25,
+            1
+          ],
+          "rotation": 90,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "south": {
+          "uv": [
+            6.25,
+            6.75,
+            5.75,
+            7.25
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "west": {
+          "uv": [
+            4.75,
+            0,
+            5.25,
+            1
+          ],
+          "rotation": 270,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "up": {
+          "uv": [
+            4.75,
+            0,
+            5.25,
+            1
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "down": {
+          "uv": [
+            4.75,
+            0,
+            5.25,
+            1
+          ],
+          "rotation": 180,
+          "texture": "#glow_crystal_shard_ore"
+        }
+      },
+      "light_emission": 15,
+      "shade": false
+    },
+    {
+      "from": [
+        7.625,
+        6.05979,
+        10.06521
+      ],
+      "to": [
+        8.375,
+        6.80979,
+        11.56521
+      ],
+      "rotation": {
+        "angle": 22.5,
+        "axis": "x",
+        "origin": [
+          7.875,
+          6.75,
+          13.81521
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            6.25,
+            7.25,
+            5.75,
+            6.75
+          ],
+          "rotation": 180,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "east": {
+          "uv": [
+            4.75,
+            0,
+            5.25,
+            1
+          ],
+          "rotation": 90,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "south": {
+          "uv": [
+            6.25,
+            6.75,
+            5.75,
+            7.25
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "west": {
+          "uv": [
+            4.75,
+            0,
+            5.25,
+            1
+          ],
+          "rotation": 270,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "up": {
+          "uv": [
+            4.75,
+            0,
+            5.25,
+            1
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "down": {
+          "uv": [
+            4.75,
+            0,
+            5.25,
+            1
+          ],
+          "rotation": 180,
+          "texture": "#glow_crystal_shard_ore"
+        }
+      },
+      "light_emission": 15,
+      "shade": false
+    },
+    {
+      "from": [
+        5.8125,
+        8.05979,
+        15.69021
+      ],
+      "to": [
+        7.3125,
+        8.80979,
+        17.19021
+      ],
+      "rotation": {
+        "angle": 22.5,
+        "axis": "x",
+        "origin": [
+          7.875,
+          6.75,
+          13.81521
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            6.25,
+            6.5,
+            5.25,
+            6
+          ],
+          "rotation": 180,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "east": {
+          "uv": [
+            5,
+            0,
+            5.5,
+            1
+          ],
+          "rotation": 90,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "south": {
+          "uv": [
+            6.5,
+            6.5,
+            5.5,
+            7
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "west": {
+          "uv": [
+            5,
+            0,
+            5.5,
+            1
+          ],
+          "rotation": 270,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "up": {
+          "uv": [
+            4.25,
+            0,
+            5.25,
+            1
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "down": {
+          "uv": [
+            4.5,
+            0,
+            5.5,
+            1
+          ],
+          "rotation": 180,
+          "texture": "#glow_crystal_shard_ore"
+        }
+      },
+      "light_emission": 15,
+      "shade": false
+    },
+    {
+      "from": [
+        9,
+        7.49729,
+        15.69021
+      ],
+      "to": [
+        10.5,
+        8.99729,
+        17.19021
+      ],
+      "rotation": {
+        "angle": 22.5,
+        "axis": "x",
+        "origin": [
+          7.875,
+          6.75,
+          13.81521
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            6,
+            1.5,
+            5,
+            0.5
+          ],
+          "rotation": 180,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "east": {
+          "uv": [
+            4,
+            0,
+            5,
+            1
+          ],
+          "rotation": 90,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "south": {
+          "uv": [
+            5.25,
+            0.75,
+            4.25,
+            1.75
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "west": {
+          "uv": [
+            5,
+            0,
+            6,
+            1
+          ],
+          "rotation": 270,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "up": {
+          "uv": [
+            4.25,
+            0,
+            5.25,
+            1
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "down": {
+          "uv": [
+            5,
+            0,
+            6,
+            1
+          ],
+          "rotation": 180,
+          "texture": "#glow_crystal_shard_ore"
+        }
+      },
+      "light_emission": 15,
+      "shade": false
+    },
+    {
+      "from": [
+        8.0625,
+        4.12229,
+        15.69021
+      ],
+      "to": [
+        9.5625,
+        5.62229,
+        17.19021
+      ],
+      "rotation": {
+        "angle": 22.5,
+        "axis": "x",
+        "origin": [
+          7.875,
+          6.75,
+          13.81521
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            6,
+            1,
+            5,
+            0
+          ],
+          "rotation": 180,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "east": {
+          "uv": [
+            5,
+            0,
+            6,
+            1
+          ],
+          "rotation": 90,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "south": {
+          "uv": [
+            5.5,
+            0,
+            4.5,
+            1
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "west": {
+          "uv": [
+            4,
+            0,
+            5,
+            1
+          ],
+          "rotation": 270,
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "up": {
+          "uv": [
+            4.75,
+            0,
+            5.75,
+            1
+          ],
+          "texture": "#glow_crystal_shard_ore"
+        },
+        "down": {
+          "uv": [
+            4.25,
+            0,
+            5.25,
+            1
+          ],
+          "rotation": 180,
+          "texture": "#glow_crystal_shard_ore"
+        }
+      },
+      "light_emission": 15,
+      "shade": false
+    }
+  ],
+  "render_type": "cutout",
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        75,
+        315,
+        0
+      ],
+      "translation": [
+        0,
+        2.5,
+        0
+      ],
+      "scale": [
+        0.375,
+        0.375,
+        0.375
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        315,
+        0
+      ],
+      "translation": [
+        0,
+        2.5,
+        0
+      ],
+      "scale": [
+        0.4,
+        0.4,
+        0.4
+      ]
+    },
+    "ground": {
+      "translation": [
+        0,
+        3,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.25
+      ]
+    },
+    "gui": {
+      "rotation": [
+        30,
+        45,
+        0
+      ],
+      "scale": [
+        0.625,
+        0.625,
+        0.625
+      ]
+    },
+    "head": {
+      "rotation": [
+        0,
+        180,
+        0
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        180,
+        0
+      ]
+    }
+  }
+}

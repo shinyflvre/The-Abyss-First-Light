@@ -1,0 +1,9 @@
+{
+  "parent": "block/slab",
+  "textures": {
+    "bottom": "theabyss:block/stone",
+    "top": "theabyss:block/stone",
+    "side": "theabyss:block/stone"
+  },
+  "render_type": "solid"
+}

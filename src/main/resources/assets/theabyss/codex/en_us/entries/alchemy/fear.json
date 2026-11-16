@@ -1,0 +1,41 @@
+{
+  "name": "Anti Fear Essence",
+  "icon": "theabyss:anti_fear_essence",
+  "category": "alchemy",
+  "order": 0,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:anti_fear_essence",
+      "title": "Anti Fear Essence",
+      "text": "The Anti Fear Essence is a powerful tool to have on hand when facing the unknown. When the darkness closes in and fear begins to take hold, this essence will help you push through and temporarily suppress your fears. Not only that, but it also gives you a boost in strength and resistance to attacks, making you 10% stronger and more durable. Don't let fear hold you back - carry the Anti Fear Essence with you on your journey through the Abyss."
+    },
+    {
+      "type": "text",
+      "title": "Crafting",
+      "text": "The Anti Fear Essence is a powerful concoction that can be crafted using a Somnium Infuser. To create this essence, you'll need to harness the energy of loran and the mysterious substance known as somnium. Whether you're facing down your fears or seeking an extra edge in combat, this essence is sure to come in handy on your journey through the Abyss."
+    },
+    {
+      "type": "infuser",
+      "title": "Recipe",
+      "somnium": "theabyss:somnium",
+      "energy": "theabyss:loran_energy",
+      "inputs": [
+        "theabyss:roka_horn",
+        "theabyss:roka_horn",
+        "theabyss:roka_horn",
+        "theabyss:roka_horn"
+      ],
+      "notes": [
+        "Place Somnium and loran energy in the upper input slots.",
+        "To craft Anti Fear Essence, place the required items in the test tubes on the left and right."
+      ]
+    },
+    {
+      "type": "image",
+      "image": "theabyss:textures/guide/infuser/somnium_usage.png",
+      "title": "Infuser GUI",
+      "border": true
+    }
+  ]
+}

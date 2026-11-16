@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_attached_hanging_sign_rot_3",
+  "textures": {
+    "all": "theabyss:block/slimed_hanging_sign",
+    "particle": "theabyss:block/stripped_slimed_log"
+  }
+}

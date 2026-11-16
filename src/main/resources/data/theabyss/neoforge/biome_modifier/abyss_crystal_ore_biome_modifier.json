@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "theabyss:blue_mountain",
+    "theabyss:blaru_forest"
+  ],
+  "features": "theabyss:abyss_crystal_ore",
+  "step": "vegetal_decoration"
+}

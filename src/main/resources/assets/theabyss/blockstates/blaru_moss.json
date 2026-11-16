@@ -1,0 +1,24 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "theabyss:block/blaru_moss"
+      },
+      {
+        "model": "theabyss:block/blaru_moss_2"
+      },
+      {
+        "model": "theabyss:block/blaru_moss_3"
+      },
+      {
+        "model": "theabyss:block/blaru_moss_4"
+      },
+      {
+        "model": "theabyss:block/blaru_moss_5"
+      },
+      {
+        "model": "theabyss:block/blaru_moss_6"
+      }
+    ]
+  }
+}

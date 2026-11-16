@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_shelf_center",
+  "textures": {
+    "all": "theabyss:block/blaru_shelf",
+    "particle": "theabyss:block/stripped_blaru_log"
+  }
+}

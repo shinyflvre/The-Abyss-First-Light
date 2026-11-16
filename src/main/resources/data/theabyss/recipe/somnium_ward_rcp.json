@@ -1,0 +1,15 @@
+{
+  "type": "theabyss:infuser_recipe_type",
+  "ingredients": [
+    "theabyss:phantom_essence",
+    "theabyss:abyss_crystal_shard",
+    "theabyss:phantom_essence",
+    "theabyss:soul_heart",
+    "theabyss:somnium",
+    "theabyss:loran_energy"
+  ],
+  "output": {
+    "id": "theabyss:somnium_ward",
+    "count": 1
+  }
+}

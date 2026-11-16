@@ -1,0 +1,32 @@
+{
+  "name": "Mutated Enderpearl",
+  "icon": "theabyss:mutated_enderpearl",
+  "category": "magic_items",
+  "order": 11,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:mutated_enderpearl",
+      "title": "Mutated Enderpearl",
+      "text": "An ender pearl twisted by Loran and Anima. Hold right click to draw it back like a bow and release to send it flying. Where it strikes a block, you are teleported right to that spot, briefly blinded and cloaked in invisibility as you arrive. The pearl wears out after a few throws. It is also needed to craft the Ring of Teleport."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:mutated_preal_rcp",
+      "title": "Recipe",
+      "grid": [
+        "theabyss:anima_nugget",
+        "",
+        "theabyss:loran",
+        "",
+        "minecraft:ender_pearl",
+        "",
+        "theabyss:loran",
+        "",
+        "theabyss:anima_nugget"
+      ],
+      "result": "theabyss:mutated_enderpearl",
+      "count": 1
+    }
+  ]
+}

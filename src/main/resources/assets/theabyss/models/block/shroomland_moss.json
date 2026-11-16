@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "theabyss:block/infected_dirt",
+    "up": "theabyss:block/shroomland_grass_block_top",
+    "north": "theabyss:block/shroomland_grass_block_side",
+    "east": "theabyss:block/shroomland_grass_block_side",
+    "south": "theabyss:block/shroomland_grass_block_side",
+    "west": "theabyss:block/shroomland_grass_block_side",
+    "particle": "theabyss:block/infected_dirt"
+  },
+  "render_type": "solid"
+}

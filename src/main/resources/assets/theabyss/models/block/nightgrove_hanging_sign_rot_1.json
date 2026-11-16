@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_hanging_sign_rot_1",
+  "textures": {
+    "all": "theabyss:block/nightgrove_hanging_sign",
+    "particle": "theabyss:block/stripped_nightgrove_log"
+  }
+}

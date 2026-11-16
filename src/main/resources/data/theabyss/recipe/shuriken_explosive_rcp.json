@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:shuriken",
+    "b": "minecraft:tnt"
+  },
+  "pattern": [
+    "ab"
+  ],
+  "result": {
+    "id": "theabyss:shuriken_explosive"
+  }
+}

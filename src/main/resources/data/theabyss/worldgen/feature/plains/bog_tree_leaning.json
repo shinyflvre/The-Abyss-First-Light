@@ -1,0 +1,10 @@
+{
+  "type": "theabyss:bog_tree",
+  "variant": "leaning",
+  "log": {
+    "id": "theabyss:bog_shroom_log",
+    "properties": {
+      "axis": "y"
+    }
+  }
+}

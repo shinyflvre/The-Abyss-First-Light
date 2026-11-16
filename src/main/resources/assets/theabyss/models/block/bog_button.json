@@ -1,0 +1,7 @@
+{
+  "parent": "block/button",
+  "textures": {
+    "texture": "theabyss:block/bog_planks"
+  },
+  "render_type": "solid"
+}

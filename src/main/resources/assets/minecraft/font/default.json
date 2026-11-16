@@ -1,0 +1,22 @@
+{
+    "providers": [
+        {
+            "type": "space",
+            "advances": {
+                " ": 4,
+                "\u200c": 0
+            }
+        },
+        {
+            "type": "bitmap",
+            "file": "theabyss:gui/generic.png",
+            "ascent": 9,
+            "height": 11,
+            "chars": [
+                "\uef01\uef02\uef03\uef04\uef05\uef06\uef07\uef08\uef09\uef10",
+                "\uef11\uef12\uef13\uef14\uef15\uef16\uef17\uef18\uef19\uef20",
+                "\uef21\uef22\uef23\uef24\uef25\uef26\uef27\uef28\uef29\uef30"
+            ]
+        }
+    ]
+}

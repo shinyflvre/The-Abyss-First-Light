@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "theabyss:phantom_crate",
+  "features": "theabyss:phantom_pillar_6_feature",
+  "step": "surface_structures"
+}

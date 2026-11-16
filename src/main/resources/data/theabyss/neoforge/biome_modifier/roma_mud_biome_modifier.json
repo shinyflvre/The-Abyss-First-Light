@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "theabyss:mud_plains",
+    "theabyss:blaru_forest",
+    "theabyss:slime_forest"
+  ],
+  "features": "theabyss:roma_mud",
+  "step": "underground_ores"
+}

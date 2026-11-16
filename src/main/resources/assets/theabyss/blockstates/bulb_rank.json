@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "segment=start": {
+      "model": "theabyss:block/bulb_rank_start"
+    },
+    "segment=middle": {
+      "model": "theabyss:block/bulb_rank_middle"
+    },
+    "segment=close_end": {
+      "model": "theabyss:block/bulb_rank_close_end"
+    },
+    "segment=end": {
+      "model": "theabyss:block/bulb_rank_end"
+    }
+  }
+}

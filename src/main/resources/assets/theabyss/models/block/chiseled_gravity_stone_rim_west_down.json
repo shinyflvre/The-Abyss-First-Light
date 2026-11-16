@@ -1,0 +1,45 @@
+{
+  "render_type": "minecraft:translucent",
+  "ambientocclusion": false,
+  "textures": {
+    "particle": "theabyss:block/chiseled_gravity_stone_side",
+    "rim": "theabyss:block/chiseled_gravity_stone_rim",
+    "rim_h": "theabyss:block/chiseled_gravity_stone_rim_h"
+  },
+  "elements": [
+    {
+      "from": [
+        -16.0,
+        0.32,
+        0.0
+      ],
+      "to": [
+        0.0,
+        0.32,
+        16.0
+      ],
+      "shade": false,
+      "light_emission": 15,
+      "faces": {
+        "down": {
+          "uv": [
+            16,
+            0,
+            0,
+            16
+          ],
+          "texture": "#rim_h"
+        },
+        "up": {
+          "uv": [
+            16,
+            0,
+            0,
+            16
+          ],
+          "texture": "#rim_h"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "parent": "block/slab",
+  "textures": {
+    "bottom": "theabyss:block/nightgrove_planks",
+    "top": "theabyss:block/nightgrove_planks",
+    "side": "theabyss:block/nightgrove_planks"
+  },
+  "render_type": "solid"
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "theabyss:sal_planks"
+  },
+  "pattern": [
+    "aa",
+    "aa",
+    "aa"
+  ],
+  "result": {
+    "id": "theabyss:sal_door",
+    "count": 3
+  }
+}

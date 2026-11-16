@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "theabyss:block/nightgrove_path"
+      },
+      {
+        "model": "theabyss:block/nightgrove_path",
+        "y": 90
+      },
+      {
+        "model": "theabyss:block/nightgrove_path",
+        "y": 180
+      },
+      {
+        "model": "theabyss:block/nightgrove_path",
+        "y": 270
+      }
+    ]
+  }
+}

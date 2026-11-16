@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "theabyss:blue_mountain",
+  "spawners": {
+    "type": "theabyss:magician",
+    "weight": 1,
+    "count": 1
+  }
+}

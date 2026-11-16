@@ -1,0 +1,15 @@
+{
+  "type": "theabyss:infuser_recipe_type",
+  "ingredients": [
+    "theabyss:roka_horn",
+    "theabyss:node_shard",
+    "theabyss:phantom_soul_item",
+    "theabyss:soul_heart",
+    "theabyss:somnium",
+    "theabyss:loran_energy"
+  ],
+  "output": {
+    "id": "theabyss:somnium_upgrade",
+    "count": 1
+  }
+}

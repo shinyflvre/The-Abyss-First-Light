@@ -1,0 +1,87 @@
+{
+  "name": "Garnite Armor",
+  "icon": "theabyss:garnite_armor_chestplate",
+  "category": "armors",
+  "order": 4,
+  "pages": [
+    {
+      "type": "item",
+      "item": "theabyss:garnite_armor_chestplate",
+      "title": "Garnite Armor",
+      "text": "Heavy and unshakable, Garnite armor keeps you firmly on your feet. The helmet gives 5 armor, the chestplate 6, the leggings 6 and the boots 5, for a total of 22 armor. Each piece adds 3.5 toughness and a mighty 40 percent knockback resistance, so a full set keeps you standing no matter how hard you are hit."
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:garnite_helmet_rcp",
+      "title": "Helmet",
+      "text": "Garnite Ingots drop straight from Garnite Ore.",
+      "grid": [
+        "theabyss:garnite_ingot",
+        "theabyss:garnite_ingot",
+        "theabyss:garnite_ingot",
+        "theabyss:garnite_ingot",
+        "",
+        "theabyss:garnite_ingot",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:garnite_armor_helmet",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:garnite_chestplate_rcp",
+      "title": "Chestplate",
+      "grid": [
+        "theabyss:garnite_ingot",
+        "",
+        "theabyss:garnite_ingot",
+        "theabyss:garnite_ingot",
+        "theabyss:garnite_ingot",
+        "theabyss:garnite_ingot",
+        "theabyss:garnite_ingot",
+        "theabyss:garnite_ingot",
+        "theabyss:garnite_ingot"
+      ],
+      "result": "theabyss:garnite_armor_chestplate",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:garnite_leggings_rcp",
+      "title": "Leggings",
+      "grid": [
+        "theabyss:garnite_ingot",
+        "theabyss:garnite_ingot",
+        "theabyss:garnite_ingot",
+        "theabyss:garnite_ingot",
+        "",
+        "theabyss:garnite_ingot",
+        "theabyss:garnite_ingot",
+        "",
+        "theabyss:garnite_ingot"
+      ],
+      "result": "theabyss:garnite_armor_leggings",
+      "count": 1
+    },
+    {
+      "type": "crafting",
+      "recipe": "theabyss:garnite_boots_rcp",
+      "title": "Boots",
+      "grid": [
+        "theabyss:garnite_ingot",
+        "",
+        "theabyss:garnite_ingot",
+        "theabyss:garnite_ingot",
+        "",
+        "theabyss:garnite_ingot",
+        "",
+        "",
+        ""
+      ],
+      "result": "theabyss:garnite_armor_boots",
+      "count": 1
+    }
+  ]
+}
