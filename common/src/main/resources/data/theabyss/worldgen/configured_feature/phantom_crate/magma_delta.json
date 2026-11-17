@@ -1,0 +1,11 @@
+{
+  "type": "theabyss:magma_fissures",
+  "config": {
+    "columns": 4,
+    "crack_chance": 0.4,
+    "max_size": 3,
+    "min_size": 1,
+    "mode": "delta",
+    "rim": 2
+  }
+}

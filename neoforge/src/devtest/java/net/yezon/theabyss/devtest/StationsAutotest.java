@@ -7,11 +7,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.yezon.theabyss.events.ResearchTableHandlerEvents;
@@ -31,7 +31,7 @@ final class StationsAutotest {
     }
 
     private static Item item(String id) {
-        return BuiltInRegistries.ITEM.getValue(Identifier.parse(id.contains(":") ? id : "theabyss:" + id));
+        return BuiltInRegistries.ITEM.get(ResourceLocation.parse(id.contains(":") ? id : "theabyss:" + id));
     }
 
     private static ItemStack stack(String id, int count) {
@@ -45,7 +45,7 @@ final class StationsAutotest {
             command.accept("execute in minecraft:overworld run fill -12 199 -12 12 199 12 minecraft:stone");
             command.accept("execute in minecraft:overworld run fill -12 200 -12 12 210 12 minecraft:air");
             command.accept("time set noon");
-            command.accept("gamerule spawn_mobs false");
+            command.accept("gamerule doMobSpawning false");
             command.accept("execute in minecraft:overworld run tp @s 0.5 200 0.5 0 30");
             command.accept("gamemode survival @s");
             command.accept("clear @s");
@@ -66,10 +66,10 @@ final class StationsAutotest {
             c.setItem(3, stack("loran", 3));
             c.setItem(4, stack("vitae_nugget", 3));
             c.setItem(5, stack("bottle_of_somnium", 3));
-            sp.openMenu((MenuProvider)sp.level().getBlockEntity(MORTAR), MORTAR);
+            sp.openMenu((MenuProvider)sp.serverLevel().getBlockEntity(MORTAR), MORTAR);
         }), 10);
         add.add("st mortar shot", () -> shot.accept("107_stations_1_mortar_preview"), 2);
-        add.add("st mortar shift", () -> mc.gameMode.handleContainerInput(mc.player.containerMenu.containerId, 0, 0, ContainerInput.QUICK_MOVE, mc.player), 6);
+        add.add("st mortar shift", () -> mc.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, 0, 0, ClickType.QUICK_MOVE, mc.player), 6);
         add.add("st mortar check", () -> onServer(sp -> {
             int powder = sp.getInventory().countItem(item("ardor_powder"));
             check("mortar: shift-click makes 3 x 2 ardor powder from mixed outer slots (" + powder + ")", powder == 6);
@@ -83,10 +83,10 @@ final class StationsAutotest {
             for (int i = 1; i <= 8; i++) {
                 c.setItem(i, stack(i % 2 == 1 ? "vitae_nugget" : "aurel_powder", 1));
             }
-            sp.openMenu((MenuProvider)sp.level().getBlockEntity(ARCANE), ARCANE);
+            sp.openMenu((MenuProvider)sp.serverLevel().getBlockEntity(ARCANE), ARCANE);
         }), 10);
         add.add("st arcane shot", () -> shot.accept("107_stations_2_arcane_preview"), 2);
-        add.add("st arcane take", () -> mc.gameMode.handleContainerInput(mc.player.containerMenu.containerId, 9, 0, ContainerInput.PICKUP, mc.player), 6);
+        add.add("st arcane take", () -> mc.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, 9, 0, ClickType.PICKUP, mc.player), 6);
         add.add("st arcane check", () -> onServer(sp -> {
             check("arcane: a turned ring still crafts the Ring of Regeneration (carried " + sp.containerMenu.getCarried() + ")",
                 sp.containerMenu.getCarried().is(item("ring_of_reg")));
@@ -105,7 +105,7 @@ final class StationsAutotest {
             ItemStack energy = stack("loran_energy", 1);
             energy.setDamageValue(40);
             c.setItem(6, energy);
-            sp.openMenu((MenuProvider)sp.level().getBlockEntity(INFUSER), INFUSER);
+            sp.openMenu((MenuProvider)sp.serverLevel().getBlockEntity(INFUSER), INFUSER);
         }), 60);
         add.add("st infuser shot 1", () -> shot.accept("107_stations_3a_infuser_brewing_early"), 70);
         add.add("st infuser shot 2", () -> shot.accept("107_stations_3b_infuser_brewing_late"), 2);
@@ -120,9 +120,9 @@ final class StationsAutotest {
                 result.is(item("lurker_juice")) && result.getCount() == 2 && energy.is(item("loran_energy")) && energy.getDamageValue() == 42
                     && container(sp, INFUSER).getItem(1).isEmpty());
             check("infuser: an Incorythe Gem is no energy", !container(sp, INFUSER).canPlaceItem(6, stack("incorythe_gem", 1)));
-            sp.openMenu((MenuProvider)sp.level().getBlockEntity(INFUSER), INFUSER);
+            sp.openMenu((MenuProvider)sp.serverLevel().getBlockEntity(INFUSER), INFUSER);
         }), 6);
-        add.add("st infuser take", () -> mc.gameMode.handleContainerInput(mc.player.containerMenu.containerId, 0, 0, ContainerInput.QUICK_MOVE, mc.player), 6);
+        add.add("st infuser take", () -> mc.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, 0, 0, ClickType.QUICK_MOVE, mc.player), 6);
         add.add("st infuser take check", () -> onServer(sp -> {
             check("infuser: shift-click takes the brew (" + sp.getInventory().countItem(item("lurker_juice")) + ")",
                 sp.getInventory().countItem(item("lurker_juice")) == 2);
@@ -131,17 +131,17 @@ final class StationsAutotest {
 
         add.add("st extractor fill", () -> onServer(sp -> {
             container(sp, EXTRACTOR).setItem(2, stack("loran_energy", 1));
-            if (sp.level().getBlockEntity(EXTRACTOR.above()) instanceof Container hopper) {
+            if (sp.serverLevel().getBlockEntity(EXTRACTOR.above()) instanceof Container hopper) {
                 hopper.setItem(0, stack("loran", 3));
             }
         }), 170);
         add.add("st extractor check", () -> onServer(sp -> {
-            int below = sp.level().getBlockEntity(EXTRACTOR.below()) instanceof Container hopper ? count(hopper, item("somnium")) : -1;
+            int below = sp.serverLevel().getBlockEntity(EXTRACTOR.below()) instanceof Container hopper ? count(hopper, item("somnium")) : -1;
             int inside = container(sp, EXTRACTOR).getItem(1).getCount();
             int damage = container(sp, EXTRACTOR).getItem(2).getDamageValue();
             check("extractor: 3 Loran -> 3 Somnium with the menu closed, in and out by hoppers (below " + below + ", inside " + inside
                 + ", energy used " + damage + ")", below + inside == 3 && damage == 3);
-            sp.openMenu((MenuProvider)sp.level().getBlockEntity(EXTRACTOR), EXTRACTOR);
+            sp.openMenu((MenuProvider)sp.serverLevel().getBlockEntity(EXTRACTOR), EXTRACTOR);
             container(sp, EXTRACTOR).setItem(0, stack("loran", 8));
         }), 22);
         add.add("st extractor shot", () -> shot.accept("107_stations_4_extractor_working"), 2);
@@ -154,7 +154,7 @@ final class StationsAutotest {
             });
             container(sp, CUTTER).setItem(0, stack("frost_crystal_ore", 6));
             container(sp, CUTTER).setItem(2, stack("loran_energy", 1));
-            sp.openMenu((MenuProvider)sp.level().getBlockEntity(CUTTER), CUTTER);
+            sp.openMenu((MenuProvider)sp.serverLevel().getBlockEntity(CUTTER), CUTTER);
         }), 50);
         add.add("st cutter shot locked", () -> shot.accept("107_stations_5_cutter_needs_research"), 2);
         add.add("st cutter locked check", () -> onServer(sp -> {
@@ -163,14 +163,14 @@ final class StationsAutotest {
             sp.closeContainer();
             sp.giveExperienceLevels(10);
             container(sp, RESEARCH).setItem(0, stack("frost_crystal_ore", 1));
-            sp.openMenu((MenuProvider)sp.level().getBlockEntity(RESEARCH), RESEARCH);
+            sp.openMenu((MenuProvider)sp.serverLevel().getBlockEntity(RESEARCH), RESEARCH);
         }), 6);
         add.add("st research", () -> onServer(sp -> {
             ResearchTableHandlerEvents.execute(sp);
             check("research: costs 5 levels and marks the crystal (level " + sp.experienceLevel + ")",
                 TheabyssModVariables.getPlayerVariables(sp).FrostCrystalResearch && sp.experienceLevel == 6);
             sp.closeContainer();
-            sp.openMenu((MenuProvider)sp.level().getBlockEntity(CUTTER), CUTTER);
+            sp.openMenu((MenuProvider)sp.serverLevel().getBlockEntity(CUTTER), CUTTER);
         }), 130);
         add.add("st cutter shot", () -> shot.accept("107_stations_6_cutter_working"), 2);
         add.add("st cutter check", () -> onServer(sp -> {
@@ -211,7 +211,7 @@ final class StationsAutotest {
             Container c = container(sp, pos);
             check(name + ": the 100th task breaks the Loran Energy, then nothing runs (energy " + c.getItem(2) + ", input left " + c.getItem(0).getCount() + ")",
                 c.getItem(2).isEmpty() && c.getItem(0).getCount() == 2);
-            sp.openMenu((MenuProvider)sp.level().getBlockEntity(pos), pos);
+            sp.openMenu((MenuProvider)sp.serverLevel().getBlockEntity(pos), pos);
         }), 8);
         add.add("st gem " + name + " shot", () -> shot.accept("107_stations_7_" + name + "_no_energy"), 2);
         add.add("st gem " + name + " close", () -> onServer(sp -> {
@@ -221,7 +221,7 @@ final class StationsAutotest {
     }
 
     private static Container container(ServerPlayer sp, BlockPos pos) {
-        return (Container)sp.level().getBlockEntity(pos);
+        return (Container)sp.serverLevel().getBlockEntity(pos);
     }
 
     private static int count(Container c, Item item) {

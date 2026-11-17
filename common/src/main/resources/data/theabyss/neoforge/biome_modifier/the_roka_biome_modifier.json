@@ -3,7 +3,8 @@
   "biomes": "theabyss:nightgrove",
   "spawners": {
     "type": "theabyss:the_roka",
-    "weight": 6,
-    "count": 1
+    "maxCount": 1,
+    "minCount": 1,
+    "weight": 6
   }
 }

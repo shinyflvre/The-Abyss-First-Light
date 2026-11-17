@@ -3,7 +3,7 @@ package net.yezon.theabyss.fabric.event;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.TriState;
+import net.yezon.theabyss.compat.TriState;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;

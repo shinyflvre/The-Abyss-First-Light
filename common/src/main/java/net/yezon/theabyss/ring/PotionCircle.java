@@ -2,7 +2,7 @@ package net.yezon.theabyss.ring;
 
 import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
@@ -37,7 +37,7 @@ public final class PotionCircle {
         if (!(entity.level() instanceof ServerLevel level)) {
             return;
         }
-        Identifier id = BuiltInRegistries.ITEM.getKey(event.getItem().getItem());
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(event.getItem().getItem());
         if (!TheabyssMod.MODID.equals(id.getNamespace())) {
             return;
         }

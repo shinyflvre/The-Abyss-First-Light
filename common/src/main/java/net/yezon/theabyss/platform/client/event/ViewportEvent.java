@@ -1,24 +1,40 @@
 package net.yezon.theabyss.platform.client.event;
 
+import net.minecraft.client.Camera;
+import net.minecraft.client.renderer.FogRenderer;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.material.FogType;
+import com.mojang.blaze3d.shaders.FogShape;
 import net.yezon.theabyss.platform.event.Event;
 
 public abstract class ViewportEvent extends Event {
+    private final Camera camera;
+    private final float partialTick;
+
+    protected ViewportEvent(Camera camera, float partialTick) {
+        this.camera = camera;
+        this.partialTick = partialTick;
+    }
+
+    public Camera getCamera() {
+        return this.camera;
+    }
+
+    public float getPartialTick() {
+        return this.partialTick;
+    }
 
     public static class ComputeCameraAngles extends ViewportEvent {
-        private final float partialTick;
+        private float yaw;
         private float pitch;
         private float roll;
-        private float yaw;
 
-        public ComputeCameraAngles(float partialTick, float pitch, float roll, float yaw) {
-            this.partialTick = partialTick;
+        public ComputeCameraAngles(Camera camera, float partialTick, float yaw, float pitch, float roll) {
+            super(camera, partialTick);
+            this.yaw = yaw;
             this.pitch = pitch;
             this.roll = roll;
-            this.yaw = yaw;
-        }
-
-        public float getPartialTick() {
-            return this.partialTick;
         }
 
         public float getPitch() {
@@ -47,14 +63,15 @@ public abstract class ViewportEvent extends Event {
     }
 
     public static class ComputeFogColor extends ViewportEvent {
-        private float blue;
-        private float green;
         private float red;
+        private float green;
+        private float blue;
 
-        public ComputeFogColor(float blue, float green, float red) {
-            this.blue = blue;
-            this.green = green;
+        public ComputeFogColor(Camera camera, float partialTick, float red, float green, float blue) {
+            super(camera, partialTick);
             this.red = red;
+            this.green = green;
+            this.blue = blue;
         }
 
         public float getBlue() {
@@ -83,46 +100,59 @@ public abstract class ViewportEvent extends Event {
     }
 
     public static class ComputeFov extends ViewportEvent {
-        private final net.minecraft.client.Camera camera;
-        private float fOV;
-        private final float partialTick;
+        private float fov;
+        private final boolean usedConfiguredFov;
 
-        public ComputeFov(net.minecraft.client.Camera camera, float fOV, float partialTick) {
-            this.camera = camera;
-            this.fOV = fOV;
-            this.partialTick = partialTick;
-        }
-
-        public net.minecraft.client.Camera getCamera() {
-            return this.camera;
+        public ComputeFov(Camera camera, float partialTick, float fov, boolean usedConfiguredFov) {
+            super(camera, partialTick);
+            this.fov = fov;
+            this.usedConfiguredFov = usedConfiguredFov;
         }
 
         public float getFOV() {
-            return this.fOV;
+            return this.fov;
         }
 
         public void setFOV(float value) {
-            this.fOV = value;
+            this.fov = value;
         }
 
-        public float getPartialTick() {
-            return this.partialTick;
+        public boolean usedConfiguredFov() {
+            return this.usedConfiguredFov;
         }
     }
 
     public static class RenderFog extends ViewportEvent {
-        private final net.minecraft.client.renderer.fog.environment.FogEnvironment environment;
-        private float farPlaneDistance;
+        private final FogRenderer.FogMode mode;
+        private final FogType type;
         private float nearPlaneDistance;
+        private float farPlaneDistance;
+        private FogShape fogShape;
+        private boolean changed;
 
-        public RenderFog(net.minecraft.client.renderer.fog.environment.FogEnvironment environment, float farPlaneDistance, float nearPlaneDistance) {
-            this.environment = environment;
-            this.farPlaneDistance = farPlaneDistance;
+        public RenderFog(FogRenderer.FogMode mode, FogType type, Camera camera, float partialTick, float nearPlaneDistance, float farPlaneDistance, FogShape fogShape) {
+            super(camera, partialTick);
+            this.mode = mode;
+            this.type = type;
             this.nearPlaneDistance = nearPlaneDistance;
+            this.farPlaneDistance = farPlaneDistance;
+            this.fogShape = fogShape;
         }
 
-        public net.minecraft.client.renderer.fog.environment.FogEnvironment getEnvironment() {
-            return this.environment;
+        public FogRenderer.FogMode getMode() {
+            return this.mode;
+        }
+
+        public FogType getType() {
+            return this.type;
+        }
+
+        public boolean isAtmospheric() {
+            if (this.type != FogType.NONE) {
+                return false;
+            }
+            return !(this.getCamera().getEntity() instanceof LivingEntity living)
+                || !living.hasEffect(MobEffects.BLINDNESS) && !living.hasEffect(MobEffects.DARKNESS);
         }
 
         public float getFarPlaneDistance() {
@@ -131,6 +161,7 @@ public abstract class ViewportEvent extends Event {
 
         public void setFarPlaneDistance(float value) {
             this.farPlaneDistance = value;
+            this.changed = true;
         }
 
         public float getNearPlaneDistance() {
@@ -139,6 +170,20 @@ public abstract class ViewportEvent extends Event {
 
         public void setNearPlaneDistance(float value) {
             this.nearPlaneDistance = value;
+            this.changed = true;
+        }
+
+        public FogShape getFogShape() {
+            return this.fogShape;
+        }
+
+        public void setFogShape(FogShape value) {
+            this.fogShape = value;
+            this.changed = true;
+        }
+
+        public boolean isChanged() {
+            return this.changed;
         }
     }
 }

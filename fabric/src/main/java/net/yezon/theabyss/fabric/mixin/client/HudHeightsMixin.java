@@ -1,32 +1,26 @@
 package net.yezon.theabyss.fabric.mixin.client;
 
-import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.Hud;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 import net.yezon.theabyss.fabric.client.FabricHudHeights;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(Hud.class)
+@Mixin(Gui.class)
 public abstract class HudHeightsMixin {
-    @Inject(method = "extractRenderState", at = @At("HEAD"))
-    private void theabyss$beginFrame(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+    @Inject(method = "render", at = @At("HEAD"))
+    private void theabyss$beginFrame(GuiGraphics graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
         FabricHudHeights.beginFrame();
     }
 
-    @Inject(method = "extractHearts", at = @At("HEAD"))
-    private void theabyss$heartsY(GuiGraphicsExtractor graphics, Player player, int xLeft, int yLineBase, int healthRowHeight, int heartOffsetIndex,
-        float maxHealth, int currentHealth, int oldHealth, int absorption, boolean blink, CallbackInfo ci) {
-        FabricHudHeights.hearts(graphics.guiHeight(), yLineBase);
-    }
-
-    @WrapMethod(method = "extractAirBubbles")
-    private void theabyss$airY(GuiGraphicsExtractor graphics, Player player, int vehicleHearts, int yLineAir, int xRight, Operation<Void> original) {
-        original.call(graphics, player, vehicleHearts, FabricHudHeights.airY(graphics.guiHeight(), yLineAir), xRight);
+    @WrapOperation(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/ResourceLocation;IIII)V"))
+    private void theabyss$airY(GuiGraphics graphics, ResourceLocation sprite, int x, int y, int width, int height, Operation<Void> original) {
+        original.call(graphics, sprite, x, FabricHudHeights.airY(graphics.guiHeight(), y), width, height);
     }
 }

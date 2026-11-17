@@ -23,7 +23,7 @@ final class NightbladeStorm {
 
     static final double RADIUS = 1.8;
     private static final float RED_DAMAGE = 1.25F;
-    private static final ParticleOptions RED_SPARK = new DustParticleOptions(0xFF5959, 0.9F);
+    private static final ParticleOptions RED_SPARK = new DustParticleOptions(Vec3.fromRGB24(0xFF5959).toVector3f(), 0.9F);
     private static final double FIELD_RADIUS = 13.0;
 
     private record Circle(Vec3 at, int strikeAt) {
@@ -129,7 +129,7 @@ final class NightbladeStorm {
         AABB area = new AABB(spot.x - RADIUS, spot.y - 1.0, spot.z - RADIUS, spot.x + RADIUS, spot.y + 3.0, spot.z + RADIUS);
         for (LivingEntity victim : c.enemiesIn(area)) {
             if (victim.position().subtract(spot).horizontalDistance() <= RADIUS + victim.getBbWidth() * 0.5) {
-                victim.hurtServer(level, c.magicDamage(), c.scaled(9.0F) * (this.red ? RED_DAMAGE : 1.0F));
+                victim.hurt(c.magicDamage(), c.scaled(9.0F) * (this.red ? RED_DAMAGE : 1.0F));
                 victim.addEffect(new MobEffectInstance(TheabyssModMobEffects.WEAK_ELECTRICITY.getDelegate(), 60, 0, false, false));
             }
         }

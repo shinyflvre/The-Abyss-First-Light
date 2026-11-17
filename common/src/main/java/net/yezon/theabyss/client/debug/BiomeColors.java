@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.EnumMap;
@@ -15,36 +14,30 @@ import java.util.TreeMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.attribute.EnvironmentAttribute;
-import net.minecraft.world.attribute.EnvironmentAttributeMap;
-import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.yezon.theabyss.platform.common.world.ModifiableBiomeInfo;
 import net.yezon.theabyss.TheabyssMod;
-import org.joml.Vector3f;
-import org.joml.Vector3fc;
+import net.yezon.theabyss.mixin.client.BiomeEffectsAccessor;
 
 public final class BiomeColors {
     public enum Channel {
-        FOG("Fog", "minecraft:visual/fog_color", EnvironmentAttributes.FOG_COLOR, false),
-        SKY("Sky", "minecraft:visual/sky_color", EnvironmentAttributes.SKY_COLOR, false),
-        WATER_FOG("Water Fog", "minecraft:visual/water_fog_color", EnvironmentAttributes.WATER_FOG_COLOR, false),
-        WATER("Water", "effects.water_color", null, true),
-        GRASS("Grass", "effects.grass_color", null, true),
-        FOLIAGE("Foliage", "effects.foliage_color", null, true);
+        FOG("Fog", "minecraft:visual/fog_color", false),
+        SKY("Sky", "minecraft:visual/sky_color", false),
+        WATER_FOG("Water Fog", "minecraft:visual/water_fog_color", false),
+        WATER("Water", "effects.water_color", true),
+        GRASS("Grass", "effects.grass_color", true),
+        FOLIAGE("Foliage", "effects.foliage_color", true);
 
         public final String label;
         public final String jsonKey;
-        final EnvironmentAttribute<Vector3fc> attribute;
         public final boolean baked;
 
-        Channel(String label, String jsonKey, EnvironmentAttribute<Vector3fc> attribute, boolean baked) {
+        Channel(String label, String jsonKey, boolean baked) {
             this.label = label;
             this.jsonKey = jsonKey;
-            this.attribute = attribute;
             this.baked = baked;
         }
     }
@@ -52,7 +45,7 @@ public final class BiomeColors {
     private static final Path FILE = net.yezon.theabyss.platform.Platform.get().configDir().resolve("theabyss-biome-colors.json");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    private static final Map<Identifier, Map<Channel, Integer>> EDITS = new TreeMap<>();
+    private static final Map<ResourceLocation, Map<Channel, Integer>> EDITS = new TreeMap<>();
     private static final Map<Biome, ModifiableBiomeInfo.BiomeInfo> ORIGINALS = new java.util.IdentityHashMap<>();
     private static boolean loaded;
 
@@ -60,11 +53,11 @@ public final class BiomeColors {
     }
 
     public static Holder<Biome> biomeAtCamera(Minecraft mc) {
-        return mc.level.getBiome(mc.gameRenderer.mainCamera().blockPosition());
+        return mc.level.getBiome(mc.gameRenderer.getMainCamera().getBlockPosition());
     }
 
-    public static Identifier id(Holder<Biome> biome) {
-        return biome.unwrapKey().map(ResourceKey::identifier).orElse(Identifier.withDefaultNamespace("unknown"));
+    public static ResourceLocation id(Holder<Biome> biome) {
+        return biome.unwrapKey().map(ResourceKey::location).orElse(ResourceLocation.withDefaultNamespace("unknown"));
     }
 
     public static int current(Minecraft mc, Holder<Biome> holder, Channel channel) {
@@ -85,13 +78,12 @@ public final class BiomeColors {
     private static int read(Minecraft mc, Biome biome, ModifiableBiomeInfo.BiomeInfo info, Channel channel) {
         BiomeSpecialEffects effects = info.effects();
         return switch (channel) {
-            case WATER -> effects.waterColor() & 0xFFFFFF;
-            case GRASS -> effects.grassColorOverride().orElseGet(() -> biome.getGrassColor(0.0, 0.0)) & 0xFFFFFF;
-            case FOLIAGE -> effects.foliageColorOverride().orElseGet(biome::getFoliageColor) & 0xFFFFFF;
-            default -> {
-                Vector3fc dimension = mc.level.dimensionType().attributes().applyModifier(channel.attribute, channel.attribute.defaultValue());
-                yield toRgb(info.attributes().applyModifier(channel.attribute, dimension));
-            }
+            case FOG -> effects.getFogColor() & 0xFFFFFF;
+            case SKY -> effects.getSkyColor() & 0xFFFFFF;
+            case WATER_FOG -> effects.getWaterFogColor() & 0xFFFFFF;
+            case WATER -> effects.getWaterColor() & 0xFFFFFF;
+            case GRASS -> effects.getGrassColorOverride().orElseGet(() -> biome.getGrassColor(0.0, 0.0)) & 0xFFFFFF;
+            case FOLIAGE -> effects.getFoliageColorOverride().orElseGet(biome::getFoliageColor) & 0xFFFFFF;
         };
     }
 
@@ -137,36 +129,35 @@ public final class BiomeColors {
     private static void apply(Biome biome, Map<Channel, Integer> edits) {
         ModifiableBiomeInfo.BiomeInfo original = ORIGINALS.computeIfAbsent(biome, BiomeColors::info);
         BiomeSpecialEffects effects = original.effects();
-        int water = edits.containsKey(Channel.WATER) ? edits.get(Channel.WATER) : effects.waterColor();
-        Optional<Integer> grass = edits.containsKey(Channel.GRASS) ? Optional.of(edits.get(Channel.GRASS)) : effects.grassColorOverride();
-        Optional<Integer> foliage = edits.containsKey(Channel.FOLIAGE) ? Optional.of(edits.get(Channel.FOLIAGE)) : effects.foliageColorOverride();
-        BiomeSpecialEffects newEffects = new BiomeSpecialEffects(water, foliage, effects.dryFoliageColorOverride(), grass, effects.grassColorModifier());
-
-        EnvironmentAttributeMap.Builder attributes = EnvironmentAttributeMap.builder().putAll(original.attributes());
-        for (Channel channel : new Channel[] {Channel.FOG, Channel.SKY, Channel.WATER_FOG}) {
-            if (edits.containsKey(channel)) {
-                attributes.set(channel.attribute, toVector(edits.get(channel)));
-            }
-        }
-        EnvironmentAttributeMap newAttributes = attributes.build();
-        ModifiableBiomeInfo.BiomeInfo modified = new ModifiableBiomeInfo.BiomeInfo(original.climateSettings(), newAttributes, newEffects, original.generationSettings());
+        int water = edits.containsKey(Channel.WATER) ? edits.get(Channel.WATER) : effects.getWaterColor();
+        Optional<Integer> grass = edits.containsKey(Channel.GRASS) ? Optional.of(edits.get(Channel.GRASS)) : effects.getGrassColorOverride();
+        Optional<Integer> foliage = edits.containsKey(Channel.FOLIAGE) ? Optional.of(edits.get(Channel.FOLIAGE)) : effects.getFoliageColorOverride();
+        BiomeSpecialEffects.Builder builder = new BiomeSpecialEffects.Builder()
+            .fogColor(edits.containsKey(Channel.FOG) ? edits.get(Channel.FOG) : effects.getFogColor())
+            .skyColor(edits.containsKey(Channel.SKY) ? edits.get(Channel.SKY) : effects.getSkyColor())
+            .waterFogColor(edits.containsKey(Channel.WATER_FOG) ? edits.get(Channel.WATER_FOG) : effects.getWaterFogColor())
+            .waterColor(water)
+            .grassColorModifier(effects.getGrassColorModifier());
+        grass.ifPresent(builder::grassColorOverride);
+        foliage.ifPresent(builder::foliageColorOverride);
+        effects.getAmbientParticleSettings().ifPresent(builder::ambientParticle);
+        effects.getAmbientLoopSoundEvent().ifPresent(builder::ambientLoopSound);
+        effects.getAmbientMoodSettings().ifPresent(builder::ambientMoodSound);
+        effects.getAmbientAdditionsSettings().ifPresent(builder::ambientAdditionsSound);
+        effects.getBackgroundMusic().ifPresent(builder::backgroundMusic);
+        BiomeSpecialEffects newEffects = builder.build();
+        ModifiableBiomeInfo.BiomeInfo modified = new ModifiableBiomeInfo.BiomeInfo(original.climateSettings(), newEffects, original.generationSettings(),
+            original.mobSpawnSettings());
         try {
             ModifiableBiomeInfo.setModified(biome, modified);
-            setField(Biome.class, biome, "specialEffects", newEffects);
-            setField(Biome.class, biome, "attributes", newAttributes);
-        } catch (ReflectiveOperationException | RuntimeException e) {
+            ((BiomeEffectsAccessor)(Object)biome).theabyss$setSpecialEffects(newEffects);
+        } catch (RuntimeException e) {
             TheabyssMod.LOGGER.warn("[BiomeColors] could not change the biome colours", e);
         }
         Minecraft mc = Minecraft.getInstance();
         if (mc.level != null) {
             mc.level.clearTintCaches();
         }
-    }
-
-    private static void setField(Class<?> owner, Object target, String name, Object value) throws ReflectiveOperationException {
-        Field field = owner.getDeclaredField(name);
-        field.setAccessible(true);
-        field.set(target, value);
     }
 
     public static String export() {
@@ -204,7 +195,7 @@ public final class BiomeColors {
                     }
                 }
                 if (!edits.isEmpty()) {
-                    EDITS.put(Identifier.parse(biomeId), edits);
+                    EDITS.put(ResourceLocation.parse(biomeId), edits);
                 }
             }
         } catch (IOException | RuntimeException e) {
@@ -233,16 +224,5 @@ public final class BiomeColors {
             throw new NumberFormatException(text);
         }
         return Integer.parseInt(s, 16);
-    }
-
-    private static int toRgb(Vector3fc colour) {
-        int r = Math.round(Math.clamp(colour.x(), 0.0F, 1.0F) * 255.0F);
-        int g = Math.round(Math.clamp(colour.y(), 0.0F, 1.0F) * 255.0F);
-        int b = Math.round(Math.clamp(colour.z(), 0.0F, 1.0F) * 255.0F);
-        return r << 16 | g << 8 | b;
-    }
-
-    private static Vector3f toVector(int rgb) {
-        return new Vector3f((rgb >> 16 & 255) / 255.0F, (rgb >> 8 & 255) / 255.0F, (rgb & 255) / 255.0F);
     }
 }

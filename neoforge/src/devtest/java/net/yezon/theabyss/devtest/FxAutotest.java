@@ -9,7 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.monster.zombie.Husk;
+import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -58,13 +58,13 @@ final class FxAutotest {
             net.yezon.theabyss.configuration.ConfigConfiguration.ABYSS_HUE.set(25);
             net.yezon.theabyss.configuration.ConfigConfiguration.ABYSS_SATURATION.set(20);
         }, 10);
-        add.add("check abyss grading", () -> check("abyss colour grading on", mc.player.getActivePostEffects().contains(net.yezon.theabyss.client.fx.ScreenFx.ABYSS_GRADE_EFFECT)), 2);
+        add.add("check abyss grading", () -> check("abyss colour grading on", net.yezon.theabyss.client.fx.PostFx.activeEffects().contains(net.yezon.theabyss.client.fx.ScreenFx.ABYSS_GRADE_EFFECT)), 2);
         add.add("shot abyss grading", () -> shot.accept("58f_abyss_colour_grading"), 10);
         add.add("abyss grading off", () -> {
             net.yezon.theabyss.configuration.ConfigConfiguration.ABYSS_HUE.set(0);
             net.yezon.theabyss.configuration.ConfigConfiguration.ABYSS_SATURATION.set(0);
         }, 10);
-        add.add("check abyss grading off", () -> check("abyss colour grading off at 0", !mc.player.getActivePostEffects().contains(net.yezon.theabyss.client.fx.ScreenFx.ABYSS_GRADE_EFFECT)), 2);
+        add.add("check abyss grading off", () -> check("abyss colour grading off at 0", !net.yezon.theabyss.client.fx.PostFx.activeEffects().contains(net.yezon.theabyss.client.fx.ScreenFx.ABYSS_GRADE_EFFECT)), 2);
         add.add("fx arena", () -> {
             command.accept("execute in minecraft:overworld run forceload add -12 -12 12 12");
             command.accept("execute in minecraft:overworld run fill -12 199 -12 12 199 12 minecraft:stone");
@@ -91,7 +91,7 @@ final class FxAutotest {
         add.add("shot light fading in", () -> shot.accept("59a_colored_light_fading_in"), 40);
         add.add("light engine active", () -> check("coloured light engine: volume built and post chain on",
             net.yezon.theabyss.client.fx.ColoredLight.active()
-                && mc.player.getActivePostEffects().contains(net.yezon.theabyss.client.fx.ScreenFx.LIGHT_ENGINE_EFFECT)), 2);
+                && net.yezon.theabyss.client.fx.PostFx.activeEffects().contains(net.yezon.theabyss.client.fx.ScreenFx.LIGHT_ENGINE_EFFECT)), 2);
         add.add("shot light engine", () -> shot.accept("59b_colored_light_engine"), 10);
         add.add("light engine close", () -> command.accept("tp @s 0 200 -2 0 25"), 30);
         add.add("shot light engine close", () -> shot.accept("59c_colored_light_engine_close"), 10);
@@ -189,7 +189,7 @@ final class FxAutotest {
         add.add("time mana before", () -> onServer(sp -> {
             mana = TheabyssModVariables.getPlayerVariables(sp).Mana;
             timeMobs.clear();
-            timeMobs.addAll(sp.level().getEntitiesOfClass(net.minecraft.world.entity.Mob.class, new AABB(sp.blockPosition()).inflate(16)));
+            timeMobs.addAll(sp.serverLevel().getEntitiesOfClass(net.minecraft.world.entity.Mob.class, new AABB(sp.blockPosition()).inflate(16)));
         }), 2);
         add.add("use ring of time", () -> use(mc), 8);
         add.add("shot time spreading", () -> shot.accept("65a_time_stop_spreading"), 14);
@@ -198,14 +198,14 @@ final class FxAutotest {
             onServer(sp -> {
                 check("time stop: caster has the Time Stop effect", sp.hasEffect(net.yezon.theabyss.init.TheabyssModMobEffects.TIME_STOP_POTION_EFFECT.getDelegate()));
                 check("time stop: 80 Somnium paid", Math.abs(mana - TheabyssModVariables.getPlayerVariables(sp).Mana - 80.0) < 0.01);
-                check("time stop: no cooldown while time stands still (ring can end it)", !sp.getCooldowns().isOnCooldown(sp.getMainHandItem()));
+                check("time stop: no cooldown while time stands still (ring can end it)", !sp.getCooldowns().isOnCooldown(sp.getMainHandItem().getItem()));
                 var mobs = timeMobs;
                 timePoses.clear();
                 mobs.forEach(m -> timePoses.add(new float[] {m.getYRot(), m.getYHeadRot(), m.yBodyRot, m.getXRot()}));
                 check("time stop: nearby mobs frozen", !mobs.isEmpty() && mobs.stream().allMatch(m -> m.hasEffect(net.yezon.theabyss.init.TheabyssModMobEffects.TIME_STOP_POTION_IRATOR.getDelegate())));
                 check("time stop: frozen mobs do not move", mobs.stream().allMatch(m -> m.getDeltaMovement().horizontalDistanceSqr() < 1.0E-6));
             });
-            check("time stop: screen effect on", mc.player.getActivePostEffects().contains(net.yezon.theabyss.client.fx.ScreenFx.TIME_STOP_EFFECT));
+            check("time stop: screen effect on", net.yezon.theabyss.client.fx.PostFx.activeEffects().contains(net.yezon.theabyss.client.fx.ScreenFx.TIME_STOP_EFFECT));
         }, 2);
         add.add("shot time stopped", () -> shot.accept("65c_time_stopped"), 30);
         add.add("check no turning", () -> onServer(sp -> {
@@ -222,11 +222,11 @@ final class FxAutotest {
         add.add("time resumes", () -> use(mc), 12);
         add.add("shot time resuming", () -> shot.accept("65e_time_resuming"), 40);
         add.add("check time resumed", () -> {
-            check("time stop: screen effect off again", !mc.player.getActivePostEffects().contains(net.yezon.theabyss.client.fx.ScreenFx.TIME_STOP_EFFECT));
+            check("time stop: screen effect off again", !net.yezon.theabyss.client.fx.PostFx.activeEffects().contains(net.yezon.theabyss.client.fx.ScreenFx.TIME_STOP_EFFECT));
             onServer(sp -> {
                 check("time stop: ended by right-click", !sp.hasEffect(net.yezon.theabyss.init.TheabyssModMobEffects.TIME_STOP_POTION_EFFECT.getDelegate()));
                 check("time stop: mobs free again", timeMobs.stream().noneMatch(m -> m.hasEffect(net.yezon.theabyss.init.TheabyssModMobEffects.TIME_STOP_POTION_IRATOR.getDelegate())));
-                check("time stop: ring on cooldown afterwards", sp.getCooldowns().isOnCooldown(sp.getMainHandItem()));
+                check("time stop: ring on cooldown afterwards", sp.getCooldowns().isOnCooldown(sp.getMainHandItem().getItem()));
             });
         }, 2);
         add.add("time cleanup", () -> {
@@ -247,7 +247,7 @@ final class FxAutotest {
         add.add("shot shift open", () -> shot.accept("63d_dreamshift_rift_wide"), 50);
         add.add("check shift", () -> {
             check("arrived in the overworld", mc.level.dimension() == Level.OVERWORLD);
-            check("dream shifter cooldown visible after arriving", mc.player.getCooldowns().isOnCooldown(mc.player.getMainHandItem()));
+            check("dream shifter cooldown visible after arriving", mc.player.getCooldowns().isOnCooldown(mc.player.getMainHandItem().getItem()));
         }, 5);
 
         add.add("ender ring", () -> command.accept("item replace entity @s weapon.mainhand with theabyss:ring_of_ender_chest"), 10);
@@ -264,7 +264,7 @@ final class FxAutotest {
     }
 
     private static Husk husk(ServerPlayer sp) {
-        return sp.level().getEntitiesOfClass(Husk.class, new AABB(sp.blockPosition()).inflate(20)).stream().findFirst().orElse(null);
+        return sp.serverLevel().getEntitiesOfClass(Husk.class, new AABB(sp.blockPosition()).inflate(20)).stream().findFirst().orElse(null);
     }
 
     private static void fillSomnium() {

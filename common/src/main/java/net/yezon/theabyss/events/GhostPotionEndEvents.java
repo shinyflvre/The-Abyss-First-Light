@@ -19,14 +19,14 @@ public class GhostPotionEndEvents {
         }
         if (entity instanceof ServerPlayer player) {
             CompoundTag data = net.yezon.theabyss.platform.PersistentData.get(player);
-            GameType previous = GameType.byName(data.getStringOr(GhostPotionStartEvents.SAVED_MODE, "survival"), GameType.SURVIVAL);
+            GameType previous = GameType.byName(net.yezon.theabyss.compat.NbtCompat.getStringOr(data, GhostPotionStartEvents.SAVED_MODE, "survival"), GameType.SURVIVAL);
             data.remove(GhostPotionStartEvents.SAVED_MODE);
             player.setGameMode(previous);
             if (player.isAlive() && player.level() instanceof ServerLevel level) {
                 Vec3 free = freeSpot(level, player);
                 if (free != null) {
-                    player.teleportTo(free.x, free.y, free.z);
-                    player.connection.teleport(free.x, free.y, free.z, player.getYRot(), player.getXRot());
+                    net.yezon.theabyss.util.AbyssTeleport.to(player, free.x, free.y, free.z);
+                    net.yezon.theabyss.util.AbyssTeleport.connection(player, free.x, free.y, free.z, player.getYRot(), player.getXRot());
                 }
                 player.resetFallDistance();
                 player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 100, 0, false, false));

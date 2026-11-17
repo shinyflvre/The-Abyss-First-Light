@@ -1,0 +1,817 @@
+{
+  "type": "minecraft:simple_random_selector",
+  "config": {
+    "features": [
+      {
+        "feature": {
+          "type": "minecraft:simple_random_selector",
+          "config": {
+            "features": [
+              {
+                "feature": {
+                  "type": "minecraft:simple_random_selector",
+                  "config": {
+                    "features": [
+                      {
+                        "feature": {
+                          "type": "minecraft:simple_random_selector",
+                          "config": {
+                            "features": [
+                              {
+                                "feature": {
+                                  "type": "minecraft:tree",
+                                  "config": {
+                                    "decorators": [],
+                                    "dirt_provider": {
+                                      "type": "minecraft:simple_state_provider",
+                                      "state": {
+                                        "Name": "theabyss:dirt"
+                                      }
+                                    },
+                                    "foliage_placer": {
+                                      "type": "minecraft:blob_foliage_placer",
+                                      "offset": 0,
+                                      "radius": 2,
+                                      "height": 1
+                                    },
+                                    "foliage_provider": {
+                                      "type": "minecraft:simple_state_provider",
+                                      "state": {
+                                        "Name": "theabyss:nightgrove_log",
+                                        "Properties": {
+                                          "axis": "y"
+                                        }
+                                      }
+                                    },
+                                    "force_dirt": false,
+                                    "ignore_vines": true,
+                                    "minimum_size": {
+                                      "type": "minecraft:two_layers_feature_size",
+                                      "limit": 3,
+                                      "lower_size": 0,
+                                      "upper_size": 0
+                                    },
+                                    "trunk_placer": {
+                                      "type": "minecraft:straight_trunk_placer",
+                                      "base_height": 1,
+                                      "height_rand_a": 5,
+                                      "height_rand_b": 0
+                                    },
+                                    "trunk_provider": {
+                                      "type": "minecraft:simple_state_provider",
+                                      "state": {
+                                        "Name": "theabyss:nightgrove_log",
+                                        "Properties": {
+                                          "axis": "y"
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                "placement": [
+                                  {
+                                    "type": "minecraft:block_predicate_filter",
+                                    "predicate": {
+                                      "type": "minecraft:replaceable"
+                                    }
+                                  },
+                                  {
+                                    "type": "minecraft:count",
+                                    "count": 64
+                                  }
+                                ]
+                              },
+                              {
+                                "feature": {
+                                  "type": "minecraft:tree",
+                                  "config": {
+                                    "decorators": [],
+                                    "dirt_provider": {
+                                      "type": "minecraft:simple_state_provider",
+                                      "state": {
+                                        "Name": "theabyss:nightgrove_log",
+                                        "Properties": {
+                                          "axis": "y"
+                                        }
+                                      }
+                                    },
+                                    "foliage_placer": {
+                                      "type": "minecraft:acacia_foliage_placer",
+                                      "offset": 0,
+                                      "radius": 0
+                                    },
+                                    "foliage_provider": {
+                                      "type": "minecraft:simple_state_provider",
+                                      "state": {
+                                        "Name": "minecraft:air"
+                                      }
+                                    },
+                                    "force_dirt": false,
+                                    "ignore_vines": true,
+                                    "minimum_size": {
+                                      "type": "minecraft:two_layers_feature_size",
+                                      "limit": 1,
+                                      "lower_size": 0,
+                                      "upper_size": 0
+                                    },
+                                    "trunk_placer": {
+                                      "type": "minecraft:straight_trunk_placer",
+                                      "base_height": 18,
+                                      "height_rand_a": 1,
+                                      "height_rand_b": 0
+                                    },
+                                    "trunk_provider": {
+                                      "type": "minecraft:simple_state_provider",
+                                      "state": {
+                                        "Name": "theabyss:nightgrove_log",
+                                        "Properties": {
+                                          "axis": "y"
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                "placement": [
+                                  {
+                                    "type": "minecraft:block_predicate_filter",
+                                    "predicate": {
+                                      "type": "minecraft:all_of",
+                                      "predicates": [
+                                        {
+                                          "type": "minecraft:matching_blocks",
+                                          "blocks": "theabyss:nightgrove_log"
+                                        },
+                                        {
+                                          "type": "minecraft:not",
+                                          "predicate": {
+                                            "type": "minecraft:matching_blocks",
+                                            "blocks": "theabyss:nightgrove_log",
+                                            "offset": [
+                                              0,
+                                              10,
+                                              0
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "type": "minecraft:environment_scan",
+                                    "direction_of_search": "up",
+                                    "target_condition": {
+                                      "type": "minecraft:matching_blocks",
+                                      "blocks": []
+                                    },
+                                    "max_steps": 10
+                                  },
+                                  {
+                                    "type": "minecraft:count",
+                                    "count": 128
+                                  },
+                                  {
+                                    "type": "minecraft:random_offset",
+                                    "xz_spread": {
+                                      "type": "minecraft:uniform",
+                                      "min_inclusive": -1,
+                                      "max_inclusive": 1
+                                    },
+                                    "y_spread": 0
+                                  },
+                                  {
+                                    "type": "minecraft:block_predicate_filter",
+                                    "predicate": {
+                                      "type": "minecraft:replaceable"
+                                    }
+                                  },
+                                  {
+                                    "type": "minecraft:environment_scan",
+                                    "direction_of_search": "down",
+                                    "target_condition": {
+                                      "type": "minecraft:matching_blocks",
+                                      "blocks": "theabyss:nightgrove_log",
+                                      "offset": [
+                                        0,
+                                        -1,
+                                        0
+                                      ]
+                                    },
+                                    "max_steps": 2
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        },
+                        "placement": [
+                          {
+                            "type": "minecraft:block_predicate_filter",
+                            "predicate": {
+                              "type": "minecraft:replaceable"
+                            }
+                          },
+                          {
+                            "type": "minecraft:count",
+                            "count": 28
+                          }
+                        ]
+                      },
+                      {
+                        "feature": {
+                          "type": "minecraft:simple_random_selector",
+                          "config": {
+                            "features": [
+                              {
+                                "feature": {
+                                  "type": "minecraft:tree",
+                                  "config": {
+                                    "decorators": [
+                                      {
+                                        "type": "minecraft:attached_to_leaves",
+                                        "block_provider": {
+                                          "type": "minecraft:simple_state_provider",
+                                          "state": {
+                                            "Name": "theabyss:nightgrove_leaves",
+                                            "Properties": {
+                                              "persistent": "false",
+                                              "distance": "2",
+                                              "waterlogged": "false"
+                                            }
+                                          }
+                                        },
+                                        "directions": [
+                                          "down"
+                                        ],
+                                        "exclusion_radius_xz": 0,
+                                        "exclusion_radius_y": 0,
+                                        "probability": 0.35,
+                                        "required_empty_blocks": 1
+                                      },
+                                      {
+                                        "type": "minecraft:attached_to_leaves",
+                                        "block_provider": {
+                                          "type": "minecraft:simple_state_provider",
+                                          "state": {
+                                            "Name": "theabyss:nightgrove_leaves",
+                                            "Properties": {
+                                              "persistent": "false",
+                                              "distance": "2",
+                                              "waterlogged": "false"
+                                            }
+                                          }
+                                        },
+                                        "directions": [
+                                          "east"
+                                        ],
+                                        "exclusion_radius_xz": 0,
+                                        "exclusion_radius_y": 0,
+                                        "probability": 0.7,
+                                        "required_empty_blocks": 1
+                                      },
+                                      {
+                                        "type": "minecraft:attached_to_leaves",
+                                        "block_provider": {
+                                          "type": "minecraft:simple_state_provider",
+                                          "state": {
+                                            "Name": "theabyss:nightgrove_leaves",
+                                            "Properties": {
+                                              "persistent": "false",
+                                              "distance": "2",
+                                              "waterlogged": "false"
+                                            }
+                                          }
+                                        },
+                                        "directions": [
+                                          "south"
+                                        ],
+                                        "exclusion_radius_xz": 0,
+                                        "exclusion_radius_y": 0,
+                                        "probability": 0.7,
+                                        "required_empty_blocks": 1
+                                      },
+                                      {
+                                        "type": "minecraft:attached_to_leaves",
+                                        "block_provider": {
+                                          "type": "minecraft:simple_state_provider",
+                                          "state": {
+                                            "Name": "theabyss:nightgrove_leaves",
+                                            "Properties": {
+                                              "persistent": "false",
+                                              "distance": "2",
+                                              "waterlogged": "false"
+                                            }
+                                          }
+                                        },
+                                        "directions": [
+                                          "west"
+                                        ],
+                                        "exclusion_radius_xz": 0,
+                                        "exclusion_radius_y": 0,
+                                        "probability": 0.7,
+                                        "required_empty_blocks": 1
+                                      },
+                                      {
+                                        "type": "minecraft:attached_to_leaves",
+                                        "block_provider": {
+                                          "type": "minecraft:simple_state_provider",
+                                          "state": {
+                                            "Name": "theabyss:nightgrove_leaves",
+                                            "Properties": {
+                                              "persistent": "false",
+                                              "distance": "2",
+                                              "waterlogged": "false"
+                                            }
+                                          }
+                                        },
+                                        "directions": [
+                                          "north"
+                                        ],
+                                        "exclusion_radius_xz": 0,
+                                        "exclusion_radius_y": 0,
+                                        "probability": 0.7,
+                                        "required_empty_blocks": 1
+                                      }
+                                    ],
+                                    "dirt_provider": {
+                                      "type": "minecraft:simple_state_provider",
+                                      "state": {
+                                        "Name": "theabyss:nightgrove_log",
+                                        "Properties": {
+                                          "axis": "y"
+                                        }
+                                      }
+                                    },
+                                    "foliage_placer": {
+                                      "type": "minecraft:dark_oak_foliage_placer",
+                                      "offset": 1,
+                                      "radius": 0
+                                    },
+                                    "foliage_provider": {
+                                      "type": "minecraft:simple_state_provider",
+                                      "state": {
+                                        "Name": "theabyss:nightgrove_leaves",
+                                        "Properties": {
+                                          "persistent": "false",
+                                          "distance": "1",
+                                          "waterlogged": "false"
+                                        }
+                                      }
+                                    },
+                                    "force_dirt": false,
+                                    "ignore_vines": true,
+                                    "minimum_size": {
+                                      "type": "minecraft:two_layers_feature_size",
+                                      "limit": 1,
+                                      "lower_size": 0,
+                                      "upper_size": 0
+                                    },
+                                    "trunk_placer": {
+                                      "type": "minecraft:fancy_trunk_placer",
+                                      "base_height": 32,
+                                      "height_rand_a": 0,
+                                      "height_rand_b": 0
+                                    },
+                                    "trunk_provider": {
+                                      "type": "minecraft:simple_state_provider",
+                                      "state": {
+                                        "Name": "theabyss:nightgrove_log",
+                                        "Properties": {
+                                          "axis": "y"
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                "placement": [
+                                  {
+                                    "type": "minecraft:block_predicate_filter",
+                                    "predicate": {
+                                      "type": "minecraft:not",
+                                      "predicate": {
+                                        "type": "minecraft:matching_blocks",
+                                        "blocks": "theabyss:nightgrove_log",
+                                        "offset": [
+                                          0,
+                                          15,
+                                          0
+                                        ]
+                                      }
+                                    }
+                                  },
+                                  {
+                                    "type": "minecraft:random_offset",
+                                    "xz_spread": 0,
+                                    "y_spread": {
+                                      "type": "minecraft:uniform",
+                                      "min_inclusive": -10,
+                                      "max_inclusive": -8
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "feature": {
+                                  "type": "minecraft:tree",
+                                  "config": {
+                                    "decorators": [],
+                                    "dirt_provider": {
+                                      "type": "minecraft:simple_state_provider",
+                                      "state": {
+                                        "Name": "theabyss:nightgrove_log",
+                                        "Properties": {
+                                          "axis": "y"
+                                        }
+                                      }
+                                    },
+                                    "foliage_placer": {
+                                      "type": "minecraft:fancy_foliage_placer",
+                                      "offset": 0,
+                                      "radius": 1,
+                                      "height": 16
+                                    },
+                                    "foliage_provider": {
+                                      "type": "minecraft:simple_state_provider",
+                                      "state": {
+                                        "Name": "theabyss:nightgrove_log",
+                                        "Properties": {
+                                          "axis": "y"
+                                        }
+                                      }
+                                    },
+                                    "force_dirt": false,
+                                    "ignore_vines": true,
+                                    "minimum_size": {
+                                      "type": "minecraft:two_layers_feature_size",
+                                      "limit": 1,
+                                      "lower_size": 0,
+                                      "upper_size": 0
+                                    },
+                                    "trunk_placer": {
+                                      "type": "minecraft:straight_trunk_placer",
+                                      "base_height": 1,
+                                      "height_rand_a": 0,
+                                      "height_rand_b": 0
+                                    },
+                                    "trunk_provider": {
+                                      "type": "minecraft:simple_state_provider",
+                                      "state": {
+                                        "Name": "theabyss:nightgrove_log",
+                                        "Properties": {
+                                          "axis": "y"
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                "placement": [
+                                  {
+                                    "type": "minecraft:block_predicate_filter",
+                                    "predicate": {
+                                      "type": "minecraft:matching_blocks",
+                                      "blocks": "theabyss:nightgrove_log",
+                                      "offset": [
+                                        0,
+                                        15,
+                                        0
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "type": "minecraft:random_offset",
+                                    "xz_spread": 0,
+                                    "y_spread": 12
+                                  },
+                                  {
+                                    "type": "minecraft:environment_scan",
+                                    "direction_of_search": "up",
+                                    "target_condition": {
+                                      "type": "minecraft:all_of",
+                                      "predicates": [
+                                        {
+                                          "type": "minecraft:matching_blocks",
+                                          "blocks": "theabyss:nightgrove_log"
+                                        },
+                                        {
+                                          "type": "minecraft:matching_blocks",
+                                          "blocks": "theabyss:nightgrove_leaves",
+                                          "offset": [
+                                            0,
+                                            1,
+                                            0
+                                          ]
+                                        },
+                                        {
+                                          "type": "minecraft:matching_blocks",
+                                          "blocks": "minecraft:air",
+                                          "offset": [
+                                            0,
+                                            2,
+                                            0
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "max_steps": 15
+                                  },
+                                  {
+                                    "type": "minecraft:count",
+                                    "count": 32
+                                  },
+                                  {
+                                    "type": "minecraft:random_offset",
+                                    "xz_spread": 0,
+                                    "y_spread": {
+                                      "type": "minecraft:uniform",
+                                      "min_inclusive": -10,
+                                      "max_inclusive": 2
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        },
+                        "placement": [
+                          {
+                            "type": "minecraft:block_predicate_filter",
+                            "predicate": {
+                              "type": "minecraft:matching_blocks",
+                              "blocks": "theabyss:nightgrove_log"
+                            }
+                          },
+                          {
+                            "type": "minecraft:random_offset",
+                            "xz_spread": 0,
+                            "y_spread": 15
+                          },
+                          {
+                            "type": "minecraft:count",
+                            "count": 32
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "placement": [
+                  {
+                    "type": "minecraft:block_predicate_filter",
+                    "predicate": {
+                      "type": "minecraft:replaceable"
+                    }
+                  },
+                  {
+                    "type": "minecraft:count",
+                    "count": 28
+                  }
+                ]
+              },
+              {
+                "feature": {
+                  "type": "minecraft:simple_random_selector",
+                  "config": {
+                    "features": [
+                      {
+                        "feature": "theabyss:nightgrove_tree/branch/4_se",
+                        "placement": []
+                      },
+                      {
+                        "feature": "theabyss:nightgrove_tree/branch/4_sw",
+                        "placement": []
+                      },
+                      {
+                        "feature": "theabyss:nightgrove_tree/branch/4_nw",
+                        "placement": []
+                      },
+                      {
+                        "feature": "theabyss:nightgrove_tree/branch/4_ne",
+                        "placement": []
+                      },
+                      {
+                        "feature": "theabyss:nightgrove_tree/extra_leaf",
+                        "placement": []
+                      }
+                    ]
+                  }
+                },
+                "placement": [
+                  {
+                    "type": "minecraft:block_predicate_filter",
+                    "predicate": {
+                      "type": "minecraft:matching_blocks",
+                      "blocks": "theabyss:nightgrove_log"
+                    }
+                  },
+                  {
+                    "type": "minecraft:random_offset",
+                    "xz_spread": 0,
+                    "y_spread": 15
+                  },
+                  {
+                    "type": "minecraft:random_offset",
+                    "xz_spread": 0,
+                    "y_spread": 15
+                  },
+                  {
+                    "type": "minecraft:random_offset",
+                    "xz_spread": 0,
+                    "y_spread": 5
+                  },
+                  {
+                    "type": "minecraft:environment_scan",
+                    "direction_of_search": "up",
+                    "target_condition": {
+                      "type": "minecraft:all_of",
+                      "predicates": [
+                        {
+                          "type": "minecraft:matching_blocks",
+                          "blocks": "minecraft:air"
+                        },
+                        {
+                          "type": "minecraft:matching_blocks",
+                          "blocks": "theabyss:nightgrove_log",
+                          "offset": [
+                            0,
+                            -1,
+                            0
+                          ]
+                        },
+                        {
+                          "type": "minecraft:not",
+                          "predicate": {
+                            "type": "minecraft:matching_blocks",
+                            "blocks": "theabyss:nightgrove_log",
+                            "offset": [
+                              1,
+                              0,
+                              1
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    "max_steps": 10
+                  },
+                  {
+                    "type": "minecraft:count",
+                    "count": 48
+                  }
+                ]
+              },
+              {
+                "feature": "theabyss:nightgrove_tree/roots/1",
+                "placement": [
+                  {
+                    "type": "minecraft:block_predicate_filter",
+                    "predicate": {
+                      "type": "minecraft:matching_blocks",
+                      "blocks": "theabyss:nightgrove_log"
+                    }
+                  }
+                ]
+              },
+              {
+                "feature": {
+                  "type": "minecraft:random_patch",
+                  "config": {
+                    "feature": {
+                      "feature": "theabyss:nightgrove_tree/rooted_dirt/1",
+                      "placement": [
+                        {
+                          "type": "minecraft:block_predicate_filter",
+                          "predicate": {
+                            "type": "minecraft:all_of",
+                            "predicates": [
+                              {
+                                "type": "minecraft:matching_blocks",
+                                "blocks": "#theabyss:dirt"
+                              },
+                              {
+                                "type": "minecraft:not",
+                                "predicate": {
+                                  "type": "minecraft:matching_blocks",
+                                  "blocks": "#theabyss:dirt",
+                                  "offset": [
+                                    0,
+                                    1,
+                                    0
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    "tries": 16,
+                    "xz_spread": 2,
+                    "y_spread": 2
+                  }
+                },
+                "placement": [
+                  {
+                    "type": "minecraft:block_predicate_filter",
+                    "predicate": {
+                      "type": "minecraft:matching_blocks",
+                      "blocks": "theabyss:nightgrove_log"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "placement": [
+          {
+            "type": "minecraft:block_predicate_filter",
+            "predicate": {
+              "type": "minecraft:would_survive",
+              "state": {
+                "Name": "minecraft:jungle_sapling",
+                "Properties": {
+                  "stage": "0"
+                }
+              }
+            }
+          },
+          {
+            "type": "minecraft:block_predicate_filter",
+            "predicate": {
+              "type": "minecraft:all_of",
+              "predicates": [
+                {
+                  "type": "minecraft:solid",
+                  "offset": [
+                    1,
+                    -2,
+                    0
+                  ]
+                },
+                {
+                  "type": "minecraft:solid",
+                  "offset": [
+                    1,
+                    -2,
+                    1
+                  ]
+                },
+                {
+                  "type": "minecraft:solid",
+                  "offset": [
+                    0,
+                    -2,
+                    1
+                  ]
+                },
+                {
+                  "type": "minecraft:solid",
+                  "offset": [
+                    -1,
+                    -2,
+                    1
+                  ]
+                },
+                {
+                  "type": "minecraft:solid",
+                  "offset": [
+                    -1,
+                    -2,
+                    0
+                  ]
+                },
+                {
+                  "type": "minecraft:solid",
+                  "offset": [
+                    -1,
+                    -2,
+                    -1
+                  ]
+                },
+                {
+                  "type": "minecraft:solid",
+                  "offset": [
+                    0,
+                    -2,
+                    -1
+                  ]
+                },
+                {
+                  "type": "minecraft:solid",
+                  "offset": [
+                    1,
+                    -2,
+                    -1
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "type": "minecraft:count",
+            "count": 64
+          }
+        ]
+      }
+    ]
+  }
+}

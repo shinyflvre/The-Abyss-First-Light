@@ -7,29 +7,37 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.context.ContextKey;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
 import net.yezon.theabyss.platform.event.EventBusSubscriber;
+import net.yezon.theabyss.platform.client.EntityOutlines;
 import net.yezon.theabyss.platform.client.event.ClientTickEvent;
-import net.yezon.theabyss.platform.client.event.ExtractLevelRenderStateEvent;
-import net.yezon.theabyss.platform.client.event.SubmitCustomGeometryEvent;
-import net.yezon.theabyss.platform.client.renderstate.RegisterRenderStateModifiersEvent;
+import net.yezon.theabyss.platform.client.event.RenderLevelStageEvent;
 import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.network.SpellFxMessage;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public final class SpellFx {
-    private static final ContextKey<Map<RenderType, List<BiConsumer<PoseStack.Pose, VertexConsumer>>>> DRAWS =
-        new ContextKey<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "spell_fx"));
     private static final List<Effect> EFFECTS = new ArrayList<>();
+
+    static {
+        EntityOutlines.register(entity -> {
+            if (EFFECTS.isEmpty()) {
+                return 0;
+            }
+            for (Effect effect : EFFECTS) {
+                int colour = effect.outline(entity);
+                if (colour != 0) {
+                    return colour;
+                }
+            }
+            return 0;
+        });
+    }
     private static Level level;
 
     private SpellFx() {
@@ -135,16 +143,20 @@ public final class SpellFx {
     }
 
     @SubscribeEvent
-    public static void onExtract(ExtractLevelRenderStateEvent event) {
+    public static void onRender(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) {
+            return;
+        }
         Minecraft mc = Minecraft.getInstance();
         prune(mc);
-        float partialTick = event.getDeltaTracker().getGameTimeDeltaPartialTick(false);
-        net.yezon.theabyss.client.fx.MagicLights.begin(event.getCamera().position());
+        float partialTick = event.getPartialTickTime();
+        Vec3 camera = event.getCamera().getPosition();
+        net.yezon.theabyss.client.fx.MagicLights.begin(camera);
         if ((EFFECTS.isEmpty() && TrailStreaks.isEmpty()) || mc.level == null) {
             net.yezon.theabyss.client.fx.MagicLights.finish(mc, partialTick);
             return;
         }
-        Frame frame = new Frame(mc, mc.level, event.getCamera().position(), partialTick);
+        Frame frame = new Frame(mc, mc.level, camera, partialTick);
         for (Effect effect : EFFECTS) {
             try {
                 effect.draw(frame);
@@ -155,41 +167,17 @@ public final class SpellFx {
         }
         TrailStreaks.draw(frame);
         net.yezon.theabyss.client.fx.MagicLights.finish(mc, partialTick);
-        net.yezon.theabyss.platform.client.renderstate.RenderData.set(event.getRenderState(), DRAWS, frame.draws);
-    }
-
-    @SubscribeEvent
-    public static void onSubmit(SubmitCustomGeometryEvent event) {
-        Map<RenderType, List<BiConsumer<PoseStack.Pose, VertexConsumer>>> draws = net.yezon.theabyss.platform.client.renderstate.RenderData.get(event.getLevelRenderState(), DRAWS);
-        if (draws == null || draws.isEmpty()) {
+        if (frame.draws.isEmpty()) {
             return;
         }
-        PoseStack poseStack = event.getPoseStack();
-        for (Map.Entry<RenderType, List<BiConsumer<PoseStack.Pose, VertexConsumer>>> entry : draws.entrySet()) {
-            List<BiConsumer<PoseStack.Pose, VertexConsumer>> list = entry.getValue();
-            event.getSubmitNodeCollector().submitCustomGeometry(poseStack, entry.getKey(), (pose, buffer) -> {
-                for (BiConsumer<PoseStack.Pose, VertexConsumer> draw : list) {
-                    draw.accept(pose, buffer);
-                }
-            });
+        PoseStack.Pose pose = event.getPoseStack().last();
+        MultiBufferSource.BufferSource buffers = event.getBufferSource();
+        for (Map.Entry<RenderType, List<BiConsumer<PoseStack.Pose, VertexConsumer>>> entry : frame.draws.entrySet()) {
+            VertexConsumer buffer = buffers.getBuffer(entry.getKey());
+            for (BiConsumer<PoseStack.Pose, VertexConsumer> draw : entry.getValue()) {
+                draw.accept(pose, buffer);
+            }
         }
-    }
-
-    @SubscribeEvent
-    @SuppressWarnings("unchecked")
-    public static void registerModifiers(RegisterRenderStateModifiersEvent event) {
-        event.registerEntityModifier((Class<EntityRenderer<Entity, EntityRenderState>>)(Class<?>)EntityRenderer.class, (entity, state) -> {
-            if (EFFECTS.isEmpty()) {
-                return;
-            }
-            for (Effect effect : EFFECTS) {
-                int colour = effect.outline(entity);
-                if (colour != 0) {
-                    state.outlineColor = colour;
-                    return;
-                }
-            }
-        });
     }
 
     static Vec3 vec(SpellFxMessage m, int i) {

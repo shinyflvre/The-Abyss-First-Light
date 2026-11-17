@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "#c:rods/wooden",
-    "b": "theabyss:ring_of_reg",
-    "c": "theabyss:nightgrove_log"
+    "a": {
+      "tag": "c:rods/wooden"
+    },
+    "b": {
+      "item": "theabyss:ring_of_reg"
+    },
+    "c": {
+      "item": "theabyss:nightgrove_log"
+    }
   },
   "pattern": [
     " a ",

@@ -3,7 +3,7 @@ package net.yezon.theabyss.enchant;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -25,7 +25,7 @@ import net.yezon.theabyss.network.SpellFxMessage;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID)
 public final class MagmaSmelt {
-    public static final TagKey<Block> ABYSS_ORES = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "magma_smelt_ores"));
+    public static final TagKey<Block> ABYSS_ORES = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "magma_smelt_ores"));
 
     private MagmaSmelt() {
     }
@@ -44,11 +44,11 @@ public final class MagmaSmelt {
                 continue;
             }
             SingleRecipeInput input = new SingleRecipeInput(stack.copyWithCount(1));
-            Optional<RecipeHolder<SmeltingRecipe>> recipe = level.recipeAccess().getRecipeFor(RecipeType.SMELTING, input, level);
+            Optional<RecipeHolder<SmeltingRecipe>> recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, input, level);
             if (recipe.isEmpty()) {
                 continue;
             }
-            ItemStack result = recipe.get().value().assemble(input);
+            ItemStack result = recipe.get().value().assemble(input, level.registryAccess());
             if (result.isEmpty()) {
                 continue;
             }

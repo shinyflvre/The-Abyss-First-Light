@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(StartAttacking.class)
 public abstract class StartAttackingTargetMixin {
-    @Inject(method = "lambda$create$3", at = @At(value = "INVOKE",
+    @Inject(method = "method_47123", at = @At(value = "INVOKE",
         target = "Lnet/minecraft/world/entity/ai/behavior/declarative/MemoryAccessor;set(Ljava/lang/Object;)V"), cancellable = true)
     private static void theabyss$changeTarget(CallbackInfoReturnable<Boolean> cir, @Local(argsOnly = true) Mob body, @Local LivingEntity target) {
         if (LivingFabricEvents.changeTarget(body, target)) {

@@ -27,7 +27,7 @@ final class RokaAutotest {
         Minecraft mc = Minecraft.getInstance();
         net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.entity.living.LivingDamageEvent.Post e) -> {
             if (e.getEntity() instanceof ServerPlayer) {
-                TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] roka player damage {} from {}", e.getHealthDamage(), e.getSource().getMsgId());
+                TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] roka player damage {} from {}", e.getNewDamage(), e.getSource().getMsgId());
             }
         });
         add.add("roka arena", () -> {
@@ -37,12 +37,12 @@ final class RokaAutotest {
             command.accept("time set noon");
             command.accept("weather clear");
             command.accept("difficulty normal");
-            command.accept("gamerule spawn_mobs false");
+            command.accept("gamerule doMobSpawning false");
         }, 60);
         add.add("roka player", () -> {
             command.accept("execute in minecraft:overworld run tp @s 0 200 -4 0 5");
             command.accept("gamemode survival @s");
-            command.accept("attribute @s minecraft:max_health base set 100");
+            command.accept("attribute @s minecraft:generic.max_health base set 100");
             onServer(sp -> sp.setHealth(sp.getMaxHealth()));
             command.accept("item replace entity @s weapon.mainhand with minecraft:iron_sword");
         }, 40);
@@ -92,7 +92,7 @@ final class RokaAutotest {
 
         attack(add, command, shot, "roar", 5.0, 11, "100_roka_11_roar", 10);
         add.add("roka roar check", () -> {
-            onServer(sp -> check("roar slows and weakens", sp.hasEffect(MobEffects.SLOWNESS) && sp.hasEffect(MobEffects.WEAKNESS)));
+            onServer(sp -> check("roar slows and weakens", sp.hasEffect(MobEffects.MOVEMENT_SLOWDOWN) && sp.hasEffect(MobEffects.WEAKNESS)));
             roka(r -> check("roar enrages him", r.isEnraged()));
         }, 20);
         add.add("roka shot rage", () -> shot.accept("100_roka_12_enraged"), 4);
@@ -102,7 +102,7 @@ final class RokaAutotest {
             checks, failures.isEmpty() ? "" : ", failed: " + failures), 2);
         add.add("roka cleanup", () -> {
             command.accept("kill @e[type=theabyss:the_roka]");
-            command.accept("attribute @s minecraft:max_health base set 20");
+            command.accept("attribute @s minecraft:generic.max_health base set 20");
         }, 5);
     }
 
@@ -154,7 +154,7 @@ final class RokaAutotest {
 
     private static void roka(Consumer<TheRokaEntity> action) {
         onServer(sp -> {
-            for (TheRokaEntity r : sp.level().getEntitiesOfClass(TheRokaEntity.class, new AABB(sp.blockPosition()).inflate(48))) {
+            for (TheRokaEntity r : sp.serverLevel().getEntitiesOfClass(TheRokaEntity.class, new AABB(sp.blockPosition()).inflate(48))) {
                 action.accept(r);
             }
         });

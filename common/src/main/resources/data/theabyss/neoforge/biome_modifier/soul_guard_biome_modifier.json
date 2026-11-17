@@ -6,11 +6,8 @@
   ],
   "spawners": {
     "type": "theabyss:soul_guard",
-    "weight": 3,
-    "count": {
-      "type": "minecraft:uniform",
-      "max_inclusive": 5,
-      "min_inclusive": 2
-    }
+    "maxCount": 5,
+    "minCount": 2,
+    "weight": 3
   }
 }

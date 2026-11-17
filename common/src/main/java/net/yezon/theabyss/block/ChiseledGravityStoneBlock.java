@@ -1,5 +1,6 @@
 package net.yezon.theabyss.block;
 
+import net.minecraft.world.level.LevelAccessor;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.core.BlockPos;
@@ -10,7 +11,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Mirror;
@@ -91,8 +91,7 @@ public class ChiseledGravityStoneBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction directionToNeighbour,
-                                     BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
+    protected BlockState updateShape(BlockState state, Direction directionToNeighbour, BlockState neighbourState, LevelAccessor level, BlockPos pos, BlockPos neighbourPos) {
         return rims(state, level, pos);
     }
 

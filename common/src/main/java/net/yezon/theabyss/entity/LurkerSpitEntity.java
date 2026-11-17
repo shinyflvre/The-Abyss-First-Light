@@ -1,5 +1,7 @@
 package net.yezon.theabyss.entity;
 
+
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -12,8 +14,8 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.yezon.theabyss.compat.ValueInput;
+import net.yezon.theabyss.compat.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -95,8 +97,8 @@ public class LurkerSpitEntity extends Entity {
 
     private void hitEntity(ServerLevel level, LivingEntity victim) {
         DamageSource source = this.damageSources().mobProjectile(this, this.owner);
-        victim.hurtServer(level, source, DAMAGE);
-        victim.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, SLOW_TICKS, 1), this.owner);
+        victim.hurt(source, DAMAGE);
+        victim.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, SLOW_TICKS, 1), this.owner);
         LurkerFx.splash(level, this.position(), true);
         LurkerPuddles.add(level, victim.position(), 1.4, 120, this.owner);
         LurkerPuddles.stick(victim, SLOW_TICKS);
@@ -126,7 +128,10 @@ public class LurkerSpitEntity extends Entity {
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+    public boolean hurt(DamageSource source, float amount) {
+        if (!(this.level() instanceof ServerLevel level)) {
+            return false;
+        }
         return false;
     }
 
@@ -141,10 +146,12 @@ public class LurkerSpitEntity extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(ValueInput input) {
+    public void readAdditionalSaveData(CompoundTag inputTag) {
+        ValueInput input = ValueInput.of(inputTag, this.registryAccess());
     }
 
     @Override
-    protected void addAdditionalSaveData(ValueOutput output) {
+    public void addAdditionalSaveData(CompoundTag outputTag) {
+        ValueOutput output = ValueOutput.of(outputTag, this.registryAccess());
     }
 }

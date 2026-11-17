@@ -14,7 +14,7 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.yezon.theabyss.block.BlossomRankBlock;
 import net.yezon.theabyss.init.TheabyssModBlocks;
 
-public record BlossomRankPatch(int minHeight, int maxHeight, float clusterChance, int clusterMin, int clusterMax, int spread, float bulbChance) implements Feature {
+public record BlossomRankPatch(int minHeight, int maxHeight, float clusterChance, int clusterMin, int clusterMax, int spread, float bulbChance) implements AbyssFeature.Config {
     public static final MapCodec<BlossomRankPatch> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.intRange(1, 16).fieldOf("min_height").forGetter(BlossomRankPatch::minHeight),
             Codec.intRange(1, 16).fieldOf("max_height").forGetter(BlossomRankPatch::maxHeight),
@@ -54,7 +54,7 @@ public record BlossomRankPatch(int minHeight, int maxHeight, float clusterChance
 
     private boolean grow(WorldGenLevel level, RandomSource random, int x, int z, BlockState plant) {
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z), z);
-        int floor = Math.max(level.getMinY() + 1, pos.getY() - 48);
+        int floor = Math.max(level.getMinBuildHeight() + 1, pos.getY() - 48);
         while (pos.getY() > floor) {
             BlockState below = level.getBlockState(pos.below());
             if (free(below) || below.is(BlockTags.LEAVES)) {

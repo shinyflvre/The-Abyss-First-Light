@@ -1,7 +1,7 @@
 package net.yezon.theabyss.events;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -20,7 +20,7 @@ import net.yezon.theabyss.ring.SomniumUpgrades;
 @EventBusSubscriber(modid = TheabyssMod.MODID)
 public final class ApplyRingOfFlightEvents {
     private static final double DRAIN = 0.5;
-    private static final Identifier FLIGHT = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "ring_of_flight");
+    private static final ResourceLocation FLIGHT = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "ring_of_flight");
 
     private ApplyRingOfFlightEvents() {
     }
@@ -46,7 +46,7 @@ public final class ApplyRingOfFlightEvents {
         TheabyssModVariables.PlayerVariables vars = TheabyssModVariables.getPlayerVariables(player);
         if (vars.Mana < DRAIN * SomniumUpgrades.costFactor(vars)) {
             flight.removeModifier(FLIGHT);
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.low_energy"));
+            player.displayClientMessage(Component.translatable("ring.theabyss.low_energy"), true);
             return;
         }
         if (!flight.hasModifier(FLIGHT)) {
@@ -57,7 +57,7 @@ public final class ApplyRingOfFlightEvents {
             player.onUpdateAbilities();
         }
         if (!player.onGround()) {
-            RingVisuals.flightTick(player.level(), player);
+            RingVisuals.flightTick(player.serverLevel(), player);
         }
         vars.Mana -= DRAIN * SomniumUpgrades.costFactor(vars);
         vars.syncPlayerVariables(player);

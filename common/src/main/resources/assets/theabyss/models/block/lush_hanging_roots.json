@@ -2,5 +2,6 @@
   "parent": "minecraft:block/cross",
   "textures": {
     "cross": "theabyss:block/lush_hanging_roots"
-  }
+  },
+  "render_type": "minecraft:cutout"
 }

@@ -1,0 +1,49 @@
+{
+  "type": "minecraft:simple_random_selector",
+  "config": {
+    "features": [
+      {
+        "feature": {
+          "type": "minecraft:block_pile",
+          "config": {
+            "state_provider": {
+              "type": "minecraft:simple_state_provider",
+              "state": {
+                "Name": "theabyss:abyss_crystal_ore"
+              }
+            }
+          }
+        },
+        "placement": []
+      },
+      {
+        "feature": {
+          "type": "minecraft:block_pile",
+          "config": {
+            "state_provider": {
+              "type": "minecraft:simple_state_provider",
+              "state": {
+                "Name": "theabyss:caverna_crystal_ore"
+              }
+            }
+          }
+        },
+        "placement": []
+      },
+      {
+        "feature": {
+          "type": "minecraft:block_pile",
+          "config": {
+            "state_provider": {
+              "type": "minecraft:simple_state_provider",
+              "state": {
+                "Name": "theabyss:aurel_crystal_ore"
+              }
+            }
+          }
+        },
+        "placement": []
+      }
+    ]
+  }
+}

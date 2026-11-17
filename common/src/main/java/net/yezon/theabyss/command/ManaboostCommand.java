@@ -19,7 +19,7 @@ public class ManaboostCommand {
         event.getDispatcher()
             .register(
                 Commands.literal("manaboost")
-                    .requires(Commands.hasPermission(Commands.LEVEL_OWNERS))
+                    .requires(source -> source.hasPermission(Commands.LEVEL_OWNERS))
                     .then(Commands.argument("arguments", StringArgumentType.greedyString()).executes(ManaboostCommand::execute))
                     .executes(ManaboostCommand::execute)
             );

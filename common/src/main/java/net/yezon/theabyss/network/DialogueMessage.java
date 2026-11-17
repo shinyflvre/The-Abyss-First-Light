@@ -5,7 +5,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.yezon.theabyss.platform.network.PacketDistributor;
 import net.yezon.theabyss.platform.network.handling.IPayloadContext;
@@ -14,7 +14,7 @@ import net.yezon.theabyss.client.dialogue.DialogueClient;
 import net.yezon.theabyss.platform.services.ServerHooks;
 
 public record DialogueMessage(int id, String speaker, List<String> lines, List<String> choices, boolean hold) implements CustomPacketPayload {
-    public static final Type<DialogueMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "dialogue"));
+    public static final Type<DialogueMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "dialogue"));
     public static final StreamCodec<RegistryFriendlyByteBuf, DialogueMessage> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.VAR_INT, DialogueMessage::id,
         ByteBufCodecs.STRING_UTF8, DialogueMessage::speaker,

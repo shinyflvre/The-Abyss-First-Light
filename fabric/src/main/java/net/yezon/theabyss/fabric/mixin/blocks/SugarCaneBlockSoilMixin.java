@@ -2,7 +2,7 @@ package net.yezon.theabyss.fabric.mixin.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.TriState;
+import net.yezon.theabyss.compat.TriState;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SugarCaneBlock;

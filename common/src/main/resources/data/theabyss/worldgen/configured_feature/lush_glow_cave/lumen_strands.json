@@ -1,0 +1,14 @@
+{
+  "type": "theabyss:hanging_plant",
+  "config": {
+    "hanging": {
+      "plant": "theabyss:lumen_strands",
+      "chance": 1.0,
+      "length": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 2,
+        "max_inclusive": 7
+      }
+    }
+  }
+}

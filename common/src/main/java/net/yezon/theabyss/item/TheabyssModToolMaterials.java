@@ -2,8 +2,11 @@ package net.yezon.theabyss.item;
 
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 
 public final class TheabyssModToolMaterials {
@@ -42,5 +45,46 @@ public final class TheabyssModToolMaterials {
             case 3 -> BlockTags.INCORRECT_FOR_DIAMOND_TOOL;
             default -> BlockTags.INCORRECT_FOR_NETHERITE_TOOL;
         };
+    }
+
+    public static Item.Properties tool(Item.Properties properties, ToolMaterial material, float attackDamageBaseline, float attackSpeedBaseline) {
+        return properties.attributes(attributes(material, attackDamageBaseline, attackSpeedBaseline));
+    }
+
+    public static ItemAttributeModifiers attributes(ToolMaterial material, float attackDamageBaseline, float attackSpeedBaseline) {
+        return DiggerItem.createAttributes(material, attackDamageBaseline, attackSpeedBaseline);
+    }
+
+    public record ToolMaterial(TagKey<Block> incorrectBlocksForDrops, int durability, float speed, float attackDamageBonus, int enchantmentValue,
+                               TagKey<Item> repairItems) implements Tier {
+        @Override
+        public int getUses() {
+            return this.durability;
+        }
+
+        @Override
+        public float getSpeed() {
+            return this.speed;
+        }
+
+        @Override
+        public float getAttackDamageBonus() {
+            return this.attackDamageBonus;
+        }
+
+        @Override
+        public TagKey<Block> getIncorrectBlocksForDrops() {
+            return this.incorrectBlocksForDrops;
+        }
+
+        @Override
+        public int getEnchantmentValue() {
+            return this.enchantmentValue;
+        }
+
+        @Override
+        public Ingredient getRepairIngredient() {
+            return Ingredient.of(this.repairItems);
+        }
     }
 }

@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:glacerythe_gem"
+    "a": {
+      "item": "theabyss:glacerythe_gem"
+    }
   },
   "pattern": [
     "a a",

@@ -14,12 +14,12 @@ import net.yezon.theabyss.platform.registries.DeferredRegister;
 import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.block.flora.TriplePlantBlock;
 
-public record TriplePlantFeature(BlockState state) implements Feature {
+public record TriplePlantFeature(BlockState state) implements AbyssFeature.Config {
     public static final MapCodec<TriplePlantFeature> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
         BlockState.CODEC.fieldOf("state").forGetter(TriplePlantFeature::state)
     ).apply(i, TriplePlantFeature::new));
-    public static final DeferredRegister<MapCodec<? extends Feature>> REGISTRY = DeferredRegister.create(Registries.FEATURE_TYPE, TheabyssMod.MODID);
-    public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<TriplePlantFeature>> TRIPLE_PLANT = REGISTRY.register("triple_plant", () -> CODEC);
+    public static final DeferredRegister<Feature<?>> REGISTRY = DeferredRegister.create(Registries.FEATURE, TheabyssMod.MODID);
+    public static final DeferredHolder<Feature<?>, AbyssFeature<TriplePlantFeature>> TRIPLE_PLANT = REGISTRY.register("triple_plant", () -> new AbyssFeature<>(CODEC));
 
     @Override
     public MapCodec<TriplePlantFeature> codec() {

@@ -5,7 +5,7 @@ import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -35,20 +35,20 @@ public class CavernaCrystalOreBlock extends FlowerBlock implements FlammableBloc
                     new DeferredSoundType(
                         1.0F,
                         1.0F,
-                        () -> BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:crystal_break")),
-                        () -> BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("block.stone.step")),
-                        () -> BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("block.stone.place")),
-                        () -> BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("block.stone.hit")),
-                        () -> BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("block.snow.fall"))
+                        () -> BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:crystal_break")),
+                        () -> BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.stone.step")),
+                        () -> BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.stone.place")),
+                        () -> BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.stone.hit")),
+                        () -> BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.snow.fall"))
                     )
                 )
                 .instabreak()
-                .postProcess((bs, br, bp) -> bp)
-                .emissiveRendering(bs -> true)
+                .hasPostProcess((bs, br, bp) -> true)
+                .emissiveRendering((bs, br, bp) -> true)
                 .lightLevel(s -> 10)
-                .noCollision()
+                .noCollission()
                 .offsetType(OffsetType.XZ)
-                .pushReaction(PushReaction.POPPED)
+                .pushReaction(PushReaction.DESTROY)
         );
     }
 

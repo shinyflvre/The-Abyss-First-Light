@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:dark_stone",
-    "b": "theabyss:glacerythe_gem"
+    "a": {
+      "item": "theabyss:dark_stone"
+    },
+    "b": {
+      "item": "theabyss:glacerythe_gem"
+    }
   },
   "pattern": [
     "  a",

@@ -14,7 +14,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.yezon.theabyss.init.TheabyssModBlocks;
 
-public record FrostFormation(String shape, int minSize, int maxSize) implements Feature {
+public record FrostFormation(String shape, int minSize, int maxSize) implements AbyssFeature.Config {
     public static final MapCodec<FrostFormation> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.STRING.fieldOf("shape").forGetter(FrostFormation::shape),
             Codec.INT.optionalFieldOf("min_size", 8).forGetter(FrostFormation::minSize),
@@ -71,7 +71,7 @@ public record FrostFormation(String shape, int minSize, int maxSize) implements 
     }
 
     private static void anchor(WorldGenLevel level, BlockPos.MutableBlockPos pos, int x, int startY, int z, BlockState state, int maxDepth) {
-        for (int y = startY - 1; y > startY - maxDepth && y > level.getMinY(); y--) {
+        for (int y = startY - 1; y > startY - maxDepth && y > level.getMinBuildHeight(); y--) {
             pos.set(x, y, z);
             if (solid(level, pos)) {
                 return;
@@ -93,7 +93,7 @@ public record FrostFormation(String shape, int minSize, int maxSize) implements 
 
     private static boolean spike(WorldGenLevel level, RandomSource random, BlockPos origin, int height) {
         int baseY = ground(level, origin.getX(), origin.getZ());
-        if (baseY <= level.getMinY() + 4) {
+        if (baseY <= level.getMinBuildHeight() + 4) {
             return false;
         }
         float radius = Math.min(5.0F, 1.2F + height / 7.0F);
@@ -146,7 +146,7 @@ public record FrostFormation(String shape, int minSize, int maxSize) implements 
             lowest = Math.min(lowest, y);
             highest = Math.max(highest, y);
         }
-        if (lowest <= level.getMinY() + 4 || highest - lowest > 18) {
+        if (lowest <= level.getMinBuildHeight() + 4 || highest - lowest > 18) {
             return false;
         }
         float[] wobble = new float[16];
@@ -233,7 +233,7 @@ public record FrostFormation(String shape, int minSize, int maxSize) implements 
         int bz = center.getZ() + (int)Math.round(dirZ * half);
         int ga = ground(level, ax, az);
         int gb = ground(level, bx, bz);
-        if (Math.min(ga, gb) <= level.getMinY() + 4 || Math.abs(ga - gb) > 14) {
+        if (Math.min(ga, gb) <= level.getMinBuildHeight() + 4 || Math.abs(ga - gb) > 14) {
             return false;
         }
         int rise = 9 + random.nextInt(Math.max(1, span / 2));

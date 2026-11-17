@@ -3,7 +3,9 @@
   "category": "misc",
   "group": "sticks",
   "key": {
-    "#": "theabyss:vigilant_planks"
+    "#": {
+      "item": "theabyss:vigilant_planks"
+    }
   },
   "pattern": [
     "#",

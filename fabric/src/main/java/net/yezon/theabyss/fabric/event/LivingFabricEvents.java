@@ -100,19 +100,18 @@ public final class LivingFabricEvents {
         FabricDamageFrame frame = frames(entity).peek();
         if (frame != null) {
             frame.inflicted = result;
+            frame.reachedEnd = true;
         }
         return result;
     }
 
-    public static void damageReachedEnd(LivingEntity entity) {
+    public static void damagePost(LivingEntity entity, DamageSource source) {
         FabricDamageFrame frame = frames(entity).peek();
-        if (frame != null) {
-            frame.reachedEnd = true;
+        if (frame == null || !frame.reachedEnd) {
+            return;
         }
-    }
-
-    public static void damagePost(LivingEntity entity, DamageSource source, FabricDamageFrame frame) {
-        if (frame.reachedEnd && AbyssEventBus.hasListeners(LivingDamageEvent.Post.class)) {
+        frame.reachedEnd = false;
+        if (AbyssEventBus.hasListeners(LivingDamageEvent.Post.class)) {
             AbyssEventBus.post(new LivingDamageEvent.Post(frame.blocked, entity, frame.inflicted, frame.original, source));
         }
     }

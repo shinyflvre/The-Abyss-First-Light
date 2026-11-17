@@ -1,11 +1,11 @@
 package net.yezon.theabyss.entity;
 
-import com.geckolib.animatable.GeoEntity;
-import com.geckolib.animatable.instance.AnimatableInstanceCache;
-import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.animation.AnimationController;
-import com.geckolib.animation.RawAnimation;
-import com.geckolib.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.util.GeckoLibUtil;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -55,8 +55,9 @@ public class RiftNightbladeEntity extends PathfinderMob implements GeoEntity {
     }
 
     @Override
-    protected void customServerAiStep(ServerLevel level) {
-        super.customServerAiStep(level);
+    protected void customServerAiStep() {
+        ServerLevel level = (ServerLevel) this.level();
+        super.customServerAiStep();
         if (!this.getMainHandItem().isEmpty() || !this.getOffhandItem().isEmpty()) {
             this.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
             this.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
@@ -88,11 +89,14 @@ public class RiftNightbladeEntity extends PathfinderMob implements GeoEntity {
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+    public boolean hurt(DamageSource source, float amount) {
+        if (!(this.level() instanceof ServerLevel level)) {
+            return false;
+        }
         if (source.getEntity() instanceof ServerPlayer player) {
             RiftStory.onHit(player);
         }
-        return source.is(DamageTypes.GENERIC_KILL) && super.hurtServer(level, source, amount);
+        return source.is(DamageTypes.GENERIC_KILL) && super.hurt(source, amount);
     }
 
     @Override
@@ -129,7 +133,7 @@ public class RiftNightbladeEntity extends PathfinderMob implements GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<RiftNightbladeEntity>("base", 5, test -> test.setAndContinue(STAND)));
+        controllers.add(new AnimationController<RiftNightbladeEntity>(this, "base", 5, test -> test.setAndContinue(STAND)));
     }
 
     @Override

@@ -64,7 +64,7 @@ public final class FabricNetwork {
         @Override
         public <T extends CustomPacketPayload> PayloadRegistrar playToClient(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec,
             IPayloadHandler<T> handler) {
-            PayloadTypeRegistry.clientboundPlay().register(type, codec);
+            PayloadTypeRegistry.playS2C().register(type, codec);
             CLIENT_RECEIVERS.add(new ClientReceiver<>(type, handler));
             return this;
         }
@@ -72,7 +72,7 @@ public final class FabricNetwork {
         @Override
         public <T extends CustomPacketPayload> PayloadRegistrar playToServer(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec,
             IPayloadHandler<T> handler) {
-            PayloadTypeRegistry.serverboundPlay().register(type, codec);
+            PayloadTypeRegistry.playC2S().register(type, codec);
             serverReceiver(type, handler);
             return this;
         }
@@ -80,8 +80,8 @@ public final class FabricNetwork {
         @Override
         public <T extends CustomPacketPayload> PayloadRegistrar playBidirectional(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec,
             IPayloadHandler<T> serverHandler, @Nullable IPayloadHandler<T> clientHandler) {
-            PayloadTypeRegistry.clientboundPlay().register(type, codec);
-            PayloadTypeRegistry.serverboundPlay().register(type, codec);
+            PayloadTypeRegistry.playS2C().register(type, codec);
+            PayloadTypeRegistry.playC2S().register(type, codec);
             serverReceiver(type, serverHandler);
             if (clientHandler != null) {
                 CLIENT_RECEIVERS.add(new ClientReceiver<>(type, clientHandler));

@@ -90,6 +90,15 @@ public final class FabricClientCommands {
             public boolean shouldInformAdmins() {
                 return false;
             }
-        }, source.getPosition(), source.getRotation(), null, player.permissions(), null, player);
+        }, source.getPosition(), source.getRotation(), null, permissionLevel(player), player.getName().getString(), player.getDisplayName(), null, player);
+    }
+
+    private static int permissionLevel(Player player) {
+        for (int level = 4; level > 0; level--) {
+            if (player.hasPermissions(level)) {
+                return level;
+            }
+        }
+        return 0;
     }
 }

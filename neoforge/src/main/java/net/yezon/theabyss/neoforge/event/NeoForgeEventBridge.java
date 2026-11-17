@@ -9,7 +9,7 @@ public final class NeoForgeEventBridge {
 
     public static void register(IEventBus bus) {
         NeoForgeEventBridgeGenerated.register(bus);
-        if (FMLEnvironment.getDist().isClient()) {
+        if (FMLEnvironment.dist.isClient()) {
             NeoForgeClientEventBridgeGenerated.register(bus);
         }
     }

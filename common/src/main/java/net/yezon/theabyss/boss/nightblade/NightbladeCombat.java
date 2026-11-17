@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -21,7 +21,6 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.entity.NightBladeBossCloneEntity;
@@ -36,7 +35,7 @@ public final class NightbladeCombat {
         int enemiesNear, int phase, boolean field) {
     }
 
-    private static final Identifier PHASE_SPEED = Identifier.fromNamespaceAndPath("theabyss", "nightblade_enraged");
+    private static final ResourceLocation PHASE_SPEED = ResourceLocation.fromNamespaceAndPath("theabyss", "nightblade_enraged");
     public static final int MIRROR_LIFETIME = 200;
 
     final NightbladeBossEntity boss;
@@ -396,8 +395,8 @@ public final class NightbladeCombat {
         this.particles(level, ParticleTypes.SONIC_BOOM, this.boss.getX(), this.boss.getY() + 1.0, this.boss.getZ(), 1, 0.0, 0.0, 0.0, 0.0);
         for (LivingEntity near : this.enemiesAround(6.0)) {
             Vec3 away = near.position().subtract(this.boss.position()).normalize();
-            near.knockback(1.6, -away.x, -away.z, this.meleeDamage(), 0.0F);
-            near.needsSync = true;
+            near.knockback(1.6, -away.x, -away.z);
+            near.hasImpulse = true;
         }
     }
 
@@ -448,8 +447,8 @@ public final class NightbladeCombat {
     private void riposte(ServerLevel level, LivingEntity target) {
         if (this.boss.distanceTo(target) < 4.0) {
             this.boss.lookAt(EntityAnchorArgument.Anchor.EYES, target.getEyePosition());
-            this.boss.swing(InteractionHand.OFF_HAND, SwingAnimation.DEFAULT, true);
-            this.boss.doHurtTarget(level, target);
+            this.boss.swing(InteractionHand.OFF_HAND, true);
+            this.boss.doHurtTarget(target);
             this.sound(nightbladeSound(), 1.0F, 1.2F);
         }
     }
@@ -560,7 +559,7 @@ public final class NightbladeCombat {
         away = away.lengthSqr() < 1.0E-4 ? player.getLookAngle().multiply(1.0, 0.0, 1.0) : away.normalize();
         this.boss.setDashing(false);
         this.boss.setDeltaMovement(away.x * 1.1, 0.35, away.z * 1.1);
-        this.boss.needsSync = true;
+        this.boss.hasImpulse = true;
         if (this.mirror) {
             this.mirrorLife = 1;
             return;
@@ -578,6 +577,6 @@ public final class NightbladeCombat {
     }
 
     static SoundEvent modSound(String name) {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.fromNamespaceAndPath("theabyss", name));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.fromNamespaceAndPath("theabyss", name));
     }
 }

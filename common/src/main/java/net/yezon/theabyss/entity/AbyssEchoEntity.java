@@ -73,7 +73,10 @@ public class AbyssEchoEntity extends PathfinderMob {
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+    public boolean hurt(DamageSource source, float amount) {
+        if (!(this.level() instanceof ServerLevel level)) {
+            return false;
+        }
         return false;
     }
 

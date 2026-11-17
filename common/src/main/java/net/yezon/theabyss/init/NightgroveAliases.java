@@ -1,6 +1,6 @@
 package net.yezon.theabyss.init;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.yezon.theabyss.platform.registries.DeferredRegister;
 import net.yezon.theabyss.TheabyssMod;
 
@@ -30,6 +30,6 @@ public final class NightgroveAliases {
     }
 
     private static void alias(DeferredRegister<?> registry, String from, String to) {
-        registry.addAlias(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, from), Identifier.fromNamespaceAndPath(TheabyssMod.MODID, to));
+        registry.addAlias(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, from), ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, to));
     }
 }

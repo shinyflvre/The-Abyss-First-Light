@@ -9,7 +9,7 @@ public class TantrumOnPotionEvents {
     public static void execute(Entity entity) {
         if (entity != null) {
             if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
-                _entity.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 10, 1, false, false));
+                _entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 10, 1, false, false));
             }
 
             if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
@@ -17,7 +17,7 @@ public class TantrumOnPotionEvents {
             }
 
             if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
-                _entity.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 10, 1, false, false));
+                _entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 10, 1, false, false));
             }
         }
     }

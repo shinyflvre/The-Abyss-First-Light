@@ -1,21 +1,17 @@
 package net.yezon.theabyss.client.fx.spell;
 
-import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.rendertype.RenderSetup;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.Dist;
-import net.yezon.theabyss.platform.event.SubscribeEvent;
 import net.yezon.theabyss.platform.event.EventBusSubscriber;
-import net.yezon.theabyss.platform.client.event.RegisterRenderPipelinesEvent;
 import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.client.fx.MagicLights;
 import net.yezon.theabyss.network.SpellFxMessage;
@@ -26,7 +22,7 @@ import net.yezon.theabyss.ring.secondary.Meteor;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public final class SpellCircleFx extends Effect {
-    private static final RenderPipeline BRIGHT_PIPELINE = FreezeBurstFx.pipeline("bright", 4.754717F);
+    private static final float BRIGHT_TINT = 4.754717F;
 
     private static final int T_CRATER = 0;
     private static final int T_CRACK = 1;
@@ -44,19 +40,19 @@ public final class SpellCircleFx extends Effect {
     private static final int T_ELECTRO = 13;
     private static final RenderType[] TYPES = {
         FreezeBurstFx.CRATER,
-        type(FreezeBurstFx.GLOW_PIPELINE, "crack"),
-        type(BRIGHT_PIPELINE, "tech2"),
-        type(FreezeBurstFx.FLASH_PIPELINE, "disc"),
-        type(FreezeBurstFx.FLASH_PIPELINE, "ring"),
-        type(FreezeBurstFx.FLASH_PIPELINE, "ornate"),
-        type(FreezeBurstFx.FLASH_PIPELINE, "runes"),
-        type(FreezeBurstFx.FLASH_PIPELINE, "tech"),
-        type(BRIGHT_PIPELINE, "slash"),
-        type(FreezeBurstFx.FLASH_PIPELINE, "wall"),
+        type(FreezeBurstFx.GLOW_TINT, "crack"),
+        type(BRIGHT_TINT, "tech2"),
+        type(FreezeBurstFx.FLASH_TINT, "disc"),
+        type(FreezeBurstFx.FLASH_TINT, "ring"),
+        type(FreezeBurstFx.FLASH_TINT, "ornate"),
+        type(FreezeBurstFx.FLASH_TINT, "runes"),
+        type(FreezeBurstFx.FLASH_TINT, "tech"),
+        type(BRIGHT_TINT, "slash"),
+        type(FreezeBurstFx.FLASH_TINT, "wall"),
         FreezeBurstFx.SPARK,
-        type(FreezeBurstFx.SPARK_PIPELINE, "flare"),
-        type(BRIGHT_PIPELINE, "snow"),
-        type(FreezeBurstFx.SPARK_PIPELINE, "electro"),
+        type(FreezeBurstFx.SPARK_TINT, "flare"),
+        type(BRIGHT_TINT, "snow"),
+        type(FreezeBurstFx.SPARK_TINT, "electro"),
     };
 
     private static final double DECAL_LIFT = 0.02;
@@ -108,15 +104,9 @@ public final class SpellCircleFx extends Effect {
         this(m.ticks(), SpellFx.vec(m, 0), m.ids().isEmpty() ? -1 : m.ids().get(0), m.data().get(3).intValue(), m.data().get(4).floatValue(), m.data().get(5).floatValue(), 0.0F);
     }
 
-    private static RenderType type(RenderPipeline pipeline, String texture) {
-        return net.yezon.theabyss.mixin.accessor.client.RenderTypeAccessor.theabyss$create("theabyss_spell_circle_" + texture, RenderSetup.builder(pipeline)
-            .withTexture("Sampler0", Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "textures/fx/circle/" + texture + ".png"))
-            .createRenderSetup());
-    }
-
-    @SubscribeEvent
-    public static void registerPipelines(RegisterRenderPipelinesEvent event) {
-        event.registerPipeline(BRIGHT_PIPELINE);
+    private static RenderType type(float tint, String texture) {
+        return SpellRenderTypes.unlit("theabyss_spell_circle_" + texture,
+            ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "textures/fx/circle/" + texture + ".png"), tint);
     }
 
     public static List<Effect> forSpell(SpellFxMessage m) {

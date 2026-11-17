@@ -2,7 +2,7 @@ package net.yezon.theabyss.ring;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -41,7 +41,7 @@ public final class RingCast {
         TheabyssModVariables.PlayerVariables vars = TheabyssModVariables.getPlayerVariables(caster);
         if (vars.Mana < cost * SomniumUpgrades.costFactor(vars)) {
             if (caster instanceof Player player && !player.level().isClientSide()) {
-                player.sendOverlayMessage(Component.translatable("ring.theabyss.low_energy"));
+                player.displayClientMessage(Component.translatable("ring.theabyss.low_energy"), true);
             }
             return null;
         }
@@ -73,7 +73,7 @@ public final class RingCast {
 
     public RingCast cooldown(int ticks) {
         if (this.caster instanceof Player player) {
-            player.getCooldowns().addCooldown(this.stack, (int)(ticks * this.vars.ManaCooldown));
+            player.getCooldowns().addCooldown(this.stack.getItem(), (int)(ticks * this.vars.ManaCooldown));
         }
         return this;
     }
@@ -84,7 +84,7 @@ public final class RingCast {
 
     public RingCast sound(String id, Vec3 where, float volume, float pitch) {
         if (this.world instanceof ServerLevel level) {
-            SoundEvent sound = BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse(id));
+            SoundEvent sound = BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse(id));
             if (sound != null) {
                 level.playSound(null, where.x, where.y, where.z, sound, SoundSource.NEUTRAL, volume, pitch);
             }

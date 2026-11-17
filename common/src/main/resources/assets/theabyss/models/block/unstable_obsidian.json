@@ -87,8 +87,10 @@
           "cullface": "east"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     }
   ],
   "render_type": "cutout"

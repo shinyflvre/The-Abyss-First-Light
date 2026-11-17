@@ -1,17 +1,15 @@
 package net.yezon.theabyss.fabric.entity;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerEntity;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.Nullable;
 
 public class FabricPartEntity extends Entity {
@@ -40,11 +38,11 @@ public class FabricPartEntity extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(ValueInput input) {
+    protected void readAdditionalSaveData(CompoundTag tag) {
     }
 
     @Override
-    protected void addAdditionalSaveData(ValueOutput output) {
+    protected void addAdditionalSaveData(CompoundTag tag) {
     }
 
     @Override
@@ -58,8 +56,8 @@ public class FabricPartEntity extends Entity {
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
-        return !this.isInvulnerableToBase(source) && this.getParent().hurtServer(level, source, damage);
+    public boolean hurt(DamageSource source, float damage) {
+        return !this.isInvulnerableTo(source) && this.getParent().hurt(source, damage);
     }
 
     @Override

@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:phantom_ingot"
+    "a": {
+      "item": "theabyss:phantom_ingot"
+    }
   },
   "pattern": [
     "aaa",

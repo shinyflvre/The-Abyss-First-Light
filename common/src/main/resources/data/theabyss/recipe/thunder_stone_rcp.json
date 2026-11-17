@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:thunder_nugget",
-    "b": "#minecraft:stone_tool_materials"
+    "a": {
+      "item": "theabyss:thunder_nugget"
+    },
+    "b": {
+      "tag": "minecraft:stone_tool_materials"
+    }
   },
   "pattern": [
     "aaa",

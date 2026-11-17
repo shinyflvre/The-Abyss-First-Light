@@ -1,0 +1,18 @@
+{
+  "type": "theabyss:structure_feature",
+  "config": {
+    "centered": true,
+    "ignored_blocks": [
+      "minecraft:structure_block",
+      "minecraft:air"
+    ],
+    "offset": [
+      -2,
+      -15,
+      -2
+    ],
+    "random_mirror": true,
+    "random_rotation": true,
+    "structure": "theabyss:frozen_tree"
+  }
+}

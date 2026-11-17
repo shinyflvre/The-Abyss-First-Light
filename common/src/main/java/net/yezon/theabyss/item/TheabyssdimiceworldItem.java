@@ -1,5 +1,6 @@
 package net.yezon.theabyss.item;
 
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -26,8 +27,8 @@ public class TheabyssdimiceworldItem extends Item {
 
         if (world.isEmptyBlock(pos)) {
             TheabyssdimiceworldPortalBlock.portalSpawn(world, pos);
-            itemstack.hurtAndBreak(1, entity, context.getHand());
-            return InteractionResult.SUCCESS;
+            itemstack.hurtAndBreak(1, entity, LivingEntity.getSlotForHand(context.getHand()));
+            return InteractionResult.sidedSuccess(context.getLevel().isClientSide());
         }
         return InteractionResult.FAIL;
     }

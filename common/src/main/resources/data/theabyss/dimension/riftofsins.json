@@ -1,5 +1,4 @@
 {
-  "type": "theabyss:riftofsins",
   "generator": {
     "type": "minecraft:flat",
     "settings": {
@@ -14,5 +13,6 @@
       ],
       "structure_overrides": []
     }
-  }
+  },
+  "type": "theabyss:riftofsins"
 }

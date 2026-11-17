@@ -28,7 +28,7 @@ public final class FabricServerSetup {
     }
 
     private static void mapPoiStates(Holder.Reference<PoiType> type) {
-        if (!type.key().identifier().getNamespace().equals(TheabyssMod.MODID)) {
+        if (!type.key().location().getNamespace().equals(TheabyssMod.MODID)) {
             return;
         }
         Set<BlockState> states = new LinkedHashSet<>();

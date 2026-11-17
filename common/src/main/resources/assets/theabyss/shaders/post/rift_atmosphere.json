@@ -1,0 +1,33 @@
+{
+  "targets": [
+    "swap"
+  ],
+  "passes": [
+    {
+      "name": "theabyss:rift_atmosphere",
+      "intarget": "minecraft:main",
+      "outtarget": "swap",
+      "auxtargets": [
+        {
+          "name": "InSampler",
+          "id": "minecraft:main"
+        },
+        {
+          "name": "DepthSampler",
+          "id": "minecraft:main:depth"
+        }
+      ]
+    },
+    {
+      "name": "theabyss:copy",
+      "intarget": "swap",
+      "outtarget": "minecraft:main",
+      "auxtargets": [
+        {
+          "name": "InSampler",
+          "id": "swap"
+        }
+      ]
+    }
+  ]
+}

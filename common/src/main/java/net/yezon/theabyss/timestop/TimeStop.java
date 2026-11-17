@@ -10,7 +10,7 @@ import java.util.UUID;
 import java.util.WeakHashMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -46,7 +46,7 @@ public final class TimeStop {
     public static final double TOTEM_RADIUS = 20.0;
 
     private static final int FREEZE_AMPLIFIER = 40;
-    private static final Identifier SPELL_SOUND = Identifier.fromNamespaceAndPath("theabyss", "spell_of_time");
+    private static final ResourceLocation SPELL_SOUND = ResourceLocation.fromNamespaceAndPath("theabyss", "spell_of_time");
 
     private record RingCast(long startTick, int cooldown, List<WeakReference<LivingEntity>> frozen) {
     }
@@ -65,10 +65,10 @@ public final class TimeStop {
         TheabyssModVariables.PlayerVariables vars = TheabyssModVariables.getPlayerVariables(caster);
         double cost = RING_SOMNIUM_COST * SomniumUpgrades.costFactor(vars);
         if (vars.Mana < cost) {
-            caster.sendOverlayMessage(Component.translatable("ring.theabyss.low_energy"));
+            caster.displayClientMessage(Component.translatable("ring.theabyss.low_energy"), true);
             return false;
         }
-        ServerLevel level = caster.level();
+        ServerLevel level = caster.serverLevel();
         caster.addEffect(casterEffect(RING_DURATION));
         List<LivingEntity> frozen = freezeAround(caster, RING_RADIUS, RING_DURATION, vars.FriendMode);
         List<WeakReference<LivingEntity>> references = new ArrayList<>(frozen.size());
@@ -77,7 +77,7 @@ public final class TimeStop {
         net.yezon.theabyss.ring.fx.SpellCircle.on(level, net.yezon.theabyss.ring.fx.SpellCircle.TECH, caster, 0xFFD36A, 3.0F, 60);
         RING_CASTS.put(caster.getUUID(), new RingCast(level.getServer().getTickCount(), (int)(RING_COOLDOWN * vars.ManaCooldown), references));
         net.yezon.theabyss.ring.RingWear.wear(ring, level, caster, RING_DURABILITY_COST);
-        SoundEvent sound = BuiltInRegistries.SOUND_EVENT.getValue(SPELL_SOUND);
+        SoundEvent sound = BuiltInRegistries.SOUND_EVENT.get(SPELL_SOUND);
         if (sound != null) {
             level.playSound(null, caster.blockPosition(), sound, SoundSource.NEUTRAL, 1.0F, 1.0F);
         }
@@ -107,7 +107,7 @@ public final class TimeStop {
         }
         int left = cast.cooldown - (caster.level().getServer().getTickCount() - (int)cast.startTick);
         if (left > 0) {
-            caster.getCooldowns().addCooldown(new ItemStack(TheabyssModItems.RING_OF_TIME.get()), left);
+            caster.getCooldowns().addCooldown(TheabyssModItems.RING_OF_TIME.get(), left);
         }
     }
 
@@ -141,7 +141,7 @@ public final class TimeStop {
         List<LivingEntity> targets = caster.level().getEntitiesOfClass(LivingEntity.class, new AABB(centre, centre).inflate(radius),
             target -> target != caster && !(spareFriends && target instanceof Player));
         for (LivingEntity target : targets) {
-            target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, duration, FREEZE_AMPLIFIER, false, false));
+            target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, duration, FREEZE_AMPLIFIER, false, false));
             target.addEffect(new MobEffectInstance(TheabyssModMobEffects.TIME_STOP_POTION_IRATOR.getDelegate(), duration, FREEZE_AMPLIFIER, false, false));
         }
         return targets;
@@ -149,9 +149,9 @@ public final class TimeStop {
 
     private static void unfreeze(LivingEntity entity) {
         entity.removeEffect(TheabyssModMobEffects.TIME_STOP_POTION_IRATOR.getDelegate());
-        MobEffectInstance slowness = entity.getEffect(MobEffects.SLOWNESS);
+        MobEffectInstance slowness = entity.getEffect(MobEffects.MOVEMENT_SLOWDOWN);
         if (slowness != null && slowness.getAmplifier() == FREEZE_AMPLIFIER) {
-            entity.removeEffect(MobEffects.SLOWNESS);
+            entity.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
         }
     }
 

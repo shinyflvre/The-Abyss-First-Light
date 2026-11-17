@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shapeless",
   "group": "chest_boat",
   "ingredients": [
-    "theabyss:rena_chest",
-    "theabyss:rena_boat"
+    {
+      "item": "theabyss:rena_chest"
+    },
+    {
+      "item": "theabyss:rena_boat"
+    }
   ],
   "result": {
     "id": "theabyss:rena_chest_boat"

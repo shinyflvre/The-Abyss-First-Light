@@ -30,7 +30,7 @@ final class FearAutotest {
     private static int musicSamples;
     private static final List<String> heard = new ArrayList<>();
     private static final net.minecraft.client.sounds.SoundEventListener LISTENER = (sound, events, range) -> {
-        String id = sound.getIdentifier().toString();
+        String id = sound.getLocation().toString();
         if (id.startsWith("theabyss:fear_")) {
             heard.add(id + "=" + (sound.getSound() != null ? sound.getSound().getLocation() : "?"));
         }
@@ -42,7 +42,7 @@ final class FearAutotest {
     static void addSteps(PossessionAutotest.StepAdder add, Consumer<String> command, Consumer<String> shot) {
         add.add("fear arena", () -> {
             command.accept("gamemode survival @s");
-            command.accept("gamerule spawn_mobs false");
+            command.accept("gamerule doMobSpawning false");
             command.accept("execute in theabyss:the_abyss run forceload add -40 -40 40 40");
             command.accept("execute in theabyss:the_abyss run fill -30 149 -30 30 149 0 theabyss:nightgrove_moss");
             command.accept("execute in theabyss:the_abyss run fill -30 149 1 30 149 30 theabyss:nightgrove_moss");

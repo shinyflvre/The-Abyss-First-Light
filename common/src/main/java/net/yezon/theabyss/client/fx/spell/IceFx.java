@@ -3,10 +3,9 @@ package net.yezon.theabyss.client.fx.spell;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
@@ -15,8 +14,8 @@ import net.yezon.theabyss.network.SpellFxMessage;
 import net.yezon.theabyss.ring.secondary.IcePrison;
 
 final class IceFx extends Effect {
-    private static final RenderType ICE = RenderTypes.entityTranslucent(Identifier.withDefaultNamespace("textures/block/ice.png"));
-    private static final RenderType PACKED = RenderTypes.entityTranslucent(Identifier.withDefaultNamespace("textures/block/packed_ice.png"));
+    private static final RenderType ICE = RenderType.entityTranslucent(ResourceLocation.withDefaultNamespace("textures/block/ice.png"));
+    private static final RenderType PACKED = RenderType.entityTranslucent(ResourceLocation.withDefaultNamespace("textures/block/packed_ice.png"));
     private static final int COLD = 0x9FE6FF;
     private static final int FROST = 0xDFF8FF;
 

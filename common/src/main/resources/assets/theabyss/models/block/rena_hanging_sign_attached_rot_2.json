@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/template_attached_hanging_sign_rot_2",
-  "textures": {
-    "all": "theabyss:block/rena_hanging_sign",
-    "particle": "theabyss:block/stripped_rena_log"
-  }
-}

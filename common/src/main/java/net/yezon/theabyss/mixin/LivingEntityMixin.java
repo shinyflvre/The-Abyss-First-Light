@@ -8,6 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.WalkAnimationState;
+import net.yezon.theabyss.mixin.accessor.WalkAnimationStateAccessor;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
@@ -94,14 +95,17 @@ public abstract class LivingEntityMixin {
         }
     }
 
-    @WrapMethod(method = "hasLineOfSight(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/level/ClipContext$Block;Lnet/minecraft/world/level/ClipContext$Fluid;D)Z")
-    private boolean theabyss$gravitySight(Entity target, ClipContext.Block block, ClipContext.Fluid fluid, double eyeHeight, Operation<Boolean> original) {
+    @WrapMethod(method = "hasLineOfSight(Lnet/minecraft/world/entity/Entity;)Z")
+    private boolean theabyss$gravitySight(Entity target, Operation<Boolean> original) {
         LivingEntity self = (LivingEntity)(Object)this;
         boolean selfTurned = ((GravityEntity)self).theabyss$gravityId() != 0;
         boolean targetTurned = ((GravityEntity)target).theabyss$gravityId() != 0;
         if (!selfTurned && !targetTurned || target.level() != self.level()) {
-            return original.call(target, block, fluid, eyeHeight);
+            return original.call(target);
         }
+        ClipContext.Block block = ClipContext.Block.COLLIDER;
+        ClipContext.Fluid fluid = ClipContext.Fluid.NONE;
+        double eyeHeight = target.getEyeY();
         Vec3 from = self.getEyePosition();
         Vec3 to = targetTurned && eyeHeight == target.getEyeY() ? target.getEyePosition() : new Vec3(target.getX(), eyeHeight, target.getZ());
         if (to.distanceTo(from) > 128.0) {
@@ -121,7 +125,10 @@ public abstract class LivingEntityMixin {
         if (!self.isPassenger() && self.isAlive()) {
             this.updateWalkAnimation((float)Math.sqrt(moved.x * moved.x + moved.z * moved.z));
         } else {
-            this.walkAnimation.stop();
+            WalkAnimationStateAccessor walk = (WalkAnimationStateAccessor)this.walkAnimation;
+            walk.theabyss$setSpeedOld(0.0F);
+            walk.theabyss$setSpeed(0.0F);
+            walk.theabyss$setPosition(0.0F);
         }
         ci.cancel();
     }

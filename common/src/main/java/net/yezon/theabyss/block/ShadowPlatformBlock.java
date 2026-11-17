@@ -26,7 +26,7 @@ public class ShadowPlatformBlock extends Block {
             .noOcclusion()
             .isSuffocating((state, level, pos) -> false)
             .isRedstoneConductor((state, level, pos) -> false)
-            .pushReaction(PushReaction.IMMOVEABLE));
+            .pushReaction(PushReaction.BLOCK));
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ShadowPlatformBlock extends Block {
     }
 
     @Override
-    protected boolean propagatesSkylightDown(BlockState state) {
+    protected boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
         return true;
     }
 

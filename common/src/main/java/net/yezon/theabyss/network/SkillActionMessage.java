@@ -4,7 +4,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.yezon.theabyss.platform.network.handling.IPayloadContext;
 import net.yezon.theabyss.TheabyssMod;
@@ -14,7 +14,7 @@ import net.yezon.theabyss.skill.WraithForm;
 public record SkillActionMessage(int action, int value) implements CustomPacketPayload {
     public static final int DASH = 0;
     public static final int WRAITH = 1;
-    public static final Type<SkillActionMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "skill_action"));
+    public static final Type<SkillActionMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "skill_action"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SkillActionMessage> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.VAR_INT, SkillActionMessage::action,
         ByteBufCodecs.VAR_INT, SkillActionMessage::value,

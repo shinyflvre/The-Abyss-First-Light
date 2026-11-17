@@ -22,15 +22,16 @@ public abstract class SoundEngineEventsMixin {
     private boolean loaded;
 
     @WrapMethod(method = "play")
-    private SoundEngine.PlayResult theabyss$playSound(SoundInstance instance, Operation<SoundEngine.PlayResult> original) {
+    private void theabyss$playSound(SoundInstance instance, Operation<Void> original) {
         if (!this.loaded) {
-            return original.call(instance);
+            original.call(instance);
+            return;
         }
         SoundInstance sound = ClientFabricEvents.playSound(instance);
         if (sound == null) {
-            return SoundEngine.PlayResult.NOT_STARTED;
+            return;
         }
-        return original.call(sound);
+        original.call(sound);
     }
 
     @WrapOperation(method = "play", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;thenAccept(Ljava/util/function/Consumer;)Ljava/util/concurrent/CompletableFuture;",

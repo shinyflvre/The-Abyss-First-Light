@@ -1,0 +1,18 @@
+{
+  "type": "theabyss:vigilant_tree",
+  "config": {
+    "fruit": {
+      "Name": "theabyss:vigilant_hanging_fruit"
+    },
+    "leaves": {
+      "Name": "theabyss:vigilant_leaves"
+    },
+    "log": {
+      "Name": "theabyss:vigilant_log",
+      "Properties": {
+        "axis": "y"
+      }
+    },
+    "variant": "spiral_tall"
+  }
+}

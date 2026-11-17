@@ -14,7 +14,7 @@ public class JellyFishHandlerEvents {
     public static void execute(LevelAccessor world, Entity entity) {
         if (entity != null) {
             if (entity instanceof Player) {
-                entity.hurtOrSimulate(new DamageSource(world.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.GENERIC)), 1.0F);
+                entity.hurt(new DamageSource(world.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.GENERIC)), 1.0F);
                 if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
                     _entity.addEffect(new MobEffectInstance(TheabyssModMobEffects.FROST_POISON.getDelegate(), 200, 0, false, false));
                 }

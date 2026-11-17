@@ -3,7 +3,9 @@
   "category": "misc",
   "group": "sticks",
   "key": {
-    "#": "theabyss:frozen_planks"
+    "#": {
+      "item": "theabyss:frozen_planks"
+    }
   },
   "pattern": [
     "#",

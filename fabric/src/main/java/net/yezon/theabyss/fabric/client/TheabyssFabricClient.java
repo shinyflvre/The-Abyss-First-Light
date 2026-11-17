@@ -11,6 +11,7 @@ public final class TheabyssFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         FabricClientSetup.installHooks();
+        FabricGuiRegistrations.installHooks();
         FabricClientLoaderHooks.installHooks();
         for (Class<?> subscriber : TheabyssClientSubscribers.ALL) {
             AbyssEventBus.register(subscriber);
@@ -19,6 +20,8 @@ public final class TheabyssFabricClient implements ClientModInitializer {
         FabricClientNetwork.register();
         FabricClientEventBridge.register();
         FabricClientSetup.register();
+        FabricGuiRegistrations.register();
+        FabricRenderRegistrations.register();
         FabricFluidsClient.install();
         FabricClientLoaderHooks.install();
     }

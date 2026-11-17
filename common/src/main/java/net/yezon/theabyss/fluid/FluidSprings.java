@@ -13,7 +13,7 @@ public final class FluidSprings {
     public static void pop(Level level, BlockPos pos, RandomSource random, ParticleOptions ember, ParticleOptions splash) {
         BlockPos above = pos.above();
         BlockState state = level.getBlockState(above);
-        if (!state.isAir() || state.isSolidRender() || random.nextInt(100) != 0) {
+        if (!state.isAir() || state.isSolidRender(level, above) || random.nextInt(100) != 0) {
             return;
         }
         double x = pos.getX() + random.nextDouble();

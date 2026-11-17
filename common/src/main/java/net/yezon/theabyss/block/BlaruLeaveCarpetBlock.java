@@ -19,17 +19,17 @@ import net.yezon.theabyss.block.hooks.FlammableBlock;
 public class BlaruLeaveCarpetBlock extends FlowerBlock implements FlammableBlock, FireSpreadingBlock {
     public BlaruLeaveCarpetBlock(BlockBehaviour.Properties properties) {
         super(
-            MobEffects.SPEED,
+            MobEffects.MOVEMENT_SPEED,
             5.0F,
             properties
                 .mapColor(MapColor.PLANT)
                 .sound(SoundType.CHERRY_LEAVES)
                 .instabreak()
                 .noLootTable()
-                .noCollision()
+                .noCollission()
                 .replaceable()
                 .offsetType(OffsetType.NONE)
-                .pushReaction(PushReaction.POPPED)
+                .pushReaction(PushReaction.DESTROY)
         );
     }
 

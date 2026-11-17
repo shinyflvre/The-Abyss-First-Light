@@ -2,41 +2,22 @@ package net.yezon.theabyss.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.renderpearl.api.pipeline.BlendFunction;
-import com.mojang.renderpearl.api.pipeline.ColorTargetState;
-import com.mojang.renderpearl.api.pipeline.CompareOp;
-import com.mojang.renderpearl.api.pipeline.DepthStencilState;
-import com.mojang.renderpearl.api.pipeline.RenderPipeline;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.rendertype.RenderSetup;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.TextureTransform;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 
 public final class LightTrail {
-    public static final RenderPipeline PIPELINE = RenderPipeline.builder(net.yezon.theabyss.mixin.accessor.client.RenderPipelinesAccessor.theabyss$energySwirlSnippet())
-        .withLocation(Identifier.fromNamespaceAndPath("theabyss", "pipeline/light_trail"))
-        .withColorTargetState(new ColorTargetState(BlendFunction.ADDITIVE))
-        .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
-        .build();
-    public static final RenderType STREAK = type(Identifier.fromNamespaceAndPath("theabyss", "textures/entity/light_trail.png"));
-    public static final RenderType SHEET = type(Identifier.fromNamespaceAndPath("theabyss", "textures/entity/light_sheet.png"));
-    public static final RenderType FLARE =type(Identifier.fromNamespaceAndPath("theabyss", "textures/entity/light_flare.png"));
+    public static final RenderType STREAK = type(ResourceLocation.fromNamespaceAndPath("theabyss", "textures/entity/light_trail.png"));
+    public static final RenderType SHEET = type(ResourceLocation.fromNamespaceAndPath("theabyss", "textures/entity/light_sheet.png"));
+    public static final RenderType FLARE = type(ResourceLocation.fromNamespaceAndPath("theabyss", "textures/entity/light_flare.png"));
     private static final int FULL_BRIGHT = 15728880;
 
     private LightTrail() {
     }
 
-    public static RenderType type(Identifier texture) {
-        return net.yezon.theabyss.mixin.accessor.client.RenderTypeAccessor.theabyss$create("theabyss_light_trail", RenderSetup.builder(PIPELINE)
-            .withTexture("Sampler0", texture)
-            .setTextureTransform(TextureTransform.DEFAULT_TEXTURING)
-            .useLightmap()
-            .useOverlay()
-            .sortOnUpload()
-            .createRenderSetup());
+    public static RenderType type(ResourceLocation texture) {
+        return AbyssRenderTypes.lightTrail(texture);
     }
 
     public static void ribbon(PoseStack.Pose pose, VertexConsumer buffer, Vec3[] points, float[] width, float[] light, int rgb, Vec3 camera) {

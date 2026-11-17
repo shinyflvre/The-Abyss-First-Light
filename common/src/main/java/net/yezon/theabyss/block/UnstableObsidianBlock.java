@@ -1,5 +1,7 @@
 package net.yezon.theabyss.block;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
@@ -31,18 +33,19 @@ public class UnstableObsidianBlock extends Block implements HoverTextBlock {
                 .strength(1.3F, 11.0F)
                 .lightLevel(s -> 1)
                 .requiresCorrectToolForDrops()
-                .postProcess((bs, br, bp) -> bp)
+                .hasPostProcess((bs, br, bp) -> true)
         );
         this.registerDefaultState(this.stateDefinition.any().setValue(AXIS, Axis.Y));
     }
 
     @Override
-    public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, Consumer<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, List<Component> tooltipLines, TooltipFlag flag) {
+        Consumer<Component> tooltip = tooltipLines::add;
         tooltip.accept(Component.translatable("tooltip.theabyss.unstable_obsidian"));
     }
 
     @Override
-    protected int getLightDampening(BlockState state) {
+    protected int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
         return 3;
     }
 

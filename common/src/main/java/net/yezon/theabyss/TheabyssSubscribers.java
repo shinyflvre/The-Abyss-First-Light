@@ -9,7 +9,6 @@ public final class TheabyssSubscribers {
         net.yezon.theabyss.ability.ShadowVeil.class,
         net.yezon.theabyss.alchemy.Draughts.class,
         net.yezon.theabyss.astral.AstralPlane.class,
-        net.yezon.theabyss.block.HoverTextBlock.Registration.class,
         net.yezon.theabyss.command.ManaboostCommand.class,
         net.yezon.theabyss.command.Ta2SomniumCommand.class,
         net.yezon.theabyss.difficulty.AbyssDifficulty.class,

@@ -7,10 +7,10 @@ public abstract class MobSpawnEvent extends Event {
     public static class PositionCheck extends MobSpawnEvent {
         private final net.minecraft.world.entity.Entity entity;
         private final net.minecraft.world.level.ServerLevelAccessor level;
-        private final net.minecraft.world.entity.EntitySpawnReason spawnType;
+        private final net.minecraft.world.entity.MobSpawnType spawnType;
         private net.yezon.theabyss.platform.event.entity.living.MobSpawnEvent.PositionCheck.Result result;
 
-        public PositionCheck(net.minecraft.world.entity.Entity entity, net.minecraft.world.level.ServerLevelAccessor level, net.minecraft.world.entity.EntitySpawnReason spawnType, net.yezon.theabyss.platform.event.entity.living.MobSpawnEvent.PositionCheck.Result result) {
+        public PositionCheck(net.minecraft.world.entity.Entity entity, net.minecraft.world.level.ServerLevelAccessor level, net.minecraft.world.entity.MobSpawnType spawnType, net.yezon.theabyss.platform.event.entity.living.MobSpawnEvent.PositionCheck.Result result) {
             this.entity = entity;
             this.level = level;
             this.spawnType = spawnType;
@@ -25,7 +25,7 @@ public abstract class MobSpawnEvent extends Event {
             return this.level;
         }
 
-        public net.minecraft.world.entity.EntitySpawnReason getSpawnType() {
+        public net.minecraft.world.entity.MobSpawnType getSpawnType() {
             return this.spawnType;
         }
 

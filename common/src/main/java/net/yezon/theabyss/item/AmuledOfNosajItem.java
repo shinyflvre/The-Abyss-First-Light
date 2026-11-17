@@ -1,5 +1,7 @@
 package net.yezon.theabyss.item;
 
+import net.minecraft.world.level.Level;
+import java.util.List;
 import java.util.function.Consumer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -10,7 +12,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.block.state.BlockState;
 import net.yezon.theabyss.events.AmuledOfNosajEffectEvents;
 import org.jspecify.annotations.Nullable;
@@ -27,16 +28,19 @@ public class AmuledOfNosajItem extends Item {
     }
 
     @Override
-    public void appendHoverText(
-        ItemStack itemstack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag
-    ) {
+    public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, List<Component> tooltipLines, TooltipFlag flag) {
+        Consumer<Component> tooltip = tooltipLines::add;
         AbyssTooltip.ability(tooltip, "tooltip.theabyss.amuled_of_nosaj.ability", "tooltip.theabyss.amuled_of_nosaj.text");
         tooltip.accept(AbyssTooltip.text("tooltip.theabyss.works_from_inventory"));
     }
 
     @Override
-    public void inventoryTick(ItemStack itemstack, ServerLevel world, Entity entity, @Nullable EquipmentSlot slot) {
-        super.inventoryTick(itemstack, world, entity, slot);
+    public void inventoryTick(ItemStack itemstack, Level level, Entity entity, int slotId, boolean selected) {
+        super.inventoryTick(itemstack, level, entity, slotId, selected);
+        if (!(level instanceof ServerLevel world)) {
+            return;
+        }
+        EquipmentSlot slot = InventoryTickSlot.of(entity, itemstack);
         if (!(entity instanceof Player)) {
             return;
         }

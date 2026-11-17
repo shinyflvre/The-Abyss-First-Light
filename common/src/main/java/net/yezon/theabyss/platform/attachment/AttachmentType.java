@@ -5,11 +5,13 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.yezon.theabyss.compat.ValueInput;
+import net.yezon.theabyss.compat.ValueOutput;
 import net.yezon.theabyss.platform.common.util.ValueIOSerializable;
 import org.jspecify.annotations.Nullable;
 
@@ -93,7 +95,7 @@ public final class AttachmentType<T> {
             this.serializer = new Serializer<>() {
                 @Override
                 public T read(IAttachmentHolder holder, ValueInput input) {
-                    return input.read(codec).orElseThrow();
+                    return codec.codec().parse(NbtOps.INSTANCE, input.tag()).result().orElseThrow();
                 }
 
                 @Override
@@ -101,7 +103,8 @@ public final class AttachmentType<T> {
                     if (!shouldSerialize.test(attachment)) {
                         return false;
                     }
-                    output.store(codec, attachment);
+                    codec.codec().encodeStart(NbtOps.INSTANCE, attachment).result()
+                        .ifPresent(encoded -> output.tag().merge((CompoundTag)encoded));
                     return true;
                 }
             };

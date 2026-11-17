@@ -5,7 +5,7 @@ import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.util.TriState;
+import net.yezon.theabyss.compat.TriState;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -55,7 +55,7 @@ public class StrippedRenaLogBlock extends Block implements PlantSoilBlock {
     }
 
     @Override
-    public TriState canSustainPlant(BlockState state, BlockGetter level, BlockPos soilPosition, Direction facing, BlockState plant) {
+    public TriState sustainsPlant(BlockState state, BlockGetter level, BlockPos soilPosition, Direction facing, BlockState plant) {
         return TriState.TRUE;
     }
 

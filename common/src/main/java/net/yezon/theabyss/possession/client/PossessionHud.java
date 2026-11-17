@@ -9,6 +9,7 @@ import net.yezon.theabyss.platform.event.EventBusSubscriber;
 import net.yezon.theabyss.platform.client.event.RenderFrameEvent;
 import net.yezon.theabyss.platform.client.event.RenderGuiEvent;
 import net.yezon.theabyss.TheabyssMod;
+import net.yezon.theabyss.mixin.client.MinecraftCameraEntityAccessor;
 import net.yezon.theabyss.possession.PossessionData;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
@@ -27,7 +28,7 @@ public final class PossessionHud {
         }
         if (PossessionData.of(mc.player).active() || PossessionCameraFlight.flying()) {
             swappedOut = camera;
-            mc.gameRenderer.mainCamera().setEntity(mc.player);
+            ((MinecraftCameraEntityAccessor)mc).theabyss$setCameraEntity(mc.player);
         }
     }
 
@@ -45,7 +46,7 @@ public final class PossessionHud {
         if (swappedOut != null) {
             Minecraft mc = Minecraft.getInstance();
             if (mc.getCameraEntity() == mc.player) {
-                mc.gameRenderer.mainCamera().setEntity(swappedOut);
+                ((MinecraftCameraEntityAccessor)mc).theabyss$setCameraEntity(swappedOut);
             }
             swappedOut = null;
         }

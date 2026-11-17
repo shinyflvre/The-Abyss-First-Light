@@ -1,5 +1,7 @@
 package net.yezon.theabyss.item;
 
+import net.minecraft.world.level.Level;
+import java.util.List;
 import java.util.function.Consumer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -11,7 +13,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.yezon.theabyss.events.GetLoranEnergyAdvEvents;
 import org.jspecify.annotations.Nullable;
 
@@ -25,15 +26,18 @@ public class LoranEnergyItem extends Item {
     }
 
     @Override
-    public void appendHoverText(
-        ItemStack itemstack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag
-    ) {
+    public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, List<Component> tooltipLines, TooltipFlag flag) {
+        Consumer<Component> tooltip = tooltipLines::add;
         tooltip.accept(Component.translatable("tooltip.theabyss.loran_energy.info"));
     }
 
     @Override
-    public void inventoryTick(ItemStack itemstack, ServerLevel world, Entity entity, @Nullable EquipmentSlot slot) {
-        super.inventoryTick(itemstack, world, entity, slot);
+    public void inventoryTick(ItemStack itemstack, Level level, Entity entity, int slotId, boolean selected) {
+        super.inventoryTick(itemstack, level, entity, slotId, selected);
+        if (!(level instanceof ServerLevel world)) {
+            return;
+        }
+        EquipmentSlot slot = InventoryTickSlot.of(entity, itemstack);
         if (!(entity instanceof Player)) {
             return;
         }
@@ -45,8 +49,8 @@ public class LoranEnergyItem extends Item {
     }
 
     @Override
-    public void onCraftedBy(ItemStack itemstack, Player entity) {
-        super.onCraftedBy(itemstack, entity);
+    public void onCraftedBy(ItemStack itemstack, Level level, Player entity) {
+        super.onCraftedBy(itemstack, level, entity);
         GetLoranEnergyAdvEvents.execute(entity);
     }
 }

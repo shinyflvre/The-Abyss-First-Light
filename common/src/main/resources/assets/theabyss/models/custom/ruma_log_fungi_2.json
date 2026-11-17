@@ -12,7 +12,6 @@
         12.5,
         16
       ],
-      "shade": false,
       "rotation": {
         "angle": 0,
         "axis": "y",
@@ -81,7 +80,6 @@
         3,
         16
       ],
-      "shade": false,
       "rotation": {
         "angle": 0,
         "axis": "y",
@@ -150,7 +148,6 @@
         15,
         16
       ],
-      "shade": false,
       "rotation": {
         "angle": 0,
         "axis": "y",
@@ -219,7 +216,6 @@
         7,
         16.5
       ],
-      "shade": false,
       "rotation": {
         "angle": 0,
         "axis": "y",
@@ -288,7 +284,6 @@
         10,
         16.5
       ],
-      "shade": false,
       "rotation": {
         "angle": 0,
         "axis": "y",

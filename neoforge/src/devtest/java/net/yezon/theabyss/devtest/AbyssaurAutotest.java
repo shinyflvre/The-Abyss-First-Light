@@ -27,7 +27,7 @@ final class AbyssaurAutotest {
         Minecraft mc = Minecraft.getInstance();
         net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.entity.living.LivingDamageEvent.Post e) -> {
             if (e.getEntity() instanceof ServerPlayer) {
-                TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] dino player damage {} from {}", e.getHealthDamage(), e.getSource().getMsgId());
+                TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] dino player damage {} from {}", e.getNewDamage(), e.getSource().getMsgId());
             }
         });
         net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.tick.EntityTickEvent.Post e) -> {
@@ -48,12 +48,12 @@ final class AbyssaurAutotest {
             command.accept("time set noon");
             command.accept("weather clear");
             command.accept("difficulty normal");
-            command.accept("gamerule spawn_mobs false");
+            command.accept("gamerule doMobSpawning false");
         }, 60);
         add.add("dino player", () -> {
             command.accept("execute in minecraft:overworld run tp @s 0 200 -8 0 5");
             command.accept("gamemode survival @s");
-            command.accept("attribute @s minecraft:max_health base set 100");
+            command.accept("attribute @s minecraft:generic.max_health base set 100");
             command.accept("item replace entity @s weapon.mainhand with minecraft:iron_sword");
             onServer(sp -> sp.setHealth(sp.getMaxHealth()));
         }, 40);
@@ -123,7 +123,7 @@ final class AbyssaurAutotest {
 
         attack(add, command, shot, "roar", 8.0, 14, "101_dino_9_roar", 10);
         add.add("dino roar check", () -> onServer(sp -> check("roar: weakness, hunger, slowness, nausea", sp.hasEffect(MobEffects.WEAKNESS)
-            && sp.hasEffect(MobEffects.HUNGER) && sp.hasEffect(MobEffects.SLOWNESS) && sp.hasEffect(MobEffects.NAUSEA))), 20);
+            && sp.hasEffect(MobEffects.HUNGER) && sp.hasEffect(MobEffects.MOVEMENT_SLOWDOWN) && sp.hasEffect(MobEffects.CONFUSION))), 20);
 
         add.add("dino camera back", () -> mc.options.setCameraType(CameraType.FIRST_PERSON), 2);
         add.add("dino result", () -> TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] RESULT abyssaur {} ({} checks{})", failures.isEmpty() ? "PASS" : "FAIL",
@@ -131,7 +131,7 @@ final class AbyssaurAutotest {
         add.add("dino cleanup", () -> {
             command.accept("kill @e[type=theabyss:abyssaur]");
             command.accept("effect clear @s");
-            command.accept("attribute @s minecraft:max_health base set 20");
+            command.accept("attribute @s minecraft:generic.max_health base set 20");
         }, 5);
     }
 
@@ -178,7 +178,7 @@ final class AbyssaurAutotest {
 
     private static void dino(Consumer<AbyssaurEntity> action) {
         onServer(sp -> {
-            for (AbyssaurEntity d : sp.level().getEntitiesOfClass(AbyssaurEntity.class, new AABB(sp.blockPosition()).inflate(48))) {
+            for (AbyssaurEntity d : sp.serverLevel().getEntitiesOfClass(AbyssaurEntity.class, new AABB(sp.blockPosition()).inflate(48))) {
                 action.accept(d);
             }
         });

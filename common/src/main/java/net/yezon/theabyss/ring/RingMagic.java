@@ -6,7 +6,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.SwingAnimation;
 import net.yezon.theabyss.events.ApplyRingOfCrystalsEvents;
 import net.yezon.theabyss.init.TheabyssModItems;
 import org.jspecify.annotations.Nullable;
@@ -38,10 +37,10 @@ public final class RingMagic {
         ItemStack held = player.getItemInHand(hand);
         if (Gauntlet.is(held)) {
             castFromGauntlet(player, hand, held, true);
-        } else if (!player.getCooldowns().isOnCooldown(held)) {
-            InteractionResult result = held.getItem().use(player.level(), player, hand);
-            if (result instanceof InteractionResult.Success) {
-                player.swing(hand, SwingAnimation.DEFAULT, true);
+        } else if (!player.getCooldowns().isOnCooldown(held.getItem())) {
+            boolean success = held.getItem().use(player.level(), player, hand).getResult().consumesAction();
+            if (success) {
+                player.swing(hand, true);
             }
         }
     }
@@ -53,22 +52,22 @@ public final class RingMagic {
         ItemStack ring = Gauntlet.selectedRing(gauntlet);
         if (ring.isEmpty()) {
             if (player instanceof ServerPlayer sp) {
-                sp.sendOverlayMessage(Component.translatable("gauntlet.theabyss.empty_slot"));
+                sp.displayClientMessage(Component.translatable("gauntlet.theabyss.empty_slot"), true);
             }
             return;
         }
-        if (player.getCooldowns().isOnCooldown(ring)) {
+        if (player.getCooldowns().isOnCooldown(ring.getItem())) {
             return;
         }
         Gauntlet.withSelectedRing(gauntlet, selected -> {
             player.setItemInHand(hand, selected);
             ItemStack after;
             try {
-                InteractionResult result = selected.getItem().use(player.level(), player, hand);
-                if (swing && result instanceof InteractionResult.Success) {
-                    player.swing(hand, SwingAnimation.DEFAULT, true);
+                boolean success = selected.getItem().use(player.level(), player, hand).getResult().consumesAction();
+                if (swing && success) {
+                    player.swing(hand, true);
                 }
-                if (result instanceof InteractionResult.Success && player instanceof ServerPlayer caster) {
+                if (success && player instanceof ServerPlayer caster) {
                     net.yezon.theabyss.rift.RiftStory.onGauntletCast(caster);
                 }
             } finally {
@@ -98,7 +97,7 @@ public final class RingMagic {
             });
             net.yezon.theabyss.rift.RiftStory.onGauntletCast(player);
         } else {
-            player.sendOverlayMessage(Component.translatable("gauntlet.theabyss.no_second_magic"));
+            player.displayClientMessage(Component.translatable("gauntlet.theabyss.no_second_magic"), true);
         }
     }
 

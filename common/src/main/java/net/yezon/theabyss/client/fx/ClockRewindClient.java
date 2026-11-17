@@ -1,20 +1,16 @@
 package net.yezon.theabyss.client.fx;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.ClientInput;
+import net.minecraft.client.player.Input;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.EventPriority;
@@ -24,6 +20,7 @@ import net.yezon.theabyss.platform.client.event.MovementInputUpdateEvent;
 import net.yezon.theabyss.platform.client.event.RenderFrameEvent;
 import net.yezon.theabyss.platform.client.event.ViewportEvent;
 import net.yezon.theabyss.TheabyssMod;
+import net.yezon.theabyss.mixin.client.CameraPositionInvoker;
 import net.yezon.theabyss.network.ClockRewindMessage;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
@@ -60,14 +57,11 @@ public final class ClockRewindClient {
     private static float holdYaw;
     private static float holdPitch;
     private static boolean worldFovPending;
-    private static Method setPosition;
-    private static Field moveVector;
     private static boolean cameraReady;
     private static Vec3 cameraEye = Vec3.ZERO;
     private static float cameraYaw;
     private static float cameraPitch;
     private static long cameraNanos;
-    private static boolean reflectionFailed;
 
     private ClockRewindClient() {
     }
@@ -322,32 +316,22 @@ public final class ClockRewindClient {
         if (phase == Phase.NONE) {
             return;
         }
-        ClientInput input = event.getInput();
-        input.keyPresses = Input.EMPTY;
-        try {
-            if (moveVector == null) {
-                moveVector = ClientInput.class.getDeclaredField("moveVector");
-                moveVector.setAccessible(true);
-            }
-            moveVector.set(input, Vec2.ZERO);
-        } catch (ReflectiveOperationException | RuntimeException ignored) {
-        }
+        Input input = event.getInput();
+        input.up = false;
+        input.down = false;
+        input.left = false;
+        input.right = false;
+        input.jumping = false;
+        input.shiftKeyDown = false;
+        input.leftImpulse = 0.0F;
+        input.forwardImpulse = 0.0F;
     }
 
     private static boolean controlsCamera(Minecraft mc) {
-        return phase != Phase.NONE && !reflectionFailed && mc.player != null && mc.getCameraEntity() == mc.player;
+        return phase != Phase.NONE && mc.player != null && mc.getCameraEntity() == mc.player;
     }
 
     private static void move(Camera camera, Vec3 position) {
-        try {
-            if (setPosition == null) {
-                setPosition = Camera.class.getDeclaredMethod("setPosition", Vec3.class);
-                setPosition.setAccessible(true);
-            }
-            setPosition.invoke(camera, position);
-        } catch (ReflectiveOperationException | RuntimeException e) {
-            reflectionFailed = true;
-            TheabyssMod.LOGGER.warn("Clock rewind: camera position not settable, camera flight disabled", e);
-        }
+        ((CameraPositionInvoker)camera).theabyss$setPosition(position);
     }
 }

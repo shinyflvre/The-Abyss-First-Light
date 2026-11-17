@@ -65,14 +65,14 @@ public final class TheabyssModFlora {
     }
 
     private static BlockBehaviour.Properties plant(BlockBehaviour.Properties p, SoundType sound, int light) {
-        p = p.mapColor(MapColor.PLANT).noCollision().instabreak().sound(sound).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.POPPED);
+        p = p.mapColor(MapColor.PLANT).noCollission().instabreak().sound(sound).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY);
         return light > 0 ? p.lightLevel(state -> light) : p;
     }
 
     private static BlockBehaviour.Properties vine(BlockBehaviour.Properties p, int light, boolean fullBright) {
-        p = p.mapColor(MapColor.PLANT).noCollision().instabreak().sound(SoundType.WEEPING_VINES).pushReaction(PushReaction.POPPED);
+        p = p.mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.WEEPING_VINES).pushReaction(PushReaction.DESTROY);
         if (fullBright) {
-            p = p.emissiveRendering(state -> true);
+            p = p.emissiveRendering((state, level, pos) -> true);
         }
         return light > 0 ? p.lightLevel(state -> light) : p;
     }
@@ -90,7 +90,7 @@ public final class TheabyssModFlora {
         ref[3] = TheabyssModBlocks.REGISTRY.registerBlock("standing_" + name + "_plant", p -> new HangingPlantBodyBlock(vine(p, light, fullBright),
             () -> ref[2].get(), Direction.UP));
         DeferredItem<Item> item = TheabyssModItems.REGISTRY.registerItem(name, p -> new HangingPlantItem(ref[0].get(), () -> ref[2].get(), p),
-            Item.Properties::useBlockDescriptionPrefix);
+            p -> p);
         ITEMS.add(item);
         ITEM_OF.put(ref[0], item);
         return new Hanging(ref[0], ref[1], item);
@@ -107,7 +107,7 @@ public final class TheabyssModFlora {
     }
 
     private static BlockBehaviour.Properties stalkProperties(BlockBehaviour.Properties p, SoundType sound) {
-        return p.mapColor(MapColor.PLANT).noCollision().instabreak().sound(sound).pushReaction(PushReaction.POPPED);
+        return p.mapColor(MapColor.PLANT).noCollission().instabreak().sound(sound).pushReaction(PushReaction.DESTROY);
     }
 
     private static DeferredBlock<Block> single(String name, SoundType sound, int light) {
@@ -130,7 +130,7 @@ public final class TheabyssModFlora {
 
     private static DeferredItem<Item> item(DeferredBlock<Block> block, boolean doubleHigh) {
         DeferredItem<Item> item = TheabyssModItems.REGISTRY.registerItem(block.getId().getPath(),
-            p -> doubleHigh ? new DoubleHighBlockItem(block.get(), p) : new BlockItem(block.get(), p), Item.Properties::useBlockDescriptionPrefix);
+            p -> doubleHigh ? new DoubleHighBlockItem(block.get(), p) : new BlockItem(block.get(), p), p -> p);
         ITEMS.add(item);
         ITEM_OF.put(block, item);
         return item;

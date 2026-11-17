@@ -1,7 +1,6 @@
 package net.yezon.theabyss.client.audio;
 
 import com.mojang.blaze3d.audio.Channel;
-import java.lang.reflect.Field;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;
@@ -14,6 +13,7 @@ import net.yezon.theabyss.platform.client.event.sound.PlayStreamingSourceEvent;
 import net.yezon.theabyss.platform.client.event.sound.SoundEngineLoadEvent;
 import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.configuration.ConfigConfiguration;
+import net.yezon.theabyss.mixin.accessor.client.ChannelAccessor;
 import org.lwjgl.openal.AL11;
 import org.lwjgl.openal.ALC10;
 import org.lwjgl.openal.EXTEfx;
@@ -27,7 +27,6 @@ public final class AbyssReverb {
     private static int effect;
     private static float appliedGain = -1.0F;
     private static float appliedDecay = -1.0F;
-    private static Field sourceField;
 
     private AbyssReverb() {
     }
@@ -41,7 +40,7 @@ public final class AbyssReverb {
         } catch (IllegalStateException notLoadedYet) {
             enabled = false;
         }
-        active = enabled && mc.level != null && mc.level.dimension().identifier().toString().equals("theabyss:the_abyss");
+        active = enabled && mc.level != null && mc.level.dimension().location().toString().equals("theabyss:the_abyss");
     }
 
     @SubscribeEvent
@@ -75,7 +74,7 @@ public final class AbyssReverb {
         SoundSource category = sound.getSource();
         boolean reverb = active && !sound.isRelative() && category != SoundSource.MUSIC && category != SoundSource.AMBIENT;
         AL11.alSource3i(source, EXTEfx.AL_AUXILIARY_SEND_FILTER, reverb ? slot : EXTEfx.AL_EFFECTSLOT_NULL, 0, EXTEfx.AL_FILTER_NULL);
-        VeilMuffle.register(source, category);
+        VeilMuffle.register(source, sound);
     }
 
     static boolean available() {
@@ -126,12 +125,8 @@ public final class AbyssReverb {
 
     static int source(Channel channel) {
         try {
-            if (sourceField == null) {
-                sourceField = Channel.class.getDeclaredField("source");
-                sourceField.setAccessible(true);
-            }
-            return sourceField.getInt(channel);
-        } catch (ReflectiveOperationException | RuntimeException e) {
+            return ((ChannelAccessor)(Object)channel).theabyss$source();
+        } catch (RuntimeException | LinkageError e) {
             available = false;
             TheabyssMod.LOGGER.warn("[AbyssReverb] cannot reach the sound source, reverb disabled", e);
             return 0;

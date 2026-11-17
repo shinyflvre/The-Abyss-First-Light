@@ -7,7 +7,7 @@ import net.minecraft.client.sounds.AudioStream;
 import net.minecraft.client.sounds.SoundBufferLibrary;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.client.sounds.WeighedSoundEvents;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 
 final class MuffledSound implements SoundInstance {
@@ -22,23 +22,18 @@ final class MuffledSound implements SoundInstance {
     }
 
     @Override
-    public Identifier getIdentifier() {
-        return this.inner.getIdentifier();
+    public ResourceLocation getLocation() {
+        return this.inner.getLocation();
     }
 
     @Override
-    public WeighedSoundEvents getOrResolve(SoundManager manager) {
-        return this.inner.getOrResolve(manager);
+    public WeighedSoundEvents resolve(SoundManager manager) {
+        return this.inner.resolve(manager);
     }
 
     @Override
     public Sound getSound() {
         return this.inner.getSound();
-    }
-
-    @Override
-    public WeighedSoundEvents getSoundEvent() {
-        return this.inner.getSoundEvent();
     }
 
     @Override
@@ -105,7 +100,7 @@ final class MuffledSound implements SoundInstance {
         return net.yezon.theabyss.platform.services.ClientPlatformHooks.get().soundStream(this.inner, library, sound, looping);
     }
 
-    public CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary library, Identifier id, boolean looping) {
+    public CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary library, ResourceLocation id, boolean looping) {
         return net.yezon.theabyss.platform.services.ClientPlatformHooks.get().audioStream(this.inner, library, id, looping);
     }
 }

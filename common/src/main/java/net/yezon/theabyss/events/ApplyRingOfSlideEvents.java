@@ -28,7 +28,7 @@ public final class ApplyRingOfSlideEvents {
         }
         if (entity.onGround()) {
             if (entity instanceof Player player && !player.level().isClientSide()) {
-                player.sendOverlayMessage(Component.translatable("ring.theabyss.slide.not_in_air"));
+                player.displayClientMessage(Component.translatable("ring.theabyss.slide.not_in_air"), true);
             }
             return;
         }

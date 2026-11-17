@@ -1,6 +1,6 @@
 package net.yezon.theabyss.client.model;
 
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -9,12 +9,12 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 
-public class Modelscorpion<S extends LivingEntityRenderState> extends EntityModel<S> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath("theabyss", "modelscorpion"), "main");
+public class Modelscorpion<T extends Entity> extends HierarchicalModel<T> {
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("theabyss", "modelscorpion"), "main");
     public final ModelPart right_leg4;
     public final ModelPart right_leg3;
     public final ModelPart right_leg2;
@@ -25,8 +25,10 @@ public class Modelscorpion<S extends LivingEntityRenderState> extends EntityMode
     public final ModelPart left_leg;
     public final ModelPart body;
 
+    private final ModelPart root;
+
     public Modelscorpion(ModelPart root) {
-        super(root);
+        this.root = root;
         this.right_leg4 = root.getChild("right_leg4");
         this.right_leg3 = root.getChild("right_leg3");
         this.right_leg2 = root.getChild("right_leg2");
@@ -243,10 +245,8 @@ public class Modelscorpion<S extends LivingEntityRenderState> extends EntityMode
     }
 
     @Override
-    public void setupAnim(S state) {
-        super.setupAnim(state);
-        float limbSwing = state.walkAnimationPos;
-        float limbSwingAmount = state.walkAnimationSpeed;
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.root.getAllParts().forEach(ModelPart::resetPose);
         this.right_leg2.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
         this.left_leg.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
         this.right_leg.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
@@ -255,5 +255,10 @@ public class Modelscorpion<S extends LivingEntityRenderState> extends EntityMode
         this.right_leg3.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
         this.left_leg4.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
         this.right_leg4.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
+    }
+
+    @Override
+    public ModelPart root() {
+        return this.root;
     }
 }

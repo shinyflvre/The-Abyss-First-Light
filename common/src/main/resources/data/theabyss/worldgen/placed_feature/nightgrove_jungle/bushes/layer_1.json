@@ -1,61 +1,63 @@
 {
   "feature": {
     "type": "minecraft:random_selector",
-    "default": {
-      "feature": "theabyss:nightgrove_bush/1",
-      "placement": []
-    },
-    "features": [
-      {
-        "chance": 0.125,
-        "feature": {
-          "feature": "theabyss:nightgrove_bush/5",
-          "placement": []
-        }
+    "config": {
+      "default": {
+        "feature": "theabyss:nightgrove_bush/1",
+        "placement": []
       },
-      {
-        "chance": 0.15,
-        "feature": {
-          "feature": "theabyss:nightgrove_bush/6",
-          "placement": []
+      "features": [
+        {
+          "chance": 0.125,
+          "feature": {
+            "feature": "theabyss:nightgrove_bush/5",
+            "placement": []
+          }
+        },
+        {
+          "chance": 0.15,
+          "feature": {
+            "feature": "theabyss:nightgrove_bush/6",
+            "placement": []
+          }
+        },
+        {
+          "chance": 0.025,
+          "feature": {
+            "feature": "theabyss:nightgrove_bush/4",
+            "placement": []
+          }
+        },
+        {
+          "chance": 0.026,
+          "feature": {
+            "feature": "theabyss:nightgrove_bush/3",
+            "placement": []
+          }
+        },
+        {
+          "chance": 0.1,
+          "feature": {
+            "feature": "theabyss:nightgrove_bush/2",
+            "placement": []
+          }
+        },
+        {
+          "chance": 0.1,
+          "feature": {
+            "feature": "theabyss:nightgrove_bush/1",
+            "placement": []
+          }
+        },
+        {
+          "chance": 0.1,
+          "feature": {
+            "feature": "theabyss:nightgrove_bush/3",
+            "placement": []
+          }
         }
-      },
-      {
-        "chance": 0.025,
-        "feature": {
-          "feature": "theabyss:nightgrove_bush/4",
-          "placement": []
-        }
-      },
-      {
-        "chance": 0.026,
-        "feature": {
-          "feature": "theabyss:nightgrove_bush/3",
-          "placement": []
-        }
-      },
-      {
-        "chance": 0.1,
-        "feature": {
-          "feature": "theabyss:nightgrove_bush/2",
-          "placement": []
-        }
-      },
-      {
-        "chance": 0.1,
-        "feature": {
-          "feature": "theabyss:nightgrove_bush/1",
-          "placement": []
-        }
-      },
-      {
-        "chance": 0.1,
-        "feature": {
-          "feature": "theabyss:nightgrove_bush/3",
-          "placement": []
-        }
-      }
-    ]
+      ]
+    }
   },
   "placement": [
     {

@@ -11,7 +11,7 @@ public class MagicianSpawnEvents {
 
     static boolean isRaining(LevelAccessor world) {
         if (world instanceof ServerLevelAccessor serverWorld) {
-            return serverWorld.getLevel().getWeatherData().isRaining();
+            return serverWorld.getLevel().getLevelData().isRaining();
         }
         return world instanceof Level level && level.isRaining();
     }

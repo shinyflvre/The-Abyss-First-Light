@@ -35,13 +35,13 @@ final class FrostGenAutotest {
             });
         add.add("fg go", () -> {
             command.accept("gamemode spectator @s");
-            command.accept("gamerule spawn_mobs false");
+            command.accept("gamerule doMobSpawning false");
             command.accept("effect give @s minecraft:night_vision 9999 0 true");
             command.accept("execute in theabyss:frost_world run forceload add " + (X - 96) + " " + (Z - 96) + " " + (X + 96) + " " + (Z + 96));
             command.accept("execute in theabyss:frost_world run tp @s " + X + " 260 " + Z + " 45 50");
         }, 900);
         add.add("fg count", () -> onServer(sp -> {
-            ServerLevel level = (ServerLevel)sp.level();
+            ServerLevel level = (ServerLevel)sp.serverLevel();
             Map<String, Integer> counts = new TreeMap<>();
             BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos();
             int floating = 0;
@@ -49,7 +49,7 @@ final class FrostGenAutotest {
             for (int x = X - 96; x < X + 96; x++) {
                 for (int z = Z - 96; z < Z + 96; z++) {
                     int top = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
-                    for (int y = top; y > top - 70 && y > level.getMinY(); y--) {
+                    for (int y = top; y > top - 70 && y > level.getMinBuildHeight(); y--) {
                         var state = level.getBlockState(p.set(x, y, z));
                         if (state.is(Blocks.BLUE_ICE) || state.is(Blocks.PACKED_ICE) || state.is(Blocks.POWDER_SNOW) || state.is(Blocks.ICE)) {
                             counts.merge(BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath(), 1, Integer::sum);
@@ -92,7 +92,7 @@ final class FrostGenAutotest {
         }, 60);
         add.add("fg shot spike", () -> shot.accept("126_frostgen_spike"), 6);
         add.add("fg ground", () -> onServer(sp -> {
-            int y = sp.level().getHeight(Heightmap.Types.MOTION_BLOCKING, X + 30, Z + 30);
+            int y = sp.serverLevel().getHeight(Heightmap.Types.MOTION_BLOCKING, X + 30, Z + 30);
             command.accept("execute in theabyss:frost_world run tp @s " + (X + 30) + " " + (y + 3) + " " + (Z + 30) + " 200 0");
         }), 60);
         add.add("fg shot ground", () -> shot.accept("126_frostgen_ground"), 6);

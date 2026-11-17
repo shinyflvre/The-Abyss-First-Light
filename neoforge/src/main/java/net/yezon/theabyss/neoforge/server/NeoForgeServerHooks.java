@@ -16,7 +16,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.neoforged.neoforge.common.NeoForgeMod;
@@ -33,8 +32,8 @@ public final class NeoForgeServerHooks implements ServerHooks {
     }
 
     @Override
-    public @Nullable ItemStackTemplate getCraftingRemainder(ItemStack stack) {
-        return stack.getCraftingRemainder();
+    public ItemStack getCraftingRemainder(ItemStack stack) {
+        return stack.getCraftingRemainingItem();
     }
 
     @Override
@@ -60,13 +59,13 @@ public final class NeoForgeServerHooks implements ServerHooks {
     @Override
     public ModifiableBiomeInfo.BiomeInfo biomeInfo(Biome biome) {
         net.neoforged.neoforge.common.world.ModifiableBiomeInfo.BiomeInfo info = biome.modifiableBiomeInfo().get();
-        return new ModifiableBiomeInfo.BiomeInfo(info.climateSettings(), info.attributes(), info.effects(), info.generationSettings());
+        return new ModifiableBiomeInfo.BiomeInfo(info.climateSettings(), info.effects(), info.generationSettings(), info.mobSpawnSettings());
     }
 
     @Override
     public void setModifiedBiomeInfo(Biome biome, ModifiableBiomeInfo.BiomeInfo info) {
         net.neoforged.neoforge.common.world.ModifiableBiomeInfo.BiomeInfo modified = new net.neoforged.neoforge.common.world.ModifiableBiomeInfo.BiomeInfo(
-            (Biome.ClimateSettings)info.climateSettings(), info.attributes(), info.effects(), info.generationSettings());
+            (Biome.ClimateSettings)info.climateSettings(), info.effects(), info.generationSettings(), info.mobSpawnSettings());
         try {
             Field field = net.neoforged.neoforge.common.world.ModifiableBiomeInfo.class.getDeclaredField("modifiedBiomeInfo");
             field.setAccessible(true);

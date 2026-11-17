@@ -17,7 +17,6 @@
         19.30026,
         16.03031
       ],
-      "shade": false,
       "rotation": {
         "angle": -45,
         "axis": "z",
@@ -62,7 +61,6 @@
         19.30026,
         16.03031
       ],
-      "shade": false,
       "rotation": {
         "angle": 45,
         "axis": "z",
@@ -107,7 +105,6 @@
         8.05076,
         16.03031
       ],
-      "shade": false,
       "rotation": {
         "angle": 0,
         "axis": "z",
@@ -151,7 +148,6 @@
         16.05026,
         16.03031
       ],
-      "shade": false,
       "rotation": {
         "angle": 0,
         "axis": "z",
@@ -196,7 +192,6 @@
         21.05026,
         4.03081
       ],
-      "shade": false,
       "rotation": {
         "angle": -45,
         "axis": "x",
@@ -241,7 +236,6 @@
         10.94974,
         4.03081
       ],
-      "shade": false,
       "rotation": {
         "angle": 45,
         "axis": "x",
@@ -286,7 +280,6 @@
         21.34316,
         11.08106
       ],
-      "shade": false,
       "rotation": {
         "angle": -22.5,
         "axis": "x",
@@ -331,7 +324,6 @@
         10.65684,
         11.08106
       ],
-      "shade": false,
       "rotation": {
         "angle": 22.5,
         "axis": "x",
@@ -376,7 +368,6 @@
         15.54012,
         15.80455
       ],
-      "shade": false,
       "rotation": {
         "angle": 22.5,
         "axis": "y",
@@ -421,7 +412,6 @@
         15.54012,
         15.80455
       ],
-      "shade": false,
       "rotation": {
         "angle": -22.5,
         "axis": "y",

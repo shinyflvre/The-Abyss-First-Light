@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:abyss_crystal_shard",
-    "c": "theabyss:loran_energy",
-    "b": "theabyss:cobble_stone"
+    "a": {
+      "item": "theabyss:abyss_crystal_shard"
+    },
+    "c": {
+      "item": "theabyss:loran_energy"
+    },
+    "b": {
+      "item": "theabyss:cobble_stone"
+    }
   },
   "pattern": [
     "aca",

@@ -17,7 +17,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
 import net.yezon.theabyss.platform.event.EventBusSubscriber;
@@ -101,19 +100,19 @@ public final class ComeHere {
         TheabyssModVariables.PlayerVariables vars = TheabyssModVariables.getPlayerVariables(player);
         int damageLevel = SomniumUpgrades.level(vars, SomniumUpgrades.Kind.DAMAGE);
         if (damageLevel < LEVEL) {
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.telekinetic.come_here_locked", LEVEL));
+            player.displayClientMessage(Component.translatable("ring.theabyss.telekinetic.come_here_locked", LEVEL), true);
             return;
         }
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         long now = level.getGameTime();
         Long ready = READY.get(player.getUUID());
         if (ready != null && now < ready) {
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.telekinetic.come_here_cooldown", (int)Math.ceil((ready - now) / 20.0)));
+            player.displayClientMessage(Component.translatable("ring.theabyss.telekinetic.come_here_cooldown", (int)Math.ceil((ready - now) / 20.0)), true);
             return;
         }
         LivingEntity target = net.yezon.theabyss.ring.secondary.Aim.creature(level, player, RANGE);
         if (target == null) {
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.telekinetic.no_target"));
+            player.displayClientMessage(Component.translatable("ring.theabyss.telekinetic.no_target"), true);
             return;
         }
         RingCast cast = RingCast.start(level, player, ring, COST, player.getEyePosition());
@@ -128,7 +127,7 @@ public final class ComeHere {
         PULLS.add(new Pull(level, player, target, parry, (float)RingDamage.PARRY.at(vars.ManaDamage)));
         TelekinesisMessage.around(level, player.position(),
             new TelekinesisMessage(parry ? TelekinesisMessage.PULL_PARRY : TelekinesisMessage.PULL, player.getId(), List.of(target.getId())));
-        player.swing(hand(player, ring), SwingAnimation.DEFAULT, true);
+        player.swing(hand(player, ring), true);
         sound(level, player.position(), SoundEvents.CHAIN_PLACE, 1.4F, 0.6F);
         sound(level, player.position(), SoundEvents.TRIDENT_THROW.value(), 1.0F, 0.7F);
         cast.durability(TheabyssModItems.RING_OF_TELEKINETIC.get(), 1).sound("theabyss:spell_of_telekinetic").charge(COST);
@@ -171,7 +170,7 @@ public final class ComeHere {
             sound(pull.level, t.position(), SoundEvents.ANVIL_LAND, 0.4F, 0.7F);
             sound(pull.level, caster.position(), SoundEvents.CHAIN_BREAK, 1.0F, 0.6F);
             FallGuard.protect(t, PULL + GRACE + 60);
-            caster.swing(RingMagic.swingHand(caster), SwingAnimation.DEFAULT, true);
+            caster.swing(RingMagic.swingHand(caster), true);
         }
         if (pull.parry && !pull.struck && age >= arrival() - WINDOW
             && NightbladeParry.consume(caster, age - (arrival() - WINDOW))) {
@@ -190,8 +189,8 @@ public final class ComeHere {
         Vec3 pos = t.position();
         t.setDeltaMovement(want.subtract(pos).scale(age < arrival() ? 0.9 : 0.5));
         t.resetFallDistance();
-        t.needsSync = true;
-        t.syncVelocity = true;
+        t.hasImpulse = true;
+        t.hurtMarked = true;
         if (age < arrival() && (age - latch()) % 4 == 0) {
             sound(pull.level, t.position(), SoundEvents.CHAIN_STEP, 1.0F, 0.6F + (float)k * 0.5F);
         }
@@ -207,15 +206,15 @@ public final class ComeHere {
         ServerPlayer caster = pull.caster;
         LivingEntity t = pull.target;
         Vec3 at = t.getBoundingBox().getCenter();
-        caster.swing(RingMagic.swingHand(caster), SwingAnimation.DEFAULT, true);
-        t.damageCooldownTime = 0;
-        t.hurtServer(level, level.damageSources().indirectMagic(caster, caster), pull.damage);
+        caster.swing(RingMagic.swingHand(caster), true);
+        t.invulnerableTime = 0;
+        t.hurt(level.damageSources().indirectMagic(caster, caster), pull.damage);
         Vec3 away = t.position().subtract(caster.position()).multiply(1.0, 0.0, 1.0);
         away = away.lengthSqr() < 1.0E-4 ? caster.getLookAngle().multiply(1.0, 0.0, 1.0) : away;
         away = away.normalize();
         t.setDeltaMovement(away.x * 1.6, 0.55, away.z * 1.6);
-        t.needsSync = true;
-        t.syncVelocity = true;
+        t.hasImpulse = true;
+        t.hurtMarked = true;
         NightbladeImpactMessage.send(caster, true);
         NightbladeShakeMessage.around(level, at, 16.0, 0.9F, 0.4F);
         RingFx.wave(level, at, 4.5F, 16, Telekinesis.COLOUR);

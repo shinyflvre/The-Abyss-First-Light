@@ -75,7 +75,7 @@ public final class Aim {
         BlockHitResult hit = wall(level, caster, range);
         if (hit.getType() == HitResult.Type.BLOCK) {
             Vec3 at = hit.getLocation();
-            Vec3 back = hit.getDirection().getUnitVec3().scale(0.5);
+            Vec3 back = Vec3.atLowerCornerOf(hit.getDirection().getNormal()).scale(0.5);
             return ground(level, at.add(back), 6);
         }
         return ground(level, hit.getLocation(), 24);

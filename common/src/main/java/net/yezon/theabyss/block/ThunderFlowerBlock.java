@@ -5,7 +5,6 @@ import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.FlowerBlock;
@@ -28,12 +27,12 @@ public class ThunderFlowerBlock extends FlowerBlock {
                 .mapColor(MapColor.PLANT)
                 .sound(SoundType.GRASS)
                 .instabreak()
-                .postProcess((bs, br, bp) -> bp)
-                .emissiveRendering(bs -> true)
+                .hasPostProcess((bs, br, bp) -> true)
+                .emissiveRendering((bs, br, bp) -> true)
                 .lightLevel(s -> 6)
-                .noCollision()
+                .noCollission()
                 .offsetType(OffsetType.XZ)
-                .pushReaction(PushReaction.POPPED)
+                .pushReaction(PushReaction.DESTROY)
         );
     }
 
@@ -44,8 +43,8 @@ public class ThunderFlowerBlock extends FlowerBlock {
     }
 
     @Override
-    protected void entityInside(BlockState blockstate, Level world, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
-        super.entityInside(blockstate, world, pos, entity, effectApplier, isPrecise);
+    protected void entityInside(BlockState blockstate, Level world, BlockPos pos, Entity entity) {
+        super.entityInside(blockstate, world, pos, entity);
         ThunderFlowerEffectEvents.execute(world, pos.getX(), pos.getY(), pos.getZ(), entity);
     }
 }

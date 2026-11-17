@@ -2,7 +2,6 @@ package net.yezon.theabyss.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.SoundType;
@@ -22,13 +21,13 @@ public class LungoRankBlock extends SugarCaneBlock {
                 .randomTicks()
                 .sound(SoundType.WEEPING_VINES)
                 .instabreak()
-                .postProcess((bs, br, bp) -> bp)
-                .emissiveRendering(bs -> true)
+                .hasPostProcess((bs, br, bp) -> true)
+                .emissiveRendering((bs, br, bp) -> true)
                 .lightLevel(s -> 10)
                 .noLootTable()
-                .noCollision()
+                .noCollission()
                 .offsetType(OffsetType.XZ)
-                .pushReaction(PushReaction.POPPED)
+                .pushReaction(PushReaction.DESTROY)
         );
     }
 
@@ -57,6 +56,6 @@ public class LungoRankBlock extends SugarCaneBlock {
 
     @Override
     protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
-        return super.canSurvive(state, level, pos) || level.getBlockState(pos.below()).is(BlockTags.SUPPORTS_VEGETATION);
+        return super.canSurvive(state, level, pos) || AbyssPlantSupport.supportsVegetation(level.getBlockState(pos.below()));
     }
 }

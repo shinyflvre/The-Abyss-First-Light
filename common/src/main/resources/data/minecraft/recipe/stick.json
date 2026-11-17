@@ -1,20 +1,41 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "group": "sticks",
   "key": {
     "#": {
-      "neoforge:ingredient_type": "neoforge:difference",
-      "base": "#minecraft:planks",
+      "type": "neoforge:difference",
+      "base": {
+        "tag": "minecraft:planks"
+      },
       "subtracted": [
-        "theabyss:blaru_planks",
-        "theabyss:nightgrove_planks",
-        "theabyss:bog_planks",
-        "theabyss:sal_planks",
-        "theabyss:slimed_planks",
-        "theabyss:frozen_planks",
-        "theabyss:rena_planks",
-        "theabyss:luna_planks",
-        "theabyss:vigilant_planks"
+        {
+          "item": "theabyss:blaru_planks"
+        },
+        {
+          "item": "theabyss:nightgrove_planks"
+        },
+        {
+          "item": "theabyss:bog_planks"
+        },
+        {
+          "item": "theabyss:sal_planks"
+        },
+        {
+          "item": "theabyss:slimed_planks"
+        },
+        {
+          "item": "theabyss:frozen_planks"
+        },
+        {
+          "item": "theabyss:rena_planks"
+        },
+        {
+          "item": "theabyss:luna_planks"
+        },
+        {
+          "item": "theabyss:vigilant_planks"
+        }
       ]
     }
   },

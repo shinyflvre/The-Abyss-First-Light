@@ -20,12 +20,12 @@ public final class SpeedDash {
     }
 
     static boolean cast(ServerPlayer player, ItemStack ring, TheabyssModVariables.PlayerVariables vars) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         Vec3 dir = Dash.ahead(player);
         SpellFxMessage.around(level, player.position(), SpellFxMessage.DASH, List.of(player.getId()), List.of((double)RingVisuals.SPEED), TICKS);
         RingFx.burst(level, RingVisuals.zap(RingVisuals.SPEED, 0.3F, 6), player.position().add(0.0, 0.3, 0.0), 8, 0.4, 0.08);
         RingVisuals.sound(level, player.position(), SoundEvents.BREEZE_JUMP, 1.4F, 1.4F);
-        var dash = net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.getValue(net.minecraft.resources.Identifier.parse("theabyss:dash"));
+        var dash = net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.get(net.minecraft.resources.ResourceLocation.parse("theabyss:dash"));
         if (dash != null) {
             RingVisuals.sound(level, player.position(), dash, 1.0F, 1.2F);
         }

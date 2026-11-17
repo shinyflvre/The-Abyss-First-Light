@@ -18,7 +18,7 @@ public class ResearchTableHandlerEvents {
         ItemStack stack = menu.slots.get(0).getItem();
         CrystalResearch.Crystal crystal = CrystalResearch.of(stack);
         if (crystal == null) {
-            player.sendOverlayMessage(Component.translatable("note.theabyss.crystal_not_ore"));
+            player.displayClientMessage(Component.translatable("note.theabyss.crystal_not_ore"), true);
             return;
         }
         TheabyssModVariables.PlayerVariables vars = TheabyssModVariables.getPlayerVariables(player);

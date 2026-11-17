@@ -20,7 +20,7 @@ public class PhantomEffectEvents {
             }
 
             if (Math.random() < 0.2 && entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
-                _entity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 100, 1, false, false));
+                _entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 1, false, false));
             }
 
             if (Math.random() < 0.1 && entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {

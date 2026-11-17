@@ -30,9 +30,9 @@ public final class DebugClientCommands {
                         .executes(context -> OreHighlighter.command(true, StringArgumentType.getString(context, "crystal")))))
                 .then(Commands.literal("biomefog").executes(context -> {
                     Minecraft mc = Minecraft.getInstance();
-                    mc.schedule(() -> {
+                    mc.tell(() -> {
                         if (mc.level != null && mc.player != null) {
-                            mc.gui.setScreen(new BiomeColorScreen(BiomeColors.biomeAtCamera(mc)));
+                            mc.setScreen(new BiomeColorScreen(BiomeColors.biomeAtCamera(mc)));
                         }
                     });
                     return 1;

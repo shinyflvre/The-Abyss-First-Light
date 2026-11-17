@@ -1,19 +1,21 @@
 package net.yezon.theabyss.entity;
 
-import com.geckolib.animatable.GeoEntity;
-import com.geckolib.animatable.instance.AnimatableInstanceCache;
-import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.animation.AnimationController;
-import com.geckolib.animation.RawAnimation;
-import com.geckolib.animation.object.PlayState;
-import com.geckolib.animation.state.AnimationTest;
-import com.geckolib.util.GeckoLibUtil;
+
+import net.minecraft.nbt.CompoundTag;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.PlayState;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -31,8 +33,8 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.yezon.theabyss.compat.ValueInput;
+import net.yezon.theabyss.compat.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.event.entity.RegisterSpawnPlacementsEvent;
 
@@ -48,7 +50,7 @@ public class InfectedDragonflyEntity extends Monster implements GeoEntity {
         super(type, world);
         this.xpReward = 0;
         this.setPersistenceRequired();
-        this.moveControl = new FlyingMoveControl<>(this, 10, true);
+        this.moveControl = new FlyingMoveControl(this, 10, true);
     }
 
     @Override
@@ -97,28 +99,30 @@ public class InfectedDragonflyEntity extends Monster implements GeoEntity {
 
     @Override
     public SoundEvent getHurtSound(DamageSource ds) {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.generic.hurt"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.generic.hurt"));
     }
 
     @Override
     public SoundEvent getDeathSound() {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.generic.death"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.generic.death"));
     }
 
     @Override
-    public boolean causeFallDamage(double fallDistance, float damageModifier, DamageSource damageSource) {
+    public boolean causeFallDamage(float fallDistance, float damageModifier, DamageSource damageSource) {
         return false;
     }
 
     @Override
-    protected void addAdditionalSaveData(ValueOutput output) {
-        super.addAdditionalSaveData(output);
+    public void addAdditionalSaveData(CompoundTag outputTag) {
+        ValueOutput output = ValueOutput.of(outputTag, this.registryAccess());
+        super.addAdditionalSaveData(output.tag());
         output.putString("Texture", this.getTexture());
     }
 
     @Override
-    protected void readAdditionalSaveData(ValueInput input) {
-        super.readAdditionalSaveData(input);
+    public void readAdditionalSaveData(CompoundTag inputTag) {
+        ValueInput input = ValueInput.of(inputTag, this.registryAccess());
+        super.readAdditionalSaveData(input.tag());
         input.getString("Texture").ifPresent(this::setTexture);
     }
 
@@ -159,19 +163,19 @@ public class InfectedDragonflyEntity extends Monster implements GeoEntity {
         this.entityData.set(ANIMATION, animation);
     }
 
-    private PlayState movementPredicate(AnimationTest<InfectedDragonflyEntity> state) {
+    private PlayState movementPredicate(AnimationState<InfectedDragonflyEntity> state) {
         return this.animationEvents.equals("empty") ? state.setAndContinue(IDLE) : PlayState.STOP;
     }
 
-    private PlayState eventsPredicate(AnimationTest<InfectedDragonflyEntity> state) {
+    private PlayState eventsPredicate(AnimationState<InfectedDragonflyEntity> state) {
         if (this.animationEvents.equals("empty")) {
             return PlayState.STOP;
         }
 
-        AnimationController<InfectedDragonflyEntity> controller = state.controller();
+        AnimationController<InfectedDragonflyEntity> controller = state.getController();
         if (controller.hasAnimationFinished()) {
             this.animationEvents = "empty";
-            controller.reset();
+            controller.forceAnimationReset();
             return PlayState.STOP;
         }
 
@@ -181,8 +185,8 @@ public class InfectedDragonflyEntity extends Monster implements GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<InfectedDragonflyEntity>("movement", 4, this::movementPredicate));
-        controllers.add(new AnimationController<InfectedDragonflyEntity>("Events", 4, this::eventsPredicate));
+        controllers.add(new AnimationController<InfectedDragonflyEntity>(this, "movement", 4, this::movementPredicate));
+        controllers.add(new AnimationController<InfectedDragonflyEntity>(this, "Events", 4, this::eventsPredicate));
     }
 
     @Override

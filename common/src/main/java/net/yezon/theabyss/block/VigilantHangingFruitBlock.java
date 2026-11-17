@@ -10,14 +10,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.yezon.theabyss.block.hooks.ClimbableBlock;
 import net.yezon.theabyss.block.hooks.FlammableBlock;
 import net.yezon.theabyss.events.BreakVinesEvents;
-import org.jspecify.annotations.Nullable;
 
 public class VigilantHangingFruitBlock extends Block implements FlammableBlock, ClimbableBlock {
     public VigilantHangingFruitBlock(BlockBehaviour.Properties properties) {
@@ -26,16 +24,16 @@ public class VigilantHangingFruitBlock extends Block implements FlammableBlock, 
                 .sound(SoundType.GRASS)
                 .strength(1.0F, 10.0F)
                 .lightLevel(s -> 10)
-                .noCollision()
+                .noCollission()
                 .noOcclusion()
-                .postProcess((bs, br, bp) -> bp)
-                .emissiveRendering(bs -> true)
+                .hasPostProcess((bs, br, bp) -> true)
+                .emissiveRendering((bs, br, bp) -> true)
                 .isRedstoneConductor((bs, br, bp) -> false)
         );
     }
 
     @Override
-    protected boolean propagatesSkylightDown(BlockState state) {
+    protected boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
         return true;
     }
 
@@ -60,8 +58,8 @@ public class VigilantHangingFruitBlock extends Block implements FlammableBlock, 
     }
 
     @Override
-    protected void neighborChanged(BlockState blockstate, Level world, BlockPos pos, Block neighborBlock, @Nullable Orientation orientation, boolean moving) {
-        super.neighborChanged(blockstate, world, pos, neighborBlock, orientation, moving);
+    protected void neighborChanged(BlockState blockstate, Level world, BlockPos pos, Block neighborBlock, BlockPos fromPos, boolean moving) {
+        super.neighborChanged(blockstate, world, pos, neighborBlock, fromPos, moving);
         BreakVinesEvents.execute(world, pos.getX(), pos.getY(), pos.getZ());
     }
 }

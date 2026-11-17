@@ -12,79 +12,91 @@
           "type": "minecraft:item",
           "name": "theabyss:phantom_soul_item",
           "weight": 20,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 4
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 4
+              }
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "theabyss:phantom_essence",
           "weight": 18,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 3
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 3
+              }
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "theabyss:pointed_abyss_dripstone",
           "weight": 14,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 6
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 6
+              }
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "theabyss:stone_rackle",
           "weight": 12,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 4,
-              "max": 12
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 4,
+                "max": 12
+              }
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "theabyss:unstable_obsidian",
           "weight": 10,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 4
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 4
+              }
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "theabyss:bottle_of_somnium",
           "weight": 12,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 2
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
             }
-          }
+          ]
         }
       ]
     },
@@ -99,27 +111,31 @@
           "type": "minecraft:item",
           "name": "theabyss:abyss_crystal_shard",
           "weight": 12,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 3
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 3
+              }
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "theabyss:hollow_crystal_shard",
           "weight": 12,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 3
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 3
+              }
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
@@ -130,14 +146,16 @@
           "type": "minecraft:item",
           "name": "theabyss:phantom_ingot",
           "weight": 8,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 2
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
@@ -148,22 +166,24 @@
           "type": "minecraft:item",
           "name": "theabyss:phantom_lantern",
           "weight": 8,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 2
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "theabyss:phantom_sword",
           "weight": 3,
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_damage",
+              "function": "minecraft:set_damage",
               "damage": {
                 "type": "minecraft:uniform",
                 "min": 0.35,
@@ -171,11 +191,13 @@
               }
             },
             {
-              "type": "minecraft:enchant_randomly",
-              "condition": {
-                "type": "minecraft:random_chance",
-                "chance": 0.4
-              }
+              "function": "minecraft:enchant_randomly",
+              "conditions": [
+                {
+                  "condition": "minecraft:random_chance",
+                  "chance": 0.4
+                }
+              ]
             }
           ]
         },
@@ -183,9 +205,9 @@
           "type": "minecraft:item",
           "name": "theabyss:phantom_armor_helmet",
           "weight": 2,
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_damage",
+              "function": "minecraft:set_damage",
               "damage": {
                 "type": "minecraft:uniform",
                 "min": 0.35,
@@ -193,11 +215,13 @@
               }
             },
             {
-              "type": "minecraft:enchant_randomly",
-              "condition": {
-                "type": "minecraft:random_chance",
-                "chance": 0.4
-              }
+              "function": "minecraft:enchant_randomly",
+              "conditions": [
+                {
+                  "condition": "minecraft:random_chance",
+                  "chance": 0.4
+                }
+              ]
             }
           ]
         },
@@ -205,9 +229,9 @@
           "type": "minecraft:item",
           "name": "theabyss:phantom_armor_chestplate",
           "weight": 2,
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_damage",
+              "function": "minecraft:set_damage",
               "damage": {
                 "type": "minecraft:uniform",
                 "min": 0.35,
@@ -215,11 +239,13 @@
               }
             },
             {
-              "type": "minecraft:enchant_randomly",
-              "condition": {
-                "type": "minecraft:random_chance",
-                "chance": 0.4
-              }
+              "function": "minecraft:enchant_randomly",
+              "conditions": [
+                {
+                  "condition": "minecraft:random_chance",
+                  "chance": 0.4
+                }
+              ]
             }
           ]
         },
@@ -227,9 +253,9 @@
           "type": "minecraft:item",
           "name": "theabyss:phantom_armor_leggings",
           "weight": 2,
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_damage",
+              "function": "minecraft:set_damage",
               "damage": {
                 "type": "minecraft:uniform",
                 "min": 0.35,
@@ -237,11 +263,13 @@
               }
             },
             {
-              "type": "minecraft:enchant_randomly",
-              "condition": {
-                "type": "minecraft:random_chance",
-                "chance": 0.4
-              }
+              "function": "minecraft:enchant_randomly",
+              "conditions": [
+                {
+                  "condition": "minecraft:random_chance",
+                  "chance": 0.4
+                }
+              ]
             }
           ]
         },
@@ -249,9 +277,9 @@
           "type": "minecraft:item",
           "name": "theabyss:phantom_armor_boots",
           "weight": 2,
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_damage",
+              "function": "minecraft:set_damage",
               "damage": {
                 "type": "minecraft:uniform",
                 "min": 0.35,
@@ -259,11 +287,13 @@
               }
             },
             {
-              "type": "minecraft:enchant_randomly",
-              "condition": {
-                "type": "minecraft:random_chance",
-                "chance": 0.4
-              }
+              "function": "minecraft:enchant_randomly",
+              "conditions": [
+                {
+                  "condition": "minecraft:random_chance",
+                  "chance": 0.4
+                }
+              ]
             }
           ]
         }
@@ -280,11 +310,13 @@
           "type": "minecraft:item",
           "name": "theabyss:abyss_enchanted_book",
           "weight": 25,
-          "modifier": {
-            "type": "minecraft:enchant_randomly",
-            "options": "#theabyss:abyss_books",
-            "only_compatible": false
-          }
+          "functions": [
+            {
+              "function": "minecraft:enchant_randomly",
+              "options": "#theabyss:abyss_books",
+              "only_compatible": false
+            }
+          ]
         }
       ]
     },

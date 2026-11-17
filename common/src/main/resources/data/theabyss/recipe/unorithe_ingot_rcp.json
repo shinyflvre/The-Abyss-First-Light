@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:fixed_bone",
-    "b": "minecraft:netherite_ingot",
-    "c": "theabyss:phantom_ingot"
+    "a": {
+      "item": "theabyss:fixed_bone"
+    },
+    "b": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "c": {
+      "item": "theabyss:phantom_ingot"
+    }
   },
   "pattern": [
     "aaa",

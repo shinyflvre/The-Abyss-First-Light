@@ -3,7 +3,9 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 1,
-  "ingredient": "theabyss:fish",
+  "ingredient": {
+    "item": "theabyss:fish"
+  },
   "result": {
     "id": "theabyss:cooked_fish"
   }

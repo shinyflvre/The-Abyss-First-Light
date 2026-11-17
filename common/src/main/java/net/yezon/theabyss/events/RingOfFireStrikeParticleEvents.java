@@ -11,7 +11,7 @@ public class RingOfFireStrikeParticleEvents {
 
     public static void execute(LevelAccessor world, Entity bolt) {
         if (world instanceof ServerLevel level && bolt != null) {
-            if (bolt.entityTags().contains(SCATTER)) {
+            if (bolt.getTags().contains(SCATTER)) {
                 Entity owner = bolt instanceof net.minecraft.world.entity.projectile.Projectile p ? p.getOwner() : null;
                 if (owner == null || owner.distanceToSqr(bolt) > 25.0) {
                     net.yezon.theabyss.ring.fx.RingFx.line(level, RingVisuals.flame(RingVisuals.FIRE, 0.16F, 8), new Vec3(bolt.xo, bolt.yo, bolt.zo), bolt.position(), 0.9);

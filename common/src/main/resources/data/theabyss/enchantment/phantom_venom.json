@@ -31,14 +31,14 @@
           "max_amplifier": 0.0
         },
         "requirements": {
-          "type": "minecraft:all_of",
+          "condition": "minecraft:all_of",
           "terms": [
             {
-              "type": "minecraft:random_chance",
+              "condition": "minecraft:random_chance",
               "chance": 0.25
             },
             {
-              "type": "minecraft:damage_source_properties",
+              "condition": "minecraft:damage_source_properties",
               "predicate": {
                 "is_direct": true
               }

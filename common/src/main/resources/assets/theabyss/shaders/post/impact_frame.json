@@ -1,0 +1,36 @@
+{
+  "targets": [
+    "swap"
+  ],
+  "passes": [
+    {
+      "name": "theabyss:impact_frame",
+      "intarget": "minecraft:main",
+      "outtarget": "swap",
+      "auxtargets": [
+        {
+          "name": "InSampler",
+          "id": "minecraft:main"
+        },
+        {
+          "name": "StateSampler",
+          "id": "theabyss:fx_state",
+          "width": 176,
+          "height": 1,
+          "bilinear": false
+        }
+      ]
+    },
+    {
+      "name": "theabyss:copy",
+      "intarget": "swap",
+      "outtarget": "minecraft:main",
+      "auxtargets": [
+        {
+          "name": "InSampler",
+          "id": "swap"
+        }
+      ]
+    }
+  ]
+}

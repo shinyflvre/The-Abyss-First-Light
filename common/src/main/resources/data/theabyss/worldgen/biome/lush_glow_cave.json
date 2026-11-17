@@ -1,90 +1,38 @@
 {
-  "attributes": {
-    "minecraft:audio/ambient_sounds": {
-      "loop": "theabyss:blaru_forest",
-      "mood": {
-        "block_search_extent": 2,
-        "offset": 8,
-        "sound": "theabyss:random_fx",
-        "tick_delay": 300
-      }
-    },
-    "minecraft:audio/background_music": {
-      "default": {
-        "max_delay": 24000,
-        "min_delay": 12000,
-        "sound": "theabyss:theabyss_dimension_music",
-        "replace_current_music": true
-      }
-    },
-    "minecraft:visual/ambient_particles": {
-      "argument": [
-        {
-          "particle": {
-            "type": "theabyss:spurs_fx"
-          },
-          "probability": 0.03
-        }
-      ],
-      "modifier": "append"
-    },
-    "minecraft:visual/fog_color": "#00272f",
-    "minecraft:visual/water_fog_color": "#003333",
-    "minecraft:gameplay/natural_mob_spawns": {
-      "argument": {
-        "spawn_costs": {},
-        "spawns_by_category": {
-          "ambient": [
-            {
-              "type": "minecraft:bat",
-              "count": 8,
-              "weight": 10
-            }
-          ],
-          "axolotls": [
-            {
-              "type": "minecraft:axolotl",
-              "count": {
-                "type": "minecraft:uniform",
-                "max_inclusive": 6,
-                "min_inclusive": 4
-              },
-              "weight": 10
-            }
-          ],
-          "underground_water_creature": [
-            {
-              "type": "minecraft:glow_squid",
-              "count": {
-                "type": "minecraft:uniform",
-                "max_inclusive": 6,
-                "min_inclusive": 4
-              },
-              "weight": 10
-            }
-          ],
-          "water_ambient": [
-            {
-              "type": "minecraft:tropical_fish",
-              "count": 8,
-              "weight": 25
-            }
-          ]
-        }
-      },
-      "modifier": "overlay"
-    }
+  "carvers": {
+    "air": [
+      "minecraft:cave",
+      "minecraft:cave_extra_underground",
+      "minecraft:canyon"
+    ]
   },
-  "carvers": [
-    "minecraft:cave",
-    "minecraft:cave_extra_underground",
-    "minecraft:canyon"
-  ],
   "downfall": 0.5,
   "effects": {
-    "water_color": "#1e8fb0",
-    "grass_color": "#14878a",
-    "foliage_color": "#16667a"
+    "fog_color": 10031,
+    "sky_color": 0,
+    "water_color": 2002864,
+    "water_fog_color": 13107,
+    "foliage_color": 1468026,
+    "grass_color": 1345418,
+    "particle": {
+      "options": {
+        "type": "theabyss:spurs_fx"
+      },
+      "probability": 0.03
+    },
+    "ambient_sound": "theabyss:blaru_forest",
+    "mood_sound": {
+      "block_search_extent": 2,
+      "offset": 8,
+      "sound": "theabyss:random_fx",
+      "tick_delay": 300
+    },
+    "music": {
+      "max_delay": 24000,
+      "min_delay": 12000,
+      "replace_current_music": true,
+      "sound": "theabyss:theabyss_dimension_music"
+    }
   },
   "features": [
     [],
@@ -112,5 +60,40 @@
     []
   ],
   "has_precipitation": false,
+  "spawn_costs": {},
+  "spawners": {
+    "ambient": [
+      {
+        "type": "minecraft:bat",
+        "maxCount": 8,
+        "minCount": 8,
+        "weight": 10
+      }
+    ],
+    "axolotls": [
+      {
+        "type": "minecraft:axolotl",
+        "maxCount": 6,
+        "minCount": 4,
+        "weight": 10
+      }
+    ],
+    "underground_water_creature": [
+      {
+        "type": "minecraft:glow_squid",
+        "maxCount": 6,
+        "minCount": 4,
+        "weight": 10
+      }
+    ],
+    "water_ambient": [
+      {
+        "type": "minecraft:tropical_fish",
+        "maxCount": 8,
+        "minCount": 8,
+        "weight": 25
+      }
+    ]
+  },
   "temperature": 0.5
 }

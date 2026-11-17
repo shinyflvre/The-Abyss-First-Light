@@ -1,11 +1,9 @@
 package net.yezon.theabyss.block.flora;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -14,10 +12,9 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.VegetationBlock;
+import net.minecraft.world.level.block.BushBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,7 +22,9 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import org.jspecify.annotations.Nullable;
 
-public class TriplePlantBlock extends VegetationBlock {
+public class TriplePlantBlock extends BushBlock {
+    public static final MapCodec<TriplePlantBlock> CODEC = simpleCodec(TriplePlantBlock::new);
+
     public enum Part implements StringRepresentable {
         LOWER("lower"),
         MIDDLE("middle"),
@@ -55,16 +54,7 @@ public class TriplePlantBlock extends VegetationBlock {
     }
 
     @Override
-    protected BlockState updateShape(
-        BlockState state,
-        LevelReader level,
-        ScheduledTickAccess ticks,
-        BlockPos pos,
-        Direction directionToNeighbour,
-        BlockPos neighbourPos,
-        BlockState neighbourState,
-        RandomSource random
-    ) {
+    protected BlockState updateShape(BlockState state, Direction directionToNeighbour, BlockState neighbourState, LevelAccessor level, BlockPos pos, BlockPos neighbourPos) {
         Part part = state.getValue(PART);
         if (directionToNeighbour == Direction.UP && part != Part.UPPER) {
             Part expected = part == Part.LOWER ? Part.MIDDLE : Part.UPPER;
@@ -72,14 +62,14 @@ public class TriplePlantBlock extends VegetationBlock {
                 return Blocks.AIR.defaultBlockState();
             }
         }
-        return super.updateShape(state, level, ticks, pos, directionToNeighbour, neighbourPos, neighbourState, random);
+        return super.updateShape(state, directionToNeighbour, neighbourState, level, pos, neighbourPos);
     }
 
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPos pos = context.getClickedPos();
         Level level = context.getLevel();
-        return pos.getY() < level.getMaxY() - 1
+        return pos.getY() < level.getMaxBuildHeight() - 2
             && level.getBlockState(pos.above()).canBeReplaced(context)
             && level.getBlockState(pos.above(2)).canBeReplaced(context)
             ? super.getStateForPlacement(context)
@@ -103,7 +93,7 @@ public class TriplePlantBlock extends VegetationBlock {
         return below.is(this) && below.getValue(PART) == needed;
     }
 
-    public static void placeAt(LevelAccessor level, BlockState state, BlockPos lowerPos, @Block.UpdateFlags int updateType) {
+    public static void placeAt(LevelAccessor level, BlockState state, BlockPos lowerPos, int updateType) {
         level.setBlock(lowerPos, state.setValue(PART, Part.LOWER), updateType);
         level.setBlock(lowerPos.above(), state.setValue(PART, Part.MIDDLE), updateType);
         level.setBlock(lowerPos.above(2), state.setValue(PART, Part.UPPER), updateType);
@@ -112,7 +102,7 @@ public class TriplePlantBlock extends VegetationBlock {
     @Override
     public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         if (!level.isClientSide()) {
-            if (player.preventsBlockDrops()) {
+            if (player.getAbilities().instabuild) {
                 preventDropFromLowerPart(level, pos, state, player);
             } else {
                 dropResources(state, level, pos, null, player, player.getMainHandItem());
@@ -122,7 +112,7 @@ public class TriplePlantBlock extends VegetationBlock {
     }
 
     @Override
-    public void playerDestroy(ServerLevel level, ServerPlayer player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack destroyedWith) {
+    public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack destroyedWith) {
         super.playerDestroy(level, player, pos, Blocks.AIR.defaultBlockState(), blockEntity, destroyedWith);
     }
 
@@ -147,5 +137,10 @@ public class TriplePlantBlock extends VegetationBlock {
     @Override
     protected long getSeed(BlockState state, BlockPos pos) {
         return Mth.getSeed(pos.getX(), pos.below(state.getValue(PART).height()).getY(), pos.getZ());
+    }
+
+    @Override
+    protected MapCodec<? extends TriplePlantBlock> codec() {
+        return CODEC;
     }
 }

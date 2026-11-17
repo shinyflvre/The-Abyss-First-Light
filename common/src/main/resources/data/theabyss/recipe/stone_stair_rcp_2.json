@@ -1,6 +1,8 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": "theabyss:stone",
+  "ingredient": {
+    "item": "theabyss:stone"
+  },
   "result": {
     "id": "theabyss:stone_stairs"
   }

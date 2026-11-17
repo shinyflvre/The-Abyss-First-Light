@@ -1,19 +1,21 @@
 {
   "feature": {
     "type": "minecraft:random_selector",
-    "default": {
-      "feature": "theabyss:cave_spring/cave/normal",
-      "placement": []
-    },
-    "features": [
-      {
-        "chance": 0.5,
-        "feature": {
-          "feature": "theabyss:cave_spring/cave/normal",
-          "placement": []
+    "config": {
+      "default": {
+        "feature": "theabyss:cave_spring/cave/normal",
+        "placement": []
+      },
+      "features": [
+        {
+          "chance": 0.5,
+          "feature": {
+            "feature": "theabyss:cave_spring/cave/normal",
+            "placement": []
+          }
         }
-      }
-    ]
+      ]
+    }
   },
   "placement": [
     {
@@ -48,10 +50,9 @@
       "max_steps": 12
     },
     {
-      "type": "minecraft:offset",
-      "x": 0,
-      "y": 1,
-      "z": 0
+      "type": "minecraft:random_offset",
+      "xz_spread": 0,
+      "y_spread": 1
     },
     {
       "type": "minecraft:biome"

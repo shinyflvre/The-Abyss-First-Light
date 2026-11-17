@@ -1,7 +1,7 @@
 package net.yezon.theabyss.entity;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -9,7 +9,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.projectile.ItemSupplier;
-import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
@@ -87,7 +87,7 @@ public class ShurikenExplosiveProjectileEntity extends AbstractArrow implements 
     @Override
     public void tick() {
         super.tick();
-        if (this.isInGround()) {
+        if (this.inGround) {
             this.discard();
         }
     }
@@ -113,7 +113,7 @@ public class ShurikenExplosiveProjectileEntity extends AbstractArrow implements 
             entity.getX(),
             entity.getY(),
             entity.getZ(),
-            BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.arrow.shoot")),
+            BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.arrow.shoot")),
             SoundSource.PLAYERS,
             1.0F,
             1.0F / (random.nextFloat() * 0.5F + 1.0F) + power / 2.0F
@@ -139,7 +139,7 @@ public class ShurikenExplosiveProjectileEntity extends AbstractArrow implements 
             entity.getX(),
             entity.getY(),
             entity.getZ(),
-            BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.arrow.shoot")),
+            BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.arrow.shoot")),
             SoundSource.PLAYERS,
             1.0F,
             1.0F / (RandomSource.create().nextFloat() * 0.5F + 1.0F)

@@ -1,0 +1,67 @@
+{
+  "values": {
+    "theabyss:blaru_shelf": {
+      "burn_time": 300
+    },
+    "theabyss:blaru_stick": {
+      "burn_time": 100
+    },
+    "theabyss:bog_shelf": {
+      "burn_time": 300
+    },
+    "theabyss:bog_stick": {
+      "burn_time": 100
+    },
+    "theabyss:frozen_shelf": {
+      "burn_time": 300
+    },
+    "theabyss:frozen_stick": {
+      "burn_time": 100
+    },
+    "theabyss:loran": {
+      "burn_time": 2600
+    },
+    "theabyss:loran_ore": {
+      "burn_time": 6800
+    },
+    "theabyss:luna_shelf": {
+      "burn_time": 300
+    },
+    "theabyss:luna_stick": {
+      "burn_time": 100
+    },
+    "theabyss:nightgrove_longbow": {
+      "burn_time": 300
+    },
+    "theabyss:nightgrove_shelf": {
+      "burn_time": 300
+    },
+    "theabyss:nightgrove_stick": {
+      "burn_time": 100
+    },
+    "theabyss:rena_shelf": {
+      "burn_time": 300
+    },
+    "theabyss:rena_stick": {
+      "burn_time": 100
+    },
+    "theabyss:sal_shelf": {
+      "burn_time": 300
+    },
+    "theabyss:sal_stick": {
+      "burn_time": 100
+    },
+    "theabyss:slimed_shelf": {
+      "burn_time": 300
+    },
+    "theabyss:slimed_stick": {
+      "burn_time": 100
+    },
+    "theabyss:vigilant_shelf": {
+      "burn_time": 300
+    },
+    "theabyss:vigilant_stick": {
+      "burn_time": 100
+    }
+  }
+}

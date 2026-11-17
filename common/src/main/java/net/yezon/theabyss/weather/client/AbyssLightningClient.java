@@ -1,16 +1,13 @@
 package net.yezon.theabyss.weather.client;
 
-import java.lang.reflect.Field;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.state.LightmapRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LightLayer;
 import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.EventPriority;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
 import net.yezon.theabyss.platform.event.EventBusSubscriber;
-import net.yezon.theabyss.platform.client.event.ExtractLevelRenderStateEvent;
 import net.yezon.theabyss.platform.client.event.RenderFrameEvent;
 import net.yezon.theabyss.platform.client.event.ViewportEvent;
 import net.yezon.theabyss.TheabyssMod;
@@ -23,8 +20,6 @@ public final class AbyssLightningClient {
     private static final Vector3f LIGHT_COLOUR = new Vector3f(1.0F, 0x5E / 255.0F, 0x5E / 255.0F);
 
     private static float flash;
-    private static Field skyFlashField;
-    private static boolean reflectionFailed;
 
     private AbyssLightningClient() {
     }
@@ -41,19 +36,15 @@ public final class AbyssLightningClient {
             flash = 0.0F;
             return;
         }
-        BlockPos camera = mc.gameRenderer.mainCamera().blockPosition();
+        BlockPos camera = mc.gameRenderer.getMainCamera().getBlockPosition();
         float aboveGround = level.getBrightness(LightLayer.SKY, camera) / 15.0F;
         flash = aboveGround;
     }
 
-    @SubscribeEvent
-    public static void onExtractLevel(ExtractLevelRenderStateEvent event) {
-        LightmapRenderState lightmap = Minecraft.getInstance().gameRenderer.gameRenderState().lightmapRenderState;
-        if (flash <= 0.0F || !lightmap.needsUpdate) {
-            return;
+    public static void tintLightmap(Vector3f colour) {
+        if (flash > 0.0F) {
+            colour.lerp(LIGHT_COLOUR, flash);
         }
-        lightmap.ambientColor = new Vector3f(lightmap.ambientColor).lerp(LIGHT_COLOUR, flash);
-        lightmap.skyLightColor = new Vector3f(lightmap.skyLightColor).lerp(LIGHT_COLOUR, flash);
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
@@ -67,19 +58,6 @@ public final class AbyssLightningClient {
     }
 
     private static int skyFlashTime(ClientLevel level) {
-        if (reflectionFailed) {
-            return 0;
-        }
-        try {
-            if (skyFlashField == null) {
-                skyFlashField = ClientLevel.class.getDeclaredField("skyFlashTime");
-                skyFlashField.setAccessible(true);
-            }
-            return skyFlashField.getInt(level);
-        } catch (ReflectiveOperationException | RuntimeException e) {
-            reflectionFailed = true;
-            TheabyssMod.LOGGER.warn("[AbyssLightning] cannot read the sky flash, lightning colour disabled", e);
-            return 0;
-        }
+        return level.getSkyFlashTime();
     }
 }

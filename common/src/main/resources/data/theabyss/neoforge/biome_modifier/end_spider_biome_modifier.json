@@ -9,11 +9,8 @@
   ],
   "spawners": {
     "type": "theabyss:end_spider",
-    "weight": 8,
-    "count": {
-      "type": "minecraft:uniform",
-      "max_inclusive": 4,
-      "min_inclusive": 2
-    }
+    "maxCount": 4,
+    "minCount": 2,
+    "weight": 8
   }
 }

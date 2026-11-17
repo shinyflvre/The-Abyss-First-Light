@@ -12,7 +12,7 @@ public class UnoritheArmorBootsAbilityEvents {
             if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
                 _entity.addEffect(
                     new MobEffectInstance(
-                        MobEffects.JUMP_BOOST,
+                        MobEffects.JUMP,
                         60,
                         (int)(
                             0.0

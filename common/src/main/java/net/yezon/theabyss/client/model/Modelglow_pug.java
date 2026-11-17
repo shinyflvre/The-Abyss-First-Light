@@ -1,6 +1,6 @@
 package net.yezon.theabyss.client.model;
 
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -9,12 +9,12 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 
-public class Modelglow_pug<S extends LivingEntityRenderState> extends EntityModel<S> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath("theabyss", "modelglow_pug"), "main");
+public class Modelglow_pug<T extends Entity> extends HierarchicalModel<T> {
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("theabyss", "modelglow_pug"), "main");
     public final ModelPart LeftLeg2;
     public final ModelPart LeftLeg1;
     public final ModelPart RightLeg2;
@@ -22,8 +22,10 @@ public class Modelglow_pug<S extends LivingEntityRenderState> extends EntityMode
     public final ModelPart MushCap;
     public final ModelPart bb_main;
 
+    private final ModelPart root;
+
     public Modelglow_pug(ModelPart root) {
-        super(root);
+        this.root = root;
         this.LeftLeg2 = root.getChild("LeftLeg2");
         this.LeftLeg1 = root.getChild("LeftLeg1");
         this.RightLeg2 = root.getChild("RightLeg2");
@@ -78,13 +80,16 @@ public class Modelglow_pug<S extends LivingEntityRenderState> extends EntityMode
     }
 
     @Override
-    public void setupAnim(S state) {
-        super.setupAnim(state);
-        float limbSwing = state.walkAnimationPos;
-        float limbSwingAmount = state.walkAnimationSpeed;
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.root.getAllParts().forEach(ModelPart::resetPose);
         this.RightLeg2.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
         this.LeftLeg2.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
         this.RightLeg1.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
         this.LeftLeg1.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
+    }
+
+    @Override
+    public ModelPart root() {
+        return this.root;
     }
 }

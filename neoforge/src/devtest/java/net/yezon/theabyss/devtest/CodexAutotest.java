@@ -31,6 +31,6 @@ final class CodexAutotest {
             add.add("codex " + v[0] + " " + v[1], () -> CodexScreen.openEntry(v[0], Integer.parseInt(v[1])), 20);
             add.add("codex shot " + v[0] + " " + v[1], () -> shot.accept("97_codex_" + v[0] + "_" + v[1]), 10);
         }
-        add.add("codex close", () -> mc.gui.setScreen(null), 5);
+        add.add("codex close", () -> mc.setScreen(null), 5);
     }
 }

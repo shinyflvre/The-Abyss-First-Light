@@ -61,7 +61,7 @@ public class TheAbyssDimPortalShape {
     }
 
     private @Nullable BlockPos calculateBottomLeft(BlockPos pos) {
-        int minY = Math.max(this.level.getMinY(), pos.getY() - MAX_HEIGHT);
+        int minY = Math.max(this.level.getMinBuildHeight(), pos.getY() - MAX_HEIGHT);
 
         while (pos.getY() > minY && isEmpty(this.level.getBlockState(pos.below()))) {
             pos = pos.below();

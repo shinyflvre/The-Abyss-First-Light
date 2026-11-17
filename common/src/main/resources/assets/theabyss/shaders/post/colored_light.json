@@ -1,0 +1,80 @@
+{
+  "targets": [
+    "surface",
+    "swap"
+  ],
+  "passes": [
+    {
+      "name": "theabyss:colored_light_surface",
+      "intarget": "minecraft:main",
+      "outtarget": "surface",
+      "auxtargets": [
+        {
+          "name": "DepthSampler",
+          "id": "minecraft:main:depth"
+        },
+        {
+          "name": "StateSampler",
+          "id": "theabyss:fx_state",
+          "width": 176,
+          "height": 1,
+          "bilinear": false
+        },
+        {
+          "name": "VolumeASampler",
+          "id": "theabyss:light_volume",
+          "width": 768,
+          "height": 576,
+          "bilinear": true
+        },
+        {
+          "name": "VolumeBSampler",
+          "id": "theabyss:light_volume_b",
+          "width": 768,
+          "height": 576,
+          "bilinear": true
+        }
+      ]
+    },
+    {
+      "name": "theabyss:colored_light",
+      "intarget": "minecraft:main",
+      "outtarget": "swap",
+      "auxtargets": [
+        {
+          "name": "InSampler",
+          "id": "minecraft:main"
+        },
+        {
+          "name": "SurfaceSampler",
+          "id": "surface"
+        },
+        {
+          "name": "StateSampler",
+          "id": "theabyss:fx_state",
+          "width": 176,
+          "height": 1,
+          "bilinear": false
+        },
+        {
+          "name": "HandSampler",
+          "id": "theabyss:hand_depth",
+          "width": 1,
+          "height": 1,
+          "bilinear": false
+        }
+      ]
+    },
+    {
+      "name": "theabyss:copy",
+      "intarget": "swap",
+      "outtarget": "minecraft:main",
+      "auxtargets": [
+        {
+          "name": "InSampler",
+          "id": "swap"
+        }
+      ]
+    }
+  ]
+}

@@ -13,7 +13,7 @@ import java.util.function.UnaryOperator;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
@@ -29,8 +29,8 @@ public class DeferredRegister<T> {
 
     private final ResourceKey<? extends Registry<T>> registryKey;
     private final String namespace;
-    private final Map<DeferredHolder<T, ? extends T>, Function<Identifier, ? extends T>> entries = new LinkedHashMap<>();
-    private final Map<Identifier, Identifier> aliases = new LinkedHashMap<>();
+    private final Map<DeferredHolder<T, ? extends T>, Function<ResourceLocation, ? extends T>> entries = new LinkedHashMap<>();
+    private final Map<ResourceLocation, ResourceLocation> aliases = new LinkedHashMap<>();
     private boolean registered;
 
     protected DeferredRegister(ResourceKey<? extends Registry<T>> registryKey, String namespace) {
@@ -47,7 +47,7 @@ public class DeferredRegister<T> {
         return new DeferredRegister<>(key, namespace);
     }
 
-    public static <T> DeferredRegister<T> create(Identifier registryName, String namespace) {
+    public static <T> DeferredRegister<T> create(ResourceLocation registryName, String namespace) {
         return new DeferredRegister<>(ResourceKey.createRegistryKey(registryName), namespace);
     }
 
@@ -73,11 +73,11 @@ public class DeferredRegister<T> {
         return this.register(name, key -> sup.get());
     }
 
-    public <I extends T> DeferredHolder<T, I> register(String name, Function<Identifier, ? extends I> func) {
+    public <I extends T> DeferredHolder<T, I> register(String name, Function<ResourceLocation, ? extends I> func) {
         if (this.registered) {
             throw new IllegalStateException("Cannot register new entries to DeferredRegister after it was registered");
         }
-        Identifier key = Identifier.fromNamespaceAndPath(this.namespace, name);
+        ResourceLocation key = ResourceLocation.fromNamespaceAndPath(this.namespace, name);
         DeferredHolder<T, I> holder = NeoForgeRegistries.Keys.PLATFORM_MANAGED.contains(this.registryKey)
             ? new ValueHolder<>(ResourceKey.create(this.registryKey, key), func)
             : this.createHolder(this.registryKey, key);
@@ -87,23 +87,23 @@ public class DeferredRegister<T> {
         return holder;
     }
 
-    protected <I extends T> DeferredHolder<T, I> createHolder(ResourceKey<? extends Registry<T>> registryKey, Identifier key) {
+    protected <I extends T> DeferredHolder<T, I> createHolder(ResourceKey<? extends Registry<T>> registryKey, ResourceLocation key) {
         return DeferredHolder.create(registryKey, key);
     }
 
     public TagKey<T> createTagKey(String path) {
-        return this.createTagKey(Identifier.fromNamespaceAndPath(this.namespace, path));
+        return this.createTagKey(ResourceLocation.fromNamespaceAndPath(this.namespace, path));
     }
 
-    public TagKey<T> createTagKey(Identifier location) {
+    public TagKey<T> createTagKey(ResourceLocation location) {
         return TagKey.create(this.registryKey, location);
     }
 
-    public void addAlias(Identifier from, Identifier to) {
+    public void addAlias(ResourceLocation from, ResourceLocation to) {
         this.aliases.put(from, to);
     }
 
-    public Map<Identifier, Identifier> getAliases() {
+    public Map<ResourceLocation, ResourceLocation> getAliases() {
         return Collections.unmodifiableMap(this.aliases);
     }
 
@@ -111,7 +111,7 @@ public class DeferredRegister<T> {
         return Collections.unmodifiableSet(this.entries.keySet());
     }
 
-    public Map<DeferredHolder<T, ? extends T>, Function<Identifier, ? extends T>> getFactories() {
+    public Map<DeferredHolder<T, ? extends T>, Function<ResourceLocation, ? extends T>> getFactories() {
         return Collections.unmodifiableMap(this.entries);
     }
 
@@ -127,8 +127,8 @@ public class DeferredRegister<T> {
         return this.registryKey;
     }
 
-    public Identifier getRegistryName() {
-        return this.registryKey.identifier();
+    public ResourceLocation getRegistryName() {
+        return this.registryKey.location();
     }
 
     public String getNamespace() {
@@ -142,7 +142,7 @@ public class DeferredRegister<T> {
 
         @SuppressWarnings("unchecked")
         @Override
-        public <B extends Block> DeferredBlock<B> register(String name, Function<Identifier, ? extends B> func) {
+        public <B extends Block> DeferredBlock<B> register(String name, Function<ResourceLocation, ? extends B> func) {
             return (DeferredBlock<B>)super.register(name, func);
         }
 
@@ -152,7 +152,7 @@ public class DeferredRegister<T> {
         }
 
         public <B extends Block> DeferredBlock<B> registerBlock(String name, Function<BlockBehaviour.Properties, ? extends B> func, Supplier<BlockBehaviour.Properties> properties) {
-            return this.register(name, key -> func.apply(properties.get().setId(ResourceKey.create(Registries.BLOCK, key))));
+            return this.register(name, key -> func.apply(properties.get()));
         }
 
         public <B extends Block> DeferredBlock<B> registerBlock(String name, Function<BlockBehaviour.Properties, ? extends B> func, UnaryOperator<BlockBehaviour.Properties> properties) {
@@ -176,7 +176,7 @@ public class DeferredRegister<T> {
         }
 
         @Override
-        protected <I extends Block> DeferredBlock<I> createHolder(ResourceKey<? extends Registry<Block>> registryKey, Identifier key) {
+        protected <I extends Block> DeferredBlock<I> createHolder(ResourceKey<? extends Registry<Block>> registryKey, ResourceLocation key) {
             return DeferredBlock.createBlock(ResourceKey.create(registryKey, key));
         }
     }
@@ -188,7 +188,7 @@ public class DeferredRegister<T> {
 
         @SuppressWarnings("unchecked")
         @Override
-        public <I extends Item> DeferredItem<I> register(String name, Function<Identifier, ? extends I> func) {
+        public <I extends Item> DeferredItem<I> register(String name, Function<ResourceLocation, ? extends I> func) {
             return (DeferredItem<I>)super.register(name, func);
         }
 
@@ -198,7 +198,7 @@ public class DeferredRegister<T> {
         }
 
         public DeferredItem<BlockItem> registerSimpleBlockItem(String name, Supplier<? extends Block> block, Supplier<Item.Properties> properties) {
-            return this.registerItem(name, props -> new BlockItem(block.get(), props), () -> properties.get().useBlockDescriptionPrefix());
+            return this.registerItem(name, props -> new BlockItem(block.get(), props), properties);
         }
 
         public DeferredItem<BlockItem> registerSimpleBlockItem(String name, Supplier<? extends Block> block, UnaryOperator<Item.Properties> properties) {
@@ -222,11 +222,11 @@ public class DeferredRegister<T> {
         }
 
         public DeferredItem<BlockItem> registerSimpleBlockItem(Holder<Block> block, Supplier<Item.Properties> properties) {
-            return this.registerSimpleBlockItem(block.unwrapKey().orElseThrow().identifier().getPath(), block::value, properties);
+            return this.registerSimpleBlockItem(block.unwrapKey().orElseThrow().location().getPath(), block::value, properties);
         }
 
         public <I extends Item> DeferredItem<I> registerItem(String name, Function<Item.Properties, ? extends I> func, Supplier<Item.Properties> properties) {
-            return this.register(name, key -> func.apply(properties.get().setId(ResourceKey.create(Registries.ITEM, key))));
+            return this.register(name, key -> func.apply(properties.get()));
         }
 
         public <I extends Item> DeferredItem<I> registerItem(String name, Function<Item.Properties, ? extends I> func, UnaryOperator<Item.Properties> properties) {
@@ -250,7 +250,7 @@ public class DeferredRegister<T> {
         }
 
         @Override
-        protected <I extends Item> DeferredItem<I> createHolder(ResourceKey<? extends Registry<Item>> registryKey, Identifier key) {
+        protected <I extends Item> DeferredItem<I> createHolder(ResourceKey<? extends Registry<Item>> registryKey, ResourceLocation key) {
             return DeferredItem.createItem(ResourceKey.create(registryKey, key));
         }
     }
@@ -266,7 +266,7 @@ public class DeferredRegister<T> {
 
         public <E extends Entity> DeferredHolder<EntityType<?>, EntityType<E>> registerEntityType(String name, EntityType.EntityFactory<E> factory, MobCategory category,
             BiFunction<EntityType.EntityFactory<E>, MobCategory, EntityType.Builder<E>> builder) {
-            return this.register(name, key -> builder.apply(factory, category).build(ResourceKey.create(Registries.ENTITY_TYPE, key)));
+            return this.register(name, key -> builder.apply(factory, category).build(key.toString()));
         }
 
         public <E extends Entity> DeferredHolder<EntityType<?>, EntityType<E>> registerEntityType(String name, EntityType.EntityFactory<E> factory, MobCategory category,

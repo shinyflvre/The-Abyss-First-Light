@@ -14,7 +14,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.yezon.theabyss.platform.common.world.ModifiableBiomeInfo;
@@ -36,7 +35,7 @@ public interface ServerHooks {
 
     boolean hasChannel(ServerGamePacketListenerImpl connection, CustomPacketPayload.Type<?> type);
 
-    @Nullable ItemStackTemplate getCraftingRemainder(ItemStack stack);
+    ItemStack getCraftingRemainder(ItemStack stack);
 
     boolean applyBonemeal(ItemStack stack, Level level, BlockPos pos, @Nullable Player player);
 

@@ -13,7 +13,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(WalkNodeEvaluator.class)
 public abstract class WalkNodeEvaluatorFluidMixin {
-    @Inject(method = "getPathTypeFromState", at = @At("HEAD"), cancellable = true)
+    @Inject(
+        method = "getPathTypeFromState(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/pathfinder/PathType;",
+        at = @At("HEAD"),
+        cancellable = true
+    )
     private static void theabyss$ownFluidPathType(BlockGetter level, BlockPos pos, CallbackInfoReturnable<PathType> cir) {
         FluidType type = FluidContact.typeOf(level.getFluidState(pos));
         if (type != null && type.getPathType() != null) {

@@ -5,10 +5,10 @@ import net.yezon.theabyss.platform.event.ICancellableEvent;
 
 public class FinalizeSpawnEvent extends Event implements ICancellableEvent {
     private final net.minecraft.world.entity.Mob entity;
-    private final net.minecraft.world.entity.EntitySpawnReason spawnType;
+    private final net.minecraft.world.entity.MobSpawnType spawnType;
     private boolean spawnCancelled;
 
-    public FinalizeSpawnEvent(net.minecraft.world.entity.Mob entity, net.minecraft.world.entity.EntitySpawnReason spawnType, boolean spawnCancelled) {
+    public FinalizeSpawnEvent(net.minecraft.world.entity.Mob entity, net.minecraft.world.entity.MobSpawnType spawnType, boolean spawnCancelled) {
         this.entity = entity;
         this.spawnType = spawnType;
         this.spawnCancelled = spawnCancelled;
@@ -18,7 +18,7 @@ public class FinalizeSpawnEvent extends Event implements ICancellableEvent {
         return this.entity;
     }
 
-    public net.minecraft.world.entity.EntitySpawnReason getSpawnType() {
+    public net.minecraft.world.entity.MobSpawnType getSpawnType() {
         return this.spawnType;
     }
 

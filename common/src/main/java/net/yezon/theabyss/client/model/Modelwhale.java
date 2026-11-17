@@ -1,6 +1,6 @@
 package net.yezon.theabyss.client.model;
 
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -9,12 +9,12 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 
-public class Modelwhale<S extends LivingEntityRenderState> extends EntityModel<S> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath("theabyss", "modelwhale"), "main");
+public class Modelwhale<T extends Entity> extends HierarchicalModel<T> {
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("theabyss", "modelwhale"), "main");
     private static final float TAIL_PIVOT_Y = 13.0F;
     private static final float TAIL_PIVOT_Z = 57.0F;
     private static final float FLUKE_PIVOT_Z = 55.0F;
@@ -29,8 +29,10 @@ public class Modelwhale<S extends LivingEntityRenderState> extends EntityModel<S
     private final ModelPart leftFin;
     private final ModelPart rightFin;
 
+    private final ModelPart root;
+
     public Modelwhale(ModelPart root) {
-        super(root);
+        this.root = root;
         this.head = root.getChild("head");
         this.torso = root.getChild("torso");
         this.tail = root.getChild("tail");
@@ -114,14 +116,19 @@ public class Modelwhale<S extends LivingEntityRenderState> extends EntityModel<S
     }
 
     @Override
-    public void setupAnim(S state) {
-        super.setupAnim(state);
-        float t = state.ageInTicks * 0.09F;
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.root.getAllParts().forEach(ModelPart::resetPose);
+        float t = ageInTicks * 0.09F;
         this.tail.xRot = Mth.sin(t) * 0.12F;
         this.tail2.xRot = Mth.sin(t - 0.9F) * 0.22F;
         this.leftFin.zRot = FIN_ROLL + Mth.sin(t + 0.6F) * 0.08F;
         this.rightFin.zRot = -FIN_ROLL - Mth.sin(t + 0.6F) * 0.08F;
-        float song = Mth.sin(state.ageInTicks * 0.013F);
+        float song = Mth.sin(ageInTicks * 0.013F);
         this.bottomJaw.xRot = song > 0.85F ? (song - 0.85F) * 0.6F : 0.0F;
+    }
+
+    @Override
+    public ModelPart root() {
+        return this.root;
     }
 }

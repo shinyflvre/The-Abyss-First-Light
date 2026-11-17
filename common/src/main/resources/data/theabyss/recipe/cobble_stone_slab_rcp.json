@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:cobble_stone"
+    "a": {
+      "item": "theabyss:cobble_stone"
+    }
   },
   "pattern": [
     "aaa"

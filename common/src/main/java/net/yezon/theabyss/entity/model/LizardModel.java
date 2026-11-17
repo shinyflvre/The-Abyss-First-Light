@@ -1,38 +1,26 @@
 package net.yezon.theabyss.entity.model;
 
-import com.geckolib.constant.DataTickets;
-import com.geckolib.constant.dataticket.DataTicket;
-import com.geckolib.model.GeoModel;
-import com.geckolib.renderer.base.GeoRenderState;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.Mth;
+import net.minecraft.resources.ResourceLocation;
 import net.yezon.theabyss.entity.LizardEntity;
-import org.jspecify.annotations.Nullable;
+import software.bernie.geckolib.model.GeoModel;
 
 public class LizardModel extends GeoModel<LizardEntity> {
-    public static final DataTicket<Float> WALL_BLEND = DataTicket.create("theabyss_lizard_wall_blend", Float.class);
-    private static final Identifier MODEL = Identifier.fromNamespaceAndPath("theabyss", "lizard");
-    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath("theabyss", "textures/entity/lizard.png");
+    private static final ResourceLocation MODEL = ResourceLocation.fromNamespaceAndPath("theabyss", "geo/lizard.geo.json");
+    private static final ResourceLocation ANIMATIONS = ResourceLocation.fromNamespaceAndPath("theabyss", "animations/lizard.animation.json");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("theabyss", "textures/entity/lizard.png");
 
     @Override
-    public Identifier getModelResource(GeoRenderState renderState) {
+    public ResourceLocation getModelResource(LizardEntity animatable) {
         return MODEL;
     }
 
     @Override
-    public Identifier getTextureResource(GeoRenderState renderState) {
+    public ResourceLocation getTextureResource(LizardEntity animatable) {
         return TEXTURE;
     }
 
     @Override
-    public Identifier getAnimationResource(LizardEntity entity) {
-        return MODEL;
-    }
-
-    @Override
-    public void addAdditionalStateData(LizardEntity entity, @Nullable Object relatedObject, GeoRenderState renderState) {
-        float partialTick = renderState.getOrDefaultGeckolibData(DataTickets.PARTIAL_TICK, 0.0F);
-        renderState.addGeckolibData(WALL_BLEND, Mth.lerp(partialTick, entity.wallBlendO, entity.wallBlend));
+    public ResourceLocation getAnimationResource(LizardEntity animatable) {
+        return ANIMATIONS;
     }
 }

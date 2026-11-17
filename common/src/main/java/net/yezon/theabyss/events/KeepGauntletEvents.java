@@ -34,7 +34,7 @@ public final class KeepGauntletEvents {
             return;
         }
         CompoundTag data = net.yezon.theabyss.platform.PersistentData.get(player);
-        ListTag kept = data.getListOrEmpty(KEPT);
+        ListTag kept = net.yezon.theabyss.compat.NbtCompat.getListOrEmpty(data, KEPT);
         Iterator<ItemEntity> drops = event.getDrops().iterator();
         while (drops.hasNext()) {
             ItemStack stack = drops.next().getItem();
@@ -61,10 +61,10 @@ public final class KeepGauntletEvents {
         if (!(event.getEntity() instanceof ServerPlayer player) || !net.yezon.theabyss.platform.PersistentData.get(player).contains(KEPT)) {
             return;
         }
-        ListTag kept = net.yezon.theabyss.platform.PersistentData.get(player).getListOrEmpty(KEPT);
+        ListTag kept = net.yezon.theabyss.compat.NbtCompat.getListOrEmpty(net.yezon.theabyss.platform.PersistentData.get(player), KEPT);
         net.yezon.theabyss.platform.PersistentData.get(player).remove(KEPT);
         for (Tag tag : kept) {
-            ItemStack.CODEC.parse(ops(player), tag).result().ifPresent(stack -> player.getInventory().placeItemBackInInventory(stack, net.minecraft.util.Prediction.SERVER_ONLY));
+            ItemStack.CODEC.parse(ops(player), tag).result().ifPresent(stack -> player.getInventory().placeItemBackInInventory(stack));
         }
     }
 }

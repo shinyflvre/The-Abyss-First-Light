@@ -80,7 +80,7 @@ public final class RingFxClient {
         if (radius <= 0.0F) {
             return leashSlot(camera, out, o);
         }
-        Vec3 feet = mc.player.getPosition(mc.getDeltaTracker().getGameTimeDeltaPartialTick(true));
+        Vec3 feet = mc.player.getPosition(mc.getTimer().getGameTimeDeltaPartialTick(true));
         out[o] = (float)(feet.x - camera.x);
         out[o + 1] = (float)(feet.y - camera.y);
         out[o + 2] = (float)(feet.z - camera.z);

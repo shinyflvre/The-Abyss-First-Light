@@ -12,16 +12,14 @@ import java.util.WeakHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
-import net.minecraft.data.AtlasIds;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.context.ContextKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -34,19 +32,16 @@ import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
 import net.yezon.theabyss.platform.event.EventBusSubscriber;
 import net.yezon.theabyss.platform.client.event.AddSectionGeometryEvent;
-import net.yezon.theabyss.platform.client.event.ExtractLevelRenderStateEvent;
-import net.yezon.theabyss.platform.client.event.SubmitCustomGeometryEvent;
+import net.yezon.theabyss.platform.client.event.RenderLevelStageEvent;
 import net.yezon.theabyss.platform.event.level.ChunkEvent;
 import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.init.TheabyssModFluids;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public final class InfusedMagmaGlow {
-    private static final ContextKey<float[]> QUADS = new ContextKey<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "infused_magma_glow"));
-    private static final Identifier MAGMA_SPRITE = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "block/infused_magma_rim");
-    private static final Identifier ARENO_SPRITE = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "block/areno_rim");
+    private static final ResourceLocation MAGMA_SPRITE = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "block/infused_magma_rim");
+    private static final ResourceLocation ARENO_SPRITE = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "block/areno_rim");
     private static final Map<Level, Long2ObjectOpenHashMap<LongOpenHashSet>> INDEX = new WeakHashMap<>();
-    private static final float[] NONE = new float[0];
     private static final double INSET = 0.02;
     private static final double HEIGHT = 0.75;
     private static final int MAX_CHUNKS = 8;
@@ -120,9 +115,9 @@ public final class InfusedMagmaGlow {
         if (sections == null) {
             return;
         }
-        int cx = event.getChunk().getPos().x();
-        int cz = event.getChunk().getPos().z();
-        for (int sy = level.getMinSectionY(); sy <= level.getMaxSectionY(); sy++) {
+        int cx = event.getChunk().getPos().x;
+        int cz = event.getChunk().getPos().z;
+        for (int sy = level.getMinSection(); sy < level.getMaxSection(); sy++) {
             sections.remove(SectionPos.asLong(cx, sy, cz));
         }
     }
@@ -139,21 +134,22 @@ public final class InfusedMagmaGlow {
     }
 
     @SubscribeEvent
-    public static void onExtract(ExtractLevelRenderStateEvent event) {
-        ClientLevel level = event.getLevel();
+    public static void onRender(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) {
+            return;
+        }
+        Minecraft mc = Minecraft.getInstance();
+        ClientLevel level = mc.level;
         if (level == null) {
-            net.yezon.theabyss.platform.client.renderstate.RenderData.set(event.getRenderState(), QUADS, NONE);
             return;
         }
         Long2ObjectOpenHashMap<LongOpenHashSet> sections = INDEX.get(level);
         if (sections == null || sections.isEmpty()) {
-            net.yezon.theabyss.platform.client.renderstate.RenderData.set(event.getRenderState(), QUADS, NONE);
             return;
         }
-        Minecraft mc = Minecraft.getInstance();
-        TextureAtlasSprite magmaSprite = mc.getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).getSprite(MAGMA_SPRITE);
-        TextureAtlasSprite arenoSprite = mc.getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).getSprite(ARENO_SPRITE);
-        Vec3 camera = event.getCamera().position();
+        TextureAtlasSprite magmaSprite = mc.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(MAGMA_SPRITE);
+        TextureAtlasSprite arenoSprite = mc.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(ARENO_SPRITE);
+        Vec3 camera = event.getCamera().getPosition();
         Frustum frustum = event.getFrustum();
         int range = Math.min(MAX_CHUNKS, mc.options.getEffectiveRenderDistance());
         int csx = SectionPos.blockToSectionCoord(camera.x);
@@ -190,7 +186,16 @@ public final class InfusedMagmaGlow {
                 }
             }
         }
-        net.yezon.theabyss.platform.client.renderstate.RenderData.set(event.getRenderState(), QUADS, quads.size == 0 ? NONE : Arrays.copyOf(quads.data, quads.size));
+        if (quads.size > 0) {
+            draw(event.getPoseStack().last(), event.getBufferSource().getBuffer(type()), quads.data, quads.size);
+        }
+    }
+
+    private static RenderType type() {
+        if (type == null) {
+            type = RenderType.beaconBeam(TextureAtlas.LOCATION_BLOCKS, true);
+        }
+        return type;
     }
 
     private static void add(Quads quads, BlockPos pos, Direction side, double surface, Vec3 camera, TextureAtlasSprite sprite) {
@@ -225,35 +230,24 @@ public final class InfusedMagmaGlow {
         d[o + 2] = (float)(z - camera.z);
     }
 
-    @SubscribeEvent
-    public static void onSubmit(SubmitCustomGeometryEvent event) {
-        float[] data = net.yezon.theabyss.platform.client.renderstate.RenderData.get(event.getLevelRenderState(), QUADS);
-        if (data == null || data.length == 0) {
-            return;
+    private static void draw(PoseStack.Pose pose, VertexConsumer buffer, float[] data, int size) {
+        for (int o = 0; o < size; o += STRIDE) {
+            float u0 = data[o + 12];
+            float u1 = data[o + 13];
+            float v0 = data[o + 14];
+            float v1 = data[o + 15];
+            float nx = data[o + 16];
+            float ny = data[o + 17];
+            float nz = data[o + 18];
+            vertex(pose, buffer, data, o, u0, v1, nx, ny, nz);
+            vertex(pose, buffer, data, o + 3, u1, v1, nx, ny, nz);
+            vertex(pose, buffer, data, o + 6, u1, v0, nx, ny, nz);
+            vertex(pose, buffer, data, o + 9, u0, v0, nx, ny, nz);
+            vertex(pose, buffer, data, o + 9, u0, v0, -nx, -ny, -nz);
+            vertex(pose, buffer, data, o + 6, u1, v0, -nx, -ny, -nz);
+            vertex(pose, buffer, data, o + 3, u1, v1, -nx, -ny, -nz);
+            vertex(pose, buffer, data, o, u0, v1, -nx, -ny, -nz);
         }
-        if (type == null) {
-            type = RenderTypes.beaconBeam(Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).location(), true);
-        }
-        PoseStack poseStack = event.getPoseStack();
-        event.getSubmitNodeCollector().submitCustomGeometry(poseStack, type, (pose, buffer) -> {
-            for (int o = 0; o < data.length; o += STRIDE) {
-                float u0 = data[o + 12];
-                float u1 = data[o + 13];
-                float v0 = data[o + 14];
-                float v1 = data[o + 15];
-                float nx = data[o + 16];
-                float ny = data[o + 17];
-                float nz = data[o + 18];
-                vertex(pose, buffer, data, o, u0, v1, nx, ny, nz);
-                vertex(pose, buffer, data, o + 3, u1, v1, nx, ny, nz);
-                vertex(pose, buffer, data, o + 6, u1, v0, nx, ny, nz);
-                vertex(pose, buffer, data, o + 9, u0, v0, nx, ny, nz);
-                vertex(pose, buffer, data, o + 9, u0, v0, -nx, -ny, -nz);
-                vertex(pose, buffer, data, o + 6, u1, v0, -nx, -ny, -nz);
-                vertex(pose, buffer, data, o + 3, u1, v1, -nx, -ny, -nz);
-                vertex(pose, buffer, data, o, u0, v1, -nx, -ny, -nz);
-            }
-        });
     }
 
     private static void vertex(PoseStack.Pose pose, VertexConsumer buffer, float[] d, int o, float u, float v, float nx, float ny, float nz) {

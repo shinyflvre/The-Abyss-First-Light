@@ -21,7 +21,7 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 public record SurfaceChest(Block block, ResourceKey<LootTable> lootTable, int spiresMin, int spiresMax, int spireMinHeight, int spireMaxHeight)
-    implements Feature {
+    implements AbyssFeature.Config {
     public static final MapCodec<SurfaceChest> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BuiltInRegistries.BLOCK.byNameCodec().fieldOf("block").forGetter(SurfaceChest::block),
             ResourceKey.codec(Registries.LOOT_TABLE).fieldOf("loot_table").forGetter(SurfaceChest::lootTable),

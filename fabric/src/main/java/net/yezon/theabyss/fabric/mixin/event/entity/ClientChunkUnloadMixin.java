@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientChunkCache.class)
 public abstract class ClientChunkUnloadMixin {
     @Inject(method = "drop", at = @At(value = "INVOKE",
-        target = "Lnet/minecraft/client/multiplayer/ClientChunkCache$Storage;drop(ILnet/minecraft/world/level/chunk/LevelChunk;)V"))
+        target = "Lnet/minecraft/client/multiplayer/ClientChunkCache$Storage;replace(ILnet/minecraft/world/level/chunk/LevelChunk;Lnet/minecraft/world/level/chunk/LevelChunk;)Lnet/minecraft/world/level/chunk/LevelChunk;"))
     private void theabyss$chunkUnload(ChunkPos pos, CallbackInfo ci, @Local LevelChunk chunk) {
         LevelFabricEvents.chunkUnload(chunk);
     }

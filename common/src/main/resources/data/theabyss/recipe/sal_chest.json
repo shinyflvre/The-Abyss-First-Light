@@ -3,7 +3,9 @@
   "category": "misc",
   "group": "abyss_chest",
   "key": {
-    "a": "theabyss:sal_planks"
+    "a": {
+      "item": "theabyss:sal_planks"
+    }
   },
   "pattern": [
     "aaa",

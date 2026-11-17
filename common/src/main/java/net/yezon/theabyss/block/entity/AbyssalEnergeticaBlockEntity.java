@@ -10,8 +10,6 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.yezon.theabyss.block.AbyssalEnergeticaBlock;
 import net.yezon.theabyss.init.TheabyssModBlockEntities;
 import net.yezon.theabyss.station.StationEnergy;
@@ -42,8 +40,7 @@ public class AbyssalEnergeticaBlockEntity extends BlockEntity {
         }
     }
 
-    @Override
-    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+    public void dropEnergy(BlockPos pos) {
         if (this.level != null && !this.energy().isEmpty()) {
             Containers.dropItemStack(this.level, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, this.energy());
             this.energy.set(0, ItemStack.EMPTY);
@@ -51,16 +48,16 @@ public class AbyssalEnergeticaBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
         this.energy.set(0, ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(input, this.energy);
+        ContainerHelper.loadAllItems(tag, this.energy, registries);
     }
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
-        ContainerHelper.saveAllItems(output, this.energy);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        ContainerHelper.saveAllItems(tag, this.energy, registries);
     }
 
     @Override

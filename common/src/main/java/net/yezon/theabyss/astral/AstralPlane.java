@@ -55,23 +55,23 @@ public final class AstralPlane {
             return true;
         }
         if (PossessionManager.isPossessing(player)) {
-            player.sendOverlayMessage(Component.translatable("astral.theabyss.cannot_now"));
+            player.displayClientMessage(Component.translatable("astral.theabyss.cannot_now"), true);
             return false;
         }
         if (!pay(player, ENTER_COST)) {
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.low_energy"));
+            player.displayClientMessage(Component.translatable("ring.theabyss.low_energy"), true);
             return false;
         }
         net.yezon.theabyss.platform.attachment.Attachments.setData(player, AstralData.TYPE, new AstralData(true));
         player.setSilent(true);
         forgetMe(player);
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         net.yezon.theabyss.ring.fx.RingAccent.send(level, net.yezon.theabyss.ring.fx.RingAccent.SPECTRAL, player.position(), player);
         net.yezon.theabyss.ring.fx.SpellCircle.on(level, net.yezon.theabyss.ring.fx.SpellCircle.RUNES, player, 0xE8E0FF, 2.0F, 30);
         level.sendParticles(ParticleTypes.REVERSE_PORTAL, player.getX(), player.getY() + 1.0, player.getZ(), 80, 0.35, 0.8, 0.35, 0.05);
         level.sendParticles(ParticleTypes.SOUL, player.getX(), player.getY() + 0.8, player.getZ(), 12, 0.3, 0.6, 0.3, 0.02);
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ILLUSIONER_MIRROR_MOVE, SoundSource.PLAYERS, 0.7F, 0.6F);
-        player.sendOverlayMessage(Component.translatable("astral.theabyss.enter"));
+        player.displayClientMessage(Component.translatable("astral.theabyss.enter"), true);
         return true;
     }
 
@@ -81,12 +81,12 @@ public final class AstralPlane {
         }
         net.yezon.theabyss.platform.attachment.Attachments.setData(player, AstralData.TYPE, AstralData.NONE);
         player.setSilent(false);
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         level.sendParticles(ParticleTypes.END_ROD, player.getX(), player.getY() + 1.0, player.getZ(), 40, 0.3, 0.7, 0.3, 0.04);
         level.sendParticles(ParticleTypes.WHITE_ASH, player.getX(), player.getY() + 1.0, player.getZ(), 30, 0.5, 0.8, 0.5, 0.0);
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ILLUSIONER_MIRROR_MOVE, SoundSource.PLAYERS, 0.7F, 1.4F);
         if (messageKey != null) {
-            player.sendOverlayMessage(Component.translatable(messageKey));
+            player.displayClientMessage(Component.translatable(messageKey), true);
         }
     }
 
@@ -183,7 +183,7 @@ public final class AstralPlane {
     public static void onAttack(AttackEntityEvent event) {
         if (isAstral(event.getEntity())) {
             event.setCanceled(true);
-            event.getEntity().sendOverlayMessage(Component.translatable("astral.theabyss.cannot_touch"));
+            event.getEntity().displayClientMessage(Component.translatable("astral.theabyss.cannot_touch"), true);
         } else if (isAstral(event.getTarget())) {
             event.setCanceled(true);
         }
@@ -200,7 +200,7 @@ public final class AstralPlane {
     public static void onBreak(BreakBlockEvent event) {
         if (isAstral(event.getPlayer()) && !pay(event.getPlayer(), BREAK_COST)) {
             event.setCanceled(true);
-            event.getPlayer().sendOverlayMessage(Component.translatable("astral.theabyss.no_energy_block"));
+            event.getPlayer().displayClientMessage(Component.translatable("astral.theabyss.no_energy_block"), true);
         }
     }
 
@@ -208,7 +208,7 @@ public final class AstralPlane {
     public static void onPlace(BlockEvent.EntityPlaceEvent event) {
         if (event.getEntity() instanceof Player player && isAstral(player) && !pay(player, PLACE_COST)) {
             event.setCanceled(true);
-            player.sendOverlayMessage(Component.translatable("astral.theabyss.no_energy_block"));
+            player.displayClientMessage(Component.translatable("astral.theabyss.no_energy_block"), true);
         }
     }
 
@@ -222,7 +222,7 @@ public final class AstralPlane {
         TheabyssModVariables.PlayerVariables vars = TheabyssModVariables.getPlayerVariables(player);
         if (hasMenu && !player.isSecondaryUseActive() && vars.Mana < MENU_COST * SomniumUpgrades.costFactor(vars)) {
             event.setCanceled(true);
-            player.sendOverlayMessage(Component.translatable("astral.theabyss.no_energy_block"));
+            player.displayClientMessage(Component.translatable("astral.theabyss.no_energy_block"), true);
         }
     }
 
@@ -230,7 +230,7 @@ public final class AstralPlane {
     public static void onMenuOpen(PlayerContainerEvent.Open event) {
         if (event.getEntity() instanceof ServerPlayer player && isAstral(player) && !pay(player, MENU_COST)) {
             player.closeContainer();
-            player.sendOverlayMessage(Component.translatable("astral.theabyss.no_energy_block"));
+            player.displayClientMessage(Component.translatable("astral.theabyss.no_energy_block"), true);
         }
     }
 

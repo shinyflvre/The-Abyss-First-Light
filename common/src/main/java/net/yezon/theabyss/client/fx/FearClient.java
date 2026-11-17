@@ -5,7 +5,6 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.state.LightmapRenderState;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -14,14 +13,13 @@ import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.client.sounds.WeighedSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -32,7 +30,6 @@ import net.yezon.theabyss.platform.event.EventPriority;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
 import net.yezon.theabyss.platform.event.EventBusSubscriber;
 import net.yezon.theabyss.platform.client.event.ClientTickEvent;
-import net.yezon.theabyss.platform.client.event.ExtractLevelRenderStateEvent;
 import net.yezon.theabyss.platform.client.event.SelectMusicEvent;
 import net.yezon.theabyss.platform.client.event.ViewportEvent;
 import net.yezon.theabyss.platform.client.event.sound.PlaySoundEvent;
@@ -58,9 +55,9 @@ public final class FearClient {
     private static final double CATCH_DISTANCE = 1.4;
     private static final double[] APPEAR_DISTANCE = {22.0, 16.0, 11.5, 8.5};
     private static final int SHADE_ID = -730_000_001;
-    private static final Identifier WHISPER_SOUND = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "phantom_ambient");
-    private static final Identifier JUMPSCARE_SOUND = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "fear_jumpscare");
-    private static final SoundEvent AMBIENCE_SOUND = SoundEvent.createVariableRangeEvent(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "fear_ambience"));
+    private static final ResourceLocation WHISPER_SOUND = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "phantom_ambient");
+    private static final ResourceLocation JUMPSCARE_SOUND = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "fear_jumpscare");
+    private static final SoundEvent AMBIENCE_SOUND = SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "fear_ambience"));
     private static final float AMBIENCE_VOLUME = 1.0F;
     private static final RandomSource RANDOM = RandomSource.create();
     private static final Set<SoundInstance> OWN = Collections.newSetFromMap(new WeakHashMap<>());
@@ -255,7 +252,7 @@ public final class FearClient {
         stage = next;
         stageTicks = 0;
         if (next == Stage.HUNT) {
-            play(SoundEvents.ENDERMAN_STARE.location(), shadePos, 1.2F, 0.55F, false);
+            play(SoundEvents.ENDERMAN_STARE.getLocation(), shadePos, 1.2F, 0.55F, false);
         }
     }
 
@@ -274,7 +271,7 @@ public final class FearClient {
         }
         beat = 1.0F;
         nextBeat = Math.round(Mth.lerp(tension, 30.0F, 8.0F));
-        playUi(SoundEvents.WARDEN_HEARTBEAT.location(), 0.55F + 0.45F * tension, 0.85F + 0.3F * tension);
+        playUi(SoundEvents.WARDEN_HEARTBEAT.getLocation(), 0.55F + 0.45F * tension, 0.85F + 0.3F * tension);
         if (tension > 0.6F) {
             CameraShake.add(0.12F + 0.25F * tension, 0.15F);
         }
@@ -295,9 +292,9 @@ public final class FearClient {
         nextWhisper = 70 + RANDOM.nextInt(90);
         Vec3 behind = around(player, 150.0F + RANDOM.nextFloat() * 60.0F, 4.0 + RANDOM.nextDouble() * 4.0);
         switch (RANDOM.nextInt(4)) {
-            case 0 -> play(SoundEvents.AMBIENT_CAVE.value().location(), behind, 0.7F, 0.8F + RANDOM.nextFloat() * 0.3F, true);
+            case 0 -> play(SoundEvents.AMBIENT_CAVE.value().getLocation(), behind, 0.7F, 0.8F + RANDOM.nextFloat() * 0.3F, true);
             case 1 -> play(WHISPER_SOUND, behind, 0.35F, 0.5F + RANDOM.nextFloat() * 0.15F, true);
-            case 2 -> play(SoundEvents.WARDEN_TENDRIL_CLICKS.location(), behind, 0.6F, 0.7F, true);
+            case 2 -> play(SoundEvents.WARDEN_TENDRIL_CLICKS.getLocation(), behind, 0.6F, 0.7F, true);
             default -> {
                 stepsLeft = 5;
                 stepTimer = 0;
@@ -320,7 +317,7 @@ public final class FearClient {
 
     private static void step(Minecraft mc, Vec3 at, float volume) {
         BlockState ground = mc.level.getBlockState(BlockPos.containing(at.x, at.y - 0.2, at.z));
-        Identifier sound = ground.isAir() ? SoundEvents.GRASS_STEP.location() : ground.getSoundType().getStepSound().location();
+        ResourceLocation sound = ground.isAir() ? SoundEvents.GRASS_STEP.getLocation() : ground.getSoundType().getStepSound().getLocation();
         play(sound, at, volume, 0.75F + RANDOM.nextFloat() * 0.1F, true);
     }
 
@@ -373,20 +370,20 @@ public final class FearClient {
 
     private static void placeShade(Minecraft mc, Vec3 at) {
         if (shade == null || shade.level() != mc.level || shade.isRemoved()) {
-            shade = TheabyssModEntities.FEAR_SHADE.get().create(mc.level, EntitySpawnReason.LOAD);
+            shade = TheabyssModEntities.FEAR_SHADE.get().create(mc.level);
             if (shade == null) {
                 return;
             }
             shade.setId(SHADE_ID);
             shadePos = at;
             face(shade, mc.player);
-            shade.snapTo(at.x, at.y, at.z, shade.getYRot(), shade.getXRot());
+            shade.moveTo(at.x, at.y, at.z, shade.getYRot(), shade.getXRot());
             shade.setOldPosAndRot();
             mc.level.addEntity(shade);
             shadeLevel = mc.level;
         } else {
             shadePos = at;
-            shade.snapTo(at.x, at.y, at.z, shade.getYRot(), shade.getXRot());
+            shade.moveTo(at.x, at.y, at.z, shade.getYRot(), shade.getXRot());
             shade.setOldPosAndRot();
         }
         smoke(mc, at, 6);
@@ -397,7 +394,7 @@ public final class FearClient {
             Minecraft mc = Minecraft.getInstance();
             if (withEffect && mc.level != null && shade.level() == mc.level) {
                 smoke(mc, shade.position(), 14);
-                play(SoundEvents.ENDERMAN_TELEPORT.location(), shade.position(), 0.35F, 0.45F, false);
+                play(SoundEvents.ENDERMAN_TELEPORT.getLocation(), shade.position(), 0.35F, 0.45F, false);
                 glitch = 1.0F;
             }
             shade.discard();
@@ -503,7 +500,7 @@ public final class FearClient {
         flatLook = flatLook.lengthSqr() < 1.0E-4 ? new Vec3(0.0, 0.0, 1.0) : flatLook.normalize();
         shadePos = new Vec3(eye.x + flatLook.x * 1.3, eye.y - 1.5, eye.z + flatLook.z * 1.3);
         if (shade != null) {
-            shade.snapTo(shadePos.x, shadePos.y, shadePos.z, shade.getYRot(), shade.getXRot());
+            shade.moveTo(shadePos.x, shadePos.y, shadePos.z, shade.getYRot(), shade.getXRot());
             shade.setOldPosAndRot();
         }
         setStage(Stage.JUMPSCARE);
@@ -559,14 +556,14 @@ public final class FearClient {
         }
     }
 
-    private static void play(Identifier sound, Vec3 at, float volume, float pitch, boolean linear) {
+    private static void play(ResourceLocation sound, Vec3 at, float volume, float pitch, boolean linear) {
         SoundInstance instance = new SimpleSoundInstance(sound, SoundSource.AMBIENT, volume, pitch, RANDOM, false, 0,
             linear ? SoundInstance.Attenuation.LINEAR : SoundInstance.Attenuation.NONE, at.x, at.y, at.z, false);
         OWN.add(instance);
         Minecraft.getInstance().getSoundManager().play(instance);
     }
 
-    private static void playUi(Identifier sound, float volume, float pitch) {
+    private static void playUi(ResourceLocation sound, float volume, float pitch) {
         SoundInstance instance = new SimpleSoundInstance(sound, SoundSource.MASTER, volume, pitch, RANDOM, false, 0, SoundInstance.Attenuation.NONE,
             0.0, 0.0, 0.0, true);
         OWN.add(instance);
@@ -578,10 +575,10 @@ public final class FearClient {
         SoundInstance sound = event.getSound();
         if (intensity <= 0.0F || sound == null || OWN.contains(sound) || OWN.contains(event.getOriginalSound()) || sound instanceof TickableSoundInstance
             || sound.isLooping() || sound.getSource() == SoundSource.MUSIC || sound.getSource() == SoundSource.RECORDS || sound.getSource() == SoundSource.VOICE
-            || sound.getSource() == SoundSource.MASTER) {
+            || sound.getSource() == SoundSource.MASTER && !net.yezon.theabyss.client.audio.UiSounds.isUi(sound)) {
             return;
         }
-        event.setSound(new Muffled(sound, 1.0F - 0.55F * intensity));
+        event.setSound(net.yezon.theabyss.client.audio.UiSounds.carry(sound, new Muffled(sound, 1.0F - 0.55F * intensity)));
     }
 
     @SubscribeEvent
@@ -591,14 +588,12 @@ public final class FearClient {
         }
     }
 
-    @SubscribeEvent
-    public static void onExtract(ExtractLevelRenderStateEvent event) {
-        if (intensity <= 0.0F || flickerTicks <= 0) {
-            return;
-        }
-        LightmapRenderState lightmap = Minecraft.getInstance().gameRenderer.gameRenderState().lightmapRenderState;
-        lightmap.blockFactor *= 1.0F - 0.7F * intensity;
-        lightmap.needsUpdate = true;
+    public static boolean lightFlicker() {
+        return intensity > 0.0F && flickerTicks > 0;
+    }
+
+    public static float blockFactor(float factor) {
+        return lightFlicker() ? factor * (1.0F - 0.7F * intensity) : factor;
     }
 
     @SubscribeEvent
@@ -644,23 +639,18 @@ public final class FearClient {
 
     private record Muffled(SoundInstance inner, float factor) implements SoundInstance {
         @Override
-        public Identifier getIdentifier() {
-            return this.inner.getIdentifier();
+        public ResourceLocation getLocation() {
+            return this.inner.getLocation();
         }
 
         @Override
-        public @Nullable WeighedSoundEvents getOrResolve(SoundManager soundManager) {
-            return this.inner.getOrResolve(soundManager);
+        public @Nullable WeighedSoundEvents resolve(SoundManager soundManager) {
+            return this.inner.resolve(soundManager);
         }
 
         @Override
         public net.minecraft.client.resources.sounds.@Nullable Sound getSound() {
             return this.inner.getSound();
-        }
-
-        @Override
-        public @Nullable WeighedSoundEvents getSoundEvent() {
-            return this.inner.getSoundEvent();
         }
 
         @Override

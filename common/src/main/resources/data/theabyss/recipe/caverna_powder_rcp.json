@@ -1,11 +1,21 @@
 {
   "type": "theabyss:mortar_recipe_type",
   "ingredients": [
-    "theabyss:caverna_crystal",
-    "theabyss:caverna_crystal",
-    "theabyss:caverna_crystal",
-    "theabyss:caverna_crystal",
-    "theabyss:bottle_of_somnium"
+    {
+      "item": "theabyss:caverna_crystal"
+    },
+    {
+      "item": "theabyss:caverna_crystal"
+    },
+    {
+      "item": "theabyss:caverna_crystal"
+    },
+    {
+      "item": "theabyss:caverna_crystal"
+    },
+    {
+      "item": "theabyss:bottle_of_somnium"
+    }
   ],
   "output": {
     "id": "theabyss:caverna_powder",

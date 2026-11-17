@@ -3,12 +3,12 @@ package net.yezon.theabyss.mixin.accessor.client;
 import java.util.Map;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(TextureAtlas.class)
 public interface TextureAtlasAccessor {
     @Accessor("texturesByName")
-    Map<Identifier, TextureAtlasSprite> theabyss$texturesByName();
+    Map<ResourceLocation, TextureAtlasSprite> theabyss$texturesByName();
 }

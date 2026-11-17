@@ -1,6 +1,6 @@
 package net.yezon.theabyss.client.model;
 
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -9,12 +9,12 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 
-public class Modelmagician<S extends LivingEntityRenderState> extends EntityModel<S> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath("theabyss", "modelmagician"), "main");
+public class Modelmagician<T extends Entity> extends HierarchicalModel<T> {
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("theabyss", "modelmagician"), "main");
     public final ModelPart cube;
     public final ModelPart cube2;
     public final ModelPart right_leg;
@@ -24,8 +24,10 @@ public class Modelmagician<S extends LivingEntityRenderState> extends EntityMode
     public final ModelPart body;
     public final ModelPart head;
 
+    private final ModelPart root;
+
     public Modelmagician(ModelPart root) {
-        super(root);
+        this.root = root;
         this.cube = root.getChild("cube");
         this.cube2 = root.getChild("cube2");
         this.right_leg = root.getChild("right_leg");
@@ -172,13 +174,8 @@ public class Modelmagician<S extends LivingEntityRenderState> extends EntityMode
     }
 
     @Override
-    public void setupAnim(S state) {
-        super.setupAnim(state);
-        float limbSwing = state.walkAnimationPos;
-        float limbSwingAmount = state.walkAnimationSpeed;
-        float ageInTicks = state.ageInTicks;
-        float netHeadYaw = state.yRot;
-        float headPitch = state.xRot;
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.root.getAllParts().forEach(ModelPart::resetPose);
         this.head.yRot = netHeadYaw / (180.0F / (float)Math.PI);
         this.head.xRot = headPitch / (180.0F / (float)Math.PI);
         this.cube2.zRot = ageInTicks / 20.0F;
@@ -187,5 +184,10 @@ public class Modelmagician<S extends LivingEntityRenderState> extends EntityMode
         this.right_leg.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
         this.left_arm.xRot = Mth.cos(limbSwing * 0.6662F) * limbSwingAmount;
         this.cube.yRot = ageInTicks / 20.0F;
+    }
+
+    @Override
+    public ModelPart root() {
+        return this.root;
     }
 }

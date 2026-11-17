@@ -8,13 +8,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.animal.cow.Cow;
-import net.minecraft.world.entity.decoration.Mannequin;
+import net.minecraft.world.entity.animal.Cow;
+import net.yezon.theabyss.possession.PossessionBodyEntity;
 import net.minecraft.world.entity.monster.Blaze;
-import net.minecraft.world.entity.monster.skeleton.AbstractSkeleton;
-import net.minecraft.world.entity.monster.zombie.Zombie;
-import net.minecraft.world.entity.projectile.hurtingprojectile.SmallFireball;
-import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
+import net.minecraft.world.entity.monster.AbstractSkeleton;
+import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.projectile.SmallFireball;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.network.TheabyssModVariables;
@@ -78,8 +78,8 @@ final class PossessionAutotest {
         add.add("shot arrow", () -> shot.accept("51_possession_skeleton_shoots"), 3);
         add.add("check arrow", () -> onServer(sp -> {
             AABB arena = new AABB(-12, 145, -12, 12, 162, 12).inflate(64);
-            boolean arrowFlying = !sp.level().getEntitiesOfClass(AbstractArrow.class, arena, arrow -> arrow.getOwner() instanceof AbstractSkeleton).isEmpty();
-            boolean cowHit = sp.level().getEntitiesOfClass(Cow.class, arena, cow -> cow.getHealth() < cow.getMaxHealth()).size() > 0;
+            boolean arrowFlying = !sp.serverLevel().getEntitiesOfClass(AbstractArrow.class, arena, arrow -> arrow.getOwner() instanceof AbstractSkeleton).isEmpty();
+            boolean cowHit = sp.serverLevel().getEntitiesOfClass(Cow.class, arena, cow -> cow.getHealth() < cow.getMaxHealth()).size() > 0;
             check("skeleton shot (arrow in flight or cow hit)", arrowFlying || cowHit);
         }), 5);
         add.add("sneak to leave", () -> mc.options.keyShift.setDown(true), 6);
@@ -117,7 +117,7 @@ final class PossessionAutotest {
         add.add("blaze fireball", () -> aimAndUse(mc), 3);
         add.add("check fireball", () -> onServer(sp -> {
             check("possessed blaze", sp.getVehicle() instanceof Blaze);
-            check("blaze shot a fireball", !sp.level().getEntitiesOfClass(SmallFireball.class, new AABB(-12, 145, -12, 12, 162, 12)).isEmpty());
+            check("blaze shot a fireball", !sp.serverLevel().getEntitiesOfClass(SmallFireball.class, new AABB(-12, 145, -12, 12, 162, 12)).isEmpty());
         }), 2);
         add.add("shot blaze", () -> shot.accept("54_possession_blaze_fireball"), 10);
         add.add("leave blaze", () -> mc.options.keyShift.setDown(true), 6);
@@ -131,7 +131,7 @@ final class PossessionAutotest {
             command.accept("summon minecraft:cow 0 150 -1 {NoAI:1b,PersistenceRequired:1b}");
         }, 3);
         add.add("possess zombie", () -> {
-            TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] ring on cooldown: {}", mc.player.getCooldowns().isOnCooldown(mc.player.getMainHandItem()));
+            TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] ring on cooldown: {}", mc.player.getCooldowns().isOnCooldown(mc.player.getMainHandItem().getItem()));
             aimAndUse(mc);
         }, 20);
         add.add("look up", () -> mc.player.setXRot(-60.0F), 3);
@@ -141,7 +141,7 @@ final class PossessionAutotest {
         add.add("left click on cow", () -> KeyMapping.click(mc.options.keyAttack.getKey()), 10);
         add.add("check melee", () -> onServer(sp -> {
             check("possessed zombie", sp.getVehicle() instanceof Zombie);
-            check("zombie hurt the cow", !sp.level().getEntitiesOfClass(Cow.class, new AABB(-12, 145, -12, 12, 162, 12), cow -> cow.getHealth() < cow.getMaxHealth()).isEmpty());
+            check("zombie hurt the cow", !sp.serverLevel().getEntitiesOfClass(Cow.class, new AABB(-12, 145, -12, 12, 162, 12), cow -> cow.getHealth() < cow.getMaxHealth()).isEmpty());
             check("player not hurt", sp.getHealth() >= sp.getMaxHealth());
         }), 5);
         add.add("shot zombie", () -> shot.accept("55_possession_zombie_hud"), 10);
@@ -166,8 +166,8 @@ final class PossessionAutotest {
         mc.gameMode.useItem(mc.player, InteractionHand.MAIN_HAND);
     }
 
-    private static List<Mannequin> bodies(ServerPlayer sp) {
-        return sp.level().getEntitiesOfClass(Mannequin.class, new AABB(-12, 145, -12, 12, 162, 12), m -> m.entityTags().contains("theabyss.possession_body"));
+    private static List<PossessionBodyEntity> bodies(ServerPlayer sp) {
+        return sp.serverLevel().getEntitiesOfClass(PossessionBodyEntity.class, new AABB(-12, 145, -12, 12, 162, 12), m -> m.getTags().contains("theabyss.possession_body"));
     }
 
     private static void check(String name, boolean ok) {

@@ -3,7 +3,9 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 1,
-  "ingredient": "theabyss:cobble_stone",
+  "ingredient": {
+    "item": "theabyss:cobble_stone"
+  },
   "result": {
     "id": "theabyss:stone"
   }

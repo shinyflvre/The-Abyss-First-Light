@@ -1,12 +1,12 @@
 package net.yezon.theabyss.block.flora;
 
+import com.mojang.serialization.MapCodec;
+import net.yezon.theabyss.block.AbyssShapes;
+import net.minecraft.world.level.LevelAccessor;
 import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.GrowingPlantBodyBlock;
 import net.minecraft.world.level.block.GrowingPlantHeadBlock;
@@ -18,7 +18,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class HangingPlantBodyBlock extends GrowingPlantBodyBlock {
     public static final BooleanProperty TOP = BooleanProperty.create("top");
-    private static final VoxelShape SHAPE = Block.column(14.0, 0.0, 16.0);
+    private static final VoxelShape SHAPE = AbyssShapes.column(14.0, 0.0, 16.0);
     private final Supplier<? extends Block> head;
 
     public HangingPlantBodyBlock(BlockBehaviour.Properties properties, Supplier<? extends Block> head) {
@@ -42,17 +42,8 @@ public class HangingPlantBodyBlock extends GrowingPlantBodyBlock {
     }
 
     @Override
-    protected BlockState updateShape(
-        BlockState state,
-        LevelReader level,
-        ScheduledTickAccess ticks,
-        BlockPos pos,
-        Direction directionToNeighbour,
-        BlockPos neighbourPos,
-        BlockState neighbourState,
-        RandomSource random
-    ) {
-        BlockState updated = super.updateShape(state, level, ticks, pos, directionToNeighbour, neighbourPos, neighbourState, random);
+    protected BlockState updateShape(BlockState state, Direction directionToNeighbour, BlockState neighbourState, LevelAccessor level, BlockPos pos, BlockPos neighbourPos) {
+        BlockState updated = super.updateShape(state, directionToNeighbour, neighbourState, level, pos, neighbourPos);
         return updated.is(this) ? withTop(updated, level, pos) : updated;
     }
 
@@ -60,5 +51,10 @@ public class HangingPlantBodyBlock extends GrowingPlantBodyBlock {
         HangingPlantBodyBlock body = (HangingPlantBodyBlock)state.getBlock();
         BlockState anchor = level.getBlockState(pos.relative(body.growthDirection.getOpposite()));
         return state.setValue(TOP, !anchor.is(body) && !anchor.is(body.head.get()));
+    }
+
+    @Override
+    protected MapCodec<? extends GrowingPlantBodyBlock> codec() {
+        return MapCodec.unit(this);
     }
 }

@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -23,8 +23,8 @@ import net.yezon.theabyss.ring.RingVisuals;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public final class MagicLights {
-    public static final Identifier EFFECT = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "magic_light");
-    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "textures/effect/magic_lights.png");
+    public static final ResourceLocation EFFECT = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "magic_light");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "textures/effect/magic_lights.png");
     private static final int MAX_LIGHTS = 16;
     private static final int PIXELS_PER_LIGHT = 3;
     private static final int WIDTH = 1 + MAX_LIGHTS * PIXELS_PER_LIGHT;
@@ -139,7 +139,7 @@ public final class MagicLights {
         if (LIGHTS.isEmpty()) {
             live = false;
             if (uploaded) {
-                texture.getPixels().setPixel(0, 0, 0);
+                texture.getPixels().setPixelRGBA(0, 0, 0);
                 texture.upload();
                 uploaded = false;
             }
@@ -154,21 +154,18 @@ public final class MagicLights {
         if (LIGHTS.size() > MAX_LIGHTS) {
             LIGHTS.sort(Comparator.comparingDouble((Light l) -> -l.score));
         }
-        if (texture == null) {
-            texture = new DynamicTexture(() -> "theabyss magic lights", WIDTH, 1, true);
-            mc.getTextureManager().register(TEXTURE, texture);
-        }
+        prepareTexture(mc);
         int count = Math.min(LIGHTS.size(), MAX_LIGHTS);
-        texture.getPixels().setPixel(0, 0, pixel(count, 0, 0, 255));
+        texture.getPixels().setPixelRGBA(0, 0, pixel(count, 0, 0, 255));
         for (int i = 0; i < count; i++) {
             Light l = LIGHTS.get(i);
             int p = 1 + i * PIXELS_PER_LIGHT;
             int x = packed(l.x - camera.x);
             int y = packed(l.y - camera.y);
             int z = packed(l.z - camera.z);
-            texture.getPixels().setPixel(p, 0, pixel(x >> 8, x & 255, y >> 8, y & 255));
-            texture.getPixels().setPixel(p + 1, 0, pixel(z >> 8, z & 255, Mth.clamp(Math.round(l.reach * REACH_BOOST * REACH_SCALE), 1, 255), Math.round(l.strength * 255.0F)));
-            texture.getPixels().setPixel(p + 2, 0, pixel(l.rgb >> 16 & 255, l.rgb >> 8 & 255, l.rgb & 255, 255));
+            texture.getPixels().setPixelRGBA(p, 0, pixel(x >> 8, x & 255, y >> 8, y & 255));
+            texture.getPixels().setPixelRGBA(p + 1, 0, pixel(z >> 8, z & 255, Mth.clamp(Math.round(l.reach * REACH_BOOST * REACH_SCALE), 1, 255), Math.round(l.strength * 255.0F)));
+            texture.getPixels().setPixelRGBA(p + 2, 0, pixel(l.rgb >> 16 & 255, l.rgb >> 8 & 255, l.rgb & 255, 255));
         }
         texture.upload();
         uploaded = true;
@@ -180,6 +177,14 @@ public final class MagicLights {
     }
 
     private static int pixel(int r, int g, int b, int a) {
-        return a << 24 | r << 16 | g << 8 | b;
+        return a << 24 | b << 16 | g << 8 | r;
+    }
+
+    public static void prepareTexture(Minecraft mc) {
+        if (texture == null) {
+            texture = new DynamicTexture(WIDTH, 1, true);
+            mc.getTextureManager().register(TEXTURE, texture);
+            texture.upload();
+        }
     }
 }

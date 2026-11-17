@@ -31,13 +31,13 @@ final class Dash {
         }
         if (tick >= ticks) {
             player.setDeltaMovement(dir.scale(0.25).add(0.0, Math.min(0.0, player.getDeltaMovement().y), 0.0));
-            player.syncVelocity = true;
+            player.hurtMarked = true;
             path.add(player.position());
             done.accept(path);
             return;
         }
         player.setDeltaMovement(dir.scale(speed).add(0.0, tick == 0 ? 0.12 : 0.0, 0.0));
-        player.syncVelocity = true;
+        player.hurtMarked = true;
         player.resetFallDistance();
         TheabyssMod.queueServerWork(1, () -> {
             path.add(player.position());

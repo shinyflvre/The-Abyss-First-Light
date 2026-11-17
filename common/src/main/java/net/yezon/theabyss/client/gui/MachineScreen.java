@@ -1,12 +1,12 @@
 package net.yezon.theabyss.client.gui;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.yezon.theabyss.block.entity.StationMachineBlockEntity;
+import net.yezon.theabyss.compat.GuiGraphicsCompat;
 import net.yezon.theabyss.world.inventory.MachineMenu;
 
 public class MachineScreen<T extends MachineMenu> extends AbstractContainerScreen<T> {
@@ -14,23 +14,25 @@ public class MachineScreen<T extends MachineMenu> extends AbstractContainerScree
     private static final int BAR_X = 100;
     private static final int BAR_Y = 27;
     private static final int BAR_H = 16;
-    private final Identifier background;
+    private final ResourceLocation background;
     private final Component label;
     private final int labelColour;
 
-    public MachineScreen(T menu, Inventory inventory, Component title, Identifier background, Component label, int labelColour) {
-        super(menu, inventory, title, 176, 166);
+    public MachineScreen(T menu, Inventory inventory, Component title, ResourceLocation background, Component label, int labelColour) {
+        super(menu, inventory, title);
+        this.imageWidth = 176;
+        this.imageHeight = 166;
+        this.inventoryLabelY = this.imageHeight - 94;
         this.background = background;
         this.label = label;
         this.labelColour = labelColour;
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractBackground(graphics, mouseX, mouseY, partialTick);
+    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         int x0 = this.leftPos - 1;
         int y0 = this.topPos;
-        graphics.blit(RenderPipelines.GUI_TEXTURED, this.background, x0, y0, 0.0F, 0.0F, 256, 256, 256, 256);
+        GuiGraphicsCompat.blit(graphics, this.background, x0, y0, 0.0F, 0.0F, 256, 256, 256, 256);
         this.progressLine(graphics, x0, y0, this.menu.progress());
         int bx = this.leftPos + BAR_X;
         int by = this.topPos + BAR_Y;
@@ -41,7 +43,7 @@ public class MachineScreen<T extends MachineMenu> extends AbstractContainerScree
         }
     }
 
-    private void progressLine(GuiGraphicsExtractor graphics, int x0, int y0, float progress) {
+    private void progressLine(GuiGraphics graphics, int x0, int y0, float progress) {
         if (progress <= 0.0F) {
             return;
         }
@@ -69,14 +71,14 @@ public class MachineScreen<T extends MachineMenu> extends AbstractContainerScree
         graphics.fill(x0 + headX - 1, y0 + headY - 1, x0 + headX + 2, y0 + headY + 2, 0xFFFFFFFF);
     }
 
-    private static void segment(GuiGraphicsExtractor graphics, int x1, int y1, int x2, int y2) {
+    private static void segment(GuiGraphics graphics, int x1, int y1, int x2, int y2) {
         graphics.fill(x1 - 1, y1 - 1, x2 + 2, y2 + 2, 0xFF6FF3FF);
         graphics.fill(x1, y1, x2 + 1, y2 + 1, 0xFFFFFFFF);
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-        graphics.text(this.font, this.label, 6, 7, this.labelColour, false);
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        GuiGraphicsCompat.text(graphics, this.font, this.label, 6, 7, this.labelColour, false);
         String key = switch (this.menu.state()) {
             case StationMachineBlockEntity.NEEDS_RESEARCH -> "gui.theabyss.station.needs_research";
             case StationMachineBlockEntity.NO_ENERGY -> "gui.theabyss.station.no_energy";
@@ -85,17 +87,19 @@ public class MachineScreen<T extends MachineMenu> extends AbstractContainerScree
         };
         if (key != null) {
             Component hint = Component.translatable(key);
-            graphics.text(this.font, hint, (this.imageWidth - this.font.width(hint)) / 2, 72, 0xFFFF8A8A, false);
+            GuiGraphicsCompat.text(graphics, this.font, hint, (this.imageWidth - this.font.width(hint)) / 2, 72, 0xFFFF8A8A, false);
         }
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
+        this.renderTooltip(graphics, mouseX, mouseY);
+        boolean itemTooltip = this.menu.getCarried().isEmpty() && this.hoveredSlot != null && this.hoveredSlot.hasItem();
         int bx = this.leftPos + BAR_X;
         int by = this.topPos + BAR_Y;
-        if (mouseX >= bx - 1 && mouseX <= bx + 4 && mouseY >= by && mouseY <= by + BAR_H) {
-            graphics.setTooltipForNextFrame(Component.translatable("gui.theabyss.station.uses", this.menu.usesLeft()), mouseX, mouseY);
+        if (!itemTooltip && mouseX >= bx - 1 && mouseX <= bx + 4 && mouseY >= by && mouseY <= by + BAR_H) {
+            graphics.renderTooltip(this.font, Component.translatable("gui.theabyss.station.uses", this.menu.usesLeft()), mouseX, mouseY);
         }
     }
 }

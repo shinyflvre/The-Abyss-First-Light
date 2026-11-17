@@ -1,21 +1,21 @@
 package net.yezon.theabyss.client.screens;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.Identifier;
+import net.yezon.theabyss.compat.GuiGraphicsCompat;
+import net.minecraft.resources.ResourceLocation;
 import net.yezon.theabyss.network.TheabyssModVariables;
 
 public final class SomniumBarOverlay {
-    private static final Identifier MANA_NONE = Identifier.fromNamespaceAndPath("theabyss", "textures/screens/mana_none_icon.png");
-    private static final Identifier MANA_HALF = Identifier.fromNamespaceAndPath("theabyss", "textures/screens/mana_half_icon.png");
-    private static final Identifier MANA_FULL = Identifier.fromNamespaceAndPath("theabyss", "textures/screens/mana_icon.png");
+    private static final ResourceLocation MANA_NONE = ResourceLocation.fromNamespaceAndPath("theabyss", "textures/screens/mana_none_icon.png");
+    private static final ResourceLocation MANA_HALF = ResourceLocation.fromNamespaceAndPath("theabyss", "textures/screens/mana_half_icon.png");
+    private static final ResourceLocation MANA_FULL = ResourceLocation.fromNamespaceAndPath("theabyss", "textures/screens/mana_icon.png");
     private static final int ICONS = 10;
 
     private SomniumBarOverlay() {
     }
 
-    public static void render(GuiGraphicsExtractor graphics, LocalPlayer entity) {
+    public static void render(GuiGraphics graphics, LocalPlayer entity) {
         TheabyssModVariables.PlayerVariables vars = TheabyssModVariables.getPlayerVariables(entity);
         int hudX = (int)vars.HudX;
         int hudY = (int)vars.HudY;
@@ -43,7 +43,7 @@ public final class SomniumBarOverlay {
         }
     }
 
-    private static void icon(GuiGraphicsExtractor graphics, Identifier texture, int x, int y) {
-        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0.0F, 0.0F, 9, 9, 9, 9);
+    private static void icon(GuiGraphics graphics, ResourceLocation texture, int x, int y) {
+        GuiGraphicsCompat.blit(graphics, texture, x, y, 0.0F, 0.0F, 9, 9, 9, 9);
     }
 }

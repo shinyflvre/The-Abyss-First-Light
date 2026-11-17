@@ -1,7 +1,7 @@
 package net.yezon.theabyss.events;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -16,7 +16,7 @@ import net.yezon.theabyss.network.TheabyssModVariables;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID)
 public final class FearInAbyssEvents {
-    private static final ResourceKey<Level> THE_ABYSS = ResourceKey.create(Registries.DIMENSION, Identifier.parse("theabyss:the_abyss"));
+    private static final ResourceKey<Level> THE_ABYSS = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse("theabyss:the_abyss"));
     private static final double CHANCE_PER_TICK = 9.5E-5;
 
     private FearInAbyssEvents() {
@@ -27,7 +27,7 @@ public final class FearInAbyssEvents {
         if (!(event.getEntity() instanceof ServerPlayer player) || player.level().dimension() != THE_ABYSS) {
             return;
         }
-        GameType mode = player.gameMode();
+        GameType mode = player.gameMode.getGameModeForPlayer();
         if ((mode == GameType.SURVIVAL || mode == GameType.ADVENTURE)
             && TheabyssModVariables.getPlayerVariables(player).FearEffect
             && !player.hasEffect(TheabyssModMobEffects.ANTI_FEAR_POTION.getDelegate())

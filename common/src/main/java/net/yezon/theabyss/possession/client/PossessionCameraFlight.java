@@ -1,12 +1,11 @@
 package net.yezon.theabyss.possession.client;
 
-import java.lang.reflect.Field;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Marker;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.Dist;
@@ -16,6 +15,7 @@ import net.yezon.theabyss.platform.client.event.ClientTickEvent;
 import net.yezon.theabyss.platform.client.event.RenderFrameEvent;
 import net.yezon.theabyss.platform.client.event.ViewportEvent;
 import net.yezon.theabyss.TheabyssMod;
+import net.yezon.theabyss.mixin.client.CameraEyeHeightAccessor;
 import net.yezon.theabyss.possession.PossessionData;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
@@ -37,10 +37,6 @@ public final class PossessionCameraFlight {
     private static float fromYaw;
     private static float fromPitch;
 
-    private static Field eyeHeightField;
-    private static Field eyeHeightOldField;
-    private static boolean reflectionFailed;
-
     private PossessionCameraFlight() {
     }
 
@@ -53,7 +49,7 @@ public final class PossessionCameraFlight {
     }
 
     static void start(Minecraft mc, Entity mob) {
-        eye = new Marker(EntityTypes.MARKER, mc.level);
+        eye = new Marker(EntityType.MARKER, mc.level);
         targetId = mob.getId();
         flownTo = mob.getId();
         from = lastFreeEye;
@@ -117,7 +113,7 @@ public final class PossessionCameraFlight {
         if (mob == null || eye == null) {
             return 0.0F;
         }
-        double distance = eye.position().add(0.0, cameraEyeHeight(mc.gameRenderer.mainCamera(), 1.0F), 0.0).distanceTo(mob.getEyePosition());
+        double distance = eye.position().add(0.0, cameraEyeHeight(mc.gameRenderer.getMainCamera(), 1.0F), 0.0).distanceTo(mob.getEyePosition());
         return smoothstep(HEAD_RADIUS, HEAD_RADIUS + 1.5F, (float)distance);
     }
 
@@ -139,7 +135,7 @@ public final class PossessionCameraFlight {
         float yaw = Mth.rotLerp(settle, Mth.rotLerp(turnIn, fromYaw, lookYaw), playerYaw);
         float pitch = Mth.lerp(settle, Mth.lerp(turnIn, fromPitch, lookPitch), playerPitch);
 
-        double cameraEye = cameraEyeHeight(mc.gameRenderer.mainCamera(), partialTick);
+        double cameraEye = cameraEyeHeight(mc.gameRenderer.getMainCamera(), partialTick);
         eye.setPos(pos.x, pos.y - cameraEye, pos.z);
         eye.xo = eye.getX();
         eye.yo = eye.getY();
@@ -171,21 +167,7 @@ public final class PossessionCameraFlight {
     }
 
     private static double cameraEyeHeight(Camera camera, float partialTick) {
-        if (reflectionFailed) {
-            return 0.0;
-        }
-        try {
-            if (eyeHeightField == null) {
-                eyeHeightField = Camera.class.getDeclaredField("eyeHeight");
-                eyeHeightOldField = Camera.class.getDeclaredField("eyeHeightOld");
-                eyeHeightField.setAccessible(true);
-                eyeHeightOldField.setAccessible(true);
-            }
-            return Mth.lerp(partialTick, eyeHeightOldField.getFloat(camera), eyeHeightField.getFloat(camera));
-        } catch (ReflectiveOperationException | RuntimeException e) {
-            reflectionFailed = true;
-            TheabyssMod.LOGGER.warn("Possession camera flight: camera eye height not readable, flight may be a bit off", e);
-            return 0.0;
-        }
+        CameraEyeHeightAccessor eyeHeight = (CameraEyeHeightAccessor)camera;
+        return Mth.lerp(partialTick, eyeHeight.theabyss$eyeHeightOld(), eyeHeight.theabyss$eyeHeight());
     }
 }

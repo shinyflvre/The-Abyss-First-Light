@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(PointedDripstoneBlock.class)
 public abstract class PointedDripstoneFluidMixin {
     @WrapOperation(
-        method = "getDripParticle",
+        method = "spawnDripParticle(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/material/Fluid;)V",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/material/Fluid;is(Lnet/minecraft/tags/TagKey;)Z")
     )
     private static boolean theabyss$waterDripBelowOwnFluids(Fluid fluid, TagKey<Fluid> tag, Operation<Boolean> original) {

@@ -8,8 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.monster.zombie.Husk;
+import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.entity.CrystalNeedleEntity;
@@ -34,7 +33,7 @@ final class CrystalRingAutotest {
             command.accept("time set noon");
             command.accept("weather clear");
             command.accept("difficulty normal");
-            command.accept("gamerule spawn_mobs false");
+            command.accept("gamerule doMobSpawning false");
         }, 60);
         add.add("ring player", () -> {
             command.accept("execute in minecraft:overworld run tp @s 0.5 200 -6 0 0");
@@ -67,22 +66,22 @@ final class CrystalRingAutotest {
         }), 2);
         add.add("ring level reset", () -> command.accept("ta2 somnium level reset"), 4);
         add.add("ring slash demo", () -> onServer(sp -> {
-            CrystalSlashEntity slash = TheabyssModEntities.CRYSTAL_SLASH.get().create(sp.level(), EntitySpawnReason.MOB_SUMMONED);
+            CrystalSlashEntity slash = TheabyssModEntities.CRYSTAL_SLASH.get().create(sp.serverLevel());
             if (slash != null) {
                 slash.setPos(-7.0, 200.4, -2.0);
                 slash.launch(sp, new Vec3(CrystalSlashEntity.SPEED, 0.0, 0.0), 1.0F);
-                sp.level().addFreshEntity(slash);
+                sp.serverLevel().addFreshEntity(slash);
             }
         }), 6);
         add.add("ring shot slash demo", () -> shot.accept("102_ring_1b_slash_from_above"), 3);
         add.add("ring shot slash demo late", () -> shot.accept("102_ring_1c_slash_from_above_wide"), 2);
         add.add("ring needle demo", () -> onServer(sp -> {
             for (int i = 0; i < 5; i++) {
-                CrystalNeedleEntity needle = TheabyssModEntities.CRYSTAL_NEEDLE.get().create(sp.level(), EntitySpawnReason.MOB_SUMMONED);
+                CrystalNeedleEntity needle = TheabyssModEntities.CRYSTAL_NEEDLE.get().create(sp.serverLevel());
                 if (needle != null) {
                     needle.setPos(-12.0 - i * 0.7, 200.8 + i * 0.35, -1.5 + i * 0.2);
                     needle.launch(sp, new Vec3(CrystalNeedleEntity.SPEED, 0.0, 0.0), 1.0F, -36.0F + i * 72.0F);
-                    sp.level().addFreshEntity(needle);
+                    sp.serverLevel().addFreshEntity(needle);
                 }
             }
         }), 4);
@@ -109,13 +108,13 @@ final class CrystalRingAutotest {
             });
             sp.setHealth(8.0F);
             sp.getFoodData().setFoodLevel(12);
-            sp.getCooldowns().removeCooldown(sp.getCooldowns().getCooldownGroup(sp.getMainHandItem()));
+            sp.getCooldowns().removeCooldown(sp.getMainHandItem().getItem());
             playerHealth = 8.0F;
         }), 10);
     }
 
     private static List<Husk> husks(ServerPlayer sp) {
-        return sp.level().getEntitiesOfClass(Husk.class, new AABB(sp.blockPosition()).inflate(30));
+        return sp.serverLevel().getEntitiesOfClass(Husk.class, new AABB(sp.blockPosition()).inflate(30));
     }
 
     private static void check(String name, boolean ok) {

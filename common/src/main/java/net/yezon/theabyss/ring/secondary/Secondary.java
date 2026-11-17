@@ -12,7 +12,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.SwingAnimation;
 import net.yezon.theabyss.network.TheabyssModVariables;
 import net.yezon.theabyss.ring.Gauntlet;
 import net.yezon.theabyss.ring.RingCast;
@@ -62,14 +61,14 @@ public final class Secondary {
         }
         TheabyssModVariables.PlayerVariables vars = TheabyssModVariables.getPlayerVariables(player);
         if (SomniumUpgrades.level(vars, spec.kind()) < spec.level()) {
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.secondary.locked", Component.translatable(spec.name()),
-                Component.translatable("gauntlet.theabyss.stat." + spec.kind().id), spec.level()));
+            player.displayClientMessage(Component.translatable("ring.theabyss.secondary.locked", Component.translatable(spec.name()),
+                Component.translatable("gauntlet.theabyss.stat." + spec.kind().id), spec.level()), true);
             return;
         }
         long now = player.level().getGameTime();
         Long ready = READY.getOrDefault(player.getUUID(), Map.of()).get(ring.getItem());
         if (ready != null && now < ready) {
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.secondary.cooldown", Component.translatable(spec.name()), (int)Math.ceil((ready - now) / 20.0)));
+            player.displayClientMessage(Component.translatable("ring.theabyss.secondary.cooldown", Component.translatable(spec.name()), (int)Math.ceil((ready - now) / 20.0)), true);
             return;
         }
         if (spec.raw()) {
@@ -98,7 +97,7 @@ public final class Secondary {
         InteractionHand hand = player.getOffhandItem() == ring
             || Gauntlet.is(player.getOffhandItem()) && !Gauntlet.is(player.getMainHandItem()) && player.getMainHandItem().getItem() != ring.getItem()
             ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
-        player.swing(hand, SwingAnimation.DEFAULT, true);
+        player.swing(hand, true);
     }
 
     public static void tooltip(Item ring, Consumer<Component> tooltip) {

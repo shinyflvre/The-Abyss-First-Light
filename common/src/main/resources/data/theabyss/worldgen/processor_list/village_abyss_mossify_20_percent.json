@@ -5,14 +5,16 @@
       "rules": [
         {
           "input_predicate": {
-            "block": "theabyss:cobble_stone",
             "predicate_type": "minecraft:random_block_match",
+            "block": "theabyss:cobble_stone",
             "probability": 0.2
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": "theabyss:cobble_stone"
+          "output_state": {
+            "Name": "theabyss:cobble_stone"
+          }
         }
       ]
     },

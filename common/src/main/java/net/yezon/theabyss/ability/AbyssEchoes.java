@@ -13,17 +13,16 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
@@ -84,22 +83,22 @@ public final class AbyssEchoes {
         if (!player.getMainHandItem().is(TheabyssModItems.ABYSS_SWORD.get()) || player.isSpectator()) {
             return;
         }
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         long now = level.getGameTime();
         Long ready = READY_AT.get(player.getUUID());
         if (ready != null && now < ready) {
-            player.sendOverlayMessage(Component.translatable("message.theabyss.abyss_echoes.cooldown", (int)Math.ceil((ready - now) / 20.0)));
+            player.displayClientMessage(Component.translatable("message.theabyss.abyss_echoes.cooldown", (int)Math.ceil((ready - now) / 20.0)), true);
             return;
         }
         LivingEntity target = aimedAt(player);
         if (target == null) {
-            player.sendOverlayMessage(Component.translatable("message.theabyss.abyss_echoes.no_target"));
+            player.displayClientMessage(Component.translatable("message.theabyss.abyss_echoes.no_target"), true);
             return;
         }
         TheabyssModVariables.PlayerVariables vars = TheabyssModVariables.getPlayerVariables(player);
         double cost = SOMNIUM_COST * SomniumUpgrades.costFactor(vars);
         if (vars.Mana < cost) {
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.low_energy"));
+            player.displayClientMessage(Component.translatable("ring.theabyss.low_energy"), true);
             return;
         }
         double remaining = vars.Mana - cost;
@@ -115,17 +114,17 @@ public final class AbyssEchoes {
         for (int i = 0; i < 2; i++) {
             int sign = i == 0 ? 1 : -1;
             Vec3 at = freeSpot(level, player.position().add(side.scale(2.0 * sign)), player);
-            AbyssEchoEntity echo = TheabyssModEntities.ABYSS_ECHO.get().create(level, EntitySpawnReason.MOB_SUMMONED);
+            AbyssEchoEntity echo = TheabyssModEntities.ABYSS_ECHO.get().create(level);
             if (echo == null || at == null) {
                 continue;
             }
             echo.setOwnerId(player.getUUID().toString());
-            echo.snapTo(at.x, at.y, at.z, player.getYRot(), player.getXRot());
+            echo.moveTo(at.x, at.y, at.z, player.getYRot(), player.getXRot());
             level.addFreshEntity(echo);
             level.sendParticles(ParticleTypes.LARGE_SMOKE, at.x, at.y + 1.0, at.z, 12, 0.3, 0.7, 0.3, 0.02);
             ECHOES.add(new Echo(echo, player, target, 6 + i * 10, aerial, sign));
         }
-        player.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, true);
+        player.swing(InteractionHand.MAIN_HAND, true);
         level.playSound(null, player.blockPosition(), SoundEvents.ILLUSIONER_MIRROR_MOVE, SoundSource.PLAYERS, 1.2F, 0.8F);
     }
 
@@ -190,14 +189,14 @@ public final class AbyssEchoes {
         }
         if (step < LUNGE_TICKS) {
             move(entity, echo.from, echo.to, step, LUNGE_TICKS);
-            entity.swing(step % 2 == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND, SwingAnimation.DEFAULT, true);
+            entity.swing(step % 2 == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND, true);
             Vec3 direction = echo.to.subtract(echo.from).normalize();
             for (LivingEntity victim : entity.level().getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(1.0),
                 v -> v.isAlive() && v != echo.player && !(v instanceof AbyssEchoEntity))) {
                 if (echo.hit.add(victim.getId()) && entity.level() instanceof ServerLevel level) {
-                    victim.hurtServer(level, echo.player.damageSources().playerAttack(echo.player), DAMAGE);
-                    victim.knockback(0.8, -direction.x, -direction.z, echo.player.damageSources().playerAttack(echo.player), 0.0F);
-                    victim.needsSync = true;
+                    victim.hurt(echo.player.damageSources().playerAttack(echo.player), DAMAGE);
+                    victim.knockback(0.8, -direction.x, -direction.z);
+                    victim.hasImpulse = true;
                     playAt(entity, modSound("nightblade_attack"), 1.0F, 1.2F);
                     level.sendParticles(ParticleTypes.SWEEP_ATTACK, victim.getX(), victim.getY() + 1.0, victim.getZ(), 1, 0.0, 0.0, 0.0, 0.0);
                 }
@@ -214,7 +213,7 @@ public final class AbyssEchoes {
             entity.setPos(free.x, free.y, free.z);
         }
         entity.setDeltaMovement(to.subtract(from).scale(1.0 / steps));
-        entity.needsSync = true;
+        entity.hasImpulse = true;
     }
 
     private static Vec3 around(AbyssEchoEntity entity, LivingEntity target, Vec3 offset, boolean aerial) {
@@ -260,7 +259,7 @@ public final class AbyssEchoes {
     }
 
     private static SoundEvent modSound(String name) {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, name));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, name));
     }
 
     private static void playAt(AbyssEchoEntity entity, SoundEvent sound, float volume, float pitch) {

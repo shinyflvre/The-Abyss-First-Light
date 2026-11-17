@@ -3,12 +3,12 @@ package net.yezon.theabyss.client.particle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.util.RandomSource;
 
-public class NodeParticleParticle extends SingleQuadParticle {
+public class NodeParticleParticle extends TextureSheetParticle {
     private final SpriteSet spriteSet;
 
     public static NodeParticleParticle.NodeParticleParticleProvider provider(SpriteSet spriteSet) {
@@ -16,7 +16,8 @@ public class NodeParticleParticle extends SingleQuadParticle {
     }
 
     protected NodeParticleParticle(ClientLevel world, double x, double y, double z, double vx, double vy, double vz, SpriteSet spriteSet) {
-        super(world, x, y, z, spriteSet.first());
+        super(world, x, y, z);
+        this.setSprite(spriteSet.get(0, 1));
         this.spriteSet = spriteSet;
         this.setSize(0.01F, 0.01F);
         this.lifetime = 20;
@@ -29,13 +30,13 @@ public class NodeParticleParticle extends SingleQuadParticle {
     }
 
     @Override
-    public int getLightCoords(float partialTick) {
+    public int getLightColor(float partialTick) {
         return 15728880;
     }
 
     @Override
-    public SingleQuadParticle.Layer getLayer() {
-        return SingleQuadParticle.Layer.OPAQUE;
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     @Override
@@ -55,8 +56,7 @@ public class NodeParticleParticle extends SingleQuadParticle {
 
         @Override
         public Particle createParticle(
-            SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random
-        ) {
+            SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             return new NodeParticleParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
         }
     }

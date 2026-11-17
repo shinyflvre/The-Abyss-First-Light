@@ -1,7 +1,7 @@
 package net.yezon.theabyss.item;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.yezon.theabyss.TheabyssMod;
@@ -24,6 +24,6 @@ public final class TheabyssModItemTags {
     }
 
     private static TagKey<Item> repairs(String name) {
-        return TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "repairs/" + name));
+        return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "repairs/" + name));
     }
 }

@@ -2,7 +2,7 @@ package net.yezon.theabyss.events;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
@@ -67,7 +67,7 @@ public final class ApplyRingOfFangsEvents {
     }
 
     private static void summonFang(ServerLevel level, double x, double y, double z, LivingEntity caster, float damage) {
-        NightbladeSpikeEntity spike = TheabyssModEntities.NIGHTBLADE_SPIKE.get().create(level, EntitySpawnReason.TRIGGERED);
+        NightbladeSpikeEntity spike = TheabyssModEntities.NIGHTBLADE_SPIKE.get().create(level);
         if (spike != null) {
             spike.setPos(x, y, z);
             spike.setupRing(caster, 4, damage, (float)(caster.getRandom().nextDouble() * 360.0));

@@ -3,14 +3,14 @@ package net.yezon.theabyss.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.world.entity.monster.Enderman;
+import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.level.Level;
 import net.yezon.theabyss.entity.EndSpiderEntity;
 import net.yezon.theabyss.entity.EndSpiderFx;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(Enderman.class)
+@Mixin(EnderMan.class)
 public abstract class EndermanMixin {
     @WrapOperation(method = "aiStep", at = @At(value = "INVOKE",
         target = "Lnet/minecraft/world/level/Level;addParticle(Lnet/minecraft/core/particles/ParticleOptions;DDDDDD)V"))

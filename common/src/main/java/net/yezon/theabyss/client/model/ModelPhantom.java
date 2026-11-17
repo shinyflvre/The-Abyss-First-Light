@@ -1,6 +1,6 @@
 package net.yezon.theabyss.client.model;
 
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -9,21 +9,24 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.yezon.theabyss.client.renderer.InfectedPhantomRenderState;
 import net.yezon.theabyss.entity.InfectedPhantomEntity;
 
-public class ModelPhantom<S extends LivingEntityRenderState> extends EntityModel<S> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath("theabyss", "model_phantom"), "main");
+public class ModelPhantom<T extends Entity> extends HierarchicalModel<T> {
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("theabyss", "model_phantom"), "main");
     public final ModelPart right_arm;
     public final ModelPart left_arm;
     public final ModelPart mob_head;
     public final ModelPart body;
 
+    private final ModelPart root;
+    public InfectedPhantomRenderState phantom;
+
     public ModelPhantom(ModelPart root) {
-        super(root);
+        this.root = root;
         this.right_arm = root.getChild("right_arm");
         this.left_arm = root.getChild("left_arm");
         this.mob_head = root.getChild("mob_head");
@@ -126,20 +129,17 @@ public class ModelPhantom<S extends LivingEntityRenderState> extends EntityModel
     }
 
     @Override
-    public void setupAnim(S state) {
-        super.setupAnim(state);
-        float limbSwing = state.walkAnimationPos;
-        float limbSwingAmount = state.walkAnimationSpeed;
-        float netHeadYaw = state.yRot;
-        float headPitch = state.xRot;
-        float idle = state.ageInTicks;
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.root.getAllParts().forEach(ModelPart::resetPose);
+        float idle = ageInTicks;
         this.right_arm.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * limbSwingAmount - 0.12F + Mth.sin(idle * 0.07F) * 0.08F;
         this.left_arm.xRot = Mth.cos(limbSwing * 0.6662F) * limbSwingAmount - 0.12F + Mth.sin(idle * 0.07F + 1.3F) * 0.08F;
         this.right_arm.zRot = 0.1F + Mth.sin(idle * 0.05F) * 0.05F;
         this.left_arm.zRot = -0.1F - Mth.sin(idle * 0.05F + 0.8F) * 0.05F;
         this.mob_head.yRot = netHeadYaw / (180.0F / (float)Math.PI);
         this.mob_head.xRot = headPitch / (180.0F / (float)Math.PI);
-        if (state instanceof InfectedPhantomRenderState phantom && phantom.attack != InfectedPhantomEntity.NONE) {
+        InfectedPhantomRenderState phantom = this.phantom;
+        if (phantom != null && phantom.attack != InfectedPhantomEntity.NONE) {
             this.attack(phantom.attack, phantom.attackAge);
         }
     }
@@ -188,5 +188,10 @@ public class ModelPhantom<S extends LivingEntityRenderState> extends EntityModel
             this.left_arm.yRot = Mth.lerp(reach, this.left_arm.yRot, 0.25F);
             this.mob_head.xRot = Mth.lerp(reach, this.mob_head.xRot, 0.25F);
         }
+    }
+
+    @Override
+    public ModelPart root() {
+        return this.root;
     }
 }

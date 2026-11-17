@@ -7,8 +7,7 @@ public final class ClientHooks {
     private ClientHooks() {
     }
 
-    public static float getDetachedCameraDistance(Camera camera, boolean flipped, float entityScale, float entityDistance, float vehicleEntityScale,
-        float vehicleDistance) {
-        return ClientPlatformHooks.get().detachedCameraDistance(camera, flipped, entityScale, entityDistance, vehicleEntityScale, vehicleDistance);
+    public static float getDetachedCameraDistance(Camera camera, boolean flipped, float entityScale, float distance) {
+        return ClientPlatformHooks.get().detachedCameraDistance(camera, flipped, entityScale, distance);
     }
 }

@@ -48,7 +48,7 @@ public final class Overcharge {
     }
 
     static boolean cast(ServerPlayer player, ItemStack ring, TheabyssModVariables.PlayerVariables vars) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         CHARGED.put(player.getUUID(), new Charge(CHARGES, level.getGameTime() + DURATION));
         RingVisuals.thunderStrike(level, player.position());
         RingVisuals.sound(level, player.position(), TheabyssModSounds.NIGHTBLADE_STORM_STRIKE.get(), 1.6F, 1.3F);
@@ -68,7 +68,7 @@ public final class Overcharge {
             return;
         }
         Charge charge = CHARGED.get(player.getUUID());
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         if (charge == null || level.getGameTime() > charge.until()) {
             CHARGED.remove(player.getUUID());
             return;
@@ -97,12 +97,12 @@ public final class Overcharge {
         RingVisuals.thunderStrike(level, at);
         RingVisuals.sound(level, at, TheabyssModSounds.NIGHTBLADE_STORM_STRIKE.get(), 2.0F, 1.1F);
         DamageSource lightning = new DamageSource(level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.LIGHTNING_BOLT), null, player);
-        target.damageCooldownTime = 0;
-        target.hurtServer(level, lightning, damage);
+        target.invulnerableTime = 0;
+        target.hurt(lightning, damage);
         target.igniteForSeconds(3.0F);
         for (LivingEntity near : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(2.5),
             e -> e != target && e != player && e.isAlive() && !RingMode.spares(player, e) && !RingMode.summon(e))) {
-            near.hurtServer(level, lightning, damage * 0.5F);
+            near.hurt(lightning, damage * 0.5F);
         }
     }
 }

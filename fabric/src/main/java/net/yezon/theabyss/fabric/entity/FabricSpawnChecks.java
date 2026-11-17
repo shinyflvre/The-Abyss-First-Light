@@ -2,7 +2,7 @@ package net.yezon.theabyss.fabric.entity;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
@@ -14,7 +14,7 @@ public final class FabricSpawnChecks {
     private FabricSpawnChecks() {
     }
 
-    public static boolean checkSpawnRules(Mob mob, LevelAccessor level, EntitySpawnReason reason, Operation<Boolean> original,
+    public static boolean checkSpawnRules(Mob mob, LevelAccessor level, MobSpawnType reason, Operation<Boolean> original,
         LocalRef<MobSpawnEvent.PositionCheck.Result> shared) {
         MobSpawnEvent.PositionCheck.Result result = MobSpawnEvent.PositionCheck.Result.DEFAULT;
         if (level instanceof ServerLevelAccessor serverLevel && AbyssEventBus.hasListeners(MobSpawnEvent.PositionCheck.class)) {

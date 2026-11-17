@@ -3,7 +3,9 @@
   "category": "misc",
   "group": "sticks",
   "key": {
-    "#": "theabyss:slimed_planks"
+    "#": {
+      "item": "theabyss:slimed_planks"
+    }
   },
   "pattern": [
     "#",

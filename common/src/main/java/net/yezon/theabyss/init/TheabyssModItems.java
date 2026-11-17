@@ -1,16 +1,17 @@
 package net.yezon.theabyss.init;
 
+import net.yezon.theabyss.item.AbyssFuels;
+import net.minecraft.world.item.ItemNameBlockItem;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.EntityType;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DoubleHighBlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProvider;
-import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 import net.yezon.theabyss.platform.registries.DeferredBlock;
 import net.yezon.theabyss.platform.registries.DeferredItem;
 import net.yezon.theabyss.platform.registries.DeferredRegister;
@@ -203,8 +204,6 @@ import net.yezon.theabyss.item.WarpedPowderItem;
 
 public class TheabyssModItems {
     public static final DeferredRegister.Items REGISTRY = DeferredRegister.createItems(TheabyssMod.MODID);
-    private static final ResourceKey<ContextIntProvider> LORAN_BURN_TIME = cookingTime("loran");
-    private static final ResourceKey<ContextIntProvider> LORAN_ORE_BURN_TIME = cookingTime("loran_ore");
     public static final DeferredItem<Item> FUSION_SWORD = REGISTRY.registerItem("fusion_sword", FusionSwordItem::new);
     public static final DeferredItem<Item> UNORITHE_SWORD = REGISTRY.registerItem("unorithe_sword", UnoritheSwordItem::new);
     public static final DeferredItem<Item> PHANTOM_SWORD = REGISTRY.registerItem("phantom_sword", PhantomSwordItem::new);
@@ -243,7 +242,7 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> ABERYTHE_ARMOR_LEGGINGS = REGISTRY.registerItem("aberythe_armor_leggings", AberytheArmorItem.Leggings::new);
     public static final DeferredItem<Item> ABERYTHE_ARMOR_BOOTS = REGISTRY.registerItem("aberythe_armor_boots", AberytheArmorItem.Boots::new);
     public static final DeferredItem<Item> GLACERYTHE_GEM = REGISTRY.registerItem("glacerythe_gem", GlacerytheGemItem::new);
-    public static final DeferredItem<Item> LORAN = REGISTRY.registerItem("loran", LoranItem::new, p -> p.cookingFuel(LORAN_BURN_TIME));
+    public static final DeferredItem<Item> LORAN = AbyssFuels.fuel(REGISTRY.registerItem("loran", LoranItem::new), 2600);
     public static final DeferredItem<Item> IGNISITHE_GEM = REGISTRY.registerItem("ignisithe_gem", IgnisitheGemItem::new);
     public static final DeferredItem<Item> LORAN_ENERGY = REGISTRY.registerItem("loran_energy", LoranEnergyItem::new);
     public static final DeferredItem<Item> INCORYTHE_GEM = REGISTRY.registerItem("incorythe_gem", IncorytheGemItem::new);
@@ -269,10 +268,10 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> ROKA_HORN = REGISTRY.registerItem("roka_horn", RokaHornItem::new);
     public static final DeferredItem<Item> ARTIFACT_OF_PHANTOMS = REGISTRY.registerItem("artifact_of_phantoms", ArtifactOfPhantomsItem::new);
     public static final DeferredItem<Item> ABYSS_ENCHANTED_BOOK = REGISTRY.registerItem("abyss_enchanted_book", net.yezon.theabyss.item.AbyssEnchantedBookItem::new);
-    public static final DeferredItem<Item> NIGHTGROVE_LONGBOW = REGISTRY.registerItem("nightgrove_longbow", p -> new AbyssBowItem(p, "nightgrove_longbow", 2.0F, 1.0F),
-        p -> p.durability(AbyssBowItem.DURABILITY).enchantable(1).cookingFuel(ContextIntProviders.COOKING_TIME_WOOD_ITEMS_SMALL));
+    public static final DeferredItem<Item> NIGHTGROVE_LONGBOW = AbyssFuels.fuel(REGISTRY.registerItem("nightgrove_longbow", p -> new AbyssBowItem(p, "nightgrove_longbow", 2.0F, 1.0F),
+        p -> p.durability(AbyssBowItem.DURABILITY)), AbyssFuels.WOOD_ITEMS_SMALL);
     public static final DeferredItem<Item> CRYSTAL_BOW = REGISTRY.registerItem("crystal_bow", p -> new AbyssBowItem(p, "crystal_bow", 1.0F, 1.25F),
-        p -> p.durability(AbyssBowItem.DURABILITY).enchantable(1));
+        p -> p.durability(AbyssBowItem.DURABILITY));
     public static final DeferredItem<Item> BLARU_STICK = stick("blaru_stick");
     public static final DeferredItem<Item> NIGHTGROVE_STICK = stick("nightgrove_stick");
     public static final DeferredItem<Item> BOG_STICK = stick("bog_stick");
@@ -339,7 +338,7 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> CAVERNA_CRYSTAL = REGISTRY.registerItem("caverna_crystal", CavernaCrystalItem::new);
     public static final DeferredItem<Item> AUREL_CRYSTAL_SHARD = REGISTRY.registerItem("aurel_crystal_shard", AurelCrystalShardItem::new);
     public static final DeferredItem<Item> FUSION_ORE = block(TheabyssModBlocks.FUSION_ORE);
-    public static final DeferredItem<Item> LORAN_ORE = block(TheabyssModBlocks.LORAN_ORE, p -> p.cookingFuel(LORAN_ORE_BURN_TIME));
+    public static final DeferredItem<Item> LORAN_ORE = AbyssFuels.fuel(block(TheabyssModBlocks.LORAN_ORE), 6800);
     public static final DeferredItem<Item> GARNITE_ORE = block(TheabyssModBlocks.GARNITE_ORE);
     public static final DeferredItem<Item> IGNISITHE_ORE = block(TheabyssModBlocks.IGNISITHE_ORE);
     public static final DeferredItem<Item> GLACERYTHE_ORE = block(TheabyssModBlocks.GLACERYTHE_ORE);
@@ -396,7 +395,7 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> ROMA_MUD = block(TheabyssModBlocks.ROMA_MUD);
     public static final DeferredItem<Item> BLARU_LOG = block(TheabyssModBlocks.BLARU_LOG);
     public static final DeferredItem<Item> STRIPPED_BLARU_LOG = block(TheabyssModBlocks.STRIPPED_BLARU_LOG);
-    public static final DeferredItem<Item> BLARU_PLANKS = block(TheabyssModBlocks.BLARU_PLANKS);
+    public static final DeferredItem<Item> BLARU_PLANKS = AbyssFuels.fuel(block(TheabyssModBlocks.BLARU_PLANKS), AbyssFuels.WOOD_BLOCKS);
     public static final DeferredItem<Item> BLARU_STAIRS = block(TheabyssModBlocks.BLARU_STAIRS);
     public static final DeferredItem<Item> BLARU_SLAB = block(TheabyssModBlocks.BLARU_SLAB);
     public static final DeferredItem<Item> BLARU_TRAP_DOOR = block(TheabyssModBlocks.BLARU_TRAP_DOOR);
@@ -407,7 +406,7 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> BLARU_BUTTON = block(TheabyssModBlocks.BLARU_BUTTON);
     public static final DeferredItem<Item> NIGHTGROVE_LOG = block(TheabyssModBlocks.NIGHTGROVE_LOG);
     public static final DeferredItem<Item> STRIPPED_NIGHTGROVE_LOG = block(TheabyssModBlocks.STRIPPED_NIGHTGROVE_LOG);
-    public static final DeferredItem<Item> NIGHTGROVE_PLANKS = block(TheabyssModBlocks.NIGHTGROVE_PLANKS);
+    public static final DeferredItem<Item> NIGHTGROVE_PLANKS = AbyssFuels.fuel(block(TheabyssModBlocks.NIGHTGROVE_PLANKS), AbyssFuels.WOOD_BLOCKS);
     public static final DeferredItem<Item> NIGHTGROVE_STAIRS = block(TheabyssModBlocks.NIGHTGROVE_STAIRS);
     public static final DeferredItem<Item> NIGHTGROVE_SLAB = block(TheabyssModBlocks.NIGHTGROVE_SLAB);
     public static final DeferredItem<Item> NIGHTGROVE_TRAP_DOOR = block(TheabyssModBlocks.NIGHTGROVE_TRAP_DOOR);
@@ -418,7 +417,7 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> NIGHTGROVE_BUTTON = block(TheabyssModBlocks.NIGHTGROVE_BUTTON);
     public static final DeferredItem<Item> BOG_SHROOM_LOG = block(TheabyssModBlocks.BOG_SHROOM_LOG);
     public static final DeferredItem<Item> STRIPPED_BOG_SHROOM_LOG = block(TheabyssModBlocks.STRIPPED_BOG_SHROOM_LOG);
-    public static final DeferredItem<Item> BOG_PLANKS = block(TheabyssModBlocks.BOG_PLANKS);
+    public static final DeferredItem<Item> BOG_PLANKS = AbyssFuels.fuel(block(TheabyssModBlocks.BOG_PLANKS), AbyssFuels.WOOD_BLOCKS);
     public static final DeferredItem<Item> BOG_STAIRS = block(TheabyssModBlocks.BOG_STAIRS);
     public static final DeferredItem<Item> BOG_SLAB = block(TheabyssModBlocks.BOG_SLAB);
     public static final DeferredItem<Item> BOG_TRAP_DOOR = block(TheabyssModBlocks.BOG_TRAP_DOOR);
@@ -429,7 +428,7 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> BOG_BUTTON = block(TheabyssModBlocks.BOG_BUTTON);
     public static final DeferredItem<Item> SAL_SHROOM_LOG = block(TheabyssModBlocks.SAL_SHROOM_LOG);
     public static final DeferredItem<Item> STRIPPED_SAL_SHROOM_LOG = block(TheabyssModBlocks.STRIPPED_SAL_SHROOM_LOG);
-    public static final DeferredItem<Item> SAL_PLANKS = block(TheabyssModBlocks.SAL_PLANKS);
+    public static final DeferredItem<Item> SAL_PLANKS = AbyssFuels.fuel(block(TheabyssModBlocks.SAL_PLANKS), AbyssFuels.WOOD_BLOCKS);
     public static final DeferredItem<Item> SAL_STAIRS = block(TheabyssModBlocks.SAL_STAIRS);
     public static final DeferredItem<Item> SAL_SLAB = block(TheabyssModBlocks.SAL_SLAB);
     public static final DeferredItem<Item> SAL_TRAP_DOOR = block(TheabyssModBlocks.SAL_TRAP_DOOR);
@@ -440,7 +439,7 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> SAL_BUTTON = block(TheabyssModBlocks.SAL_BUTTON);
     public static final DeferredItem<Item> SLIMED_LOG = block(TheabyssModBlocks.SLIMED_LOG);
     public static final DeferredItem<Item> STRIPPED_SLIMED_LOG = block(TheabyssModBlocks.STRIPPED_SLIMED_LOG);
-    public static final DeferredItem<Item> SLIMED_PLANKS = block(TheabyssModBlocks.SLIMED_PLANKS);
+    public static final DeferredItem<Item> SLIMED_PLANKS = AbyssFuels.fuel(block(TheabyssModBlocks.SLIMED_PLANKS), AbyssFuels.WOOD_BLOCKS);
     public static final DeferredItem<Item> SLIMED_STAIRS = block(TheabyssModBlocks.SLIMED_STAIRS);
     public static final DeferredItem<Item> SLIMED_SLAB = block(TheabyssModBlocks.SLIMED_SLAB);
     public static final DeferredItem<Item> SLIMED_TRAP_DOOR = block(TheabyssModBlocks.SLIMED_TRAP_DOOR);
@@ -451,7 +450,7 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> SLIMED_BUTTON = block(TheabyssModBlocks.SLIMED_BUTTON);
     public static final DeferredItem<Item> FROZEN_LOG = block(TheabyssModBlocks.FROZEN_LOG);
     public static final DeferredItem<Item> STRIPPED_FROZEN_LOG = block(TheabyssModBlocks.STRIPPED_FROZEN_LOG);
-    public static final DeferredItem<Item> FROZEN_PLANKS = block(TheabyssModBlocks.FROZEN_PLANKS);
+    public static final DeferredItem<Item> FROZEN_PLANKS = AbyssFuels.fuel(block(TheabyssModBlocks.FROZEN_PLANKS), AbyssFuels.WOOD_BLOCKS);
     public static final DeferredItem<Item> FROZEN_STAIRS = block(TheabyssModBlocks.FROZEN_STAIRS);
     public static final DeferredItem<Item> FROZEN_SLAB = block(TheabyssModBlocks.FROZEN_SLAB);
     public static final DeferredItem<Item> FROZEN_TRAP_DOOR = block(TheabyssModBlocks.FROZEN_TRAP_DOOR);
@@ -464,7 +463,7 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> STRIPPED_RENA_LOG = block(TheabyssModBlocks.STRIPPED_RENA_LOG);
     public static final DeferredItem<Item> RENA_WOOD = block(TheabyssModBlocks.RENA_WOOD);
     public static final DeferredItem<Item> STRIPPED_RENA_WOOD = block(TheabyssModBlocks.STRIPPED_RENA_WOOD);
-    public static final DeferredItem<Item> RENA_PLANKS = block(TheabyssModBlocks.RENA_PLANKS);
+    public static final DeferredItem<Item> RENA_PLANKS = AbyssFuels.fuel(block(TheabyssModBlocks.RENA_PLANKS), AbyssFuels.WOOD_BLOCKS);
     public static final DeferredItem<Item> RENA_STAIRS = block(TheabyssModBlocks.RENA_STAIRS);
     public static final DeferredItem<Item> RENA_SLAB = block(TheabyssModBlocks.RENA_SLAB);
     public static final DeferredItem<Item> RENA_TRAP_DOOR = block(TheabyssModBlocks.RENA_TRAP_DOOR);
@@ -477,7 +476,7 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> STRIPPED_LUNA_LOG = block(TheabyssModBlocks.STRIPPED_LUNA_LOG);
     public static final DeferredItem<Item> LUNA_WOOD = block(TheabyssModBlocks.LUNA_WOOD);
     public static final DeferredItem<Item> STRIPPED_LUNA_WOOD = block(TheabyssModBlocks.STRIPPED_LUNA_WOOD);
-    public static final DeferredItem<Item> LUNA_PLANKS = block(TheabyssModBlocks.LUNA_PLANKS);
+    public static final DeferredItem<Item> LUNA_PLANKS = AbyssFuels.fuel(block(TheabyssModBlocks.LUNA_PLANKS), AbyssFuels.WOOD_BLOCKS);
     public static final DeferredItem<Item> LUNA_STAIRS = block(TheabyssModBlocks.LUNA_STAIRS);
     public static final DeferredItem<Item> LUNA_SLAB = block(TheabyssModBlocks.LUNA_SLAB);
     public static final DeferredItem<Item> LUNA_TRAP_DOOR = block(TheabyssModBlocks.LUNA_TRAP_DOOR);
@@ -487,7 +486,7 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> LUNA_PRESSURE_PLATE = block(TheabyssModBlocks.LUNA_PRESSURE_PLATE);
     public static final DeferredItem<Item> LUNA_BUTTON = block(TheabyssModBlocks.LUNA_BUTTON);
     public static final DeferredItem<Item> VIGILANT_LOG = block(TheabyssModBlocks.VIGILANT_LOG);
-    public static final DeferredItem<Item> VIGILANT_PLANKS = block(TheabyssModBlocks.VIGILANT_PLANKS);
+    public static final DeferredItem<Item> VIGILANT_PLANKS = AbyssFuels.fuel(block(TheabyssModBlocks.VIGILANT_PLANKS), AbyssFuels.WOOD_BLOCKS);
     public static final DeferredItem<Item> VIGILANT_STAIRS = block(TheabyssModBlocks.VIGILANT_STAIRS);
     public static final DeferredItem<Item> VIGILANT_SLAB = block(TheabyssModBlocks.VIGILANT_SLAB);
     public static final DeferredItem<Item> VIGILANT_TRAP_DOOR = block(TheabyssModBlocks.VIGILANT_TRAP_DOOR);
@@ -543,7 +542,7 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> LUSH_ROOTED_DIRT = block(TheabyssModBlocks.LUSH_ROOTED_DIRT);
     public static final DeferredItem<Item> LUSH_SMALL_DRIPLEAF = doubleBlock(TheabyssModBlocks.LUSH_SMALL_DRIPLEAF);
     public static final DeferredItem<Item> LUSH_GLOW_BERRIES = REGISTRY.registerItem("lush_glow_berries",
-        p -> new BlockItem(TheabyssModBlocks.LUSH_CAVE_VINES.get(), p), p -> p.food(net.minecraft.world.food.Foods.GLOW_BERRIES).useItemDescriptionPrefix());
+        p -> new ItemNameBlockItem(TheabyssModBlocks.LUSH_CAVE_VINES.get(), p), p -> p.food(net.minecraft.world.food.Foods.GLOW_BERRIES));
     public static final DeferredItem<Item> MORTAR_AND_PESTLE = block(TheabyssModBlocks.MORTAR_AND_PESTLE);
     public static final DeferredItem<Item> ARENO_BUCKET = REGISTRY.registerItem("areno_bucket", ArenoItem::new);
     public static final DeferredItem<Item> INFECTED_PEAT = block(TheabyssModBlocks.INFECTED_PEAT);
@@ -592,52 +591,52 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> BONE_AXE = REGISTRY.registerItem("bone_axe", BoneAxeItem::new);
     public static final DeferredItem<Item> BONE_SHOVEL = REGISTRY.registerItem("bone_shovel", BoneShovelItem::new);
     public static final DeferredItem<Item> BONE_HOE = REGISTRY.registerItem("bone_hoe", BoneHoeItem::new);
-    public static final DeferredItem<Item> THE_ROKA_SPAWN_EGG = REGISTRY.registerItem("the_roka_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.THE_ROKA.get())));
-    public static final DeferredItem<Item> ICE_SKELETON_SPAWN_EGG = REGISTRY.registerItem("ice_skeleton_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.ICE_SKELETON.get())));
-    public static final DeferredItem<Item> ICE_KNIGHT_SPAWN_EGG = REGISTRY.registerItem("ice_knight_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.ICE_KNIGHT.get())));
-    public static final DeferredItem<Item> NIGHTBLADE_BOSS_SPAWN_EGG = REGISTRY.registerItem("nightblade_boss_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.NIGHTBLADE_BOSS.get())));
-    public static final DeferredItem<Item> NIGHT_BLADE_BOSS_CLONE_SPAWN_EGG = REGISTRY.registerItem("night_blade_boss_clone_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.NIGHT_BLADE_BOSS_CLONE.get())));
-    public static final DeferredItem<Item> DEER_SPAWN_EGG = REGISTRY.registerItem("deer_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.DEER.get())));
-    public static final DeferredItem<Item> LARO_FISH_SPAWN_EGG = REGISTRY.registerItem("laro_fish_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.LARO_FISH.get())));
-    public static final DeferredItem<Item> LURO_FISH_SPAWN_EGG = REGISTRY.registerItem("luro_fish_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.LURO_FISH.get())));
-    public static final DeferredItem<Item> RALU_FISH_SPAWN_EGG = REGISTRY.registerItem("ralu_fish_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.RALU_FISH.get())));
-    public static final DeferredItem<Item> HYLIA_FOX_SPAWN_EGG = REGISTRY.registerItem("hylia_fox_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.HYLIA_FOX.get())));
-    public static final DeferredItem<Item> CRYSTAL_GOLEM_SPAWN_EGG = REGISTRY.registerItem("crystal_golem_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.CRYSTAL_GOLEM.get())));
-    public static final DeferredItem<Item> ABYSSAUR_SPAWN_EGG = REGISTRY.registerItem("abyssaur_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.ABYSSAUR.get())));
-    public static final DeferredItem<Item> MAGICIAN_SPAWN_EGG = REGISTRY.registerItem("magician_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.MAGICIAN.get())));
-    public static final DeferredItem<Item> SOUL_GUARD_SPAWN_EGG = REGISTRY.registerItem("soul_guard_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.SOUL_GUARD.get())));
-    public static final DeferredItem<Item> INFECTED_SPIDER_SPAWN_EGG = REGISTRY.registerItem("infected_spider_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.INFECTED_SPIDER.get())));
-    public static final DeferredItem<Item> INFECTED_CREEPER_SPAWN_EGG = REGISTRY.registerItem("infected_creeper_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.INFECTED_CREEPER.get())));
-    public static final DeferredItem<Item> GUARD_SPAWN_EGG = REGISTRY.registerItem("guard_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.GUARD.get())));
-    public static final DeferredItem<Item> MUD_ZOMBIE_SPAWN_EGG = REGISTRY.registerItem("mud_zombie_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.MUD_ZOMBIE.get())));
-    public static final DeferredItem<Item> INFECTED_ZOMBIE_SPAWN_EGG = REGISTRY.registerItem("infected_zombie_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.INFECTED_ZOMBIE.get())));
-    public static final DeferredItem<Item> RAPTOR_SPAWN_EGG = REGISTRY.registerItem("raptor_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.RAPTOR.get())));
-    public static final DeferredItem<Item> END_SPIDER_SPAWN_EGG = REGISTRY.registerItem("end_spider_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.END_SPIDER.get())));
-    public static final DeferredItem<Item> LIZARD_SPAWN_EGG = REGISTRY.registerItem("lizard_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.LIZARD.get())));
-    public static final DeferredItem<Item> ELDER_SPAWN_EGG = REGISTRY.registerItem("elder_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.ELDER.get())));
-    public static final DeferredItem<Item> JUNGLE_LURKER_SPAWN_EGG = REGISTRY.registerItem("jungle_lurker_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.JUNGLE_LURKER.get())));
-    public static final DeferredItem<Item> SLIME_SPIDER_SPAWN_EGG = REGISTRY.registerItem("slime_spider_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.SLIME_SPIDER.get())));
-    public static final DeferredItem<Item> SCORPION_SPAWN_EGG = REGISTRY.registerItem("scorpion_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.SCORPION.get())));
-    public static final DeferredItem<Item> SEEKER_SPAWN_EGG = REGISTRY.registerItem("seeker_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.SEEKER.get())));
-    public static final DeferredItem<Item> PLAYER_BODY_SPAWN_EGG = REGISTRY.registerItem("player_body_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.PLAYER_BODY.get())));
-    public static final DeferredItem<Item> HAUNTED_SKELETON_SPAWN_EGG = REGISTRY.registerItem("haunted_skeleton_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.HAUNTED_SKELETON.get())));
-    public static final DeferredItem<Item> SHATTERED_ZOMBIE_SPAWN_EGG = REGISTRY.registerItem("shattered_zombie_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.SHATTERED_ZOMBIE.get())));
-    public static final DeferredItem<Item> SUMMONED_SEEKER_SPAWN_EGG = REGISTRY.registerItem("summoned_seeker_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.SUMMONED_SEEKER.get())));
-    public static final DeferredItem<Item> INFECTED_WOLF_SPAWN_EGG = REGISTRY.registerItem("infected_wolf_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.INFECTED_WOLF.get())));
-    public static final DeferredItem<Item> INFECTED_PHANTOM_SPAWN_EGG = REGISTRY.registerItem("infected_phantom_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.INFECTED_PHANTOM.get())));
-    public static final DeferredItem<Item> POWERED_WOLF_SPAWN_EGG = REGISTRY.registerItem("powered_wolf_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.POWERED_WOLF.get())));
-    public static final DeferredItem<Item> VERSA_WHALE_SPAWN_EGG = REGISTRY.registerItem("versa_whale_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.VERSA_WHALE.get())));
-    public static final DeferredItem<Item> FROST_SPIDER_SPAWN_EGG = REGISTRY.registerItem("frost_spider_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.FROST_SPIDER.get())));
-    public static final DeferredItem<Item> GLOW_PUG_SPAWN_EGG = REGISTRY.registerItem("glow_pug_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.GLOW_PUG.get())));
-    public static final DeferredItem<Item> ABYSSAL_LION_SPAWN_EGG = REGISTRY.registerItem("abyssal_lion_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.ABYSSAL_LION.get())));
-    public static final DeferredItem<Item> INFCETED_COW_SPAWN_EGG = REGISTRY.registerItem("infceted_cow_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.INFCETED_COW.get())));
-    public static final DeferredItem<Item> ABYLAGER_SPAWN_EGG = REGISTRY.registerItem("abylager_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.ABYLAGER.get())));
-    public static final DeferredItem<Item> SUMMONED_HOLLOW_SEEKER_SPAWN_EGG = REGISTRY.registerItem("summoned_hollow_seeker_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.SUMMONED_HOLLOW_SEEKER.get())));
-    public static final DeferredItem<Item> JELLY_FISH_SPAWN_EGG = REGISTRY.registerItem("jelly_fish_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.JELLY_FISH.get())));
-    public static final DeferredItem<Item> INFECTED_DRAGONFLY_SPAWN_EGG = REGISTRY.registerItem("infected_dragonfly_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.INFECTED_DRAGONFLY.get())));
-    public static final DeferredItem<Item> HUMMINGBIRD_SPAWN_EGG = REGISTRY.registerItem("hummingbird_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.HUMMINGBIRD.get())));
-    public static final DeferredItem<Item> VIGILANT_HUMMINGBIRD_SPAWN_EGG = REGISTRY.registerItem("vigilant_hummingbird_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.VIGILANT_HUMMINGBIRD.get())));
-    public static final DeferredItem<Item> ANCIENT_SEEKER_SPAWN_EGG = REGISTRY.registerItem("ancient_seeker_spawn_egg", p -> new SpawnEggItem(p.spawnEgg(TheabyssModEntities.ANCIENT_SEEKER.get())));
+    public static final DeferredItem<Item> THE_ROKA_SPAWN_EGG = spawnEgg("the_roka_spawn_egg", TheabyssModEntities.THE_ROKA, -14141129, -16711703);
+    public static final DeferredItem<Item> ICE_SKELETON_SPAWN_EGG = spawnEgg("ice_skeleton_spawn_egg", TheabyssModEntities.ICE_SKELETON, -5395539, -16711734);
+    public static final DeferredItem<Item> ICE_KNIGHT_SPAWN_EGG = spawnEgg("ice_knight_spawn_egg", TheabyssModEntities.ICE_KNIGHT, -14539993, -16711720);
+    public static final DeferredItem<Item> NIGHTBLADE_BOSS_SPAWN_EGG = spawnEgg("nightblade_boss_spawn_egg", TheabyssModEntities.NIGHTBLADE_BOSS, -15980237, -9240622);
+    public static final DeferredItem<Item> NIGHT_BLADE_BOSS_CLONE_SPAWN_EGG = spawnEgg("night_blade_boss_clone_spawn_egg", TheabyssModEntities.NIGHT_BLADE_BOSS_CLONE, -15980237, -9240622);
+    public static final DeferredItem<Item> DEER_SPAWN_EGG = spawnEgg("deer_spawn_egg", TheabyssModEntities.DEER, -15454916, -11479297);
+    public static final DeferredItem<Item> LARO_FISH_SPAWN_EGG = spawnEgg("laro_fish_spawn_egg", TheabyssModEntities.LARO_FISH, -14211520, -10956319);
+    public static final DeferredItem<Item> LURO_FISH_SPAWN_EGG = spawnEgg("luro_fish_spawn_egg", TheabyssModEntities.LURO_FISH, -15967640, -8783908);
+    public static final DeferredItem<Item> RALU_FISH_SPAWN_EGG = spawnEgg("ralu_fish_spawn_egg", TheabyssModEntities.RALU_FISH, -16035237, -9509411);
+    public static final DeferredItem<Item> HYLIA_FOX_SPAWN_EGG = spawnEgg("hylia_fox_spawn_egg", TheabyssModEntities.HYLIA_FOX, -14142134, -10027549);
+    public static final DeferredItem<Item> CRYSTAL_GOLEM_SPAWN_EGG = spawnEgg("crystal_golem_spawn_egg", TheabyssModEntities.CRYSTAL_GOLEM, -12564912, -2713887);
+    public static final DeferredItem<Item> ABYSSAUR_SPAWN_EGG = spawnEgg("abyssaur_spawn_egg", TheabyssModEntities.ABYSSAUR, -14602427, -8781845);
+    public static final DeferredItem<Item> MAGICIAN_SPAWN_EGG = spawnEgg("magician_spawn_egg", TheabyssModEntities.MAGICIAN, -14602427, -16515123);
+    public static final DeferredItem<Item> SOUL_GUARD_SPAWN_EGG = spawnEgg("soul_guard_spawn_egg", TheabyssModEntities.SOUL_GUARD, -12699599, -14833755);
+    public static final DeferredItem<Item> INFECTED_SPIDER_SPAWN_EGG = spawnEgg("infected_spider_spawn_egg", TheabyssModEntities.INFECTED_SPIDER, -15844030, -8257571);
+    public static final DeferredItem<Item> INFECTED_CREEPER_SPAWN_EGG = spawnEgg("infected_creeper_spawn_egg", TheabyssModEntities.INFECTED_CREEPER, -15064532, -13814458);
+    public static final DeferredItem<Item> GUARD_SPAWN_EGG = spawnEgg("guard_spawn_egg", TheabyssModEntities.GUARD, -15921907, -13290187);
+    public static final DeferredItem<Item> MUD_ZOMBIE_SPAWN_EGG = spawnEgg("mud_zombie_spawn_egg", TheabyssModEntities.MUD_ZOMBIE, -15448751, -9764884);
+    public static final DeferredItem<Item> INFECTED_ZOMBIE_SPAWN_EGG = spawnEgg("infected_zombie_spawn_egg", TheabyssModEntities.INFECTED_ZOMBIE, -16491166, -16711694);
+    public static final DeferredItem<Item> RAPTOR_SPAWN_EGG = spawnEgg("raptor_spawn_egg", TheabyssModEntities.RAPTOR, -14211520, -10360065);
+    public static final DeferredItem<Item> END_SPIDER_SPAWN_EGG = spawnEgg("end_spider_spawn_egg", TheabyssModEntities.END_SPIDER, -13234622, -65317);
+    public static final DeferredItem<Item> LIZARD_SPAWN_EGG = spawnEgg("lizard_spawn_egg", TheabyssModEntities.LIZARD, -11300647, -13555106);
+    public static final DeferredItem<Item> ELDER_SPAWN_EGG = spawnEgg("elder_spawn_egg", TheabyssModEntities.ELDER, -14404290, -8257571);
+    public static final DeferredItem<Item> JUNGLE_LURKER_SPAWN_EGG = spawnEgg("jungle_lurker_spawn_egg", TheabyssModEntities.JUNGLE_LURKER, -15709354, -10440193);
+    public static final DeferredItem<Item> SLIME_SPIDER_SPAWN_EGG = spawnEgg("slime_spider_spawn_egg", TheabyssModEntities.SLIME_SPIDER, -16715596, -15774375);
+    public static final DeferredItem<Item> SCORPION_SPAWN_EGG = spawnEgg("scorpion_spawn_egg", TheabyssModEntities.SCORPION, -10832424, -14536889);
+    public static final DeferredItem<Item> SEEKER_SPAWN_EGG = spawnEgg("seeker_spawn_egg", TheabyssModEntities.SEEKER, -13948370, -7369325);
+    public static final DeferredItem<Item> PLAYER_BODY_SPAWN_EGG = spawnEgg("player_body_spawn_egg", TheabyssModEntities.PLAYER_BODY, -16777216, -13421773);
+    public static final DeferredItem<Item> HAUNTED_SKELETON_SPAWN_EGG = spawnEgg("haunted_skeleton_spawn_egg", TheabyssModEntities.HAUNTED_SKELETON, -14208712, -16711729);
+    public static final DeferredItem<Item> SHATTERED_ZOMBIE_SPAWN_EGG = spawnEgg("shattered_zombie_spawn_egg", TheabyssModEntities.SHATTERED_ZOMBIE, -16491166, -16711694);
+    public static final DeferredItem<Item> SUMMONED_SEEKER_SPAWN_EGG = spawnEgg("summoned_seeker_spawn_egg", TheabyssModEntities.SUMMONED_SEEKER, -13948370, -7369325);
+    public static final DeferredItem<Item> INFECTED_WOLF_SPAWN_EGG = spawnEgg("infected_wolf_spawn_egg", TheabyssModEntities.INFECTED_WOLF, -15190972, -14704641);
+    public static final DeferredItem<Item> INFECTED_PHANTOM_SPAWN_EGG = spawnEgg("infected_phantom_spawn_egg", TheabyssModEntities.INFECTED_PHANTOM, -13486526, -8323109);
+    public static final DeferredItem<Item> POWERED_WOLF_SPAWN_EGG = spawnEgg("powered_wolf_spawn_egg", TheabyssModEntities.POWERED_WOLF, -15190972, -8781845);
+    public static final DeferredItem<Item> VERSA_WHALE_SPAWN_EGG = spawnEgg("versa_whale_spawn_egg", TheabyssModEntities.VERSA_WHALE, -15261386, -9240602);
+    public static final DeferredItem<Item> FROST_SPIDER_SPAWN_EGG = spawnEgg("frost_spider_spawn_egg", TheabyssModEntities.FROST_SPIDER, -6108213, -14670293);
+    public static final DeferredItem<Item> GLOW_PUG_SPAWN_EGG = spawnEgg("glow_pug_spawn_egg", TheabyssModEntities.GLOW_PUG, -14141129, -16711776);
+    public static final DeferredItem<Item> ABYSSAL_LION_SPAWN_EGG = spawnEgg("abyssal_lion_spawn_egg", TheabyssModEntities.ABYSSAL_LION, -14141129, -16711776);
+    public static final DeferredItem<Item> INFCETED_COW_SPAWN_EGG = spawnEgg("infceted_cow_spawn_egg", TheabyssModEntities.INFCETED_COW, -14602427, -8519710);
+    public static final DeferredItem<Item> ABYLAGER_SPAWN_EGG = spawnEgg("abylager_spawn_egg", TheabyssModEntities.ABYLAGER, -16751514, -8257571);
+    public static final DeferredItem<Item> SUMMONED_HOLLOW_SEEKER_SPAWN_EGG = spawnEgg("summoned_hollow_seeker_spawn_egg", TheabyssModEntities.SUMMONED_HOLLOW_SEEKER, -13948370, -7369325);
+    public static final DeferredItem<Item> JELLY_FISH_SPAWN_EGG = spawnEgg("jelly_fish_spawn_egg", TheabyssModEntities.JELLY_FISH, -3407873, -12808791);
+    public static final DeferredItem<Item> INFECTED_DRAGONFLY_SPAWN_EGG = spawnEgg("infected_dragonfly_spawn_egg", TheabyssModEntities.INFECTED_DRAGONFLY, -12009501, -14602170);
+    public static final DeferredItem<Item> HUMMINGBIRD_SPAWN_EGG = spawnEgg("hummingbird_spawn_egg", TheabyssModEntities.HUMMINGBIRD, -16360864, -9841191);
+    public static final DeferredItem<Item> VIGILANT_HUMMINGBIRD_SPAWN_EGG = spawnEgg("vigilant_hummingbird_spawn_egg", TheabyssModEntities.VIGILANT_HUMMINGBIRD, -12174753, -6239274);
+    public static final DeferredItem<Item> ANCIENT_SEEKER_SPAWN_EGG = spawnEgg("ancient_seeker_spawn_egg", TheabyssModEntities.ANCIENT_SEEKER, -15256765, -11206933);
     public static final DeferredItem<Item> LORAN_FLOWER = doubleBlock(TheabyssModBlocks.LORAN_FLOWER);
     public static final DeferredItem<Item> RALOM_PLANT = block(TheabyssModBlocks.RALOM_PLANT);
     public static final DeferredItem<Item> FORTIS_ULTIMA = block(TheabyssModBlocks.FORTIS_ULTIMA);
@@ -737,9 +736,9 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> ABYSS_GUIDE = REGISTRY.registerItem("the_abyss_guide", AbyssGuideItem::new);
 
     static {
-        REGISTRY.addAlias(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "book_icon"), Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "the_abyss_guide"));
-        REGISTRY.addAlias(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "glowing_sun_shroom"), Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "toxic_sun_flower"));
-        REGISTRY.addAlias(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "purple_shroomlight"), Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "blue_shroomlight"));
+        REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "book_icon"), ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "the_abyss_guide"));
+        REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "glowing_sun_shroom"), ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "toxic_sun_flower"));
+        REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "purple_shroomlight"), ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "blue_shroomlight"));
     }
     public static final DeferredItem<Item> PHANTOM_HANGING_LANTERN = block(TheabyssModBlocks.PHANTOM_HANGING_LANTERN);
     public static final DeferredItem<Item> ENDER_HANGING_LANTERN = block(TheabyssModBlocks.ENDER_HANGING_LANTERN);
@@ -759,18 +758,19 @@ public class TheabyssModItems {
     }
 
     private static DeferredItem<Item> block(DeferredBlock<Block> block, UnaryOperator<Item.Properties> properties) {
-        return REGISTRY.registerItem(block.getId().getPath(), p -> new BlockItem(block.get(), p), p -> properties.apply(p.useBlockDescriptionPrefix()));
+        return REGISTRY.registerItem(block.getId().getPath(), p -> new BlockItem(block.get(), p), properties);
     }
 
     private static DeferredItem<Item> stick(String name) {
-        return REGISTRY.registerItem(name, Item::new, p -> p.cookingFuel(ContextIntProviders.COOKING_TIME_DRY_PLANTS));
+        return AbyssFuels.fuel(REGISTRY.registerItem(name, Item::new), AbyssFuels.DRY_PLANTS);
     }
 
     private static DeferredItem<Item> doubleBlock(DeferredBlock<Block> block) {
-        return REGISTRY.registerItem(block.getId().getPath(), p -> new DoubleHighBlockItem(block.get(), p), Item.Properties::useBlockDescriptionPrefix);
+        return REGISTRY.registerItem(block.getId().getPath(), p -> new DoubleHighBlockItem(block.get(), p));
     }
 
-    private static ResourceKey<ContextIntProvider> cookingTime(String name) {
-        return ResourceKey.create(Registries.CONTEXT_INT_PROVIDER, Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "cooking/time_" + name));
+    @SuppressWarnings("unchecked")
+    private static DeferredItem<Item> spawnEgg(String name, Supplier<? extends EntityType<?>> type, int backgroundColor, int highlightColor) {
+        return REGISTRY.registerItem(name, p -> new SpawnEggItem((EntityType<? extends Mob>)type.get(), backgroundColor, highlightColor, p));
     }
 }

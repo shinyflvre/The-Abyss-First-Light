@@ -1,0 +1,61 @@
+{
+  "targets": [
+    "swap",
+    "previous"
+  ],
+  "passes": [
+    {
+      "name": "theabyss:dreamshift_trail",
+      "intarget": "minecraft:main",
+      "outtarget": "swap",
+      "use_linear_filter": true,
+      "auxtargets": [
+        {
+          "name": "InSampler",
+          "id": "minecraft:main"
+        },
+        {
+          "name": "PrevSampler",
+          "id": "previous"
+        },
+        {
+          "name": "StateSampler",
+          "id": "theabyss:fx_state",
+          "width": 176,
+          "height": 1,
+          "bilinear": false
+        }
+      ]
+    },
+    {
+      "name": "theabyss:copy",
+      "intarget": "swap",
+      "outtarget": "previous",
+      "auxtargets": [
+        {
+          "name": "InSampler",
+          "id": "swap"
+        }
+      ]
+    },
+    {
+      "name": "theabyss:dreamshift",
+      "intarget": "swap",
+      "outtarget": "minecraft:main",
+      "use_linear_filter": true,
+      "auxtargets": [
+        {
+          "name": "InSampler",
+          "id": "swap"
+        },
+        {
+          "name": "StateSampler",
+          "id": "theabyss:fx_state",
+          "width": 176,
+          "height": 1,
+          "bilinear": false
+        }
+      ]
+    }
+  ]
+}

@@ -21,7 +21,7 @@
     "minecraft:attributes": [
       {
         "amount": 0.25,
-        "attribute": "minecraft:block_break_speed",
+        "attribute": "minecraft:player.block_break_speed",
         "id": "theabyss:enchantment.hollow_bore",
         "operation": "add_multiplied_total"
       }

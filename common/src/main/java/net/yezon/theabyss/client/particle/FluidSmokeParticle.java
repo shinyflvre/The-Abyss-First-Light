@@ -8,7 +8,7 @@ import net.minecraft.core.particles.SimpleParticleType;
 
 public class FluidSmokeParticle extends BaseAshSmokeParticle {
     public static ParticleProvider<SimpleParticleType> provider(SpriteSet sprites, int dark, int light) {
-        return (type, level, x, y, z, vx, vy, vz, random) -> new FluidSmokeParticle(level, x, y, z, vx, vy, vz, sprites, dark, light);
+        return (type, level, x, y, z, vx, vy, vz) -> new FluidSmokeParticle(level, x, y, z, vx, vy, vz, sprites, dark, light);
     }
 
     protected FluidSmokeParticle(ClientLevel level, double x, double y, double z, double xa, double ya, double za, SpriteSet sprites, int dark, int light) {

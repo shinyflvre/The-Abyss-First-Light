@@ -11,7 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,7 +19,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -37,7 +36,7 @@ import net.yezon.theabyss.network.TheabyssModVariables;
 import net.yezon.theabyss.station.ArcanePower;
 
 final class ChronicleRealAutotest {
-    private static final ResourceKey<Level> ABYSS = ResourceKey.create(Registries.DIMENSION, Identifier.parse("theabyss:the_abyss"));
+    private static final ResourceKey<Level> ABYSS = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse("theabyss:the_abyss"));
     private static final BlockPos ARCANE = new BlockPos(0, 200, 0);
     private static final double[][] ALTAR_PILLARS = {
         {6, 5, 0}, {-6, 5, 0}, {0, 5, 6}, {0, 5, -6}, {3, 4, -3}, {3, 4, 3}, {-3, 4, 3}, {-3, 4, -3}
@@ -55,7 +54,7 @@ final class ChronicleRealAutotest {
         Minecraft mc = Minecraft.getInstance();
         add.add("cr arena", () -> {
             command.accept("difficulty normal");
-            command.accept("gamerule spawn_mobs false");
+            command.accept("gamerule doMobSpawning false");
             command.accept("time set noon");
             command.accept("execute in minecraft:overworld run forceload add -16 -16 16 16");
             command.accept("execute in minecraft:overworld run fill -10 199 -10 10 199 10 minecraft:grass_block");
@@ -70,7 +69,7 @@ final class ChronicleRealAutotest {
             command.accept("execute in theabyss:the_abyss run fill -10 200 -10 10 208 10 minecraft:air");
             command.accept("execute in minecraft:overworld run tp @s 0.5 200 -6.5 0 0");
             command.accept("gamemode survival @s");
-            command.accept("attribute @s minecraft:max_health base set 200");
+            command.accept("attribute @s minecraft:generic.max_health base set 200");
             command.accept("clear @s");
             command.accept("effect clear @s");
             onServer(sp -> {
@@ -95,29 +94,29 @@ final class ChronicleRealAutotest {
                 float yaw = (float)Math.toDegrees(Math.atan2(-d.x, d.z));
                 float pitch = (float)-Math.toDegrees(Math.atan2(d.y, Math.sqrt(d.x * d.x + d.z * d.z)));
                 command.accept("execute in minecraft:overworld run tp @s " + stand.x + " " + stand.y + " " + stand.z + " " + yaw + " " + pitch);
-                mc.player.getInventory().setSelectedSlot(corner);
+                mc.player.getInventory().selected = corner;
             }, 12);
             add.add("cr pillar charge " + i, () -> KeyMapping.click(mc.options.keyUse.getKey()), 8);
         }
         expect(add, "13 Energetica charged with Loran Energy", 13);
 
         add.add("cr arcane open", () -> onServer(sp -> {
-            Container c = (Container)sp.level().getBlockEntity(ARCANE);
+            Container c = (Container)sp.serverLevel().getBlockEntity(ARCANE);
             c.setItem(0, new ItemStack(item("ring_of_invisibility")));
             for (int i = 1; i <= 8; i++) {
                 c.setItem(i, new ItemStack(item(i % 2 == 1 ? "phantom_essence" : "hollow_powder")));
             }
-            sp.openMenu((MenuProvider)sp.level().getBlockEntity(ARCANE), ARCANE);
+            sp.openMenu((MenuProvider)sp.serverLevel().getBlockEntity(ARCANE), ARCANE);
         }), 10);
-        add.add("cr arcane craft", () -> mc.gameMode.handleContainerInput(mc.player.containerMenu.containerId, 9, 0,
-            net.minecraft.world.inventory.ContainerInput.QUICK_MOVE, mc.player), 6);
+        add.add("cr arcane craft", () -> mc.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, 9, 0,
+            net.minecraft.world.inventory.ClickType.QUICK_MOVE, mc.player), 6);
         add.add("cr arcane close", () -> onServer(ServerPlayer::closeContainer), 6);
         expect(add, "4 ring crafted at the Arcane", 4);
 
         add.add("cr drink item", () -> {
             command.accept("execute in minecraft:overworld run tp @s 0.5 200 -6.5 0 0");
             command.accept("item replace entity @s hotbar.0 with theabyss:somnium_regen_upgrade");
-            mc.player.getInventory().setSelectedSlot(0);
+            mc.player.getInventory().selected = 0;
         }, 10);
         add.add("cr drink", () -> mc.options.keyUse.setDown(true), 50);
         add.add("cr drink release", () -> mc.options.keyUse.setDown(false), 6);
@@ -125,10 +124,10 @@ final class ChronicleRealAutotest {
 
         add.add("cr shifter", () -> {
             command.accept("item replace entity @s hotbar.0 with theabyss:dream_shifter");
-            mc.player.getInventory().setSelectedSlot(0);
+            mc.player.getInventory().selected = 0;
         }, 6);
         add.add("cr shift to abyss", () -> KeyMapping.click(mc.options.keyUse.getKey()), 70);
-        add.add("cr in abyss", () -> onServer(sp -> check("dream shifter took us to the Abyss", sp.level().dimension() == ABYSS)), 2);
+        add.add("cr in abyss", () -> onServer(sp -> check("dream shifter took us to the Abyss", sp.serverLevel().dimension() == ABYSS)), 2);
         expect(add, "1 entering the Abyss with the Dream Shifter", 1);
 
         add.add("cr kill wolf", () -> kill(TheabyssModEntities.INFECTED_WOLF.get()), 10);
@@ -150,8 +149,8 @@ final class ChronicleRealAutotest {
         expect(add, "8 Somnium ran empty", 8);
 
         add.add("cr find lush", () -> onServer(sp -> {
-            ServerLevel level = (ServerLevel)sp.level();
-            var found = level.findClosestBiome3d(h -> h.is(ResourceKey.create(Registries.BIOME, Identifier.parse("theabyss:lush_glow_cave"))),
+            ServerLevel level = (ServerLevel)sp.serverLevel();
+            var found = level.findClosestBiome3d(h -> h.is(ResourceKey.create(Registries.BIOME, ResourceLocation.parse("theabyss:lush_glow_cave"))),
                 sp.blockPosition(), 6000, 32, 64);
             lush = found == null ? null : found.getFirst();
             TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] chronicles real lush at {}", lush);
@@ -173,23 +172,23 @@ final class ChronicleRealAutotest {
             if (mc.player != null) {
                 mc.player.respawn();
             }
-            mc.gui.setScreen(null);
+            mc.setScreen(null);
         }, 60);
         expect(add, "9 respawn after dying in the Abyss", 9);
 
         add.add("cr to arena", () -> command.accept("execute in minecraft:overworld run tp @s 0.5 200 -6.5 0 0"), 40);
         shift(add, command, "cr shift again to abyss");
         shift(add, command, "cr shift back");
-        add.add("cr in overworld", () -> onServer(sp -> check("dream shifter took us back", sp.level().dimension() == Level.OVERWORLD)), 2);
+        add.add("cr in overworld", () -> onServer(sp -> check("dream shifter took us back", sp.serverLevel().dimension() == Level.OVERWORLD)), 2);
         expect(add, "3 first return with the Dream Shifter", 3);
 
         add.add("cr frost", () -> command.accept("execute in theabyss:frost_world run tp @s 0.5 150 0.5"), 80);
         expect(add, "12 entering the Frost World", 12);
 
         add.add("cr find altar", () -> onServer(sp -> {
-            ServerLevel abyss = sp.level().getServer().getLevel(ABYSS);
+            ServerLevel abyss = sp.serverLevel().getServer().getLevel(ABYSS);
             var holder = abyss.registryAccess().lookupOrThrow(Registries.STRUCTURE).getOrThrow(
-                ResourceKey.create(Registries.STRUCTURE, Identifier.parse("theabyss:altar")));
+                ResourceKey.create(Registries.STRUCTURE, ResourceLocation.parse("theabyss:altar")));
             var found = abyss.getChunkSource().getGenerator().findNearestMapStructure(abyss, HolderSet.direct(holder), new BlockPos(0, 100, 0), 100, false);
             altar = found == null ? null : found.getFirst();
             TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] chronicles real altar structure near {}", altar);
@@ -204,12 +203,12 @@ final class ChronicleRealAutotest {
         }, 200);
         add.add("cr find altar block", () -> onServer(sp -> {
             altar = null;
-            ServerLevel level = (ServerLevel)sp.level();
+            ServerLevel level = (ServerLevel)sp.serverLevel();
             BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos();
             BlockPos c = sp.blockPosition();
             for (int x = c.getX() - 40; x <= c.getX() + 40 && altar == null; x++) {
                 for (int z = c.getZ() - 40; z <= c.getZ() + 40 && altar == null; z++) {
-                    for (int y = level.getMinY(); y < level.getMaxY(); y++) {
+                    for (int y = level.getMinBuildHeight(); y < level.getMaxBuildHeight() - 1; y++) {
                         if (level.getBlockState(p.set(x, y, z)).is(TheabyssModBlocks.NIGHT_ALTAR.get())) {
                             altar = p.immutable();
                             break;
@@ -232,13 +231,13 @@ final class ChronicleRealAutotest {
             }
             for (double[] o : ALTAR_PILLARS) {
                 BlockPos pos = altar.offset((int)o[0], (int)o[1], (int)o[2]);
-                if (!sp.level().getBlockState(pos).is(TheabyssModBlocks.STONE_BRICK_PILLAR.get())) {
-                    TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] chronicles real no pillar at {} ({})", pos, sp.level().getBlockState(pos));
+                if (!sp.serverLevel().getBlockState(pos).is(TheabyssModBlocks.STONE_BRICK_PILLAR.get())) {
+                    TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] chronicles real no pillar at {} ({})", pos, sp.serverLevel().getBlockState(pos));
                     continue;
                 }
                 ItemStack heart = new ItemStack(item("soul_heart"));
                 sp.setItemInHand(InteractionHand.MAIN_HAND, heart);
-                sp.gameMode.useItemOn(sp, sp.level(), heart, InteractionHand.MAIN_HAND,
+                sp.gameMode.useItemOn(sp, sp.serverLevel(), heart, InteractionHand.MAIN_HAND,
                     new BlockHitResult(Vec3.atCenterOf(pos), Direction.UP, pos, false));
             }
             sp.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
@@ -248,19 +247,19 @@ final class ChronicleRealAutotest {
         expect(add, "16 holding the Eye of Abyss", 16);
         add.add("cr summon", () -> onServer(sp -> {
             if (altar != null) {
-                sp.gameMode.useItemOn(sp, sp.level(), sp.getMainHandItem(), InteractionHand.MAIN_HAND,
+                sp.gameMode.useItemOn(sp, sp.serverLevel(), sp.getMainHandItem(), InteractionHand.MAIN_HAND,
                     new BlockHitResult(Vec3.atCenterOf(altar), Direction.UP, altar, false));
             }
         }), 220);
         add.add("cr kill boss", () -> onServer(sp -> {
-            ServerLevel level = (ServerLevel)sp.level();
+            ServerLevel level = (ServerLevel)sp.serverLevel();
             List<? extends Entity> bosses = level.getEntitiesOfClass(net.yezon.theabyss.entity.NightbladeBossEntity.class, new AABB(sp.blockPosition()).inflate(64));
             check("the altar summoned the Nightblade (" + bosses.size() + ")", !bosses.isEmpty());
             for (Entity e : bosses) {
                 if (e instanceof LivingEntity boss) {
-                    boss.hurtServer(level, sp.damageSources().playerAttack(sp), 100000.0F);
+                    boss.hurt(sp.damageSources().playerAttack(sp), 100000.0F);
                     if (boss.isAlive()) {
-                        boss.kill(level);
+                        boss.kill();
                     }
                 }
             }
@@ -269,11 +268,11 @@ final class ChronicleRealAutotest {
 
         add.add("cr survival again", () -> command.accept("gamemode survival @s"), 4);
         add.add("cr shifter home", () -> onServer(sp -> {
-            sp.getCooldowns().removeCooldown(sp.getCooldowns().getCooldownGroup(new ItemStack(item("dream_shifter"))));
+            sp.getCooldowns().removeCooldown(item("dream_shifter"));
             sp.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(item("dream_shifter")));
         }), 10);
         add.add("cr shifter home client", () -> {
-            mc.player.getCooldowns().removeCooldown(mc.player.getCooldowns().getCooldownGroup(new ItemStack(item("dream_shifter"))));
+            mc.player.getCooldowns().removeCooldown(item("dream_shifter"));
             KeyMapping.click(mc.options.keyUse.getKey());
         }, 80);
         expect(add, "19 return to the Overworld after the fight", 19);
@@ -283,7 +282,7 @@ final class ChronicleRealAutotest {
 
         add.add("cr codex", () -> CodexScreen.openCategory("chronicles"), 20);
         add.add("cr shot codex", () -> shot.accept("116_chronicles_real_list"), 4);
-        add.add("cr close", () -> mc.gui.setScreen(null), 4);
+        add.add("cr close", () -> mc.setScreen(null), 4);
         add.add("cr order", () -> {
             StringBuilder b = new StringBuilder();
             for (int i = 1; i <= ChronicleData.COUNT; i++) {
@@ -294,7 +293,7 @@ final class ChronicleRealAutotest {
         add.add("cr result", () -> {
             TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] RESULT chronicles_real {} ({} checks{})", failures.isEmpty() ? "PASS" : "FAIL",
                 checks, failures.isEmpty() ? "" : ", failed: " + failures);
-            command.accept("attribute @s minecraft:max_health base set 20");
+            command.accept("attribute @s minecraft:generic.max_health base set 20");
         }, 2);
     }
 
@@ -302,11 +301,11 @@ final class ChronicleRealAutotest {
         Minecraft mc = Minecraft.getInstance();
         add.add(name + " ready", () -> {
             command.accept("item replace entity @s hotbar.0 with theabyss:dream_shifter");
-            mc.player.getInventory().setSelectedSlot(0);
-            onServer(sp -> sp.getCooldowns().removeCooldown(sp.getCooldowns().getCooldownGroup(new ItemStack(item("dream_shifter")))));
+            mc.player.getInventory().selected = 0;
+            onServer(sp -> sp.getCooldowns().removeCooldown(item("dream_shifter")));
         }, 6);
         add.add(name, () -> {
-            mc.player.getCooldowns().removeCooldown(mc.player.getCooldowns().getCooldownGroup(new ItemStack(item("dream_shifter"))));
+            mc.player.getCooldowns().removeCooldown(item("dream_shifter"));
             KeyMapping.click(mc.options.keyUse.getKey());
         }, 70);
     }
@@ -322,22 +321,22 @@ final class ChronicleRealAutotest {
     }
 
     private static Item item(String id) {
-        return BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath("theabyss", id));
+        return BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("theabyss", id));
     }
 
     private static void kill(EntityType<? extends LivingEntity> type) {
         onServer(sp -> {
-            ServerLevel level = (ServerLevel)sp.level();
-            LivingEntity e = type.create(level, EntitySpawnReason.COMMAND);
+            ServerLevel level = (ServerLevel)sp.serverLevel();
+            LivingEntity e = type.create(level);
             if (e == null) {
                 check("spawn " + type, false);
                 return;
             }
-            e.snapTo(sp.getX() + 3.0, sp.getY(), sp.getZ(), 0.0F, 0.0F);
+            e.moveTo(sp.getX() + 3.0, sp.getY(), sp.getZ(), 0.0F, 0.0F);
             level.addFreshEntity(e);
-            e.hurtServer(level, sp.damageSources().playerAttack(sp), 100000.0F);
+            e.hurt(sp.damageSources().playerAttack(sp), 100000.0F);
             if (e.isAlive()) {
-                e.kill(level);
+                e.kill();
             }
         });
     }

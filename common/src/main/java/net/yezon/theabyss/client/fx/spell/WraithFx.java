@@ -1,10 +1,9 @@
 package net.yezon.theabyss.client.fx.spell;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import net.yezon.theabyss.compat.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -15,7 +14,7 @@ import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.TheabyssMod;
 
 public final class WraithFx extends Effect {
-    private static final RenderType POOL = RenderTypes.entityTranslucent(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "textures/entity/wraith_pool.png"));
+    private static final RenderType POOL = RenderType.entityTranslucent(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "textures/entity/wraith_pool.png"));
     private static final int FRAMES = 8;
     private static final float FRAME_TICKS = 3.0F;
     private static final float GROW = 6.0F;

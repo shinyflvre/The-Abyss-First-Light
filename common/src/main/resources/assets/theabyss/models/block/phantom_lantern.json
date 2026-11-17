@@ -146,7 +146,6 @@
         11,
         8
       ],
-      "shade": false,
       "rotation": {
         "angle": 45,
         "axis": "y",
@@ -188,7 +187,6 @@
         11,
         9.5
       ],
-      "shade": false,
       "rotation": {
         "angle": 45,
         "axis": "y",
@@ -287,8 +285,10 @@
           "cullface": "down"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -348,8 +348,10 @@
           "texture": "#glow_phantom_lantern_animated"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -362,7 +364,6 @@
         11,
         8
       ],
-      "shade": false,
       "rotation": {
         "angle": 45,
         "axis": "y",
@@ -392,7 +393,10 @@
           "texture": "#glow_phantom_lantern_animated"
         }
       },
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -405,7 +409,6 @@
         11,
         9.5
       ],
-      "shade": false,
       "rotation": {
         "angle": 45,
         "axis": "y",
@@ -435,7 +438,10 @@
           "texture": "#glow_phantom_lantern_animated"
         }
       },
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     }
   ],
   "render_type": "cutout",

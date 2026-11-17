@@ -1,17 +1,16 @@
 package net.yezon.theabyss.block;
 
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.NetherPortalBlock;
 import net.minecraft.world.level.block.Portal;
@@ -19,20 +18,20 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.PushReaction;
-import net.minecraft.world.level.portal.TeleportTransition;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.yezon.theabyss.init.TheabyssModParticleTypes;
 import net.yezon.theabyss.world.teleporter.TheabyssdimiceworldPortalShape;
 import net.yezon.theabyss.world.teleporter.TheabyssdimiceworldTeleporter;
 import org.jspecify.annotations.Nullable;
 
 public class TheabyssdimiceworldPortalBlock extends NetherPortalBlock {
-    public static final ResourceKey<Level> DESTINATION = ResourceKey.create(Registries.DIMENSION, Identifier.fromNamespaceAndPath("theabyss", "frost_world"));
+    public static final ResourceKey<Level> DESTINATION = ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath("theabyss", "frost_world"));
 
     public TheabyssdimiceworldPortalBlock(BlockBehaviour.Properties properties) {
         super(
-            properties.noCollision()
+            properties.noCollission()
                 .randomTicks()
-                .pushReaction(PushReaction.IMMOVEABLE)
+                .pushReaction(PushReaction.BLOCK)
                 .strength(-1.0F)
                 .sound(SoundType.GLASS)
                 .lightLevel(s -> 0)
@@ -49,16 +48,7 @@ public class TheabyssdimiceworldPortalBlock extends NetherPortalBlock {
     }
 
     @Override
-    protected BlockState updateShape(
-        BlockState state,
-        LevelReader level,
-        ScheduledTickAccess ticks,
-        BlockPos pos,
-        Direction directionToNeighbour,
-        BlockPos neighbourPos,
-        BlockState neighbourState,
-        RandomSource random
-    ) {
+    protected BlockState updateShape(BlockState state, Direction directionToNeighbour, BlockState neighbourState, LevelAccessor level, BlockPos pos, BlockPos neighbourPos) {
         Axis updateAxis = directionToNeighbour.getAxis();
         Axis axis = state.getValue(AXIS);
         boolean wrongAxis = axis != updateAxis && updateAxis.isHorizontal();
@@ -100,7 +90,7 @@ public class TheabyssdimiceworldPortalBlock extends NetherPortalBlock {
     }
 
     @Override
-    public @Nullable TeleportTransition getPortalDestination(ServerLevel currentLevel, Entity entity, BlockPos portalEntryPos) {
+    public @Nullable DimensionTransition getPortalDestination(ServerLevel currentLevel, Entity entity, BlockPos portalEntryPos) {
         ResourceKey<Level> destinationType = currentLevel.dimension() != DESTINATION ? DESTINATION : Level.OVERWORLD;
         ServerLevel destination = currentLevel.getServer().getLevel(destinationType);
         return destination == null ? null : new TheabyssdimiceworldTeleporter(destination, portalEntryPos).getPortalDestination(entity);

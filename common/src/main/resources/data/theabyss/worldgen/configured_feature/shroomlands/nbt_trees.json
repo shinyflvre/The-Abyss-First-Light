@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:simple_random_selector",
+  "config": {
+    "features": [
+      {
+        "feature": "theabyss:shroomlands/luna_shroom_large",
+        "placement": []
+      },
+      {
+        "feature": "theabyss:shroomlands/luna_shroom_medium",
+        "placement": []
+      },
+      {
+        "feature": "theabyss:shroomlands/luna_shroom_medium",
+        "placement": []
+      },
+      {
+        "feature": "theabyss:shroomlands/rena_shroom_small",
+        "placement": []
+      },
+      {
+        "feature": "theabyss:shroomlands/rena_shroom_small",
+        "placement": []
+      }
+    ]
+  }
+}

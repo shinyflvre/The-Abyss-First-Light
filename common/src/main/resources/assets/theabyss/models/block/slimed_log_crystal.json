@@ -894,8 +894,10 @@
           "texture": "#glow_crystal_shard_ore"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -977,8 +979,10 @@
           "texture": "#glow_crystal_shard_ore"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -1060,8 +1064,10 @@
           "texture": "#glow_crystal_shard_ore"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -1139,8 +1145,10 @@
           "texture": "#glow_crystal_shard_ore"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -1222,8 +1230,10 @@
           "texture": "#glow_crystal_shard_ore"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -1305,8 +1315,10 @@
           "texture": "#glow_crystal_shard_ore"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -1388,8 +1400,10 @@
           "texture": "#glow_crystal_shard_ore"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -1471,8 +1485,10 @@
           "texture": "#glow_crystal_shard_ore"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -1554,8 +1570,10 @@
           "texture": "#glow_crystal_shard_ore"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -1637,8 +1655,10 @@
           "texture": "#glow_crystal_shard_ore"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     }
   ],
   "render_type": "cutout",

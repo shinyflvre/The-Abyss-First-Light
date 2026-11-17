@@ -1,20 +1,12 @@
 package net.yezon.theabyss.client.fx;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.MeshData;
-import com.mojang.renderpearl.api.buffers.GpuBuffer;
-import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
-import com.mojang.renderpearl.api.commands.RenderPass;
-import com.mojang.renderpearl.api.pipeline.BlendFactor;
-import com.mojang.renderpearl.api.pipeline.BlendFunction;
-import com.mojang.renderpearl.api.pipeline.ColorTargetState;
-import com.mojang.renderpearl.api.pipeline.CompareOp;
-import com.mojang.renderpearl.api.pipeline.DepthStencilState;
-import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
-import com.mojang.renderpearl.api.pipeline.RenderPipeline;
+import com.mojang.blaze3d.vertex.VertexBuffer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,22 +18,21 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -49,19 +40,18 @@ import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
 import net.yezon.theabyss.platform.event.EventBusSubscriber;
 import net.yezon.theabyss.platform.client.event.ClientTickEvent;
-import net.yezon.theabyss.platform.client.event.RegisterRenderPipelinesEvent;
+import net.yezon.theabyss.platform.client.event.RegisterShadersEvent;
 import net.yezon.theabyss.platform.client.event.RenderLevelStageEvent;
 import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.configuration.ConfigConfiguration;
 import net.yezon.theabyss.ring.fx.GlowParticleOptions;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
+import org.jspecify.annotations.Nullable;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public final class RootCracks {
-    private static final ResourceKey<Level> THE_ABYSS = ResourceKey.create(Registries.DIMENSION, Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "the_abyss"));
-    private static final ResourceKey<Biome> NIGHTGROVE = ResourceKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "nightgrove"));
+    private static final ResourceKey<Level> THE_ABYSS = ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "the_abyss"));
+    private static final ResourceKey<Biome> NIGHTGROVE = ResourceKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "nightgrove"));
     private static final int MAX_RADIUS = 16;
     private static final int MAX_JOBS = 3;
     private static final int UPLOADS_PER_TICK = 4;
@@ -71,20 +61,8 @@ public final class RootCracks {
     private static final int SPARK_COLOR = 0x52F5FF;
     private static final RandomSource RANDOM = RandomSource.create();
 
-    private static final RenderPipeline.Snippet SNIPPET = RenderPipeline.builder(net.yezon.theabyss.mixin.accessor.client.RenderPipelinesAccessor.theabyss$matricesFogSnippet())
-        .withVertexShader(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "core/root_cracks"))
-        .withFragmentShader(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "core/root_cracks"))
-        .withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
-        .withPrimitiveTopology(PrimitiveTopology.QUADS)
-        .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
-        .withCull(false)
-        .buildSnippet();
-    private static final RenderPipeline RIM_PIPELINE = pipeline("rim", 0, BlendFunction.TRANSLUCENT);
-    private static final RenderPipeline HALO_LIGHT_PIPELINE = pipeline("halo_light", 1,
-        new BlendFunction(BlendFactor.DST_COLOR, BlendFactor.ONE, BlendFactor.ZERO, BlendFactor.ONE));
-    private static final RenderPipeline HALO_GLOW_PIPELINE = pipeline("halo_glow", 2,
-        new BlendFunction(BlendFactor.ONE, BlendFactor.ONE, BlendFactor.ZERO, BlendFactor.ONE));
-    private static final RenderPipeline CORE_PIPELINE = pipeline("core", 3, BlendFunction.TRANSLUCENT);
+    private static final ResourceLocation SHADER_ID = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "root_cracks");
+    private static @Nullable ShaderInstance shader;
 
     private static final Map<Long, ChunkCracks> CHUNKS = new HashMap<>();
     private static final Set<Long> PENDING = new HashSet<>();
@@ -97,20 +75,9 @@ public final class RootCracks {
     private RootCracks() {
     }
 
-    private static RenderPipeline pipeline(String name, int pass, BlendFunction blend) {
-        return RenderPipeline.builder(SNIPPET)
-            .withLocation(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "pipeline/root_cracks_" + name))
-            .withShaderDefine("PASS", pass)
-            .withColorTargetState(new ColorTargetState(blend))
-            .build();
-    }
-
     @SubscribeEvent
-    public static void registerPipelines(RegisterRenderPipelinesEvent event) {
-        event.registerPipeline(RIM_PIPELINE);
-        event.registerPipeline(HALO_LIGHT_PIPELINE);
-        event.registerPipeline(HALO_GLOW_PIPELINE);
-        event.registerPipeline(CORE_PIPELINE);
+    public static void registerShaders(RegisterShadersEvent event) {
+        event.registerShader(SHADER_ID, DefaultVertexFormat.POSITION_COLOR, loaded -> shader = loaded);
     }
 
     private static boolean enabled() {
@@ -132,7 +99,7 @@ public final class RootCracks {
         final long signature;
         final int originX;
         final int originZ;
-        final GpuBuffer[] buffers = new GpuBuffer[3];
+        final VertexBuffer[] buffers = new VertexBuffer[3];
         final int[] quads = new int[3];
         final float[] sparks;
         final float minY;
@@ -178,7 +145,7 @@ public final class RootCracks {
             lastLevel = level;
         }
         upload();
-        BlockPos camera = mc.gameRenderer.mainCamera().blockPosition();
+        BlockPos camera = mc.gameRenderer.getMainCamera().getBlockPosition();
         int radius = Math.min(MAX_RADIUS, mc.options.getEffectiveRenderDistance());
         int ccx = camera.getX() >> 4;
         int ccz = camera.getZ() >> 4;
@@ -229,7 +196,7 @@ public final class RootCracks {
                     }
                     int cx = ccx + dx;
                     int cz = ccz + dz;
-                    long key = ChunkPos.pack(cx, cz);
+                    long key = ChunkPos.asLong(cx, cz);
                     if (CHUNKS.containsKey(key) || PENDING.contains(key) || !level.hasChunk(cx, cz)) {
                         continue;
                     }
@@ -248,7 +215,7 @@ public final class RootCracks {
             for (int dz = -WATCH_RADIUS; dz <= WATCH_RADIUS; dz++) {
                 int cx = ccx + dx;
                 int cz = ccz + dz;
-                long key = ChunkPos.pack(cx, cz);
+                long key = ChunkPos.asLong(cx, cz);
                 ChunkCracks chunk = CHUNKS.get(key);
                 if (chunk == null || PENDING.contains(key) || !level.hasChunk(cx, cz)) {
                     continue;
@@ -266,7 +233,7 @@ public final class RootCracks {
                 int i = z * 16 + x;
                 int wx = (cx << 4) + x;
                 int wz = (cz << 4) + z;
-                int height = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, wx, wz);
+                int height = ClientGroundHeight.noLeaves(level, wx, wz);
                 if (height != chunk.heights[i] || level.getBlockState(pos.set(wx, height - 1, wz)) != chunk.states[i]) {
                     return true;
                 }
@@ -318,10 +285,10 @@ public final class RootCracks {
     }
 
     private static Column column(ClientLevel level, BlockPos.MutableBlockPos pos, int x, int z) {
-        int height = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+        int height = ClientGroundHeight.noLeaves(level, x, z);
         pos.set(x, height - 1, z);
         BlockState top = level.getBlockState(pos);
-        if (height <= level.getMinY() || top.is(BlockTags.LOGS) || !top.getFluidState().isEmpty() || !level.getBiome(pos).is(NIGHTGROVE)) {
+        if (height <= level.getMinBuildHeight() || top.is(BlockTags.LOGS) || !top.getFluidState().isEmpty() || !level.getBiome(pos).is(NIGHTGROVE)) {
             return new Column(false, 0.0F, height, top);
         }
         VoxelShape shape = top.getShape(level, pos);
@@ -449,8 +416,8 @@ public final class RootCracks {
                 if (count == 0) {
                     continue;
                 }
-                try (ByteBufferBuilder bytes = ByteBufferBuilder.exactlySized(count * 4 * DefaultVertexFormat.POSITION_COLOR.getVertexSize())) {
-                    BufferBuilder builder = new BufferBuilder(bytes, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_COLOR);
+                try (ByteBufferBuilder bytes = new ByteBufferBuilder(count * 4 * DefaultVertexFormat.POSITION_COLOR.getVertexSize())) {
+                    BufferBuilder builder = new BufferBuilder(bytes, VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
                     for (int q = 0; q < count; q++) {
                         int o = q * 7;
                         float x0 = quads[o];
@@ -465,10 +432,12 @@ public final class RootCracks {
                         builder.addVertex(x1, y, z1).setColor(r, 0, b, 255);
                         builder.addVertex(x1, y, z0).setColor(r, 0, b, 255);
                     }
-                    try (MeshData mesh = builder.buildOrThrow()) {
-                        chunk.buffers[layer] = RenderSystem.getDevice().createBuffer(() -> "Abyss root cracks", GpuBuffer.USAGE_VERTEX, mesh.vertexBuffer());
-                        chunk.quads[layer] = count;
-                    }
+                    VertexBuffer buffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
+                    buffer.bind();
+                    buffer.upload(builder.buildOrThrow());
+                    VertexBuffer.unbind();
+                    chunk.buffers[layer] = buffer;
+                    chunk.quads[layer] = count;
                 }
             }
             CHUNKS.put(built.key(), chunk);
@@ -476,55 +445,67 @@ public final class RootCracks {
     }
 
     @SubscribeEvent
-    public static void onRender(RenderLevelStageEvent.AfterOpaqueBlocks event) {
-        if (CHUNKS.isEmpty() || !enabled()) {
+    public static void onRender(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS || CHUNKS.isEmpty() || !enabled()) {
             return;
         }
-        Vec3 camera = event.getLevelRenderState().cameraRenderState.pos;
-        Frustum frustum = event.getLevelRenderState().cameraRenderState.cullFrustum;
+        ShaderInstance program = shader;
+        if (program == null) {
+            return;
+        }
+        Vec3 camera = event.getCamera().getPosition();
+        Frustum frustum = event.getFrustum();
         List<ChunkCracks> visible = new ArrayList<>();
-        List<GpuBufferSlice> transforms = new ArrayList<>();
-        int maxQuads = 0;
         for (ChunkCracks chunk : CHUNKS.values()) {
             if (chunk.empty() || !frustum.isVisible(new AABB(chunk.originX, chunk.minY - 0.5, chunk.originZ, chunk.originX + 16, chunk.maxY + 0.5, chunk.originZ + 16))) {
+                continue;
+            }
+            visible.add(chunk);
+        }
+        if (visible.isEmpty()) {
+            return;
+        }
+        Matrix4f projection = event.getProjectionMatrix();
+        Matrix4f view = event.getModelViewMatrix();
+        RenderSystem.enableDepthTest();
+        RenderSystem.depthFunc(515);
+        RenderSystem.depthMask(false);
+        RenderSystem.disableCull();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
+            GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        draw(program, 0, 0, visible, camera, view, projection);
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.DST_COLOR, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ZERO,
+            GlStateManager.DestFactor.ONE);
+        draw(program, 1, 1, visible, camera, view, projection);
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ZERO,
+            GlStateManager.DestFactor.ONE);
+        draw(program, 2, 1, visible, camera, view, projection);
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
+            GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        draw(program, 3, 2, visible, camera, view, projection);
+        VertexBuffer.unbind();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.disableBlend();
+        RenderSystem.enableCull();
+        RenderSystem.depthMask(true);
+    }
+
+    private static void draw(ShaderInstance program, int pass, int layer, List<ChunkCracks> visible, Vec3 camera, Matrix4f view, Matrix4f projection) {
+        program.safeGetUniform("Pass").set(pass);
+        for (ChunkCracks chunk : visible) {
+            if (chunk.quads[layer] == 0) {
                 continue;
             }
             float dx = (float)(chunk.originX - camera.x);
             float dy = (float)(-camera.y);
             float dz = (float)(chunk.originZ - camera.z);
-            Matrix4f relative = new Matrix4f().translation(dx, dy, dz);
-            Matrix4f modelView = new Matrix4f(event.getModelViewMatrix()).mul(relative);
-            Vector3f offset = new Vector3f(Math.floorMod(chunk.originX, 65536), 0.0F, Math.floorMod(chunk.originZ, 65536));
-            transforms.add(RenderSystem.getDynamicUniforms().writeTransform(modelView, new Vector4f(1.0F, 1.0F, 1.0F, 1.0F), offset, relative));
-            visible.add(chunk);
-            for (int quads : chunk.quads) {
-                maxQuads = Math.max(maxQuads, quads);
-            }
-        }
-        if (visible.isEmpty()) {
-            return;
-        }
-        RenderPass pass = event.getRenderPass();
-        RenderSystem.AutoStorageIndexBuffer indices = RenderSystem.getSequentialBuffer(PrimitiveTopology.QUADS);
-        GpuBuffer indexBuffer = indices.getBuffer(maxQuads * 6);
-        draw(pass, RIM_PIPELINE, 0, visible, transforms, indexBuffer, indices);
-        draw(pass, HALO_LIGHT_PIPELINE, 1, visible, transforms, indexBuffer, indices);
-        draw(pass, HALO_GLOW_PIPELINE, 1, visible, transforms, indexBuffer, indices);
-        draw(pass, CORE_PIPELINE, 2, visible, transforms, indexBuffer, indices);
-    }
-
-    private static void draw(RenderPass pass, RenderPipeline pipeline, int layer, List<ChunkCracks> visible, List<GpuBufferSlice> transforms, GpuBuffer indexBuffer,
-        RenderSystem.AutoStorageIndexBuffer indices) {
-        pass.setPipeline(RenderSystem.getCompiledPipeline(pipeline));
-        pass.setIndexBuffer(indexBuffer, indices.type());
-        for (int i = 0; i < visible.size(); i++) {
-            ChunkCracks chunk = visible.get(i);
-            if (chunk.quads[layer] == 0) {
-                continue;
-            }
-            pass.setUniform("DynamicTransforms", transforms.get(i));
-            pass.setVertexBuffer(0, chunk.buffers[layer].slice());
-            pass.drawIndexed(chunk.quads[layer] * 6, 1, 0, 0, 0);
+            Matrix4f modelView = new Matrix4f(view).translate(dx, dy, dz);
+            program.safeGetUniform("CrackOffset").set((float)Math.floorMod(chunk.originX, 65536), 0.0F, (float)Math.floorMod(chunk.originZ, 65536));
+            program.safeGetUniform("ViewOffset").set(dx, dy, dz);
+            VertexBuffer buffer = chunk.buffers[layer];
+            buffer.bind();
+            buffer.drawWithShader(modelView, projection, program);
         }
     }
 

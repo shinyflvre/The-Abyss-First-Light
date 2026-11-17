@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:cobble_stone",
-    "b": "theabyss:bottle_of_somnium",
-    "c": "minecraft:glass_bottle"
+    "a": {
+      "item": "theabyss:cobble_stone"
+    },
+    "b": {
+      "item": "theabyss:bottle_of_somnium"
+    },
+    "c": {
+      "item": "minecraft:glass_bottle"
+    }
   },
   "pattern": [
     " a ",

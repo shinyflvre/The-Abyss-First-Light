@@ -4,7 +4,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.network.PacketDistributor;
@@ -13,13 +13,13 @@ import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.platform.services.ServerHooks;
 
 public record EchoVisionMessage(boolean start, Vec3 fromEye, float yaw, float pitch, Vec3 body, float range) implements CustomPacketPayload {
-    public static final Type<EchoVisionMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "echo_vision"));
+    public static final Type<EchoVisionMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "echo_vision"));
     public static final StreamCodec<RegistryFriendlyByteBuf, EchoVisionMessage> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.BOOL, EchoVisionMessage::start,
-        Vec3.STREAM_CODEC, EchoVisionMessage::fromEye,
+        AbyssStreamCodecs.VEC3, EchoVisionMessage::fromEye,
         ByteBufCodecs.FLOAT, EchoVisionMessage::yaw,
         ByteBufCodecs.FLOAT, EchoVisionMessage::pitch,
-        Vec3.STREAM_CODEC, EchoVisionMessage::body,
+        AbyssStreamCodecs.VEC3, EchoVisionMessage::body,
         ByteBufCodecs.FLOAT, EchoVisionMessage::range,
         EchoVisionMessage::new
     );

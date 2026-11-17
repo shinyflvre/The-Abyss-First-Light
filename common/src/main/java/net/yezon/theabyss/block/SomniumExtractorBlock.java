@@ -4,7 +4,6 @@ import io.netty.buffer.Unpooled;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -48,7 +47,7 @@ public class SomniumExtractorBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected boolean propagatesSkylightDown(BlockState state) {
+    protected boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
         return true;
     }
 
@@ -76,7 +75,7 @@ public class SomniumExtractorBlock extends Block implements EntityBlock {
             }
         }
 
-        return InteractionResult.SUCCESS;
+        return InteractionResult.sidedSuccess(world.isClientSide());
     }
 
     @Override
@@ -106,8 +105,9 @@ public class SomniumExtractorBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
-        Containers.updateNeighboursAfterDestroy(state, level, pos);
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        Containers.dropContentsOnDestroy(state, newState, level, pos);
+        super.onRemove(state, level, pos, newState, movedByPiston);
     }
 
     @Override
@@ -116,7 +116,7 @@ public class SomniumExtractorBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected int getAnalogOutputSignal(BlockState blockState, Level world, BlockPos pos, Direction direction) {
+    protected int getAnalogOutputSignal(BlockState blockState, Level world, BlockPos pos) {
         return world.getBlockEntity(pos) instanceof SomniumExtractorBlockEntity be ? AbstractContainerMenu.getRedstoneSignalFromContainer(be) : 0;
     }
 }

@@ -7,7 +7,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.fabric.event.LivingFabricEvents;
 import net.yezon.theabyss.fabric.event.PlayerFabricEvents;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,10 +36,15 @@ public abstract class PlayerEventsMixin {
         return LivingFabricEvents.damagePre(this.theabyss$self(), source, damage);
     }
 
+    @Inject(method = "actuallyHurt", at = @At("RETURN"))
+    private void theabyss$damagePost(DamageSource source, float damage, CallbackInfo ci) {
+        LivingFabricEvents.damagePost(this.theabyss$self(), source);
+    }
+
     @Inject(method = "interactOn", at = @At(value = "INVOKE",
         target = "Lnet/minecraft/world/entity/player/Player;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;", ordinal = 0),
         cancellable = true)
-    private void theabyss$entityInteract(Entity entity, InteractionHand hand, Vec3 location, CallbackInfoReturnable<InteractionResult> cir) {
+    private void theabyss$entityInteract(Entity entity, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         if (PlayerFabricEvents.entityInteract(this.theabyss$self(), hand, entity)) {
             cir.setReturnValue(InteractionResult.PASS);
         }

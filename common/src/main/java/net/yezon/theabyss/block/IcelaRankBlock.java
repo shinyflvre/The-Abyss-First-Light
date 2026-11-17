@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelReader;
@@ -26,12 +25,12 @@ public class IcelaRankBlock extends SugarCaneBlock {
                 .randomTicks()
                 .sound(SoundType.GRASS)
                 .instabreak()
-                .postProcess((bs, br, bp) -> bp)
-                .emissiveRendering(bs -> true)
+                .hasPostProcess((bs, br, bp) -> true)
+                .emissiveRendering((bs, br, bp) -> true)
                 .lightLevel(s -> 1)
-                .noCollision()
+                .noCollission()
                 .offsetType(OffsetType.XZ)
-                .pushReaction(PushReaction.POPPED)
+                .pushReaction(PushReaction.DESTROY)
         );
     }
 
@@ -66,6 +65,6 @@ public class IcelaRankBlock extends SugarCaneBlock {
 
     @Override
     protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
-        return super.canSurvive(state, level, pos) || level.getBlockState(pos.below()).is(BlockTags.SUPPORTS_VEGETATION);
+        return super.canSurvive(state, level, pos) || AbyssPlantSupport.supportsVegetation(level.getBlockState(pos.below()));
     }
 }

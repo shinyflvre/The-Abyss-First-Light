@@ -2,15 +2,13 @@ package net.yezon.theabyss.possession.client;
 
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.Identifier;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -28,20 +26,21 @@ import net.yezon.theabyss.platform.client.event.RenderFrameEvent;
 import net.yezon.theabyss.platform.client.event.RenderHandEvent;
 import net.yezon.theabyss.platform.client.event.RenderPlayerEvent;
 import net.yezon.theabyss.TheabyssMod;
+import net.yezon.theabyss.compat.GuiGraphicsCompat;
 import net.yezon.theabyss.possession.PossessionData;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public final class PossessionClient {
-    private static final Identifier HEART_CONTAINER = Identifier.withDefaultNamespace("hud/heart/container");
-    private static final Identifier HEART_FULL = Identifier.withDefaultNamespace("hud/heart/full");
-    private static final Identifier HEART_HALF = Identifier.withDefaultNamespace("hud/heart/half");
+    private static final ResourceLocation HEART_CONTAINER = ResourceLocation.withDefaultNamespace("hud/heart/container");
+    private static final ResourceLocation HEART_FULL = ResourceLocation.withDefaultNamespace("hud/heart/full");
+    private static final ResourceLocation HEART_HALF = ResourceLocation.withDefaultNamespace("hud/heart/half");
 
     private PossessionClient() {
     }
 
-    public static void renderHostHealth(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
+    public static void renderHostHealth(GuiGraphics graphics, DeltaTracker deltaTracker) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.gui.hud.isHidden() || !(possessedMob(mc) instanceof LivingEntity host)) {
+        if (mc.options.hideGui || !(possessedMob(mc) instanceof LivingEntity host)) {
             return;
         }
         int x = graphics.guiWidth() / 2 - 91;
@@ -52,14 +51,14 @@ public final class PossessionClient {
         for (int i = 0; i < hearts; i++) {
             int hx = x + (i % 10) * 8;
             int hy = y - (i / 10) * 10;
-            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, HEART_CONTAINER, hx, hy, 9, 9);
+            GuiGraphicsCompat.blitSprite(graphics, HEART_CONTAINER, hx, hy, 9, 9);
             if (i * 2 + 1 < health) {
-                graphics.blitSprite(RenderPipelines.GUI_TEXTURED, HEART_FULL, hx, hy, 9, 9);
+                GuiGraphicsCompat.blitSprite(graphics, HEART_FULL, hx, hy, 9, 9);
             } else if (i * 2 + 1 == health) {
-                graphics.blitSprite(RenderPipelines.GUI_TEXTURED, HEART_HALF, hx, hy, 9, 9);
+                GuiGraphicsCompat.blitSprite(graphics, HEART_HALF, hx, hy, 9, 9);
             }
         }
-        graphics.text(mc.font, host.getDisplayName(), x, y - (rows - 1) * 10 - 10, 0xFFE0B0FF, true);
+        GuiGraphicsCompat.text(graphics, mc.font, host.getDisplayName(), x, y - (rows - 1) * 10 - 10, 0xFFE0B0FF, true);
     }
 
     private static Entity possessedMob(Minecraft mc) {
@@ -136,7 +135,7 @@ public final class PossessionClient {
         Vec3 to = from.add(direction.scale(maxDistance));
         AABB box = camera.getBoundingBox().expandTowards(direction.scale(maxDistance)).inflate(1.0);
         EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(
-            camera, from, to, box, e -> EntitySelector.CAN_BE_PICKED.test(e) && e != player && !e.isPassengerOfSameVehicle(camera), maxDistanceSq
+            camera, from, to, box, e -> !e.isSpectator() && e.isPickable() && e != player && !e.isPassengerOfSameVehicle(camera), maxDistanceSq
         );
         return entityHit != null && entityHit.getLocation().distanceToSqr(from) < blockDistanceSq
             ? withinRange(entityHit, from, entityRange)
@@ -148,7 +147,7 @@ public final class PossessionClient {
         if (location.closerThan(from, range)) {
             return hit;
         }
-        Direction direction = Direction.getApproximateNearest(location.x - from.x, location.y - from.y, location.z - from.z);
+        Direction direction = Direction.getNearest(location.x - from.x, location.y - from.y, location.z - from.z);
         return BlockHitResult.miss(location, direction, BlockPos.containing(location));
     }
 
@@ -177,7 +176,7 @@ public final class PossessionClient {
     @SubscribeEvent
     public static void onRenderPlayer(RenderPlayerEvent.Pre event) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.level != null && mc.level.getEntity(event.getRenderState().id) instanceof Player player && PossessionData.of(player).active()) {
+        if (mc.level != null && event.getEntity() instanceof Player player && PossessionData.of(player).active()) {
             event.setCanceled(true);
         }
     }

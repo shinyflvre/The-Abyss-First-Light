@@ -11,7 +11,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
-import net.minecraft.util.valueproviders.IntProviders;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoublePlantBlock;
@@ -23,16 +22,16 @@ import net.yezon.theabyss.platform.registries.DeferredRegister;
 import net.yezon.theabyss.TheabyssMod;
 import org.jspecify.annotations.Nullable;
 
-public record PlantClusterFeature(BlockState tall, BlockState plant, IntProvider count, IntProvider tallCount, int spread) implements Feature {
+public record PlantClusterFeature(BlockState tall, BlockState plant, IntProvider count, IntProvider tallCount, int spread) implements AbyssFeature.Config {
     public static final MapCodec<PlantClusterFeature> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
         BlockState.CODEC.fieldOf("tall").forGetter(PlantClusterFeature::tall),
         BlockState.CODEC.fieldOf("plant").forGetter(PlantClusterFeature::plant),
-        IntProviders.codec(1, 32).fieldOf("count").forGetter(PlantClusterFeature::count),
-        IntProviders.codec(1, 32).fieldOf("tall_count").forGetter(PlantClusterFeature::tallCount),
+        IntProvider.codec(1, 32).fieldOf("count").forGetter(PlantClusterFeature::count),
+        IntProvider.codec(1, 32).fieldOf("tall_count").forGetter(PlantClusterFeature::tallCount),
         Codec.intRange(1, 6).fieldOf("spread").forGetter(PlantClusterFeature::spread)
     ).apply(i, PlantClusterFeature::new));
-    public static final DeferredRegister<MapCodec<? extends Feature>> REGISTRY = DeferredRegister.create(Registries.FEATURE_TYPE, TheabyssMod.MODID);
-    public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<PlantClusterFeature>> PLANT_CLUSTER = REGISTRY.register("plant_cluster", () -> CODEC);
+    public static final DeferredRegister<Feature<?>> REGISTRY = DeferredRegister.create(Registries.FEATURE, TheabyssMod.MODID);
+    public static final DeferredHolder<Feature<?>, AbyssFeature<PlantClusterFeature>> PLANT_CLUSTER = REGISTRY.register("plant_cluster", () -> new AbyssFeature<>(CODEC));
 
     private record Spot(BlockPos pos, float key) {
     }

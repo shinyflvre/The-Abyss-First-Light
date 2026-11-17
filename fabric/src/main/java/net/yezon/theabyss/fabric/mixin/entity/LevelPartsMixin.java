@@ -10,7 +10,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
-import net.yezon.theabyss.fabric.entity.FabricParts;
 import net.yezon.theabyss.fabric.entity.FabricPartLevel;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -36,7 +35,7 @@ public abstract class LevelPartsMixin implements FabricPartLevel {
             return output;
         }
         for (Entity part : this.theabyss$partMap.values()) {
-            if (part != except && FabricParts.parent(part) != except && selector.test(part) && bb.intersects(part.getBoundingBox())) {
+            if (part != except && part.getBoundingBox().intersects(bb) && selector.test(part)) {
                 output.add(part);
             }
         }
@@ -58,20 +57,5 @@ public abstract class LevelPartsMixin implements FabricPartLevel {
                 }
             }
         }
-    }
-
-    @ModifyReturnValue(method = "hasEntities", at = @At("RETURN"))
-    private <T extends Entity> boolean theabyss$hasParts(boolean found, @Local(argsOnly = true) EntityTypeTest<Entity, T> type, @Local(argsOnly = true) AABB bb,
-        @Local(argsOnly = true) Predicate<? super T> selector) {
-        if (found || this.theabyss$partMap.isEmpty()) {
-            return found;
-        }
-        for (Entity part : this.theabyss$partMap.values()) {
-            T cast = type.tryCast(part);
-            if (cast != null && cast.getBoundingBox().intersects(bb) && selector.test(cast)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

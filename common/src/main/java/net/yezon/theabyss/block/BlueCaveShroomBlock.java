@@ -32,17 +32,18 @@ public class BlueCaveShroomBlock extends FlowerBlock implements HoverTextBlock {
                 .mapColor(MapColor.PLANT)
                 .sound(SoundType.WEEPING_VINES)
                 .instabreak()
-                .postProcess((bs, br, bp) -> bp)
-                .emissiveRendering(bs -> true)
+                .hasPostProcess((bs, br, bp) -> true)
+                .emissiveRendering((bs, br, bp) -> true)
                 .lightLevel(s -> 12)
-                .noCollision()
+                .noCollission()
                 .offsetType(OffsetType.XZ)
-                .pushReaction(PushReaction.POPPED)
+                .pushReaction(PushReaction.DESTROY)
         );
     }
 
     @Override
-    public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, Consumer<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, List<Component> tooltipLines, TooltipFlag flag) {
+        Consumer<Component> tooltip = tooltipLines::add;
         tooltip.accept(Component.translatable("tooltip.theabyss.plant_blinds"));
     }
 

@@ -1,15 +1,16 @@
 package net.yezon.theabyss.platform.client.event;
 
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.yezon.theabyss.platform.event.Event;
 
 public class RecipesReceivedEvent extends Event {
-    private final net.minecraft.world.item.crafting.RecipeMap recipeMap;
+    private final RecipeManager recipeManager;
 
-    public RecipesReceivedEvent(net.minecraft.world.item.crafting.RecipeMap recipeMap) {
-        this.recipeMap = recipeMap;
+    public RecipesReceivedEvent(RecipeManager recipeManager) {
+        this.recipeManager = recipeManager;
     }
 
-    public net.minecraft.world.item.crafting.RecipeMap getRecipeMap() {
-        return this.recipeMap;
+    public RecipeManager getRecipeManager() {
+        return this.recipeManager;
     }
 }

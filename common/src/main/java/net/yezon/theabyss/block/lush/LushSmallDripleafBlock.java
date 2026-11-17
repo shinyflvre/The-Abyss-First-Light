@@ -3,7 +3,6 @@ package net.yezon.theabyss.block.lush;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.BonemealSource;
 import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.SmallDripleafBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -16,14 +15,14 @@ public class LushSmallDripleafBlock extends SmallDripleafBlock {
     }
 
     @Override
-    public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state, BonemealSource source) {
+    public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
         if (state.getValue(DoublePlantBlock.HALF) == DoubleBlockHalf.LOWER) {
             BlockPos above = pos.above();
             level.setBlock(above, level.getFluidState(above).createLegacyBlock(), 18);
             LushBigDripleafBlock.placeWithRandomHeightLush(level, random, pos, state.getValue(FACING));
         } else {
             BlockPos below = pos.below();
-            this.performBonemeal(level, random, below, level.getBlockState(below), source);
+            this.performBonemeal(level, random, below, level.getBlockState(below));
         }
     }
 }

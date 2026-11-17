@@ -21,12 +21,12 @@ public class VigilantLeavesBlock extends Block implements FireSpreadingBlock, Pl
     }
 
     @Override
-    protected boolean propagatesSkylightDown(BlockState state) {
+    protected boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
         return true;
     }
 
     @Override
-    protected int getLightDampening(BlockState state) {
+    protected int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
         return 0;
     }
 
@@ -36,7 +36,7 @@ public class VigilantLeavesBlock extends Block implements FireSpreadingBlock, Pl
     }
 
     @Override
-    public void afterDestroyedByPlayer(BlockState blockstate, Level world, BlockPos pos, Player entity, ItemStack toolStack, boolean willHarvest, FluidState fluid) {
+    public void afterDestroyedByPlayer(BlockState blockstate, Level world, BlockPos pos, Player entity, boolean willHarvest, FluidState fluid) {
         BlaruLeavesHandlerEvents.execute(world, pos.getX(), pos.getY(), pos.getZ(), entity);
     }
 }

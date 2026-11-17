@@ -6,24 +6,23 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FontDescription;
-import net.minecraft.resources.Identifier;
+import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.ARGB;
+import net.yezon.theabyss.compat.ARGB;
+import net.yezon.theabyss.compat.GuiGraphicsCompat;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.util.AbyssTooltip;
+import org.lwjgl.glfw.GLFW;
 
 public class CodexScreen extends Screen {
     static final int W = 328;
@@ -42,9 +41,9 @@ public class CodexScreen extends Screen {
     private static final int ARROW_Y = H - 6;
     private static final int FIRST_ROWS = (TOP + PAGE_H - 38) / 11;
     private static final int ROWS = PAGE_H / 11;
-    static final Identifier PARTS = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "textures/gui/codex_parts.png");
-    static final FontDescription UNIFORM_FONT = new FontDescription.Resource(Identifier.withDefaultNamespace("uniform"));
-    private FontDescription UNIFORM = UNIFORM_FONT;
+    static final ResourceLocation PARTS = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "textures/gui/codex_parts.png");
+    static final ResourceLocation UNIFORM_FONT = ResourceLocation.withDefaultNamespace("uniform");
+    private ResourceLocation UNIFORM = UNIFORM_FONT;
 
     private enum Kind {
         LANDING,
@@ -66,6 +65,7 @@ public class CodexScreen extends Screen {
     private int top;
     private int ticks;
     private ItemStack hovered = ItemStack.EMPTY;
+    private Component tooltip;
     private final List<Target> targets = new ArrayList<>();
 
     private record Target(int x, int y, int w, int h, Place place) {
@@ -76,7 +76,7 @@ public class CodexScreen extends Screen {
     public CodexScreen() {
         super(Component.translatable("codex.theabyss.screen"));
         this.book = CodexBook.load();
-        this.UNIFORM = "uniform".equals(this.book.font) ? UNIFORM_FONT : FontDescription.DEFAULT;
+        this.UNIFORM = "uniform".equals(this.book.font) ? UNIFORM_FONT : Style.DEFAULT_FONT;
         this.place = lastPlace != null && lastPlace.kind() != Kind.LANDING ? this.resolve(lastPlace) : new Place(Kind.LANDING, null, null, 0);
         if (this.place.kind() != Kind.LANDING) {
             for (Place p : lastHistory) {
@@ -92,7 +92,7 @@ public class CodexScreen extends Screen {
     }
 
     public static void open() {
-        Minecraft.getInstance().gui.setScreen(new CodexScreen());
+        Minecraft.getInstance().setScreen(new CodexScreen());
     }
 
     public static void openCategory(String categoryId) {
@@ -104,7 +104,7 @@ public class CodexScreen extends Screen {
                 screen.place = new Place(Kind.CATEGORY, c, null, 0);
             }
         }
-        Minecraft.getInstance().gui.setScreen(screen);
+        Minecraft.getInstance().setScreen(screen);
     }
 
     public static void openEntry(String entryId, int spread) {
@@ -118,13 +118,12 @@ public class CodexScreen extends Screen {
                 }
             }
         }
-        Minecraft.getInstance().gui.setScreen(screen);
+        Minecraft.getInstance().setScreen(screen);
     }
 
     public static boolean clickBook(int x, int y, boolean right) {
-        if (Minecraft.getInstance().gui.screen() instanceof CodexScreen screen) {
-            return screen.mouseClicked(new MouseButtonEvent(screen.left + x + 0.5, screen.top + y + 0.5,
-                new net.minecraft.client.input.MouseButtonInfo(right ? InputConstants.MOUSE_BUTTON_RIGHT : InputConstants.MOUSE_BUTTON_LEFT, 0)), false);
+        if (Minecraft.getInstance().screen instanceof CodexScreen screen) {
+            return screen.mouseClicked(screen.left + x + 0.5, screen.top + y + 0.5, right ? InputConstants.MOUSE_BUTTON_RIGHT : InputConstants.MOUSE_BUTTON_LEFT);
         }
         return false;
     }
@@ -227,10 +226,10 @@ public class CodexScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        int mx = (int)event.x() - this.left;
-        int my = (int)event.y() - this.top;
-        switch (event.button()) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        int mx = (int)mouseX - this.left;
+        int my = (int)mouseY - this.top;
+        switch (button) {
             case InputConstants.MOUSE_BUTTON_LEFT -> {
                 if (this.place.spread() > 0 && in(mx, my, PREV_X, ARROW_Y, 18, 10)) {
                     this.turn(-1);
@@ -241,7 +240,7 @@ public class CodexScreen extends Screen {
                     return true;
                 }
                 if (!this.history.isEmpty() && in(mx, my, BACK_X, ARROW_Y + 1, 18, 9)) {
-                    this.back(event.hasShiftDown());
+                    this.back(Screen.hasShiftDown());
                     return true;
                 }
                 for (Target t : this.targets) {
@@ -252,21 +251,21 @@ public class CodexScreen extends Screen {
                 }
             }
             case InputConstants.MOUSE_BUTTON_RIGHT -> {
-                this.back(event.hasShiftDown());
+                this.back(Screen.hasShiftDown());
                 return true;
             }
-            case InputConstants.MOUSE_BUTTON_4 -> {
+            case GLFW.GLFW_MOUSE_BUTTON_4 -> {
                 this.turn(-1);
                 return true;
             }
-            case InputConstants.MOUSE_BUTTON_5 -> {
+            case GLFW.GLFW_MOUSE_BUTTON_5 -> {
                 this.turn(1);
                 return true;
             }
             default -> {
             }
         }
-        return super.mouseClicked(event, doubleClick);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -279,10 +278,9 @@ public class CodexScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(KeyEvent event) {
-        int key = event.key();
+    public boolean keyPressed(int key, int scanCode, int modifiers) {
         if (key == InputConstants.KEY_BACKSPACE) {
-            this.back(event.hasShiftDown());
+            this.back((modifiers & GLFW.GLFW_MOD_SHIFT) != 0);
             return true;
         }
         if (key == InputConstants.KEY_LEFT || key == InputConstants.KEY_PAGEUP) {
@@ -293,11 +291,11 @@ public class CodexScreen extends Screen {
             this.turn(1);
             return true;
         }
-        if (Minecraft.getInstance().options.keyInventory.matches(event)) {
+        if (Minecraft.getInstance().options.keyInventory.matches(key, scanCode)) {
             this.onClose();
             return true;
         }
-        return super.keyPressed(event);
+        return super.keyPressed(key, scanCode, modifiers);
     }
 
     private static boolean in(int mx, int my, int x, int y, int w, int h) {
@@ -305,9 +303,10 @@ public class CodexScreen extends Screen {
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
-        super.extractRenderState(g, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
+        super.render(g, mouseX, mouseY, partialTick);
         this.hovered = ItemStack.EMPTY;
+        this.tooltip = null;
         this.targets.clear();
         int mx = mouseX - this.left;
         int my = mouseY - this.top;
@@ -326,15 +325,17 @@ public class CodexScreen extends Screen {
         if (!this.history.isEmpty()) {
             this.blit(g, this.book.texture, BACK_X, ARROW_Y + 1, 308 + (in(mx, my, BACK_X, ARROW_Y + 1, 18, 9) ? 18 : 0), 0, 18, 9, 512, 256);
         }
-        if (!this.hovered.isEmpty()) {
-            g.setTooltipForNextFrame(this.font, this.hovered, mouseX, mouseY);
+        if (this.tooltip != null) {
+            g.renderTooltip(this.font, this.tooltip, mouseX, mouseY);
+        } else if (!this.hovered.isEmpty()) {
+            g.renderTooltip(this.font, this.hovered, mouseX, mouseY);
         }
     }
 
-    private void drawLanding(GuiGraphicsExtractor g, int mx, int my) {
+    private void drawLanding(GuiGraphics g, int mx, int my) {
         this.blit(g, this.book.texture, -8, 12, 0, 180, 140, 31, 512, 256);
-        g.text(this.font, this.book.title, this.left + 13, this.top + 16, this.book.nameplateColor, false);
-        g.text(this.font, Component.literal(this.book.edition).withStyle(s -> s.withFont(UNIFORM)), this.left + 24, this.top + 24, this.book.nameplateColor, false);
+        GuiGraphicsCompat.text(g, this.font, this.book.title, this.left + 13, this.top + 16, this.book.nameplateColor, false);
+        GuiGraphicsCompat.text(g, this.font, Component.literal(this.book.edition).withStyle(s -> s.withFont(UNIFORM)), this.left + 24, this.top + 24, this.book.nameplateColor, false);
         this.textBlock(g, this.book.landingText, LEFT, 43, PAGE_W, this.book.textColor);
         this.header(g, AbyssTooltip.tr("codex.theabyss.categories"), RIGHT + CX, TOP);
         this.separator(g, RIGHT, TOP + 12);
@@ -348,18 +349,21 @@ public class CodexScreen extends Screen {
         this.separator(g, RIGHT, 30 + 25 + 24 * rows);
     }
 
-    private void categoryButton(GuiGraphicsExtractor g, int mx, int my, int x, int y, ItemStack icon, String name, Place target) {
+    private void categoryButton(GuiGraphics g, int mx, int my, int x, int y, ItemStack icon, String name, Place target) {
         boolean hover = in(mx, my, x, y, 20, 20);
-        g.item(icon, this.left + x + 2, this.top + y + 2);
+        g.renderItem(icon, this.left + x + 2, this.top + y + 2);
         if (!hover) {
+            g.pose().pushPose();
+            g.pose().translate(0.0F, 0.0F, 200.0F);
             this.blit(g, this.book.background, x, y, x, y, 20, 20, 512, 256, ARGB.color(128, 255, 255, 255));
-        } else {
-            g.setTooltipForNextFrame(Component.literal(name), this.left + mx, this.top + my);
+            g.pose().popPose();
+        } else if (this.tooltip == null) {
+            this.tooltip = Component.literal(name);
         }
         this.targets.add(new Target(x, y, 20, 20, target));
     }
 
-    private void drawList(GuiGraphicsExtractor g, int mx, int my) {
+    private void drawList(GuiGraphics g, int mx, int my) {
         List<CodexBook.Entry> entries = this.entries();
         int spread = this.place.spread();
         if (spread == 0) {
@@ -378,7 +382,7 @@ public class CodexScreen extends Screen {
                 this.entryButton(g, mx, my, RIGHT, 38 + i * 11, entries.get(i));
             }
             if (entries.isEmpty()) {
-                g.centeredText(this.font, AbyssTooltip.tr("codex.theabyss.no_entries"), this.left + RIGHT + CX, this.top + 60, 0xFF333333);
+                GuiGraphicsCompat.centeredText(g, this.font, AbyssTooltip.tr("codex.theabyss.no_entries"), this.left + RIGHT + CX, this.top + 60, 0xFF333333);
             }
         } else {
             int start = FIRST_ROWS + (spread - 1) * ROWS * 2;
@@ -394,25 +398,25 @@ public class CodexScreen extends Screen {
         return entry.chronicle() > 0 && (mc.player == null || !net.yezon.theabyss.lore.ChronicleData.of(mc.player).has(entry.chronicle()));
     }
 
-    private void entryButton(GuiGraphicsExtractor g, int mx, int my, int x, int y, CodexBook.Entry entry) {
+    private void entryButton(GuiGraphics g, int mx, int my, int x, int y, CodexBook.Entry entry) {
         if (locked(entry)) {
-            g.text(this.font, Component.literal(entry.chronicle() + ". ???").withStyle(s -> s.withFont(UNIFORM)), this.left + x + 12, this.top + y + 1,
+            GuiGraphicsCompat.text(g, this.font, Component.literal(entry.chronicle() + ". ???").withStyle(s -> s.withFont(UNIFORM)), this.left + x + 12, this.top + y + 1,
                 0xFF8C8270, false);
             return;
         }
         if (in(mx, my, x, y, PAGE_W, 10)) {
             g.fill(this.left + x, this.top + y, this.left + x + PAGE_W, this.top + y + 10, 0x22000000);
         }
-        g.pose().pushMatrix();
-        g.pose().translate(this.left + x + 1, this.top + y + 1);
-        g.pose().scale(0.5F, 0.5F);
-        g.item(item(entry.icon()), 0, 0);
-        g.pose().popMatrix();
-        g.text(this.font, Component.literal(entry.name()).withStyle(s -> s.withFont(UNIFORM)), this.left + x + 12, this.top + y + 1, this.book.textColor, false);
+        g.pose().pushPose();
+        g.pose().translate(this.left + x + 1, this.top + y + 1, 0.0F);
+        g.pose().scale(0.5F, 0.5F, 1.0F);
+        net.yezon.theabyss.client.gui.GuiPicture.item(g, item(entry.icon()), 0, 0);
+        g.pose().popPose();
+        GuiGraphicsCompat.text(g, this.font, Component.literal(entry.name()).withStyle(s -> s.withFont(UNIFORM)), this.left + x + 12, this.top + y + 1, this.book.textColor, false);
         this.targets.add(new Target(x, y, PAGE_W, 10, new Place(Kind.ENTRY, null, entry, 0)));
     }
 
-    private void drawEntry(GuiGraphicsExtractor g, int mx, int my) {
+    private void drawEntry(GuiGraphics g, int mx, int my) {
         CodexBook.Entry entry = this.place.entry();
         List<CodexBook.Page> pages = this.pages(entry);
         int first = this.place.spread() * 2;
@@ -507,23 +511,23 @@ public class CodexScreen extends Screen {
         return this.ticks;
     }
 
-    void blit(GuiGraphicsExtractor g, Identifier texture, int x, int y, int u, int v, int w, int h, int texW, int texH) {
-        g.blit(RenderPipelines.GUI_TEXTURED, texture, this.left + x, this.top + y, u, v, w, h, texW, texH);
+    void blit(GuiGraphics g, ResourceLocation texture, int x, int y, int u, int v, int w, int h, int texW, int texH) {
+        GuiGraphicsCompat.blit(g, texture, this.left + x, this.top + y, u, v, w, h, texW, texH);
     }
 
-    void blit(GuiGraphicsExtractor g, Identifier texture, int x, int y, int u, int v, int w, int h, int texW, int texH, int color) {
-        g.blit(RenderPipelines.GUI_TEXTURED, texture, this.left + x, this.top + y, u, v, w, h, texW, texH, color);
+    void blit(GuiGraphics g, ResourceLocation texture, int x, int y, int u, int v, int w, int h, int texW, int texH, int color) {
+        GuiGraphicsCompat.blit(g, texture, this.left + x, this.top + y, u, v, w, h, texW, texH, color);
     }
 
-    void header(GuiGraphicsExtractor g, String text, int x, int y) {
-        g.text(this.font, text, this.left + x - this.font.width(text) / 2, this.top + y, this.book.headerColor, false);
+    void header(GuiGraphics g, String text, int x, int y) {
+        GuiGraphicsCompat.text(g, this.font, text, this.left + x - this.font.width(text) / 2, this.top + y, this.book.headerColor, false);
     }
 
-    void separator(GuiGraphicsExtractor g, int pageX, int y) {
+    void separator(GuiGraphics g, int pageX, int y) {
         this.blit(g, this.book.texture, pageX + CX - 55, y, 140, 180, 110, 3, 512, 256, ARGB.color(204, 255, 255, 255));
     }
 
-    void textBlock(GuiGraphicsExtractor g, String text, int x, int y, int width, int color) {
+    void textBlock(GuiGraphics g, String text, int x, int y, int width, int color) {
         if (text == null || text.isEmpty()) {
             return;
         }
@@ -535,35 +539,35 @@ public class CodexScreen extends Screen {
             lines = this.lineRanges(text, virtualWidth);
         }
         float scale = width / (float)virtualWidth;
-        g.pose().pushMatrix();
-        g.pose().translate(this.left + x, this.top + y);
-        g.pose().scale(scale, scale);
+        g.pose().pushPose();
+        g.pose().translate(this.left + x, this.top + y, 0.0F);
+        g.pose().scale(scale, scale, 1.0F);
         for (int i = 0; i < lines.size(); i++) {
             String part = text.substring(lines.get(i)[0], lines.get(i)[1]);
-            g.text(this.font, Component.literal(part).withStyle(st -> st.withFont(UNIFORM)), 0, i * LINE, color, false);
+            GuiGraphicsCompat.text(g, this.font, Component.literal(part).withStyle(st -> st.withFont(UNIFORM)), 0, i * LINE, color, false);
         }
-        g.pose().popMatrix();
+        g.pose().popPose();
     }
 
-    void itemAt(GuiGraphicsExtractor g, ItemStack stack, int x, int y, boolean framed, int mx, int my) {
+    void itemAt(GuiGraphics g, ItemStack stack, int x, int y, boolean framed, int mx, int my) {
         if (framed) {
             this.blit(g, PARTS, x - 5, y - 5, 0, 64, 26, 26, 128, 128);
         }
         if (stack.isEmpty()) {
             return;
         }
-        g.item(stack, this.left + x, this.top + y);
+        g.renderItem(stack, this.left + x, this.top + y);
         if (in(mx, my, x, y, 16, 16)) {
             this.hovered = stack;
         }
     }
 
-    void bigItem(GuiGraphicsExtractor g, ItemStack stack, int centreX, int centreY, float scale) {
-        g.pose().pushMatrix();
-        g.pose().translate(this.left + centreX - 8 * scale, this.top + centreY - 8 * scale);
-        g.pose().scale(scale, scale);
-        g.item(stack, 0, 0);
-        g.pose().popMatrix();
+    void bigItem(GuiGraphics g, ItemStack stack, int centreX, int centreY, float scale) {
+        g.pose().pushPose();
+        g.pose().translate(this.left + centreX - 8 * scale, this.top + centreY - 8 * scale, 0.0F);
+        g.pose().scale(scale, scale, 1.0F);
+        net.yezon.theabyss.client.gui.GuiPicture.item(g, stack, 0, 0);
+        g.pose().popPose();
     }
 
     ItemStack stack(String id) {
@@ -572,14 +576,14 @@ public class CodexScreen extends Screen {
         }
         if (id.startsWith("#")) {
             List<Item> items = new ArrayList<>();
-            BuiltInRegistries.ITEM.getTagOrEmpty(TagKey.create(Registries.ITEM, Identifier.parse(id.substring(1)))).forEach(h -> items.add(h.value()));
+            BuiltInRegistries.ITEM.getTagOrEmpty(TagKey.create(Registries.ITEM, ResourceLocation.parse(id.substring(1)))).forEach(h -> items.add(h.value()));
             return items.isEmpty() ? ItemStack.EMPTY : new ItemStack(items.get(this.ticks / 20 % items.size()));
         }
         return item(id);
     }
 
     static ItemStack item(String id) {
-        Identifier key = Identifier.tryParse(id);
+        ResourceLocation key = ResourceLocation.tryParse(id);
         if (key == null) {
             return ItemStack.EMPTY;
         }

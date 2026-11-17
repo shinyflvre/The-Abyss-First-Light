@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:ignisithe_gem"
+    "a": {
+      "item": "theabyss:ignisithe_gem"
+    }
   },
   "pattern": [
     "aaa",

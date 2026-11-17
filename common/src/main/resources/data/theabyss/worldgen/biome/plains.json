@@ -1,72 +1,65 @@
 {
-  "attributes": {
-    "minecraft:audio/ambient_sounds": {
-      "loop": "theabyss:abyss_ambience",
-      "mood": {
-        "block_search_extent": 2,
-        "offset": 8,
-        "sound": "theabyss:random_fx",
-        "tick_delay": 300
-      }
-    },
-    "minecraft:audio/background_music": {
-      "default": {
-        "max_delay": 24000,
-        "min_delay": 12000,
-        "sound": "theabyss:theabyss_dimension_music",
-        "replace_current_music": true
-      }
-    },
-    "minecraft:gameplay/natural_mob_spawns": {
-      "argument": {
-        "spawn_costs": {},
-        "spawns_by_category": {
-          "creature": [
-            {
-              "type": "minecraft:bat",
-              "count": {
-                "type": "minecraft:uniform",
-                "max_inclusive": 15,
-                "min_inclusive": 1
-              },
-              "weight": 15
-            }
-          ]
-        }
-      },
-      "modifier": "overlay"
-    },
-    "minecraft:visual/ambient_particles": {
-      "argument": [
-        {
-          "particle": {
-            "type": "theabyss:spurs_fx"
-          },
-          "probability": 0.015
-        }
-      ],
-      "modifier": "append"
-    },
-    "minecraft:visual/fog_color": "#000c13",
-    "minecraft:visual/water_fog_color": "#003333"
+  "carvers": {
+    "air": [
+      "minecraft:cave",
+      "minecraft:cave_extra_underground",
+      "minecraft:canyon"
+    ]
   },
-  "carvers": [
-    "minecraft:cave",
-    "minecraft:cave_extra_underground",
-    "minecraft:canyon"
-  ],
   "downfall": 0.5,
   "effects": {
-    "foliage_color": "#367697",
-    "grass_color": "#3b7b9e",
-    "water_color": "#003333"
+    "fog_color": 3091,
+    "sky_color": 0,
+    "water_color": 13107,
+    "water_fog_color": 13107,
+    "foliage_color": 3569303,
+    "grass_color": 3898270,
+    "particle": {
+      "options": {
+        "type": "theabyss:spurs_fx"
+      },
+      "probability": 0.015
+    },
+    "ambient_sound": "theabyss:abyss_ambience",
+    "mood_sound": {
+      "block_search_extent": 2,
+      "offset": 8,
+      "sound": "theabyss:random_fx",
+      "tick_delay": 300
+    },
+    "music": {
+      "max_delay": 24000,
+      "min_delay": 12000,
+      "replace_current_music": true,
+      "sound": "theabyss:theabyss_dimension_music"
+    }
   },
   "features": [
     [],
     [
-      "minecraft:lake_lava_underground"
-    ]
+      "theabyss:lake_lava_underground"
+    ],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
   ],
   "has_precipitation": false,
+  "spawn_costs": {},
+  "spawners": {
+    "creature": [
+      {
+        "type": "minecraft:bat",
+        "maxCount": 15,
+        "minCount": 1,
+        "weight": 15
+      }
+    ]
+  },
   "temperature": 0.7
 }

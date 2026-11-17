@@ -1,19 +1,18 @@
 package net.yezon.theabyss.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.item.ItemModelResolver;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -26,20 +25,21 @@ import net.yezon.theabyss.block.entity.AbyssalEnergeticaBlockEntity;
 import net.yezon.theabyss.client.fx.spell.Frame;
 import net.yezon.theabyss.init.TheabyssModBlockEntities;
 import net.yezon.theabyss.station.ArcanePower;
-import org.jspecify.annotations.Nullable;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
-public class AbyssalEnergeticaRenderer implements BlockEntityRenderer<AbyssalEnergeticaBlockEntity, AbyssalEnergeticaRenderer.State> {
+public class AbyssalEnergeticaRenderer implements BlockEntityRenderer<AbyssalEnergeticaBlockEntity> {
     private static final int CYAN = 0x5FF0E6;
     private static final int CORE = 0xE6FFFB;
     private static final int FULL_BRIGHT = 15728880;
     private static final double GEM_Y = 1.22;
     private static final int POINTS = 26;
 
-    private final ItemModelResolver itemModelResolver;
+    private final ItemRenderer itemRenderer;
+    private final BlockEntityRenderDispatcher dispatcher;
 
     public AbyssalEnergeticaRenderer(BlockEntityRendererProvider.Context context) {
-        this.itemModelResolver = context.itemModelResolver();
+        this.itemRenderer = context.getItemRenderer();
+        this.dispatcher = context.getBlockEntityRenderDispatcher();
     }
 
     @SubscribeEvent
@@ -47,62 +47,41 @@ public class AbyssalEnergeticaRenderer implements BlockEntityRenderer<AbyssalEne
         event.registerBlockEntityRenderer(TheabyssModBlockEntities.ABYSSAL_ENERGETICA.get(), AbyssalEnergeticaRenderer::new);
     }
 
-    public static class State extends BlockEntityRenderState {
-        final ItemStackRenderState gem = new ItemStackRenderState();
-        float time;
-        boolean beam;
-        Vec3 target = Vec3.ZERO;
-        Vec3 camera = Vec3.ZERO;
-    }
-
     @Override
-    public State createRenderState() {
-        return new State();
-    }
-
-    @Override
-    public void extractRenderState(AbyssalEnergeticaBlockEntity pillar, State state, float partialTicks, Vec3 cameraPosition,
-                                   ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
-        BlockEntityRenderer.super.extractRenderState(pillar, state, partialTicks, cameraPosition, breakProgress);
+    public void render(AbyssalEnergeticaBlockEntity pillar, float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int light, int overlay) {
+        ItemStack energy = pillar.energy();
+        if (energy.isEmpty()) {
+            return;
+        }
         Level level = pillar.getLevel();
         BlockPos pos = pillar.getBlockPos();
-        this.itemModelResolver.updateForTopItem(state.gem, pillar.energy(), ItemDisplayContext.GROUND, level, null, (int)pos.asLong());
-        state.time = level == null ? 0.0F : (level.getGameTime() % 24000L) + partialTicks;
-        state.camera = cameraPosition.subtract(pos.getX(), pos.getY(), pos.getZ());
-        state.beam = false;
+        float t = level == null ? 0.0F : (level.getGameTime() % 24000L) + partialTicks;
+        boolean beam = false;
+        Vec3 target = Vec3.ZERO;
         if (level != null && pillar.charged()) {
             BlockPos arcane = ArcanePower.arcaneOf(level, pos);
             if (arcane != null && ArcanePower.powered(level, arcane)) {
-                state.beam = true;
-                state.target = new Vec3(arcane.getX() - pos.getX() + 0.5, arcane.getY() - pos.getY() + 0.8, arcane.getZ() - pos.getZ() + 0.5);
+                beam = true;
+                target = new Vec3(arcane.getX() - pos.getX() + 0.5, arcane.getY() - pos.getY() + 0.8, arcane.getZ() - pos.getZ() + 0.5);
             }
         }
-    }
-
-    @Override
-    public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
-        if (state.gem.isEmpty()) {
-            return;
-        }
-        float t = state.time;
         double bob = 0.06 * Math.sin(t * 0.09);
         Vec3 gem = new Vec3(0.5, GEM_Y + bob, 0.5);
         poseStack.pushPose();
         poseStack.translate(gem.x, gem.y - 0.12, gem.z);
-        poseStack.rotateDegrees(Axis.YP, (t * 3.0F) % 360.0F);
+        poseStack.mulPose(Axis.YP.rotationDegrees((t * 3.0F) % 360.0F));
         poseStack.scale(0.75F, 0.75F, 0.75F);
-        state.gem.submit(poseStack, collector, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
+        this.itemRenderer.renderStatic(energy, ItemDisplayContext.GROUND, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, poseStack, buffers, level, (int)pos.asLong());
         poseStack.popPose();
 
-        Vec3 eye = state.camera;
+        Vec3 eye = this.dispatcher.camera.getPosition().subtract(pos.getX(), pos.getY(), pos.getZ());
         float breathe = 0.5F + 0.5F * Mth.sin(t * 0.12F);
-        float halo = state.beam ? 0.6F + 0.25F * breathe : 0.42F + 0.14F * breathe;
-        float radius = state.beam ? 1.15F : 1.05F;
-        collector.submitCustomGeometry(poseStack, LightTrail.FLARE, (pose, buffer) -> LightTrail.flare(pose, buffer, gem, radius, CYAN, halo, eye));
-        if (!state.beam) {
+        float halo = beam ? 0.6F + 0.25F * breathe : 0.42F + 0.14F * breathe;
+        float radius = beam ? 1.15F : 1.05F;
+        LightTrail.flare(poseStack.last(), buffers.getBuffer(LightTrail.FLARE), gem, radius, CYAN, halo, eye);
+        if (!beam) {
             return;
         }
-        Vec3 target = state.target;
         Vec3 control = gem.add(target).scale(0.5).add(0.0, 1.1, 0.0);
         Vec3[] points = Frame.curve(gem, control, target, POINTS);
         int n = points.length;
@@ -120,12 +99,11 @@ public class AbyssalEnergeticaRenderer implements BlockEntityRenderer<AbyssalEne
             outerLight[i] = (0.32F + 0.68F * pulse) * ends;
             coreLight[i] = (0.25F + 0.75F * pulse) * ends;
         }
-        collector.submitCustomGeometry(poseStack, LightTrail.STREAK, (pose, buffer) -> {
-            LightTrail.ribbon(pose, buffer, points, outerWidth, outerLight, CYAN, eye);
-            LightTrail.ribbon(pose, buffer, points, coreWidth, coreLight, CORE, eye);
-        });
+        VertexConsumer streak = buffers.getBuffer(LightTrail.STREAK);
+        LightTrail.ribbon(poseStack.last(), streak, points, outerWidth, outerLight, CYAN, eye);
+        LightTrail.ribbon(poseStack.last(), streak, points, coreWidth, coreLight, CORE, eye);
         float sink = 0.45F + 0.3F * breathe;
-        collector.submitCustomGeometry(poseStack, LightTrail.FLARE, (pose, buffer) -> LightTrail.flare(pose, buffer, target, 0.7F, CYAN, sink, eye));
+        LightTrail.flare(poseStack.last(), buffers.getBuffer(LightTrail.FLARE), target, 0.7F, CYAN, sink, eye);
     }
 
     public AABB getRenderBoundingBox(AbyssalEnergeticaBlockEntity pillar) {

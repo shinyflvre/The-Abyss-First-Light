@@ -10,7 +10,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -76,7 +76,7 @@ public final class ApplyClockOfTimeEvents {
         }
         TheabyssModVariables.PlayerVariables vars = TheabyssModVariables.getPlayerVariables(player);
         if (vars.Mana < COST * SomniumUpgrades.costFactor(vars)) {
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.low_energy"));
+            player.displayClientMessage(Component.translatable("ring.theabyss.low_energy"), true);
             return;
         }
         if (itemstack.is(TheabyssModItems.CLOCK_OF_TIME.get())) {
@@ -91,10 +91,10 @@ public final class ApplyClockOfTimeEvents {
             vars.SaveFD = Math.round((float)player.getFoodData().getFoodLevel());
             vars.ClockActive = true;
             vars.syncPlayerVariables(player);
-            net.yezon.theabyss.platform.PersistentData.get(player).putString(DIMENSION_KEY, player.level().dimension().identifier().toString());
+            net.yezon.theabyss.platform.PersistentData.get(player).putString(DIMENSION_KEY, player.level().dimension().location().toString());
             TRACKS.put(player.getUUID(), new Track(player.level().dimension(), sample(player)));
-            player.getCooldowns().addCooldown(itemstack, SAVE_LOCK);
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.timestamp"));
+            player.getCooldowns().addCooldown(itemstack.getItem(), SAVE_LOCK);
+            player.displayClientMessage(Component.translatable("ring.theabyss.timestamp"), true);
             player.sendSystemMessage(Component.translatable("ring.theabyss.timestamp"));
             return;
         }
@@ -110,7 +110,7 @@ public final class ApplyClockOfTimeEvents {
         trail(level, reversed(recent), player.getEyeHeight());
         RingFx.wave(level, from.add(0.0, 0.1, 0.0), 5.0F, 16, GOLD);
         RingVisuals.sound(level, from, SoundEvents.BEACON_DEACTIVATE, 1.4F, 1.8F);
-        player.getCooldowns().addCooldown(itemstack, RECALL_LOCK);
+        player.getCooldowns().addCooldown(itemstack.getItem(), RECALL_LOCK);
         REWINDING.add(player.getUUID());
         TheabyssMod.queueServerWork(REWIND_TICKS, () -> finish(player));
     }
@@ -125,9 +125,9 @@ public final class ApplyClockOfTimeEvents {
         player.setHealth((float)vars.SaveHP);
         ServerLevel destination = savedLevel(player);
         if (destination == player.level()) {
-            player.teleportTo(vars.ClockX, vars.ClockY, vars.ClockZ);
+            net.yezon.theabyss.util.AbyssTeleport.to(player, vars.ClockX, vars.ClockY, vars.ClockZ);
         } else {
-            player.teleportTo(destination, vars.ClockX, vars.ClockY, vars.ClockZ, Set.of(), player.getYRot(), player.getXRot(), true);
+            net.yezon.theabyss.util.AbyssTeleport.level(player, destination, vars.ClockX, vars.ClockY, vars.ClockZ, player.getYRot(), player.getXRot());
         }
         player.setDeltaMovement(Vec3.ZERO);
         player.resetFallDistance();
@@ -136,7 +136,7 @@ public final class ApplyClockOfTimeEvents {
         vars.syncPlayerVariables(player);
         net.yezon.theabyss.platform.PersistentData.get(player).remove(DIMENSION_KEY);
         Track track = TRACKS.remove(player.getUUID());
-        ServerLevel here = player.level();
+        ServerLevel here = player.serverLevel();
         Vec3 at = player.position();
         if (track != null) {
             trail(here, reversed(track.first), player.getEyeHeight());
@@ -213,9 +213,9 @@ public final class ApplyClockOfTimeEvents {
     }
 
     private static ServerLevel savedLevel(ServerPlayer player) {
-        String saved = net.yezon.theabyss.platform.PersistentData.get(player).getStringOr(DIMENSION_KEY, "");
-        Identifier id = saved.isEmpty() ? null : Identifier.tryParse(saved);
+        String saved = net.yezon.theabyss.compat.NbtCompat.getStringOr(net.yezon.theabyss.platform.PersistentData.get(player), DIMENSION_KEY, "");
+        ResourceLocation id = saved.isEmpty() ? null : ResourceLocation.tryParse(saved);
         ServerLevel level = id == null ? null : player.level().getServer().getLevel(ResourceKey.create(Registries.DIMENSION, id));
-        return level != null ? level : player.level();
+        return level != null ? level : player.serverLevel();
     }
 }

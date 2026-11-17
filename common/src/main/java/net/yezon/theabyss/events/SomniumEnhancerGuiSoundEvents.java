@@ -1,7 +1,7 @@
 package net.yezon.theabyss.events;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -15,7 +15,7 @@ public class SomniumEnhancerGuiSoundEvents {
                 _level.playSound(
                     (Player)null,
                     BlockPos.containing(x, y, z),
-                    BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:somnium_infuser_bubble")),
+                    BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:somnium_infuser_bubble")),
                     SoundSource.NEUTRAL,
                     0.3F,
                     1.0F
@@ -25,7 +25,7 @@ public class SomniumEnhancerGuiSoundEvents {
                     x,
                     y,
                     z,
-                    BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:somnium_infuser_bubble")),
+                    BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:somnium_infuser_bubble")),
                     SoundSource.NEUTRAL,
                     0.3F,
                     1.0F,

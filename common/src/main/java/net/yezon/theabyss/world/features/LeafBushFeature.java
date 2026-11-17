@@ -25,14 +25,14 @@ import net.yezon.theabyss.platform.registries.DeferredHolder;
 import net.yezon.theabyss.platform.registries.DeferredRegister;
 import net.yezon.theabyss.TheabyssMod;
 
-public record LeafBushFeature(BlockState leaves, BlockState carpet, int carpetReach) implements Feature {
+public record LeafBushFeature(BlockState leaves, BlockState carpet, int carpetReach) implements AbyssFeature.Config {
     public static final MapCodec<LeafBushFeature> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
         BlockState.CODEC.fieldOf("leaves").forGetter(LeafBushFeature::leaves),
         BlockState.CODEC.fieldOf("carpet").forGetter(LeafBushFeature::carpet),
         Codec.intRange(0, 6).fieldOf("carpet_reach").forGetter(LeafBushFeature::carpetReach)
     ).apply(i, LeafBushFeature::new));
-    public static final DeferredRegister<MapCodec<? extends Feature>> REGISTRY = DeferredRegister.create(Registries.FEATURE_TYPE, TheabyssMod.MODID);
-    public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<LeafBushFeature>> LEAF_BUSH = REGISTRY.register("leaf_bush", () -> CODEC);
+    public static final DeferredRegister<Feature<?>> REGISTRY = DeferredRegister.create(Registries.FEATURE, TheabyssMod.MODID);
+    public static final DeferredHolder<Feature<?>, AbyssFeature<LeafBushFeature>> LEAF_BUSH = REGISTRY.register("leaf_bush", () -> new AbyssFeature<>(CODEC));
 
     private static final int MIN_LEAVES = 6;
     private static final int MAX_LEAVES = 12;

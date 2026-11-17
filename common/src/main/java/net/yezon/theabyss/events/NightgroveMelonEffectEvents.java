@@ -9,7 +9,7 @@ public class NightgroveMelonEffectEvents {
     public static void execute(Entity entity) {
         if (entity != null) {
             if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
-                _entity.addEffect(new MobEffectInstance(MobEffects.INSTANT_HEALTH, 60, 1));
+                _entity.addEffect(new MobEffectInstance(MobEffects.HEAL, 60, 1));
             }
 
             if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {

@@ -28,8 +28,8 @@ import net.yezon.theabyss.network.RingFinisherMessage;
 public final class RingFinisher {
     private static final int RECENT_USE = 200;
     private static final int SAME_FINISHER = 5;
-    private static final List<ResourceKey<DamageType>> NOT_RING = List.of(DamageTypes.PLAYER_ATTACK, DamageTypes.SPEAR, DamageTypes.ARROW,
-        DamageTypes.TRIDENT, DamageTypes.THROWN, DamageTypes.MACE_SMASH, DamageTypes.WIND_CHARGE);
+    private static final List<ResourceKey<DamageType>> NOT_RING = List.of(DamageTypes.PLAYER_ATTACK, DamageTypes.ARROW,
+        DamageTypes.TRIDENT, DamageTypes.THROWN, DamageTypes.WIND_CHARGE);
     private static final Map<UUID, Long> LAST_USE = new HashMap<>();
     private static final Map<UUID, Long> LAST_SENT = new HashMap<>();
 
@@ -84,7 +84,7 @@ public final class RingFinisher {
         }
         DamageSource source = event.getSource();
         TheabyssMod.LOGGER.info("[RingFinisher] death of {} by {} (entity {}, direct {}, credit {})", victim.getType().getDescriptionId(),
-            source.typeHolder().unwrapKey().map(k -> k.identifier().toString()).orElse("?"), source.getEntity(), source.getDirectEntity(), victim.getKillCredit());
+            source.typeHolder().unwrapKey().map(k -> k.location().toString()).orElse("?"), source.getEntity(), source.getDirectEntity(), victim.getKillCredit());
         for (ResourceKey<DamageType> type : NOT_RING) {
             if (source.is(type)) {
                 TheabyssMod.LOGGER.info("[RingFinisher] skipped: melee or vanilla weapon");

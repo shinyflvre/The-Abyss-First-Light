@@ -1,28 +1,19 @@
-#version 330
-#extension GL_ARB_separate_shader_objects : require
-
-#include <minecraft:globals.glsl>
+#version 150
 
 // The Reflection's skill tree (client/gui/SkillTreeScreen, owner 23.10.2026: "like our spell wheel, abyss blue / cyan").
-// Same vertex shader as the GUI (position_tex_color); the vertex colour picks the mode:
+// Same vertex layout as the GUI (position_tex_color); the vertex colour picks the mode:
 // a < 0.2  background over the whole screen: r = aspect / 4, g = tree centre (uv y), b = fade
 // a < 0.5  a link between two gifts (texCoord x along, y across): r = state (0 locked, 0.5 open, 1 learned),
 //          g = seed, b = length / 256
 // else     the halo of a gift: r = state, g = hovered, b = keystone
 
-layout(std140) uniform DynamicTransforms {
-    mat4 ModelViewMat;
-    mat4 TextureMat;
-    vec4 ColorModulator;
-    vec3 ModelOffset;
-};
-
 uniform sampler2D Sampler0;
+uniform float GameTime;
 
-layout(location = 0) in vec2 texCoord0;
-layout(location = 1) in vec4 vertexColor;
+in vec2 texCoord0;
+in vec4 vertexColor;
 
-layout(location = 0) out vec4 fragColor;
+out vec4 fragColor;
 
 const vec3 NAVY = vec3(0.016, 0.047, 0.066);
 const vec3 TEAL = vec3(0.06, 0.42, 0.44);

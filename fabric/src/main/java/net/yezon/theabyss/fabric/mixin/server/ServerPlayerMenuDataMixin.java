@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
-import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -21,7 +21,7 @@ public abstract class ServerPlayerMenuDataMixin {
     private AbstractContainerMenu theabyss$plainOpenOfDataMenu(MenuProvider provider, int containerId, Inventory inventory, Player player,
         Operation<AbstractContainerMenu> original, @Local(argsOnly = true) LocalRef<MenuProvider> opened) {
         AbstractContainerMenu menu = original.call(provider, containerId, inventory, player);
-        if (menu != null && FabricServerHooks.isExtendedType(menu.getType()) && !(provider instanceof ExtendedMenuProvider<?>)) {
+        if (menu != null && FabricServerHooks.isExtendedType(menu.getType()) && !(provider instanceof ExtendedScreenHandlerFactory<?>)) {
             opened.set(FabricServerHooks.withoutExtraData(provider));
         }
         return menu;

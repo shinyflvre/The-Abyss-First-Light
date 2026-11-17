@@ -29,7 +29,7 @@ import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
@@ -262,7 +262,7 @@ public class SilentEchoEntity extends PathfinderMob {
         if (owner == null || owner.equals(target.getUUID())) {
             return false;
         }
-        if (target instanceof OwnableEntity pet && pet.getOwnerReference() != null && owner.equals(pet.getOwnerReference().getUUID())) {
+        if (target instanceof OwnableEntity pet && pet.getOwnerUUID() != null && owner.equals(pet.getOwnerUUID())) {
             return false;
         }
         if (target instanceof Player player && (player.isCreative() || player.isSpectator())) {
@@ -278,12 +278,15 @@ public class SilentEchoEntity extends PathfinderMob {
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+    public boolean hurt(DamageSource source, float amount) {
+        if (!(this.level() instanceof ServerLevel level)) {
+            return false;
+        }
         UUID owner = this.ownerId();
         if (owner != null && source.getEntity() != null && owner.equals(source.getEntity().getUUID())) {
             return false;
         }
-        return super.hurtServer(level, source, amount);
+        return super.hurt(source, amount);
     }
 
     @Override
@@ -302,7 +305,7 @@ public class SilentEchoEntity extends PathfinderMob {
     }
 
     @Override
-    protected int getBaseExperienceReward(ServerLevel level) {
+    protected int getBaseExperienceReward() {
         return 0;
     }
 

@@ -13,6 +13,7 @@
   "possession.theabyss.start": "You possess %s - §dsneak§f to leave",
   "possession.theabyss.left": "Your spirit returns to your body",
   "possession.theabyss.returned": "The creature died - your spirit returns to your body",
+  "entity.theabyss.possession_body": "Mannequin",
   "possession.theabyss.no_energy": "Not enough §bSomnium§f - your spirit returns to your body",
   "possession.theabyss.cannot": "This creature cannot be possessed",
   "possession.theabyss.no_target": "No creature in range (20 blocks)",

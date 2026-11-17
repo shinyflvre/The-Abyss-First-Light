@@ -87,7 +87,7 @@ final class RiftTopics {
     }
 
     private static List<String> list(ServerPlayer player, String key) {
-        String value = RiftStory.data(player).getStringOr(key, "");
+        String value = net.yezon.theabyss.compat.NbtCompat.getStringOr(RiftStory.data(player), key, "");
         return value.isEmpty() ? new ArrayList<>() : new ArrayList<>(Arrays.asList(value.split(",")));
     }
 
@@ -149,7 +149,7 @@ final class RiftTopics {
 
     static void onKill(ServerPlayer player) {
         CompoundTag data = RiftStory.data(player);
-        int kills = data.getIntOr("abyssKills", 0) + 1;
+        int kills = net.yezon.theabyss.compat.NbtCompat.getIntOr(data, "abyssKills", 0) + 1;
         data.putInt("abyssKills", kills);
         if (kills == KILLS) {
             unlockEvent(player, "count");
@@ -158,7 +158,7 @@ final class RiftTopics {
 
     static void onAbyssTick(ServerPlayer player) {
         CompoundTag data = RiftStory.data(player);
-        long ticks = data.getLongOr("abyssTicks", 0L) + 1L;
+        long ticks = net.yezon.theabyss.compat.NbtCompat.getLongOr(data, "abyssTicks", 0L) + 1L;
         data.putLong("abyssTicks", ticks);
         if (ticks == ABYSS_TICKS) {
             unlockEvent(player, "time");
@@ -167,10 +167,10 @@ final class RiftTopics {
 
     static boolean onArrive(ServerPlayer player, boolean done) {
         CompoundTag data = RiftStory.data(player);
-        int visits = data.getIntOr("visits", 0) + 1;
+        int visits = net.yezon.theabyss.compat.NbtCompat.getIntOr(data, "visits", 0) + 1;
         data.putInt("visits", visits);
         long day = player.level().getServer().overworld().getGameTime() / DAY;
-        long last = data.getLongOr("lastVisitDay", -1L);
+        long last = net.yezon.theabyss.compat.NbtCompat.getLongOr(data, "lastVisitDay", -1L);
         data.putLong("lastVisitDay", day);
         if (!done) {
             return false;
@@ -232,11 +232,11 @@ final class RiftTopics {
     }
 
     private static boolean homeDue(ServerPlayer player) {
-        return heardCount(player) >= HOME_AFTER && !RiftStory.data(player).getBooleanOr("homeDone", false);
+        return heardCount(player) >= HOME_AFTER && !net.yezon.theabyss.compat.NbtCompat.getBooleanOr(RiftStory.data(player), "homeDone", false);
     }
 
     private static boolean nameDue(ServerPlayer player) {
-        return heardCount(player) >= NAME_AFTER && !RiftStory.data(player).getBooleanOr("nameDone", false);
+        return heardCount(player) >= NAME_AFTER && !net.yezon.theabyss.compat.NbtCompat.getBooleanOr(RiftStory.data(player), "nameDone", false);
     }
 
     static boolean pending(ServerPlayer player) {
@@ -291,7 +291,7 @@ final class RiftTopics {
     }
 
     private static List<String> remaining(ServerPlayer player, Story story) {
-        int asked = RiftStory.data(player).getIntOr("asked." + story.id(), 0);
+        int asked = net.yezon.theabyss.compat.NbtCompat.getIntOr(RiftStory.data(player), "asked." + story.id(), 0);
         List<String> actions = new ArrayList<>();
         for (int i = 0; i < story.replies().length; i++) {
             boolean hidden = story.id().equals("back") && i == BACK_DOUBT_QUESTION && !ConfigConfiguration.loresEnabled();
@@ -346,7 +346,7 @@ final class RiftTopics {
         }
         int index = Integer.parseInt(question.substring(dot + 2)) - 1;
         CompoundTag data = RiftStory.data(player);
-        data.putInt("asked." + story.id(), data.getIntOr("asked." + story.id(), 0) | 1 << index);
+        data.putInt("asked." + story.id(), net.yezon.theabyss.compat.NbtCompat.getIntOr(data, "asked." + story.id(), 0) | 1 << index);
         List<String> said = new ArrayList<>();
         for (int i = 1; i <= story.replies()[index]; i++) {
             said.add(RiftStory.LINE + "topic." + story.id() + ".q" + (index + 1) + "." + i);

@@ -1,11 +1,21 @@
 {
   "type": "theabyss:mortar_recipe_type",
   "ingredients": [
-    "theabyss:ender_crystal_shard",
-    "theabyss:ender_crystal_shard",
-    "theabyss:ender_crystal_shard",
-    "theabyss:ender_crystal_shard",
-    "theabyss:bottle_of_somnium"
+    {
+      "item": "theabyss:ender_crystal_shard"
+    },
+    {
+      "item": "theabyss:ender_crystal_shard"
+    },
+    {
+      "item": "theabyss:ender_crystal_shard"
+    },
+    {
+      "item": "theabyss:ender_crystal_shard"
+    },
+    {
+      "item": "theabyss:bottle_of_somnium"
+    }
   ],
   "output": {
     "id": "theabyss:ender_powder",

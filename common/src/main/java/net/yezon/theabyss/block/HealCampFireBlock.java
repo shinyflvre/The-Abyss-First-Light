@@ -29,13 +29,13 @@ public class HealCampFireBlock extends Block {
                 .strength(1.0F, 10.0F)
                 .lightLevel(s -> 15)
                 .noOcclusion()
-                .postProcess((bs, br, bp) -> bp)
+                .hasPostProcess((bs, br, bp) -> true)
                 .isRedstoneConductor((bs, br, bp) -> false)
         );
     }
 
     @Override
-    protected boolean propagatesSkylightDown(BlockState state) {
+    protected boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
         return true;
     }
 

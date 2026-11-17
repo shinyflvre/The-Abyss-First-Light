@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": "theabyss:pointed_abyss_dripstone"
+    "#": {
+      "item": "theabyss:pointed_abyss_dripstone"
+    }
   },
   "pattern": [
     "##",

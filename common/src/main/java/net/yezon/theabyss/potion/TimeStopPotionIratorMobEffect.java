@@ -2,7 +2,7 @@ package net.yezon.theabyss.potion;
 
 import java.util.function.BiConsumer;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -29,8 +29,8 @@ public class TimeStopPotionIratorMobEffect extends ProcedureMobEffect {
         super.createModifiers(0, consumer);
     }
 
-    private static Identifier id(String path) {
-        return Identifier.fromNamespaceAndPath(TheabyssMod.MODID, path);
+    private static ResourceLocation id(String path) {
+        return ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, path);
     }
 
     @Override

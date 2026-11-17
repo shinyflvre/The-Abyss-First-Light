@@ -1,8 +1,12 @@
 {
   "type": "theabyss:crystal_cutter_recipe_type",
   "ingredients": [
-    "theabyss:warped_crystal_ore",
-    "theabyss:loran_energy"
+    {
+      "item": "theabyss:warped_crystal_ore"
+    },
+    {
+      "item": "theabyss:loran_energy"
+    }
   ],
   "output": {
     "id": "theabyss:warped_crystal_shard",

@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "group": "shelf",
   "key": {
-    "#": "theabyss:stripped_luna_log"
+    "#": {
+      "item": "theabyss:stripped_luna_log"
+    }
   },
   "pattern": [
     "###",

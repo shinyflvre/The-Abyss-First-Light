@@ -3,9 +3,8 @@ package net.yezon.theabyss.client.fx.spell;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.resources.Identifier;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.TheabyssMod;
@@ -16,11 +15,11 @@ import net.yezon.theabyss.ring.fx.RingFx;
 import net.yezon.theabyss.ring.secondary.VoidRift;
 
 final class VoidFx extends Effect {
-    private static final RenderType BLACK = RenderTypes.entityCutout(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "textures/entity/white.png"));
+    private static final RenderType BLACK = RenderType.entityCutout(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "textures/entity/white.png"));
     private static final int MAGENTA = 0xE040FF;
     private static final int VIOLET = 0x7A2BFF;
     private static final int PALE = 0xFFC8FF;
-    private static final RenderType BODY = RenderTypes.entityTranslucent(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "textures/entity/white.png"));
+    private static final RenderType BODY = RenderType.entityTranslucent(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "textures/entity/white.png"));
     private static final float RADIUS = 1.35F;
     private static final float AFTER = 22.0F;
     private static final double TILT = 0.4;

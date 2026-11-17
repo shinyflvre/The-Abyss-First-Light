@@ -1,6 +1,6 @@
 plugins {
     id 'net.neoforged.moddev' version '2.0.148' apply false
-    id 'net.fabricmc.fabric-loom' version "${loom_version}" apply false
+    id 'net.fabricmc.fabric-loom-remap' version "${loom_version}" apply false
 }
 
 subprojects {
@@ -9,13 +9,13 @@ subprojects {
     version = mod_version
     group = mod_group_id
 
-    java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+    java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
     repositories {
         mavenCentral()
         exclusiveContent {
             forRepository { maven { name = 'GeckoLib'; url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' } }
-            filter { includeGroup 'com.geckolib' }
+            filter { includeGroup 'com.geckolib'; includeGroup 'software.bernie.geckolib' }
         }
         exclusiveContent {
             forRepository { maven { name = 'BlameJared (JEI)'; url = 'https://maven.blamejared.com/' } }
@@ -37,7 +37,7 @@ subprojects {
 
     tasks.withType(JavaCompile).configureEach {
         options.encoding = 'UTF-8'
-        options.release = 25
+        options.release = 21
         options.compilerArgs << '-Xmaxerrs' << '100000'
     }
 }

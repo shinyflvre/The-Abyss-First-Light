@@ -25,7 +25,7 @@ public class LushCaveVinesBlock extends CaveVinesBlock {
     }
 
     @Override
-    protected ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
         return new ItemStack(TheabyssModItems.LUSH_GLOW_BERRIES.get());
     }
 

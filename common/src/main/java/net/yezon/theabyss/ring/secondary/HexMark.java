@@ -53,10 +53,10 @@ public final class HexMark {
     }
 
     static boolean cast(ServerPlayer player, ItemStack ring, TheabyssModVariables.PlayerVariables vars) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         LivingEntity target = Aim.creature(level, player, RANGE);
         if (target == null) {
-            player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("ring.theabyss.secondary.no_target", net.minecraft.network.chat.Component.translatable("tooltip.theabyss.ring_of_curse.secondary.ability")));
+            player.displayClientMessage(net.minecraft.network.chat.Component.translatable("ring.theabyss.secondary.no_target", net.minecraft.network.chat.Component.translatable("tooltip.theabyss.ring_of_curse.secondary.ability")), true);
             return false;
         }
         Vec3 hand = RingVisuals.hand(player);

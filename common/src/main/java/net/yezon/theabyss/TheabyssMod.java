@@ -49,7 +49,7 @@ public final class TheabyssMod {
             TheabyssModBlocks.REGISTRY,
             TheabyssModBlockEntities.REGISTRY,
             TheabyssModItems.REGISTRY,
-            net.yezon.theabyss.item.AbyssTotemEffect.REGISTRY,
+            net.yezon.theabyss.item.TheabyssModArmorMaterials.REGISTRY,
             TheabyssModEntities.REGISTRY,
             TheabyssModTabs.REGISTRY,
             TheabyssModFeatures.REGISTRY,

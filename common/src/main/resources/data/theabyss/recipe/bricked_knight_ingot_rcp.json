@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:knight_shard",
-    "b": "theabyss:loran_energy"
+    "a": {
+      "item": "theabyss:knight_shard"
+    },
+    "b": {
+      "item": "theabyss:loran_energy"
+    }
   },
   "pattern": [
     "aaa",

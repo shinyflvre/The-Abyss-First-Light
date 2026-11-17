@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:block/template_shelf_left",
+  "parent": "theabyss:block/template_shelf_left",
   "textures": {
     "all": "theabyss:block/slimed_shelf",
     "particle": "theabyss:block/stripped_slimed_log"

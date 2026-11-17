@@ -3,7 +3,9 @@
   "category": "misc",
   "group": "abyss_chest",
   "key": {
-    "a": "theabyss:luna_planks"
+    "a": {
+      "item": "theabyss:luna_planks"
+    }
   },
   "pattern": [
     "aaa",

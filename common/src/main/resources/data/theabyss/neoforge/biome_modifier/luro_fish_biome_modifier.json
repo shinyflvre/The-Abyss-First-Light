@@ -14,11 +14,8 @@
   ],
   "spawners": {
     "type": "theabyss:luro_fish",
-    "weight": 1,
-    "count": {
-      "type": "minecraft:uniform",
-      "max_inclusive": 5,
-      "min_inclusive": 2
-    }
+    "maxCount": 5,
+    "minCount": 2,
+    "weight": 1
   }
 }

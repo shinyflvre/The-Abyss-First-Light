@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -28,8 +28,8 @@ final class BlossomSelfTest {
     }
 
     static void run(MinecraftServer server) {
-        ServerLevel level = server.getLevel(ResourceKey.create(Registries.DIMENSION, Identifier.fromNamespaceAndPath("theabyss", "the_abyss")));
-        ResourceKey<net.minecraft.world.level.biome.Biome> nightgrove = ResourceKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath("theabyss", "nightgrove"));
+        ServerLevel level = server.getLevel(ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath("theabyss", "the_abyss")));
+        ResourceKey<net.minecraft.world.level.biome.Biome> nightgrove = ResourceKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath("theabyss", "nightgrove"));
         int loran = 0;
         List<BlockPos> plants = new ArrayList<>();
         Map<Integer, Integer> heights = new TreeMap<>();
@@ -41,16 +41,16 @@ final class BlossomSelfTest {
                 continue;
             }
             areas++;
-            ChunkPos center = ChunkPos.containing(found.getFirst());
+            ChunkPos center = new ChunkPos(found.getFirst());
             for (int dx = -RADIUS; dx <= RADIUS; dx++) {
                 for (int dz = -RADIUS; dz <= RADIUS; dz++) {
-                    level.getChunk(center.x() + dx, center.z() + dz, ChunkStatus.FULL, true);
+                    level.getChunk(center.x + dx, center.z + dz, ChunkStatus.FULL, true);
                 }
             }
             BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
             for (int dx = -RADIUS + 1; dx < RADIUS; dx++) {
                 for (int dz = -RADIUS + 1; dz < RADIUS; dz++) {
-                    LevelChunk chunk = level.getChunk(center.x() + dx, center.z() + dz);
+                    LevelChunk chunk = level.getChunk(center.x + dx, center.z + dz);
                     for (int x = chunk.getPos().getMinBlockX(); x <= chunk.getPos().getMaxBlockX(); x++) {
                         for (int z = chunk.getPos().getMinBlockZ(); z <= chunk.getPos().getMaxBlockZ(); z++) {
                             if (level.getBiome(pos.set(x, 100, z)).is(nightgrove)) {

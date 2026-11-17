@@ -24,7 +24,7 @@ public final class SoulStep {
     }
 
     static boolean cast(ServerPlayer player, ItemStack ring, TheabyssModVariables.PlayerVariables vars) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         Vec3 dir = Dash.ahead(player);
         Vec3 from = player.position();
         Vec3 dest = null;
@@ -42,7 +42,7 @@ public final class SoulStep {
             }
         }
         if (dest == null) {
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.spectral.no_room"));
+            player.displayClientMessage(Component.translatable("ring.theabyss.spectral.no_room"), true);
             return false;
         }
         Vec3 fromEye = player.getEyePosition();
@@ -55,8 +55,8 @@ public final class SoulStep {
         SpellFxMessage.around(level, from, SpellFxMessage.GHOSTS, List.of(player.getId()), ghost, 24);
         SpellFxMessage.around(level, from, SpellFxMessage.SOUL, List.of(player.getId()), SpellFxMessage.points(from, dest), 20);
         PacketDistributor.sendToPlayer(player, new TeleportDashMessage(fromEye.x, fromEye.y, fromEye.z, player.getYRot(), player.getXRot()));
-        player.teleportTo(dest.x, dest.y, dest.z);
-        player.connection.teleport(dest.x, dest.y, dest.z, player.getYRot(), player.getXRot());
+        net.yezon.theabyss.util.AbyssTeleport.to(player, dest.x, dest.y, dest.z);
+        net.yezon.theabyss.util.AbyssTeleport.connection(player, dest.x, dest.y, dest.z, player.getYRot(), player.getXRot());
         player.resetFallDistance();
         FallGuard.protect(player, 40);
         net.yezon.theabyss.ring.RingVisuals.sound(level, from, SoundEvents.SOUL_ESCAPE.value(), 2.0F, 0.8F);

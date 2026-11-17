@@ -78,8 +78,8 @@ public class ApplyRingOfThunderEvents {
         AABB box = new AABB(at.x - 3.0, at.y - 3.0, at.z - 3.0, at.x + 3.0, at.y + 9.0, at.z + 3.0);
         for (LivingEntity hit : level.getEntitiesOfClass(LivingEntity.class, box, e -> e.isAlive() && e != caster && !RingMode.spares(caster, e) && !RingMode.summon(e))) {
             hit.igniteForSeconds(8.0F);
-            hit.hurtServer(level, lightning, area);
+            hit.hurt(lightning, area);
         }
-        target.hurtServer(level, lightning, damage);
+        target.hurt(lightning, damage);
     }
 }

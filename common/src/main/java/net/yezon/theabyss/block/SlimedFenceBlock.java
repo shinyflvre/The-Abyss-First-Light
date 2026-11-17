@@ -1,5 +1,7 @@
 package net.yezon.theabyss.block;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.world.item.ItemStack;
@@ -16,7 +18,7 @@ public class SlimedFenceBlock extends FenceBlock {
     }
 
     @Override
-    protected int getLightDampening(BlockState state) {
+    protected int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
         return 0;
     }
 

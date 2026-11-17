@@ -26,7 +26,7 @@ final class GolemAutotest {
         Minecraft mc = Minecraft.getInstance();
         net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.entity.living.LivingDamageEvent.Post e) -> {
             if (e.getEntity() instanceof ServerPlayer) {
-                TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] golem player damage {} from {}", e.getHealthDamage(), e.getSource().getMsgId());
+                TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] golem player damage {} from {}", e.getNewDamage(), e.getSource().getMsgId());
             }
         });
         add.add("golem arena", () -> {
@@ -36,7 +36,7 @@ final class GolemAutotest {
             command.accept("time set noon");
             command.accept("weather clear");
             command.accept("difficulty normal");
-            command.accept("gamerule spawn_mobs false");
+            command.accept("gamerule doMobSpawning false");
         }, 60);
         add.add("golem player", () -> {
             command.accept("execute in minecraft:overworld run tp @s 0 200 -4 0 5");
@@ -170,7 +170,7 @@ final class GolemAutotest {
 
     private static void golem(Consumer<CrystalGolemEntity> action) {
         onServer(sp -> {
-            for (CrystalGolemEntity g : sp.level().getEntitiesOfClass(CrystalGolemEntity.class, new AABB(sp.blockPosition()).inflate(40))) {
+            for (CrystalGolemEntity g : sp.serverLevel().getEntitiesOfClass(CrystalGolemEntity.class, new AABB(sp.blockPosition()).inflate(40))) {
                 action.accept(g);
             }
         });

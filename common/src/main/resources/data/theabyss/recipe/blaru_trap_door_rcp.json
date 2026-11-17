@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:blaru_planks"
+    "a": {
+      "item": "theabyss:blaru_planks"
+    }
   },
   "pattern": [
     "aaa",

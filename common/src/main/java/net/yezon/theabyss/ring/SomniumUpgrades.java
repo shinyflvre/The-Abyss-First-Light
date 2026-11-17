@@ -2,7 +2,7 @@ package net.yezon.theabyss.ring;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -97,7 +97,7 @@ public final class SomniumUpgrades {
         int level = level(vars, kind);
         Component name = Component.translatable("gauntlet.theabyss.stat." + kind.id);
         if (level >= MAX) {
-            player.sendOverlayMessage(Component.translatable("event.theabyss.no_effect"));
+            player.displayClientMessage(Component.translatable("event.theabyss.no_effect"), true);
             return;
         }
         int drunk = potions(vars, kind) + 1;
@@ -109,15 +109,15 @@ public final class SomniumUpgrades {
             setLevel(capability, kind, newLevel);
             capability.syncPlayerVariables(player);
         });
-        ServerLevel level0 = player.level();
-        SoundEvent sound = BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:potion_used"));
+        ServerLevel level0 = player.serverLevel();
+        SoundEvent sound = BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:potion_used"));
         if (sound != null) {
             level0.playSound(null, player.getX(), player.getY(), player.getZ(), sound, SoundSource.NEUTRAL, 1.0F, up ? 1.25F : 1.0F);
         }
         if (up) {
-            player.sendOverlayMessage(Component.translatable("upgrade.theabyss.level_up", name, newLevel));
+            player.displayClientMessage(Component.translatable("upgrade.theabyss.level_up", name, newLevel), true);
         } else {
-            player.sendOverlayMessage(Component.translatable("upgrade.theabyss.progress", name, left, needed(level), level + 1));
+            player.displayClientMessage(Component.translatable("upgrade.theabyss.progress", name, left, needed(level), level + 1), true);
         }
     }
 }

@@ -1,15 +1,33 @@
 {
   "type": "theabyss:arcane_recipe_type",
   "ingredients": [
-    "theabyss:ring_of_ring",
-    "theabyss:ardor_powder",
-    "theabyss:roka_horn",
-    "theabyss:ardor_powder",
-    "theabyss:roka_horn",
-    "theabyss:ardor_powder",
-    "theabyss:roka_horn",
-    "theabyss:ardor_powder",
-    "theabyss:roka_horn"
+    {
+      "item": "theabyss:ring_of_ring"
+    },
+    {
+      "item": "theabyss:ardor_powder"
+    },
+    {
+      "item": "theabyss:roka_horn"
+    },
+    {
+      "item": "theabyss:ardor_powder"
+    },
+    {
+      "item": "theabyss:roka_horn"
+    },
+    {
+      "item": "theabyss:ardor_powder"
+    },
+    {
+      "item": "theabyss:roka_horn"
+    },
+    {
+      "item": "theabyss:ardor_powder"
+    },
+    {
+      "item": "theabyss:roka_horn"
+    }
   ],
   "output": {
     "id": "theabyss:ring_of_jugger",

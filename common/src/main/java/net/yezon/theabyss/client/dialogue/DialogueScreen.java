@@ -2,10 +2,8 @@ package net.yezon.theabyss.client.dialogue;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.yezon.theabyss.init.TheabyssModKeyMappings;
 
@@ -20,22 +18,22 @@ public class DialogueScreen extends Screen {
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         DialogueClient.hover(mouseX, mouseY);
-        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+        super.render(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
-            DialogueClient.click(event.x(), event.y());
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == InputConstants.MOUSE_BUTTON_LEFT) {
+            DialogueClient.click(mouseX, mouseY);
             return true;
         }
-        return super.mouseClicked(event, doubleClick);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -45,23 +43,22 @@ public class DialogueScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(KeyEvent event) {
-        int key = event.key();
+    public boolean keyPressed(int key, int scanCode, int modifiers) {
         if (key >= InputConstants.KEY_1 && key <= InputConstants.KEY_4) {
             DialogueClient.keyChoice(key - InputConstants.KEY_1);
             return true;
         }
         for (int i = 0; i < 4; i++) {
-            if (Minecraft.getInstance().options.keyHotbarSlots[i].matches(event)) {
+            if (Minecraft.getInstance().options.keyHotbarSlots[i].matches(key, scanCode)) {
                 DialogueClient.keyChoice(i);
                 return true;
             }
         }
-        if (TheabyssModKeyMappings.DIALOG_CONTINUE.matches(event) || key == InputConstants.KEY_RETURN || key == InputConstants.KEY_SPACE) {
+        if (TheabyssModKeyMappings.DIALOG_CONTINUE.matches(key, scanCode) || key == InputConstants.KEY_RETURN || key == InputConstants.KEY_SPACE) {
             DialogueClient.continueKey();
             return true;
         }
-        return super.keyPressed(event);
+        return super.keyPressed(key, scanCode, modifiers);
     }
 
     @Override

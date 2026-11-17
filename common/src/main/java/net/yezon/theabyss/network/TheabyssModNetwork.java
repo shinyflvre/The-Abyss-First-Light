@@ -50,6 +50,8 @@ public final class TheabyssModNetwork {
         registrar.playToServer(SkillActionMessage.TYPE, SkillActionMessage.STREAM_CODEC, SkillActionMessage::handleData);
         registrar.playToClient(WraithMessage.TYPE, WraithMessage.STREAM_CODEC, WraithMessage::handleData);
         registrar.playToClient(OvergrowthMessage.TYPE, OvergrowthMessage.STREAM_CODEC, OvergrowthMessage::handleData);
+        registrar.playToClient(TeleportMotionMessage.TYPE, TeleportMotionMessage.STREAM_CODEC, TeleportMotionMessage::handleData);
+        registrar.playToServer(PossessionSprintMessage.TYPE, PossessionSprintMessage.STREAM_CODEC, PossessionSprintMessage::handleData);
 
         registrar.playToServer(ResearchButtonMessage.TYPE, ResearchButtonMessage.STREAM_CODEC, ResearchButtonMessage::handleData);
 

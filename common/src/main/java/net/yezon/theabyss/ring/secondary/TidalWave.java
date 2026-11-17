@@ -54,7 +54,7 @@ public final class TidalWave {
     }
 
     static boolean cast(ServerPlayer player, ItemStack ring, TheabyssModVariables.PlayerVariables vars) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         Vec3 dir = player.getLookAngle().multiply(1.0, 0.0, 1.0);
         dir = dir.lengthSqr() < 1.0E-4 ? new Vec3(0.0, 0.0, 1.0) : dir.normalize();
         Vec3 origin = player.position();
@@ -101,8 +101,8 @@ public final class TidalWave {
             e.setDeltaMovement(dir.scale(SPEED * 1.6).add(0.0, 0.32, 0.0));
             e.resetFallDistance();
             e.clearFire();
-            e.needsSync = true;
-            e.syncVelocity = true;
+            e.hasImpulse = true;
+            e.hurtMarked = true;
             if (e instanceof LivingEntity living) {
                 FallGuard.protect(living, 60);
             }

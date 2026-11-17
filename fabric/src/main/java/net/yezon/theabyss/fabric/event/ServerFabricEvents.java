@@ -1,24 +1,18 @@
 package net.yezon.theabyss.fabric.event;
 
 import com.mojang.brigadier.CommandDispatcher;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 import java.util.function.Supplier;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -42,7 +36,6 @@ public final class ServerFabricEvents {
     }
 
     public static void register() {
-        PayloadTypeRegistry.clientboundPlay().registerLarge(FabricRecipeContentPayload.TYPE, FabricRecipeContentPayload.STREAM_CODEC, FabricRecipeContentPayload.MAX_SIZE);
         CommandRegistrationCallback.EVENT.register((dispatcher, context, selection) -> registerCommands(dispatcher));
         postRegisterEvent();
         postBlockEntityTypeAddBlocks();
@@ -67,7 +60,7 @@ public final class ServerFabricEvents {
         if (AbyssEventBus.hasListeners(RegisterEvent.class)) {
             AbyssEventBus.post(new RegisterEvent() {
                 @Override
-                public <T> void register(ResourceKey<? extends Registry<T>> registryKey, Identifier id, Supplier<T> value) {
+                public <T> void register(ResourceKey<? extends Registry<T>> registryKey, ResourceLocation id, Supplier<T> value) {
                     registerValue(registryKey, id, value);
                 }
             });
@@ -75,10 +68,10 @@ public final class ServerFabricEvents {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> void registerValue(ResourceKey<? extends Registry<T>> registryKey, Identifier id, Supplier<T> value) {
-        Registry<T> registry = (Registry<T>)BuiltInRegistries.REGISTRY.getValue(registryKey.identifier());
+    private static <T> void registerValue(ResourceKey<? extends Registry<T>> registryKey, ResourceLocation id, Supplier<T> value) {
+        Registry<T> registry = (Registry<T>)BuiltInRegistries.REGISTRY.get(registryKey.location());
         if (registry == null) {
-            throw new IllegalStateException("Unknown registry " + registryKey.identifier() + " for " + id);
+            throw new IllegalStateException("Unknown registry " + registryKey.location() + " for " + id);
         }
         Registry.register(registry, id, value.get());
     }
@@ -89,7 +82,7 @@ public final class ServerFabricEvents {
                 @Override
                 public void modify(BlockEntityType<?> type, Block... blocks) {
                     for (Block block : blocks) {
-                        type.addValidBlock(block);
+                        type.addSupportedBlock(block);
                     }
                 }
             });
@@ -152,27 +145,20 @@ public final class ServerFabricEvents {
         }
     }
 
-    public static Set<RecipeType<?>> datapackSync() {
+    public static void datapackSync(PlayerList playerList, @Nullable ServerPlayer player) {
         if (!AbyssEventBus.hasListeners(OnDatapackSyncEvent.class)) {
-            return Set.of();
-        }
-        Set<RecipeType<?>> types = Collections.newSetFromMap(new java.util.IdentityHashMap<>());
-        AbyssEventBus.post(new OnDatapackSyncEvent() {
-            @Override
-            public void sendRecipes(RecipeType<?>... recipeTypes) {
-                Collections.addAll(types, recipeTypes);
-            }
-        });
-        return types;
-    }
-
-    public static void sendRecipes(ServerPlayer player, Set<RecipeType<?>> types, MinecraftServer server) {
-        if (!ServerPlayNetworking.canSend(player, FabricRecipeContentPayload.TYPE)) {
             return;
         }
-        Set<RecipeType<?>> recipeTypes = Set.copyOf(types);
-        List<RecipeHolder<?>> recipes = recipeTypes.isEmpty() ? List.of()
-            : server.getRecipeManager().getRecipes().stream().filter(holder -> recipeTypes.contains(holder.value().getType())).toList();
-        ServerPlayNetworking.send(player, new FabricRecipeContentPayload(recipeTypes, recipes));
+        AbyssEventBus.post(new OnDatapackSyncEvent() {
+            @Override
+            public PlayerList getPlayerList() {
+                return playerList;
+            }
+
+            @Override
+            public @Nullable ServerPlayer getPlayer() {
+                return player;
+            }
+        });
     }
 }

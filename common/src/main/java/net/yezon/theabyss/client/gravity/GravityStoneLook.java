@@ -6,16 +6,14 @@ import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
-import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.renderer.block.BlockModelShaper;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.yezon.theabyss.platform.Dist;
@@ -46,7 +44,7 @@ public final class GravityStoneLook {
     @SubscribeEvent
     public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
         installed = false;
-        Map<BlockState, BlockStateModel> models = event.getBakingResult().blockStateModels();
+        Map<ModelResourceLocation, BakedModel> models = event.getModels();
         Disguise brick = disguise(models, TheabyssModBlocks.STONE_BRICK.get());
         Disguise cracked = disguise(models, TheabyssModBlocks.STONE_BRICK_BROKEN.get());
         if (brick == null || cracked == null) {
@@ -54,15 +52,16 @@ public final class GravityStoneLook {
         }
         Disguise[] disguises = {brick, cracked};
         List<BlockState> states = TheabyssModBlocks.CHISELED_GRAVITY_STONE.get().getStateDefinition().getPossibleStates();
-        Map<BlockState, BlockStateModel> bases = new HashMap<>();
+        Map<ModelResourceLocation, Model> wrapped = new HashMap<>();
         for (BlockState state : states) {
-            BlockStateModel base = models.get(bare(state));
+            BlockState bare = bare(state);
+            BakedModel base = models.get(BlockModelShaper.stateToModelLocation(bare));
             if (base == null) {
                 return;
             }
-            bases.put(state, base);
+            wrapped.put(BlockModelShaper.stateToModelLocation(state), new Model(base, bare, disguises));
         }
-        bases.forEach((state, base) -> models.put(state, DynamicBlockStateModel.wrap(new Model(base, disguises))));
+        wrapped.forEach((location, model) -> models.put(location, DynamicBlockStateModel.wrap(model)));
         installed = true;
     }
 
@@ -74,9 +73,9 @@ public final class GravityStoneLook {
         return bare;
     }
 
-    private static @Nullable Disguise disguise(Map<BlockState, BlockStateModel> models, Block block) {
+    private static @Nullable Disguise disguise(Map<ModelResourceLocation, BakedModel> models, Block block) {
         BlockState state = block.defaultBlockState();
-        BlockStateModel model = models.get(state);
+        BakedModel model = models.get(BlockModelShaper.stateToModelLocation(state));
         return model != null ? new Disguise(state, model) : null;
     }
 
@@ -91,68 +90,39 @@ public final class GravityStoneLook {
         revealed = holding;
         ClientLevel level = mc.level;
         if (level != null) {
-            GravityIndex.sections(level, key -> mc.levelExtractor.setSectionDirty(SectionPos.x(key), SectionPos.y(key), SectionPos.z(key)));
+            GravityIndex.sections(level, key -> mc.levelRenderer.setSectionDirty(SectionPos.x(key), SectionPos.y(key), SectionPos.z(key)));
         }
     }
 
-    private record Disguise(BlockState state, BlockStateModel model) {
+    private record Disguise(BlockState state, BakedModel model) {
     }
 
     private static final class Model implements DynamicBlockStateModel {
-        private final BlockStateModel base;
-        private final Disguise[] disguises;
-        private final @BakedQuad.MaterialFlags int flags;
+        private final Delegate base;
+        private final Delegate[] disguises;
 
-        private Model(BlockStateModel base, Disguise[] disguises) {
-            this.base = base;
-            this.disguises = disguises;
-            int flags = base.materialFlags();
-            for (Disguise disguise : disguises) {
-                flags |= disguise.model().materialFlags();
+        private Model(BakedModel base, BlockState baseState, Disguise[] disguises) {
+            this.base = new Delegate(base, baseState);
+            this.disguises = new Delegate[disguises.length];
+            for (int i = 0; i < disguises.length; i++) {
+                this.disguises[i] = new Delegate(disguises[i].model(), disguises[i].state());
             }
-            this.flags = flags;
         }
 
-        private Disguise pick(BlockPos pos) {
+        private Delegate pick(BlockPos pos) {
             long seed = Mth.getSeed(pos.getX(), pos.getY(), pos.getZ());
             int hash = Mth.murmurHash3Mixer((int)(seed ^ (seed >>> 32)));
             return this.disguises[Math.floorMod(hash, this.disguises.length)];
         }
 
         @Override
-        public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockStateModelPart> parts) {
-            if (revealed) {
-                DynamicBlockStateModel.collectPartsOf(this.base, level, pos, state, random, parts);
-                return;
-            }
-            Disguise disguise = this.pick(pos);
-            DynamicBlockStateModel.collectPartsOf(disguise.model(), level, pos, disguise.state(), random, parts);
+        public Delegate select(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+            return revealed ? this.base : this.pick(pos);
         }
 
         @Override
-        @Deprecated
-        public Material.Baked particleMaterial() {
-            return revealed ? this.base.particleMaterial() : this.disguises[0].model().particleMaterial();
-        }
-
-        @Override
-        public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
-            if (revealed) {
-                return DynamicBlockStateModel.particleMaterialOf(this.base, level, pos, state);
-            }
-            Disguise disguise = this.pick(pos);
-            return DynamicBlockStateModel.particleMaterialOf(disguise.model(), level, pos, disguise.state());
-        }
-
-        @Override
-        @Deprecated
-        public @BakedQuad.MaterialFlags int materialFlags() {
-            return this.flags;
-        }
-
-        @Override
-        public @BakedQuad.MaterialFlags int materialFlags(BlockAndTintGetter level, BlockPos pos, BlockState state) {
-            return this.flags;
+        public Delegate fallback() {
+            return revealed ? this.base : this.disguises[0];
         }
     }
 }

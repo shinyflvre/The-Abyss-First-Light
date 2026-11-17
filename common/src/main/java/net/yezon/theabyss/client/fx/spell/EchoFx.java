@@ -4,16 +4,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.resources.PlayerSkin;
+import net.minecraft.resources.ResourceLocation;
+import net.yezon.theabyss.compat.ARGB;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.player.PlayerModelType;
-import net.minecraft.world.entity.player.PlayerSkin;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.network.SpellFxMessage;
 
@@ -27,16 +25,16 @@ final class EchoFx {
     private EchoFx() {
     }
 
-    private static void figures(Frame f, Identifier skin, boolean slim, List<Figure> figures) {
+    private static void figures(Frame f, ResourceLocation skin, boolean slim, List<Figure> figures) {
         if (figures.isEmpty()) {
             return;
         }
-        HumanoidModel<HumanoidRenderState> model = GhostFx.model(slim);
+        PlayerModel<LivingEntity> model = GhostFx.model(slim);
         List<Vec3> rel = new ArrayList<>();
         for (Figure figure : figures) {
             rel.add(f.rel(figure.at));
         }
-        f.mesh(RenderTypes.entityTranslucent(skin), (pose, buffer, camera) -> {
+        f.mesh(RenderType.entityTranslucent(skin), (pose, buffer, camera) -> {
             PoseStack ps = new PoseStack();
             ps.last().pose().set(pose.pose());
             ps.last().normal().set(pose.normal());
@@ -50,10 +48,10 @@ final class EchoFx {
                 }
                 ps.pushPose();
                 ps.translate(at.x, at.y, at.z);
-                ps.rotateDegrees(Axis.YP, 180.0F - figure.yaw);
+                ps.mulPose(Axis.YP.rotationDegrees(180.0F - figure.yaw));
                 ps.scale(-0.9375F, -0.9375F, 0.9375F);
                 ps.translate(0.0F, -1.501F, 0.0F);
-                model.root().render(ps, buffer, 15728880, OverlayTexture.NO_OVERLAY, ARGB.color(alpha, figure.tint));
+                GhostFx.renderFigure(model, ps, buffer, ARGB.color(alpha, figure.tint));
                 ps.popPose();
             }
         });
@@ -71,7 +69,7 @@ final class EchoFx {
         private final Vec3 to;
         private final float yaw;
         private final int life;
-        private final Identifier skin;
+        private final ResourceLocation skin;
         private final boolean slim;
         private boolean burst;
 
@@ -80,8 +78,8 @@ final class EchoFx {
             this.yaw = m.data().get(6).floatValue();
             this.life = m.ticks();
             PlayerSkin skin = GhostFx.skinOf(m.ids().isEmpty() ? -1 : m.ids().get(0));
-            this.skin = skin.body().texturePath();
-            this.slim = skin.model() == PlayerModelType.SLIM;
+            this.skin = skin.texture();
+            this.slim = skin.model() == PlayerSkin.Model.SLIM;
         }
 
         @Override
@@ -120,7 +118,7 @@ final class EchoFx {
         private final Vec3 at;
         private final float yaw;
         private final int life;
-        private final Identifier skin;
+        private final ResourceLocation skin;
         private final boolean slim;
         private boolean burst;
 
@@ -129,8 +127,8 @@ final class EchoFx {
             this.yaw = m.data().get(3).floatValue();
             this.life = m.ticks();
             PlayerSkin skin = GhostFx.skinOf(m.ids().isEmpty() ? -1 : m.ids().get(0));
-            this.skin = skin.body().texturePath();
-            this.slim = skin.model() == PlayerModelType.SLIM;
+            this.skin = skin.texture();
+            this.slim = skin.model() == PlayerSkin.Model.SLIM;
         }
 
         @Override

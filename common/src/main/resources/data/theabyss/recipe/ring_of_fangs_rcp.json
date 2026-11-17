@@ -1,15 +1,33 @@
 {
   "type": "theabyss:arcane_recipe_type",
   "ingredients": [
-    "theabyss:ring_of_ring",
-    "theabyss:ardor_powder",
-    "theabyss:knight_shard",
-    "theabyss:ardor_powder",
-    "theabyss:knight_shard",
-    "theabyss:ardor_powder",
-    "theabyss:knight_shard",
-    "theabyss:ardor_powder",
-    "theabyss:knight_shard"
+    {
+      "item": "theabyss:ring_of_ring"
+    },
+    {
+      "item": "theabyss:ardor_powder"
+    },
+    {
+      "item": "theabyss:knight_shard"
+    },
+    {
+      "item": "theabyss:ardor_powder"
+    },
+    {
+      "item": "theabyss:knight_shard"
+    },
+    {
+      "item": "theabyss:ardor_powder"
+    },
+    {
+      "item": "theabyss:knight_shard"
+    },
+    {
+      "item": "theabyss:ardor_powder"
+    },
+    {
+      "item": "theabyss:knight_shard"
+    }
   ],
   "output": {
     "id": "theabyss:ring_of_fangs",

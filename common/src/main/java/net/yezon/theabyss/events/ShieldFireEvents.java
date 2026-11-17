@@ -23,10 +23,10 @@ public class ShieldFireEvents {
             .toList()) {
             if (entityiterator instanceof Monster) {
                 if (entityiterator instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
-                    _entity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 60, 4, false, false));
+                    _entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 4, false, false));
                 }
 
-                entityiterator.hurtOrSimulate(new DamageSource(world.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.MAGIC)), 0.5F);
+                entityiterator.hurt(new DamageSource(world.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.MAGIC)), 0.5F);
             }
         }
     }

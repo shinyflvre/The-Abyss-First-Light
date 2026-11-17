@@ -34,20 +34,20 @@ public final class RecallPoint {
     }
 
     static boolean cast(ServerPlayer player, ItemStack ring, TheabyssModVariables.PlayerVariables vars) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         CompoundTag data = net.yezon.theabyss.platform.PersistentData.get(player);
-        CompoundTag mark = data.getCompoundOrEmpty(KEY);
+        CompoundTag mark = net.yezon.theabyss.compat.NbtCompat.getCompoundOrEmpty(data, KEY);
         boolean marked = mark.contains("x");
         if (player.isShiftKeyDown() && marked) {
             data.remove(KEY);
             SpellFxMessage.around(level, player.position(), SpellFxMessage.RECALL_MARK, List.of(player.getId()), List.of(), 0);
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.home.cleared"));
+            player.displayClientMessage(Component.translatable("ring.theabyss.home.cleared"), true);
             RingVisuals.sound(level, player.position(), SoundEvents.BEACON_DEACTIVATE, 0.8F, 1.4F);
             return true;
         }
         if (!marked) {
             CompoundTag put = new CompoundTag();
-            put.putString("dim", level.dimension().identifier().toString());
+            put.putString("dim", level.dimension().location().toString());
             put.putDouble("x", player.getX());
             put.putDouble("y", player.getY());
             put.putDouble("z", player.getZ());
@@ -56,19 +56,19 @@ public final class RecallPoint {
             data.put(KEY, put);
             beacon(level, player, player.position());
             RingFx.pillar(level, player.position(), 6.0F, 20, RingVisuals.ABYSS, 0.6F);
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.home.marked"));
+            player.displayClientMessage(Component.translatable("ring.theabyss.home.marked"), true);
             RingVisuals.sound(level, player.position(), SoundEvents.BEACON_ACTIVATE, 1.0F, 1.4F);
             RingVisuals.sound(level, player.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 1.4F, 0.8F);
             return true;
         }
-        if (!mark.getStringOr("dim", "").equals(level.dimension().identifier().toString())) {
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.home.other_world"));
+        if (!net.yezon.theabyss.compat.NbtCompat.getStringOr(mark, "dim", "").equals(level.dimension().location().toString())) {
+            player.displayClientMessage(Component.translatable("ring.theabyss.home.other_world"), true);
             return false;
         }
         long now = level.getGameTime();
         Long ready = READY.get(player.getUUID());
         if (ready != null && now < ready) {
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.secondary.cooldown", Component.translatable("tooltip.theabyss.ring_of_home.secondary.ability"), (int)Math.ceil((ready - now) / 20.0)));
+            player.displayClientMessage(Component.translatable("ring.theabyss.secondary.cooldown", Component.translatable("tooltip.theabyss.ring_of_home.secondary.ability"), (int)Math.ceil((ready - now) / 20.0)), true);
             return false;
         }
         RingCast cast = RingCast.start(level, player, ring, COST, player.position());
@@ -76,16 +76,16 @@ public final class RecallPoint {
             return false;
         }
         Vec3 from = player.position();
-        Vec3 to = new Vec3(mark.getDoubleOr("x", from.x), mark.getDoubleOr("y", from.y), mark.getDoubleOr("z", from.z));
-        float yaw = mark.getFloatOr("yaw", player.getYRot());
-        float pitch = mark.getFloatOr("pitch", player.getXRot());
+        Vec3 to = new Vec3(net.yezon.theabyss.compat.NbtCompat.getDoubleOr(mark, "x", from.x), net.yezon.theabyss.compat.NbtCompat.getDoubleOr(mark, "y", from.y), net.yezon.theabyss.compat.NbtCompat.getDoubleOr(mark, "z", from.z));
+        float yaw = net.yezon.theabyss.compat.NbtCompat.getFloatOr(mark, "yaw", player.getYRot());
+        float pitch = net.yezon.theabyss.compat.NbtCompat.getFloatOr(mark, "pitch", player.getXRot());
         SpellFxMessage.around(level, from, to, new SpellFxMessage(SpellFxMessage.RECALL, List.of(player.getId()), SpellFxMessage.points(from, to), 30));
         RingVisuals.teleportDepart(level, from, player.getBbHeight());
         if (player.isPassenger()) {
             player.stopRiding();
         }
-        player.teleportTo(to.x, to.y, to.z);
-        player.connection.teleport(to.x, to.y, to.z, yaw, pitch);
+        net.yezon.theabyss.util.AbyssTeleport.to(player, to.x, to.y, to.z);
+        net.yezon.theabyss.util.AbyssTeleport.connection(player, to.x, to.y, to.z, yaw, pitch);
         player.resetFallDistance();
         FallGuard.protect(player, 60);
         data.remove(KEY);
@@ -94,7 +94,7 @@ public final class RecallPoint {
         RingVisuals.teleportArrive(level, to);
         RingVisuals.sound(level, from, SoundEvents.BEACON_POWER_SELECT, 1.2F, 0.6F);
         RingVisuals.sound(level, to, SoundEvents.ENDERMAN_TELEPORT, 1.0F, 0.8F);
-        var home = net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.getValue(net.minecraft.resources.Identifier.parse("theabyss:spell_of_teleport"));
+        var home = net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.get(net.minecraft.resources.ResourceLocation.parse("theabyss:spell_of_teleport"));
         if (home != null) {
             RingVisuals.sound(level, to, home, 1.0F, 0.8F);
         }
@@ -108,10 +108,10 @@ public final class RecallPoint {
     }
 
     private static void showMark(ServerPlayer player) {
-        CompoundTag mark = net.yezon.theabyss.platform.PersistentData.get(player).getCompoundOrEmpty(KEY);
-        if (mark.contains("x") && mark.getStringOr("dim", "").equals(player.level().dimension().identifier().toString())) {
-            Vec3 at = new Vec3(mark.getDoubleOr("x", 0.0), mark.getDoubleOr("y", 0.0), mark.getDoubleOr("z", 0.0));
-            TheabyssMod.queueServerWork(20, () -> beacon(player.level(), player, at));
+        CompoundTag mark = net.yezon.theabyss.compat.NbtCompat.getCompoundOrEmpty(net.yezon.theabyss.platform.PersistentData.get(player), KEY);
+        if (mark.contains("x") && net.yezon.theabyss.compat.NbtCompat.getStringOr(mark, "dim", "").equals(player.level().dimension().location().toString())) {
+            Vec3 at = new Vec3(net.yezon.theabyss.compat.NbtCompat.getDoubleOr(mark, "x", 0.0), net.yezon.theabyss.compat.NbtCompat.getDoubleOr(mark, "y", 0.0), net.yezon.theabyss.compat.NbtCompat.getDoubleOr(mark, "z", 0.0));
+            TheabyssMod.queueServerWork(20, () -> beacon(player.serverLevel(), player, at));
         }
     }
 

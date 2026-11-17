@@ -28,14 +28,6 @@ public final class NeoForgeEventBridgeGenerated {
                 }
             }));
         }
-        if (AbyssEventBus.hasListeners(net.yezon.theabyss.platform.event.OnDatapackSyncEvent.class)) {
-            NeoForge.EVENT_BUS.addListener(net.neoforged.neoforge.event.OnDatapackSyncEvent.class, e -> AbyssEventBus.post(new net.yezon.theabyss.platform.event.OnDatapackSyncEvent() {
-                @Override
-                public void sendRecipes(net.minecraft.world.item.crafting.RecipeType<?>... a0) {
-                    e.sendRecipes(a0);
-                }
-            }));
-        }
         if (AbyssEventBus.hasListeners(net.yezon.theabyss.platform.event.RegisterCommandsEvent.class)) {
             NeoForge.EVENT_BUS.addListener(net.neoforged.neoforge.event.RegisterCommandsEvent.class, e -> AbyssEventBus.post(new net.yezon.theabyss.platform.event.RegisterCommandsEvent() {
                 @Override
@@ -101,7 +93,7 @@ public final class NeoForgeEventBridgeGenerated {
         }
         for (EventPriority p : AbyssEventBus.priorities(net.yezon.theabyss.platform.event.entity.living.LivingDamageEvent.Post.class)) {
             NeoForge.EVENT_BUS.addListener(priority(p), true, net.neoforged.neoforge.event.entity.living.LivingDamageEvent.Post.class, e -> {
-                net.yezon.theabyss.platform.event.entity.living.LivingDamageEvent.Post c = new net.yezon.theabyss.platform.event.entity.living.LivingDamageEvent.Post(e.getBlockedDamage(), e.getEntity(), e.getInflictedDamage(), e.getOriginalDamage(), e.getSource());
+                net.yezon.theabyss.platform.event.entity.living.LivingDamageEvent.Post c = new net.yezon.theabyss.platform.event.entity.living.LivingDamageEvent.Post(e.getBlockedDamage(), e.getEntity(), e.getNewDamage() + e.getReduction(net.neoforged.neoforge.common.damagesource.DamageContainer.Reduction.ABSORPTION), e.getOriginalDamage(), e.getSource());
                 AbyssEventBus.post(p, c);
             });
         }
@@ -285,10 +277,10 @@ public final class NeoForgeEventBridgeGenerated {
         }
         for (EventPriority p : AbyssEventBus.priorities(net.yezon.theabyss.platform.event.entity.player.PlayerInteractEvent.RightClickBlock.class)) {
             NeoForge.EVENT_BUS.addListener(priority(p), true, net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.RightClickBlock.class, e -> {
-                net.yezon.theabyss.platform.event.entity.player.PlayerInteractEvent.RightClickBlock c = new net.yezon.theabyss.platform.event.entity.player.PlayerInteractEvent.RightClickBlock(e.getEntity(), e.getHand(), e.getItemStack(), e.getLevel(), e.getPos(), e.getUseItem());
+                net.yezon.theabyss.platform.event.entity.player.PlayerInteractEvent.RightClickBlock c = new net.yezon.theabyss.platform.event.entity.player.PlayerInteractEvent.RightClickBlock(e.getEntity(), e.getHand(), e.getItemStack(), e.getLevel(), e.getPos(), net.yezon.theabyss.compat.TriState.valueOf(e.getUseItem().name()));
                 c.setCanceled(e.isCanceled());
                 AbyssEventBus.post(p, c);
-                e.setUseItem(c.getUseItem());
+                e.setUseItem(net.neoforged.neoforge.common.util.TriState.valueOf(c.getUseItem().name()));
                 e.setCanceled(c.isCanceled());
             });
         }
@@ -314,6 +306,14 @@ public final class NeoForgeEventBridgeGenerated {
                 e.setCanceled(c.isCanceled());
             });
         }
+        for (EventPriority p : AbyssEventBus.priorities(net.yezon.theabyss.platform.event.level.block.BreakBlockEvent.class)) {
+            NeoForge.EVENT_BUS.addListener(priority(p), true, net.neoforged.neoforge.event.level.BlockEvent.BreakEvent.class, e -> {
+                net.yezon.theabyss.platform.event.level.block.BreakBlockEvent c = new net.yezon.theabyss.platform.event.level.block.BreakBlockEvent(e.getLevel(), e.getPlayer(), e.getPos());
+                c.setCanceled(e.isCanceled());
+                AbyssEventBus.post(p, c);
+                e.setCanceled(c.isCanceled());
+            });
+        }
         for (EventPriority p : AbyssEventBus.priorities(net.yezon.theabyss.platform.event.level.BlockEvent.EntityPlaceEvent.class)) {
             NeoForge.EVENT_BUS.addListener(priority(p), true, net.neoforged.neoforge.event.level.BlockEvent.EntityPlaceEvent.class, e -> {
                 net.yezon.theabyss.platform.event.level.BlockEvent.EntityPlaceEvent c = new net.yezon.theabyss.platform.event.level.BlockEvent.EntityPlaceEvent(e.getEntity(), e.getLevel(), e.getPos());
@@ -332,14 +332,6 @@ public final class NeoForgeEventBridgeGenerated {
             NeoForge.EVENT_BUS.addListener(priority(p), true, net.neoforged.neoforge.event.level.ExplosionEvent.Detonate.class, e -> {
                 net.yezon.theabyss.platform.event.level.ExplosionEvent.Detonate c = new net.yezon.theabyss.platform.event.level.ExplosionEvent.Detonate(e.getAffectedBlocks(), e.getLevel());
                 AbyssEventBus.post(p, c);
-            });
-        }
-        for (EventPriority p : AbyssEventBus.priorities(net.yezon.theabyss.platform.event.level.block.BreakBlockEvent.class)) {
-            NeoForge.EVENT_BUS.addListener(priority(p), true, net.neoforged.neoforge.event.level.block.BreakBlockEvent.class, e -> {
-                net.yezon.theabyss.platform.event.level.block.BreakBlockEvent c = new net.yezon.theabyss.platform.event.level.block.BreakBlockEvent(e.getLevel(), e.getPlayer(), e.getPos());
-                c.setCanceled(e.isCanceled());
-                AbyssEventBus.post(p, c);
-                e.setCanceled(c.isCanceled());
             });
         }
         for (EventPriority p : AbyssEventBus.priorities(net.yezon.theabyss.platform.event.server.ServerStoppedEvent.class)) {
@@ -395,7 +387,7 @@ public final class NeoForgeEventBridgeGenerated {
         if (AbyssEventBus.hasListeners(net.yezon.theabyss.platform.registries.RegisterEvent.class)) {
             bus.addListener(net.neoforged.neoforge.registries.RegisterEvent.class, e -> AbyssEventBus.post(new net.yezon.theabyss.platform.registries.RegisterEvent() {
                 @Override
-                public <T> void register(net.minecraft.resources.ResourceKey<? extends net.minecraft.core.Registry<T>> a0, net.minecraft.resources.Identifier a1, java.util.function.Supplier<T> a2) {
+                public <T> void register(net.minecraft.resources.ResourceKey<? extends net.minecraft.core.Registry<T>> a0, net.minecraft.resources.ResourceLocation a1, java.util.function.Supplier<T> a2) {
                     e.register(a0, a1, a2);
                 }
             }));

@@ -54,7 +54,7 @@ final class PuppetFx extends Effect {
         Vec3 feet = e.getPosition(f.pt);
         double h = e.getBbHeight();
         double w = e.getBbWidth() * 0.5;
-        float yaw = (e instanceof LivingEntity living ? living.getPreciseBodyRotation(f.pt) : e.getYRot(f.pt)) * Mth.DEG_TO_RAD;
+        float yaw = (e instanceof LivingEntity living ? living.getPreciseBodyRotation(f.pt) : Mth.lerp(f.pt, e.yRotO, e.getYRot())) * Mth.DEG_TO_RAD;
         Vec3 right = new Vec3(-Math.cos(yaw), 0.0, -Math.sin(yaw));
         Vec3 forward = new Vec3(-Math.sin(yaw), 0.0, Math.cos(yaw));
         double sway = Math.sin(age * 0.18) * 0.25;

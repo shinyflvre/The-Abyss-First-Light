@@ -2,7 +2,7 @@ package net.yezon.theabyss.client.fx;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ARGB;
+import net.yezon.theabyss.compat.ARGB;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -15,9 +15,11 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
-import net.minecraft.util.Util;
+import net.minecraft.world.level.EmptyBlockGetter;
+import net.minecraft.Util;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -38,9 +40,9 @@ import net.yezon.theabyss.configuration.ConfigConfiguration;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public final class ColoredLight {
-    public static final Identifier[] VOLUME_TEXTURES = {
-        Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "textures/effect/light_volume.png"),
-        Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "textures/effect/light_volume_b.png")
+    public static final ResourceLocation[] VOLUME_TEXTURES = {
+        ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "textures/effect/light_volume.png"),
+        ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "textures/effect/light_volume_b.png")
     };
     private static final long FADE_MILLIS = 750L;
     static final int SIZE_XZ = 96;
@@ -130,7 +132,7 @@ public final class ColoredLight {
                     origins[newest] = done.origin;
                 }
                 textures[slot].setPixels(done.image);
-                textures[slot].upload();
+                upload(textures[slot]);
                 origins[slot] = done.origin;
                 newest = slot;
                 arrivedAt = Util.getMillis();
@@ -156,18 +158,32 @@ public final class ColoredLight {
         }
     }
 
+    public static void prepareTextures(Minecraft mc) {
+        ensureTextures(mc);
+    }
+
     private static void ensureTextures(Minecraft mc) {
         for (int i = 0; i < textures.length; i++) {
             if (textures[i] == null) {
-                textures[i] = new DynamicTexture(() -> "theabyss light volume", WIDTH, HEIGHT, true);
+                textures[i] = new DynamicTexture(WIDTH, HEIGHT, true);
                 mc.getTextureManager().register(VOLUME_TEXTURES[i], textures[i]);
+                upload(textures[i]);
             }
         }
     }
 
+    private static void upload(DynamicTexture texture) {
+        NativeImage pixels = texture.getPixels();
+        if (pixels == null) {
+            return;
+        }
+        texture.bind();
+        pixels.upload(0, 0, 0, 0, 0, pixels.getWidth(), pixels.getHeight(), true, true, false, false);
+    }
+
     private static void clear(int slot) {
         textures[slot].setPixels(new NativeImage(WIDTH, HEIGHT, true));
-        textures[slot].upload();
+        upload(textures[slot]);
     }
 
     private static void discardFinished() {
@@ -181,7 +197,7 @@ public final class ColoredLight {
     @SuppressWarnings("unchecked")
     private static Snapshot snapshot(Minecraft mc) {
         Level level = mc.level;
-        BlockPos camera = mc.gameRenderer.mainCamera().blockPosition().immutable();
+        BlockPos camera = mc.gameRenderer.getMainCamera().getBlockPosition().immutable();
         BlockPos min = camera.offset(-SIZE_XZ / 2, -SIZE_Y / 2, -SIZE_XZ / 2);
         int minSectionX = SectionPos.blockToSectionCoord(min.getX());
         int minSectionY = SectionPos.blockToSectionCoord(min.getY());
@@ -200,7 +216,7 @@ public final class ColoredLight {
                 }
                 for (int sy = 0; sy < sectionsY; sy++) {
                     int sectionY = minSectionY + sy;
-                    if (sectionY < level.getMinSectionY() || sectionY > level.getMaxSectionY()) {
+                    if (sectionY < level.getMinSection() || sectionY >= level.getMaxSection()) {
                         continue;
                     }
                     LevelChunkSection section = chunk.getSection(chunk.getSectionIndexFromSectionY(sectionY));
@@ -229,7 +245,7 @@ public final class ColoredLight {
     }
 
     public static final net.minecraft.tags.TagKey<Block> NO_COLORED_LIGHT = net.minecraft.tags.TagKey.create(
-        net.minecraft.core.registries.Registries.BLOCK, Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "no_colored_light"));
+        net.minecraft.core.registries.Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "no_colored_light"));
 
     @SubscribeEvent
     public static void onTagsUpdated(net.yezon.theabyss.platform.event.TagsUpdatedEvent event) {
@@ -266,7 +282,7 @@ public final class ColoredLight {
             return fixed;
         }
         return textureColours.computeIfAbsent(state.getBlock(), block -> {
-            TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getBlockStateModelSet().getParticleMaterial(state).sprite();
+            TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getBlockModelShaper().getParticleIcon(state);
             NativeImage image = ((net.yezon.theabyss.mixin.accessor.client.SpriteContentsAccessor)sprite.contents()).theabyss$originalImage();
             double r = 0;
             double g = 0;
@@ -274,13 +290,13 @@ public final class ColoredLight {
             double weight = 0;
             for (int y = 0; y < image.getHeight(); y++) {
                 for (int x = 0; x < image.getWidth(); x++) {
-                    int argb = image.getPixel(x, y);
-                    if (ARGB.alpha(argb) < 128) {
+                    int abgr = image.getPixelRGBA(x, y);
+                    if (FastColor.ABGR32.alpha(abgr) < 128) {
                         continue;
                     }
-                    float pr = ARGB.red(argb) / 255.0F;
-                    float pg = ARGB.green(argb) / 255.0F;
-                    float pb = ARGB.blue(argb) / 255.0F;
+                    float pr = FastColor.ABGR32.red(abgr) / 255.0F;
+                    float pg = FastColor.ABGR32.green(abgr) / 255.0F;
+                    float pb = FastColor.ABGR32.blue(abgr) / 255.0F;
                     float max = Math.max(pr, Math.max(pg, pb));
                     float saturation = max - Math.min(pr, Math.min(pg, pb));
                     double w = Math.pow(saturation * max, 2.0) + 0.02 * max * max;
@@ -327,7 +343,7 @@ public final class ColoredLight {
                     PalettedContainer<BlockState> section = s.sections[(sx * s.sectionsY + sy) * s.sectionsZ + sz];
                     BlockState state = section == null ? air : section.get(wx & 15, wy & 15, wz & 15);
                     int cell = (y * SIZE_XZ + z) * SIZE_XZ + x;
-                    DAMPENING[cell] = (byte)Math.min(15, state.getLightDampening());
+                    DAMPENING[cell] = (byte)Math.min(15, state.getLightBlock(EmptyBlockGetter.INSTANCE, BlockPos.ZERO));
                     SOURCE[cell] = 0;
                     int emission = state.getLightEmission();
                     if (emission > 0) {
@@ -409,7 +425,7 @@ public final class ColoredLight {
                 for (int x = 0; x < SIZE_XZ; x++) {
                     int cell = (y * SIZE_XZ + z) * SIZE_XZ + x;
                     int alpha = (wy > s.heights[z * SIZE_XZ + x] ? 254 : 0) | SOURCE[cell];
-                    image.setPixelABGR(tileX + x, tileY + z, alpha << 24 | (BLUE[cell] & 255) << 16 | (GREEN[cell] & 255) << 8 | RED[cell] & 255);
+                    image.setPixelRGBA(tileX + x, tileY + z, alpha << 24 | (BLUE[cell] & 255) << 16 | (GREEN[cell] & 255) << 8 | RED[cell] & 255);
                 }
             }
         }
@@ -446,6 +462,13 @@ public final class ColoredLight {
         if (mc.level == null || !mc.level.dimensionType().hasSkyLight()) {
             return 0.0F;
         }
-        return Mth.clamp((11.0F - mc.level.getSkyDarken()) / 11.0F, 0.0F, 1.0F);
+        return Mth.clamp((11.0F - skyDarken(mc.level)) / 11.0F, 0.0F, 1.0F);
+    }
+
+    private static int skyDarken(net.minecraft.world.level.Level level) {
+        double rain = 1.0 - level.getRainLevel(1.0F) * 5.0F / 16.0;
+        double thunder = 1.0 - level.getThunderLevel(1.0F) * 5.0F / 16.0;
+        double sun = 0.5 + 2.0 * Mth.clamp(Mth.cos(level.getTimeOfDay(1.0F) * (float)(Math.PI * 2)), -0.25, 0.25);
+        return (int)((1.0 - sun * rain * thunder) * 11.0);
     }
 }

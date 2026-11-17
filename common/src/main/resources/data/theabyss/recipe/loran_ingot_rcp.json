@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:loran",
-    "b": "minecraft:iron_ingot"
+    "a": {
+      "item": "theabyss:loran"
+    },
+    "b": {
+      "item": "minecraft:iron_ingot"
+    }
   },
   "pattern": [
     "aaa",

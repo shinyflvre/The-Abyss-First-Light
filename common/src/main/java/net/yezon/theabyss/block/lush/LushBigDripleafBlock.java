@@ -6,12 +6,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.TriState;
+import net.yezon.theabyss.compat.TriState;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
-import net.minecraft.world.level.block.BonemealSource;
 import net.minecraft.world.level.block.BigDripleafBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -46,14 +44,14 @@ public class LushBigDripleafBlock extends BigDripleafBlock {
 
     static boolean canGrowIntoLush(LevelReader level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
-        return level.isInsideBuildHeight(pos) && (state.isAir() || state.is(Blocks.WATER) || state.is(TheabyssModBlocks.LUSH_SMALL_DRIPLEAF.get()));
+        return !level.isOutsideBuildHeight(pos) && (state.isAir() || state.is(Blocks.WATER) || state.is(TheabyssModBlocks.LUSH_SMALL_DRIPLEAF.get()));
     }
 
     static boolean placeLeaf(LevelAccessor level, BlockPos pos, FluidState fluidState, Direction facing) {
         BlockState leaf = TheabyssModBlocks.LUSH_BIG_DRIPLEAF.get().defaultBlockState()
             .setValue(BlockStateProperties.WATERLOGGED, fluidState.isSourceOfType(Fluids.WATER))
             .setValue(FACING, facing);
-        return level.setBlockAndUpdate(pos, leaf);
+        return level.setBlock(pos, leaf, 3);
     }
 
     @Override
@@ -64,31 +62,30 @@ public class LushBigDripleafBlock extends BigDripleafBlock {
         if (soil != TriState.DEFAULT) {
             return soil == TriState.TRUE;
         }
-        return below.is(this) || below.is(TheabyssModBlocks.LUSH_BIG_DRIPLEAF_STEM.get()) || below.is(BlockTags.SUPPORTS_BIG_DRIPLEAF);
+        return below.is(this) || below.is(TheabyssModBlocks.LUSH_BIG_DRIPLEAF_STEM.get()) || below.is(BlockTags.BIG_DRIPLEAF_PLACEABLE);
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction directionToNeighbour,
-                                     BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
+    protected BlockState updateShape(BlockState state, Direction directionToNeighbour, BlockState neighbourState, LevelAccessor level, BlockPos pos, BlockPos neighbourPos) {
         if (directionToNeighbour == Direction.DOWN && !state.canSurvive(level, pos)) {
             return Blocks.AIR.defaultBlockState();
         }
         if (state.getValue(BlockStateProperties.WATERLOGGED)) {
-            ticks.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
         if (directionToNeighbour == Direction.UP && neighbourState.is(this)) {
             return TheabyssModBlocks.LUSH_BIG_DRIPLEAF_STEM.get().withPropertiesOf(state);
         }
-        return super.updateShape(state, level, ticks, pos, directionToNeighbour, neighbourPos, neighbourState, random);
+        return super.updateShape(state, directionToNeighbour, neighbourState, level, pos, neighbourPos);
     }
 
     @Override
-    public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state, BonemealSource source) {
+    public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state) {
         return canGrowIntoLush(level, pos.above());
     }
 
     @Override
-    public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state, BonemealSource source) {
+    public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
         BlockPos abovePos = pos.above();
         if (canGrowIntoLush(level, abovePos)) {
             Direction facing = state.getValue(FACING);

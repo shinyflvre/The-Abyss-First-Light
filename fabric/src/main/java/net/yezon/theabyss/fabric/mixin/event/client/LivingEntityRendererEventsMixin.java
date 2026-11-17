@@ -1,30 +1,30 @@
 package net.yezon.theabyss.fabric.mixin.event.client;
 
-import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.player.AvatarRenderer;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.world.entity.LivingEntity;
 import net.yezon.theabyss.fabric.event.ClientFabricEvents;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LivingEntityRenderer.class)
 public abstract class LivingEntityRendererEventsMixin {
-    @WrapMethod(method = "submit(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V")
-    private void theabyss$renderEvents(LivingEntityRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera,
-        Operation<Void> original) {
-        boolean avatar = (Object)this instanceof AvatarRenderer<?>;
-        if (avatar && ClientFabricEvents.renderPlayerPre(poseStack, state)) {
-            return;
+    @Inject(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
+        at = @At("HEAD"), cancellable = true)
+    private void theabyss$renderLivingPre(LivingEntity entity, float yaw, float partialTick, PoseStack poseStack, MultiBufferSource buffers, int packedLight,
+        CallbackInfo ci) {
+        if (ClientFabricEvents.renderLivingPre(entity, (LivingEntityRenderer<?, ?>)(Object)this, partialTick, poseStack, buffers, packedLight)) {
+            ci.cancel();
         }
-        if (!ClientFabricEvents.renderLivingPre(poseStack, state)) {
-            original.call(state, poseStack, collector, camera);
-        }
-        if (avatar) {
-            ClientFabricEvents.renderPlayerPost(poseStack, state);
-        }
+    }
+
+    @Inject(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
+        at = @At("TAIL"))
+    private void theabyss$renderLivingPost(LivingEntity entity, float yaw, float partialTick, PoseStack poseStack, MultiBufferSource buffers, int packedLight,
+        CallbackInfo ci) {
+        ClientFabricEvents.renderLivingPost(entity, (LivingEntityRenderer<?, ?>)(Object)this, partialTick, poseStack, buffers, packedLight);
     }
 }

@@ -1,5 +1,7 @@
 package net.yezon.theabyss.item;
 
+import net.minecraft.world.InteractionResultHolder;
+import java.util.List;
 import java.util.function.Consumer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -10,7 +12,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.yezon.theabyss.astral.AstralPlane;
@@ -27,9 +28,8 @@ public class RingOfSpectralItem extends Item {
     }
 
     @Override
-    public void appendHoverText(
-        ItemStack itemstack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag
-    ) {
+    public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, List<Component> tooltipLines, TooltipFlag flag) {
+        Consumer<Component> tooltip = tooltipLines::add;
         AbyssTooltip.ability(tooltip, "tooltip.theabyss.ring_of_spectral.ability", "tooltip.theabyss.ring_of_spectral.text");
         tooltip.accept(AbyssTooltip.text("tooltip.theabyss.ring_of_spectral.note"));
         tooltip.accept(AbyssTooltip.rightClick("tooltip.theabyss.ring_of_spectral.action"));
@@ -38,17 +38,17 @@ public class RingOfSpectralItem extends Item {
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (player instanceof ServerPlayer serverPlayer) {
             boolean entering = !AstralPlane.isAstral(serverPlayer);
             if (AstralPlane.toggle(serverPlayer)) {
                 ItemStack stack = player.getItemInHand(hand);
-                player.getCooldowns().addCooldown(stack, 20);
+                player.getCooldowns().addCooldown(stack.getItem(), 20);
                 if (entering) {
-                    net.yezon.theabyss.ring.RingWear.wear(stack, serverPlayer.level(), serverPlayer, 1);
+                    net.yezon.theabyss.ring.RingWear.wear(stack, serverPlayer.serverLevel(), serverPlayer, 1);
                 }
             }
         }
-        return InteractionResult.SUCCESS;
+        return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
     }
 }

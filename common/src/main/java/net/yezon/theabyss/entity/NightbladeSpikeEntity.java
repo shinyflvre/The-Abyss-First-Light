@@ -1,5 +1,7 @@
 package net.yezon.theabyss.entity;
 
+
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -14,8 +16,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.yezon.theabyss.compat.ValueInput;
+import net.yezon.theabyss.compat.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
 public class NightbladeSpikeEntity extends Entity {
@@ -143,11 +145,11 @@ public class NightbladeSpikeEntity extends Entity {
         }
         for (LivingEntity victim : level.getEntitiesOfClass(LivingEntity.class, area, this::isEnemy)) {
             DamageSource source = this.isGolem() && this.owner != null ? this.damageSources().mobAttack(this.owner) : this.damageSources().indirectMagic(this, this.owner);
-            if (victim.hurtServer(level, source, this.damage) && this.knockUp) {
+            if (victim.hurt(source, this.damage) && this.knockUp) {
                 victim.setDeltaMovement(victim.getDeltaMovement().multiply(0.4, 0.0, 0.4).add(0.0, 0.75, 0.0));
                 victim.resetFallDistance();
-                victim.needsSync = true;
-                victim.syncVelocity = true;
+                victim.hasImpulse = true;
+                victim.hurtMarked = true;
             }
         }
     }
@@ -170,7 +172,10 @@ public class NightbladeSpikeEntity extends Entity {
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+    public boolean hurt(DamageSource source, float amount) {
+        if (!(this.level() instanceof ServerLevel level)) {
+            return false;
+        }
         return false;
     }
 
@@ -185,10 +190,12 @@ public class NightbladeSpikeEntity extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(ValueInput input) {
+    public void readAdditionalSaveData(CompoundTag inputTag) {
+        ValueInput input = ValueInput.of(inputTag, this.registryAccess());
     }
 
     @Override
-    protected void addAdditionalSaveData(ValueOutput output) {
+    public void addAdditionalSaveData(CompoundTag outputTag) {
+        ValueOutput output = ValueOutput.of(outputTag, this.registryAccess());
     }
 }

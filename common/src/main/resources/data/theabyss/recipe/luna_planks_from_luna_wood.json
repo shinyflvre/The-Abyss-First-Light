@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:luna_wood"
+    "a": {
+      "item": "theabyss:luna_wood"
+    }
   },
   "pattern": [
     "a"

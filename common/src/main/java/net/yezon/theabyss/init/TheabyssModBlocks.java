@@ -1,9 +1,9 @@
 package net.yezon.theabyss.init;
 
-import net.minecraft.resources.Identifier;
-import java.util.List;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.client.color.block.BlockTintSources;
+import net.minecraft.client.renderer.BiomeColors;
+import net.minecraft.world.level.GrassColor;
 import net.minecraft.world.level.block.Block;
 import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
@@ -404,50 +404,50 @@ public class TheabyssModBlocks {
     public static final DeferredBlock<Block> SOMNIUM_INFUSER = REGISTRY.registerBlock("somnium_infuser", SomniumInfuserBlock::new);
     public static final DeferredBlock<Block> ABYSSAL_ENERGETICA = REGISTRY.registerBlock("abyssal_energetica", net.yezon.theabyss.block.AbyssalEnergeticaBlock::new);
     public static final DeferredBlock<Block> LUSH_MOSS_BLOCK = REGISTRY.registerBlock("lush_moss_block",
-        p -> new net.minecraft.world.level.block.BonemealableFeaturePlacerBlock(net.yezon.theabyss.block.lush.LushCave.MOSS_PATCH_BONEMEAL, p),
-        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.COLOR_CYAN).strength(0.1F).sound(net.minecraft.world.level.block.SoundType.MOSS).pushReaction(net.minecraft.world.level.material.PushReaction.POPPED));
+        p -> new net.yezon.theabyss.block.cave.BonemealFeatureBlock(net.yezon.theabyss.block.lush.LushCave.MOSS_PATCH_BONEMEAL, p),
+        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.COLOR_CYAN).strength(0.1F).sound(net.minecraft.world.level.block.SoundType.MOSS).pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY));
     public static final DeferredBlock<Block> LUSH_MOSS_CARPET = REGISTRY.registerBlock("lush_moss_carpet",
         net.minecraft.world.level.block.CarpetBlock::new,
-        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.COLOR_CYAN).strength(0.1F).sound(net.minecraft.world.level.block.SoundType.MOSS_CARPET).pushReaction(net.minecraft.world.level.material.PushReaction.POPPED));
+        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.COLOR_CYAN).strength(0.1F).sound(net.minecraft.world.level.block.SoundType.MOSS_CARPET).pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY));
     public static final DeferredBlock<Block> LUSH_AZALEA = REGISTRY.registerBlock("lush_azalea",
         net.yezon.theabyss.block.lush.LushAzaleaBlock::new,
-        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.PLANT).forceSolidOff().instabreak().sound(net.minecraft.world.level.block.SoundType.AZALEA).noOcclusion().pushReaction(net.minecraft.world.level.material.PushReaction.POPPED));
+        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.PLANT).forceSolidOff().instabreak().sound(net.minecraft.world.level.block.SoundType.AZALEA).noOcclusion().pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY));
     public static final DeferredBlock<Block> LUSH_FLOWERING_AZALEA = REGISTRY.registerBlock("lush_flowering_azalea",
         net.yezon.theabyss.block.lush.LushAzaleaBlock::new,
-        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.PLANT).forceSolidOff().instabreak().sound(net.minecraft.world.level.block.SoundType.FLOWERING_AZALEA).noOcclusion().pushReaction(net.minecraft.world.level.material.PushReaction.POPPED));
+        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.PLANT).forceSolidOff().instabreak().sound(net.minecraft.world.level.block.SoundType.FLOWERING_AZALEA).noOcclusion().pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY));
     public static final DeferredBlock<Block> LUSH_AZALEA_LEAVES = REGISTRY.registerBlock("lush_azalea_leaves",
-        p -> new net.minecraft.world.level.block.UntintedParticleLeavesBlock(0.01F, net.minecraft.core.particles.ColorParticleOption.create(net.minecraft.core.particles.ParticleTypes.TINTED_LEAVES, 0xFF16667A), net.minecraft.world.level.block.sounds.AmbientLeavesBlockSoundPlayer.noAmbientSound(), p),
-        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.PLANT).strength(0.2F).randomTicks().sound(net.minecraft.world.level.block.SoundType.AZALEA_LEAVES).noOcclusion().isValidSpawn((s, g, p, e) -> false).isSuffocating((s, g, p) -> false).ignitedByLava().pushReaction(net.minecraft.world.level.material.PushReaction.POPPED).isRedstoneConductor((s, g, p) -> false));
+        p -> new net.yezon.theabyss.block.lush.LushAzaleaLeavesBlock(0.01F, 0xFF16667A, p),
+        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.PLANT).strength(0.2F).randomTicks().sound(net.minecraft.world.level.block.SoundType.AZALEA_LEAVES).noOcclusion().isValidSpawn((s, g, p, e) -> false).isSuffocating((s, g, p) -> false).ignitedByLava().pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY).isRedstoneConductor((s, g, p) -> false));
     public static final DeferredBlock<Block> LUSH_FLOWERING_AZALEA_LEAVES = REGISTRY.registerBlock("lush_flowering_azalea_leaves",
-        p -> new net.minecraft.world.level.block.UntintedParticleLeavesBlock(0.01F, net.minecraft.core.particles.ColorParticleOption.create(net.minecraft.core.particles.ParticleTypes.TINTED_LEAVES, 0xFF16667A), net.minecraft.world.level.block.sounds.AmbientLeavesBlockSoundPlayer.noAmbientSound(), p),
-        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.PLANT).strength(0.2F).randomTicks().sound(net.minecraft.world.level.block.SoundType.AZALEA_LEAVES).noOcclusion().isValidSpawn((s, g, p, e) -> false).isSuffocating((s, g, p) -> false).ignitedByLava().pushReaction(net.minecraft.world.level.material.PushReaction.POPPED).isRedstoneConductor((s, g, p) -> false));
+        p -> new net.yezon.theabyss.block.lush.LushAzaleaLeavesBlock(0.01F, 0xFF16667A, p),
+        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.PLANT).strength(0.2F).randomTicks().sound(net.minecraft.world.level.block.SoundType.AZALEA_LEAVES).noOcclusion().isValidSpawn((s, g, p, e) -> false).isSuffocating((s, g, p) -> false).ignitedByLava().pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY).isRedstoneConductor((s, g, p) -> false));
     public static final DeferredBlock<Block> LUSH_CAVE_VINES = REGISTRY.registerBlock("lush_cave_vines",
         net.yezon.theabyss.block.lush.LushCaveVinesBlock::new,
-        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.PLANT).randomTicks().noCollision().lightLevel(net.minecraft.world.level.block.CaveVines.emission(14)).instabreak().sound(net.minecraft.world.level.block.SoundType.CAVE_VINES).pushReaction(net.minecraft.world.level.material.PushReaction.POPPED));
+        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.PLANT).randomTicks().noCollission().lightLevel(net.minecraft.world.level.block.CaveVines.emission(14)).instabreak().sound(net.minecraft.world.level.block.SoundType.CAVE_VINES).pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY));
     public static final DeferredBlock<Block> LUSH_CAVE_VINES_PLANT = REGISTRY.registerBlock("lush_cave_vines_plant",
         net.yezon.theabyss.block.lush.LushCaveVinesPlantBlock::new,
-        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.PLANT).noCollision().lightLevel(net.minecraft.world.level.block.CaveVines.emission(14)).instabreak().sound(net.minecraft.world.level.block.SoundType.CAVE_VINES).pushReaction(net.minecraft.world.level.material.PushReaction.POPPED));
+        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.PLANT).noCollission().lightLevel(net.minecraft.world.level.block.CaveVines.emission(14)).instabreak().sound(net.minecraft.world.level.block.SoundType.CAVE_VINES).pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY));
     public static final DeferredBlock<Block> LUSH_GLOW_LICHEN = REGISTRY.registerBlock("lush_glow_lichen",
         net.minecraft.world.level.block.GlowLichenBlock::new,
-        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.GLOW_LICHEN).replaceable().noCollision().strength(0.2F).sound(net.minecraft.world.level.block.SoundType.GLOW_LICHEN).lightLevel(net.minecraft.world.level.block.GlowLichenBlock.emission(7)).ignitedByLava().pushReaction(net.minecraft.world.level.material.PushReaction.POPPED));
+        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.GLOW_LICHEN).replaceable().noCollission().strength(0.2F).sound(net.minecraft.world.level.block.SoundType.GLOW_LICHEN).lightLevel(net.minecraft.world.level.block.GlowLichenBlock.emission(7)).ignitedByLava().pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY));
     public static final DeferredBlock<Block> LUSH_CLAY = REGISTRY.registerBlock("lush_clay",
-        Block::new,
+        net.yezon.theabyss.block.lush.LushClayBlock::new,
         () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.CLAY).instrument(net.minecraft.world.level.block.state.properties.NoteBlockInstrument.FLUTE).strength(0.6F).sound(net.minecraft.world.level.block.SoundType.GRAVEL));
     public static final DeferredBlock<Block> LUSH_SPORE_BLOSSOM = REGISTRY.registerBlock("lush_spore_blossom",
         net.yezon.theabyss.block.lush.LushSporeBlossomBlock::new,
-        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.PLANT).instabreak().noCollision().sound(net.minecraft.world.level.block.SoundType.SPORE_BLOSSOM).pushReaction(net.minecraft.world.level.material.PushReaction.POPPED));
+        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.PLANT).instabreak().noCollission().sound(net.minecraft.world.level.block.SoundType.SPORE_BLOSSOM).pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY));
     public static final DeferredBlock<Block> LUSH_BIG_DRIPLEAF = REGISTRY.registerBlock("lush_big_dripleaf",
         net.yezon.theabyss.block.lush.LushBigDripleafBlock::new,
-        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.PLANT).forceSolidOff().strength(0.1F).sound(net.minecraft.world.level.block.SoundType.BIG_DRIPLEAF).pushReaction(net.minecraft.world.level.material.PushReaction.POPPED));
+        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.PLANT).forceSolidOff().strength(0.1F).sound(net.minecraft.world.level.block.SoundType.BIG_DRIPLEAF).pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY));
     public static final DeferredBlock<Block> LUSH_BIG_DRIPLEAF_STEM = REGISTRY.registerBlock("lush_big_dripleaf_stem",
         net.yezon.theabyss.block.lush.LushBigDripleafStemBlock::new,
-        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.PLANT).noCollision().strength(0.1F).sound(net.minecraft.world.level.block.SoundType.BIG_DRIPLEAF).pushReaction(net.minecraft.world.level.material.PushReaction.POPPED));
+        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.PLANT).noCollission().strength(0.1F).sound(net.minecraft.world.level.block.SoundType.BIG_DRIPLEAF).pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY));
     public static final DeferredBlock<Block> LUSH_SMALL_DRIPLEAF = REGISTRY.registerBlock("lush_small_dripleaf",
         net.yezon.theabyss.block.lush.LushSmallDripleafBlock::new,
-        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.PLANT).noCollision().instabreak().sound(net.minecraft.world.level.block.SoundType.SMALL_DRIPLEAF).offsetType(BlockBehaviour.OffsetType.XYZ).pushReaction(net.minecraft.world.level.material.PushReaction.POPPED));
+        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.PLANT).noCollission().instabreak().sound(net.minecraft.world.level.block.SoundType.SMALL_DRIPLEAF).offsetType(BlockBehaviour.OffsetType.XYZ).pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY));
     public static final DeferredBlock<Block> LUSH_HANGING_ROOTS = REGISTRY.registerBlock("lush_hanging_roots",
         net.yezon.theabyss.mixin.accessor.HangingRootsBlockInvoker::theabyss$create,
-        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.DIRT).replaceable().noCollision().instabreak().sound(net.minecraft.world.level.block.SoundType.HANGING_ROOTS).offsetType(BlockBehaviour.OffsetType.XZ).ignitedByLava().pushReaction(net.minecraft.world.level.material.PushReaction.POPPED));
+        () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.DIRT).replaceable().noCollission().instabreak().sound(net.minecraft.world.level.block.SoundType.HANGING_ROOTS).offsetType(BlockBehaviour.OffsetType.XZ).ignitedByLava().pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY));
     public static final DeferredBlock<Block> LUSH_ROOTED_DIRT = REGISTRY.registerBlock("lush_rooted_dirt",
         net.yezon.theabyss.block.lush.LushRootedDirtBlock::new,
         () -> BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.DIRT).strength(0.5F).sound(net.minecraft.world.level.block.SoundType.ROOTED_DIRT));
@@ -529,8 +529,8 @@ public class TheabyssModBlocks {
     public static final DeferredBlock<Block> TOXIC_SUN_FLOWER = REGISTRY.registerBlock("toxic_sun_flower", ToxicSunFlowerBlock::new);
 
     static {
-        REGISTRY.addAlias(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "glowing_sun_shroom"), Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "toxic_sun_flower"));
-        REGISTRY.addAlias(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "purple_shroomlight"), Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "blue_shroomlight"));
+        REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "glowing_sun_shroom"), ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "toxic_sun_flower"));
+        REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "purple_shroomlight"), ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "blue_shroomlight"));
     }
     public static final DeferredBlock<Block> BLUE_CAVE_SHROOM = REGISTRY.registerBlock("blue_cave_shroom", BlueCaveShroomBlock::new);
     public static final DeferredBlock<Block> RENA_SHROOM = REGISTRY.registerBlock("rena_shroom", RenaShroomBlock::new);
@@ -549,28 +549,31 @@ public class TheabyssModBlocks {
     public static final DeferredBlock<Block> RAPTOR_EGG = REGISTRY.registerBlock("raptor_egg", RaptorEggBlock::new);
     public static final DeferredBlock<Block> SHADOW_PLATFORM = REGISTRY.registerBlock("shadow_platform", net.yezon.theabyss.block.ShadowPlatformBlock::new);
     public static final DeferredBlock<Block> DUSKVEIL_BLOSSOMS = REGISTRY.registerBlock("duskveil_blossoms", p -> net.yezon.theabyss.mixin.accessor.FlowerBedBlockInvoker.theabyss$create(p
-        .mapColor(net.minecraft.world.level.material.MapColor.PLANT).noCollision().sound(net.minecraft.world.level.block.SoundType.PINK_PETALS)
-        .pushReaction(net.minecraft.world.level.material.PushReaction.POPPED), 3));
+        .mapColor(net.minecraft.world.level.material.MapColor.PLANT).noCollission().sound(net.minecraft.world.level.block.SoundType.PINK_PETALS)
+        .pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY)));
     public static final DeferredBlock<Block> BLARU_STARPETALS = REGISTRY.registerBlock("blaru_starpetals", p -> net.yezon.theabyss.mixin.accessor.FlowerBedBlockInvoker.theabyss$create(p
-        .mapColor(net.minecraft.world.level.material.MapColor.PLANT).noCollision().sound(net.minecraft.world.level.block.SoundType.PINK_PETALS)
-        .pushReaction(net.minecraft.world.level.material.PushReaction.POPPED), 3));
+        .mapColor(net.minecraft.world.level.material.MapColor.PLANT).noCollission().sound(net.minecraft.world.level.block.SoundType.PINK_PETALS)
+        .pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY)));
     public static final DeferredBlock<Block> ABYSS_DRIPSTONE_BLOCK = REGISTRY.registerBlock("abyss_dripstone_block", p -> new Block(p
         .mapColor(net.minecraft.world.level.material.MapColor.TERRACOTTA_CYAN).instrument(net.minecraft.world.level.block.state.properties.NoteBlockInstrument.BASEDRUM)
         .sound(net.minecraft.world.level.block.SoundType.DRIPSTONE_BLOCK).requiresCorrectToolForDrops().strength(1.5F, 1.0F)));
     public static final DeferredBlock<Block> POINTED_ABYSS_DRIPSTONE = REGISTRY.registerBlock("pointed_abyss_dripstone",
-        p -> new net.minecraft.world.level.block.PointedDripstoneBlock(ABYSS_DRIPSTONE_BLOCK.get().defaultBlockState(), p
+        p -> new net.yezon.theabyss.block.cave.AbyssPointedDripstoneBlock(ABYSS_DRIPSTONE_BLOCK, p
             .mapColor(net.minecraft.world.level.material.MapColor.TERRACOTTA_CYAN).forceSolidOn()
             .instrument(net.minecraft.world.level.block.state.properties.NoteBlockInstrument.BASEDRUM).noOcclusion()
             .sound(net.minecraft.world.level.block.SoundType.POINTED_DRIPSTONE).randomTicks().strength(1.5F, 3.0F).dynamicShape()
             .offsetType(net.minecraft.world.level.block.state.BlockBehaviour.OffsetType.XZ)
-            .pushReaction(net.minecraft.world.level.material.PushReaction.POPPED).isRedstoneConductor((state, level, pos) -> false)));
+            .pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY).isRedstoneConductor((state, level, pos) -> false)));
 
     @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
     public static class ClientSideHandler {
         @SubscribeEvent
-        public static void blockColorLoad(RegisterColorHandlersEvent.BlockTintSources event) {
-            event.register(List.of(BlockTintSources.grass()), INFECTED_GRASS.get());
-            event.register(List.of(BlockTintSources.foliage()), INFECTED_SHORT_GRASS.get(), TALL_INFECTED_GRASS.get(), INFECTED_BUSH.get());
+        public static void blockColorLoad(RegisterColorHandlersEvent.Block event) {
+            event.register((state, level, pos, tintIndex) -> tintIndex != 0 ? -1
+                : level != null && pos != null ? BiomeColors.getAverageGrassColor(level, pos) : GrassColor.getDefaultColor(), INFECTED_GRASS.get());
+            event.register((state, level, pos, tintIndex) -> tintIndex != 0 ? -1
+                : level != null && pos != null ? BiomeColors.getAverageFoliageColor(level, pos) : -12012264,
+                INFECTED_SHORT_GRASS.get(), TALL_INFECTED_GRASS.get(), INFECTED_BUSH.get());
         }
     }
 }

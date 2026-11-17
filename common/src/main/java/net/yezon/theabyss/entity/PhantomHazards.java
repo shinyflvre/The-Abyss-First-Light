@@ -80,7 +80,7 @@ final class PhantomHazards {
     static void splash(ServerLevel level, Vec3 at, int id) {
         SpellFxMessage.around(level, at, SpellFxMessage.PHANTOM_SPLASH, List.of(id), SpellFxMessage.points(at), 0);
         level.playSound(null, at.x, at.y, at.z, SoundEvents.SLIME_SQUISH_SMALL, SoundSource.HOSTILE, 1.0F, 1.3F);
-        level.playSound(null, at.x, at.y, at.z, SoundEvents.BUBBLE_POP, SoundSource.HOSTILE, 0.8F, 0.9F);
+        level.playSound(null, at.x, at.y, at.z, SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, SoundSource.HOSTILE, 0.8F, 0.9F);
     }
 
     void tick(ServerLevel level) {
@@ -104,7 +104,7 @@ final class PhantomHazards {
                 }
             }
             if (hit != null) {
-                if (hit.hurtServer(level, this.phantom.damageSources().indirectMagic(this.phantom, this.phantom), BOLT_DAMAGE)) {
+                if (hit.hurt(this.phantom.damageSources().indirectMagic(this.phantom, this.phantom), BOLT_DAMAGE)) {
                     hit.addEffect(new MobEffectInstance(MobEffects.POISON, 60, 0), this.phantom);
                 }
                 splash(level, hitAt, bolt.id);

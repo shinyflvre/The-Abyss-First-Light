@@ -10,7 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -49,7 +49,7 @@ final class FrostArchAutotest {
             });
         add.add("fa go", () -> {
             command.accept("gamemode spectator @s");
-            command.accept("gamerule spawn_mobs false");
+            command.accept("gamerule doMobSpawning false");
             command.accept("effect give @s minecraft:night_vision 9999 0 true");
             command.accept("execute in " + dimension + " run tp @s 0 250 0");
         }, 200);
@@ -62,9 +62,9 @@ final class FrostArchAutotest {
                 command.accept("execute in " + dimension + " run forceload remove all");
             }, 20);
             add.add("fa locate " + n, () -> onServer(sp -> {
-                ServerLevel level = (ServerLevel)sp.level();
+                ServerLevel level = (ServerLevel)sp.serverLevel();
                 Holder<Structure> holder = level.registryAccess().lookupOrThrow(Registries.STRUCTURE)
-                    .getOrThrow(ResourceKey.create(Registries.STRUCTURE, Identifier.fromNamespaceAndPath("theabyss", target)));
+                    .getOrThrow(ResourceKey.create(Registries.STRUCTURE, ResourceLocation.fromNamespaceAndPath("theabyss", target)));
                 Pair<BlockPos, Holder<Structure>> pair = level.getChunkSource().getGenerator().findNearestMapStructure(level, HolderSet.direct(holder),
                     new BlockPos(origin[0], 0, origin[1]), 60, false);
                 found = pair == null ? null : pair.getFirst();
@@ -80,9 +80,9 @@ final class FrostArchAutotest {
                 if (found == null) {
                     return;
                 }
-                ServerLevel level = (ServerLevel)sp.level();
+                ServerLevel level = (ServerLevel)sp.serverLevel();
                 Holder<Structure> holder = level.registryAccess().lookupOrThrow(Registries.STRUCTURE)
-                    .getOrThrow(ResourceKey.create(Registries.STRUCTURE, Identifier.fromNamespaceAndPath("theabyss", target)));
+                    .getOrThrow(ResourceKey.create(Registries.STRUCTURE, ResourceLocation.fromNamespaceAndPath("theabyss", target)));
                 StructureStart start = level.getChunk(found.getX() >> 4, found.getZ() >> 4).getStartForStructure(holder.value());
                 for (StructurePiece piece : start == null ? List.<StructurePiece>of() : start.getPieces()) {
                     if (piece instanceof GiantArchPiece arch) {

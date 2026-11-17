@@ -2,6 +2,14 @@
   "replace": false,
   "values": [
     "theabyss:lush_moss_block",
-    "theabyss:lush_moss_carpet"
+    "theabyss:lush_moss_carpet",
+    "theabyss:blaru_leaves",
+    "theabyss:frozen_leaves",
+    "theabyss:luna_shroom_leave",
+    "theabyss:lush_azalea_leaves",
+    "theabyss:lush_flowering_azalea_leaves",
+    "theabyss:nightgrove_leaves",
+    "theabyss:rena_shroom_leave",
+    "theabyss:vigilant_leaves"
   ]
 }

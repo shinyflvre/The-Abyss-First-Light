@@ -21,7 +21,7 @@ public abstract class LivingEntitySwimSpeedMixin {
         return builder.add(FabricAttributes.SWIM_SPEED);
     }
 
-    @WrapOperation(method = "travelInWater", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;moveRelative(FLnet/minecraft/world/phys/Vec3;)V"))
+    @WrapOperation(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;moveRelative(FLnet/minecraft/world/phys/Vec3;)V", ordinal = 0))
     private void theabyss$swimSpeed(LivingEntity entity, float speed, Vec3 input, Operation<Void> original) {
         original.call(entity, speed * (float)FabricAttributes.swimSpeed(entity), input);
     }

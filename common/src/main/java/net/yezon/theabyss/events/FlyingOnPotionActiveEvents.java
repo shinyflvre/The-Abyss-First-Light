@@ -27,7 +27,7 @@ public class FlyingOnPotionActiveEvents {
             )
         );
         if (!entity.level().isClientSide()) {
-            entity.syncVelocity = true;
+            entity.hurtMarked = true;
         }
 
         entity.fallDistance = 0.0F;

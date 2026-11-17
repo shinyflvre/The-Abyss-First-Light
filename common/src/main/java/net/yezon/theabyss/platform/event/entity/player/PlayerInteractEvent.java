@@ -59,9 +59,9 @@ public abstract class PlayerInteractEvent extends Event {
         private final net.minecraft.world.item.ItemStack itemStack;
         private final net.minecraft.world.level.Level level;
         private final net.minecraft.core.BlockPos pos;
-        private net.minecraft.util.TriState useItem;
+        private net.yezon.theabyss.compat.TriState useItem;
 
-        public RightClickBlock(net.minecraft.world.entity.player.Player entity, net.minecraft.world.InteractionHand hand, net.minecraft.world.item.ItemStack itemStack, net.minecraft.world.level.Level level, net.minecraft.core.BlockPos pos, net.minecraft.util.TriState useItem) {
+        public RightClickBlock(net.minecraft.world.entity.player.Player entity, net.minecraft.world.InteractionHand hand, net.minecraft.world.item.ItemStack itemStack, net.minecraft.world.level.Level level, net.minecraft.core.BlockPos pos, net.yezon.theabyss.compat.TriState useItem) {
             this.entity = entity;
             this.hand = hand;
             this.itemStack = itemStack;
@@ -90,11 +90,11 @@ public abstract class PlayerInteractEvent extends Event {
             return this.pos;
         }
 
-        public net.minecraft.util.TriState getUseItem() {
+        public net.yezon.theabyss.compat.TriState getUseItem() {
             return this.useItem;
         }
 
-        public void setUseItem(net.minecraft.util.TriState value) {
+        public void setUseItem(net.yezon.theabyss.compat.TriState value) {
             this.useItem = value;
         }
     }

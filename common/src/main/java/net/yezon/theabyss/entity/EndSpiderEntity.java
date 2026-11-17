@@ -1,12 +1,21 @@
 package net.yezon.theabyss.entity;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.tags.BlockTags;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.border.WorldBorder;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
@@ -21,7 +30,7 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.monster.Enderman;
+import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -29,11 +38,14 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.event.entity.RegisterSpawnPlacementsEvent;
+import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.init.TheabyssModEntities;
 import org.jspecify.annotations.Nullable;
 
-public class EndSpiderEntity extends Enderman {
-    private static final Identifier ENDERMAN_ATTACK_SPEED = Identifier.withDefaultNamespace("attacking");
+public class EndSpiderEntity extends EnderMan {
+    private static final TagKey<Block> DOES_NOT_TELEPORT_TO = TagKey.create(Registries.BLOCK,
+        ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "enderman_does_not_teleport_to"));
+    private static final ResourceLocation ENDERMAN_ATTACK_SPEED = ResourceLocation.withDefaultNamespace("attacking");
     private static final double BLINK_MIN = 6.0;
     private static final double BLINK_MAX = 24.0;
     private static final int BLINK_CHARGE = 10;
@@ -70,21 +82,24 @@ public class EndSpiderEntity extends Enderman {
 
     @Override
     public SoundEvent getAmbientSound() {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.spider.ambient"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.spider.ambient"));
     }
 
     @Override
     public SoundEvent getHurtSound(DamageSource ds) {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.generic.hurt"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.generic.hurt"));
     }
 
     @Override
     public SoundEvent getDeathSound() {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.generic.death"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.generic.death"));
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource damagesource, float amount) {
+    public boolean hurt(DamageSource damagesource, float amount) {
+        if (!(this.level() instanceof ServerLevel level)) {
+            return false;
+        }
         if (damagesource.is(DamageTypes.IN_FIRE)
             || damagesource.is(DamageTypes.CAMPFIRE)
             || damagesource.is(DamageTypes.FALL)
@@ -92,8 +107,8 @@ public class EndSpiderEntity extends Enderman {
             return false;
         }
         boolean hurt = damagesource.is(DamageTypeTags.IS_PROJECTILE) && !this.isPassenger()
-            ? super.hurtServer(level, struck(level, damagesource), amount)
-            : super.hurtServer(level, damagesource, amount);
+            ? super.hurt(struck(level, damagesource), amount)
+            : super.hurt(damagesource, amount);
         if (hurt && this.isAlive() && this.blinkCooldown <= 0 && this.blinkCharge == 0 && damagesource.getEntity() instanceof LivingEntity attacker
             && attacker != this && this.random.nextFloat() < BLINK_ON_HIT) {
             this.blinkTo(attacker);
@@ -117,8 +132,9 @@ public class EndSpiderEntity extends Enderman {
     }
 
     @Override
-    protected void customServerAiStep(ServerLevel level) {
-        super.customServerAiStep(level);
+    protected void customServerAiStep() {
+        ServerLevel level = (ServerLevel) this.level();
+        super.customServerAiStep();
         LivingEntity target = this.getTarget();
         if (target == null || !target.isAlive() || this.isPassenger()) {
             this.blinkCharge = 0;
@@ -152,24 +168,71 @@ public class EndSpiderEntity extends Enderman {
             double x = target.getX() + Math.cos(angle) * radius;
             double y = target.getY() + this.random.nextInt(3) - 1;
             double z = target.getZ() + Math.sin(angle) * radius;
-            if (this.teleport(x, y, z)) {
+            if (this.teleportSpider(x, y, z)) {
                 return;
             }
         }
     }
 
-    @Override
-    public boolean teleport(double x, double y, double z) {
+    public boolean teleportSpider(double x, double y, double z) {
         if (this.isPassenger() || !(this.level() instanceof ServerLevel level)) {
             return false;
         }
         Vec3 from = this.position();
-        boolean result = this.randomTeleport(x, y, z, false, BlockTags.ENDERMAN_DOES_NOT_TELEPORT_TO);
+        boolean result = this.randomTeleportAvoiding(x, y, z);
         if (result) {
             level.gameEvent(GameEvent.TELEPORT, from, GameEvent.Context.of(this));
             EndSpiderFx.teleport(level, this, from, this.position());
         }
         return result;
+    }
+
+    private static boolean avoided(BlockState state) {
+        return state.is(DOES_NOT_TELEPORT_TO);
+    }
+
+    private boolean randomTeleportAvoiding(double xx, double yy, double zz) {
+        double y = yy;
+        Level level = this.level();
+        WorldBorder border = level.getWorldBorder();
+        double cx = Mth.clamp(xx, border.getMinX(), border.getMaxX() - 1.0E-5F);
+        double cz = Mth.clamp(zz, border.getMinZ(), border.getMaxZ() - 1.0E-5F);
+        BlockPos.MutableBlockPos pos = BlockPos.containing(cx, y, cz).mutable();
+        if (level.hasChunkAt(pos)) {
+            while (pos.getY() > level.getMinBuildHeight()) {
+                pos.move(Direction.DOWN);
+                BlockState state = level.getBlockState(pos);
+                if (state.blocksMotion()) {
+                    return this.checkPositionAndTeleport(cx, y, cz, state, level);
+                }
+                y--;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkPositionAndTeleport(double xx, double y, double zz, BlockState state, Level level) {
+        if (avoided(state)) {
+            return false;
+        }
+        AABB aabb = this.getDimensions(this.getPose()).makeBoundingBox(new Vec3(xx, y, zz));
+        if (!level.noCollision(aabb) || level.containsAnyLiquid(aabb)) {
+            return false;
+        }
+        BlockPos min = BlockPos.containing(aabb.minX, aabb.minY, aabb.minZ);
+        BlockPos max = BlockPos.containing(aabb.maxX, aabb.maxY, aabb.maxZ);
+        for (BlockPos p : BlockPos.betweenClosed(min, max)) {
+            if (avoided(level.getBlockState(p))) {
+                return false;
+            }
+        }
+        BlockState below = level.getBlockState(BlockPos.containing(xx, y, zz).below());
+        if (below.getFluidState().is(FluidTags.WATER)) {
+            return false;
+        }
+        this.teleportTo(xx, y, zz);
+        this.getNavigation().stop();
+        return true;
     }
 
     public static void init(RegisterSpawnPlacementsEvent event) {

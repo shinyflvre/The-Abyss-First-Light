@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -25,19 +24,19 @@ import net.yezon.theabyss.init.TheabyssModBlocks;
 public class GlowingBlaruMossBlock extends FlowerBlock implements FlammableBlock, FireSpreadingBlock {
     public GlowingBlaruMossBlock(BlockBehaviour.Properties properties) {
         super(
-            MobEffects.SPEED,
+            MobEffects.MOVEMENT_SPEED,
             5.0F,
             properties
                 .mapColor(MapColor.PLANT)
                 .sound(SoundType.NYLIUM)
                 .instabreak()
-                .postProcess((bs, br, bp) -> bp)
-                .emissiveRendering(bs -> true)
+                .hasPostProcess((bs, br, bp) -> true)
+                .emissiveRendering((bs, br, bp) -> true)
                 .lightLevel(s -> 6)
-                .noCollision()
+                .noCollission()
                 .replaceable()
                 .offsetType(OffsetType.NONE)
-                .pushReaction(PushReaction.POPPED)
+                .pushReaction(PushReaction.DESTROY)
         );
     }
 
@@ -71,8 +70,8 @@ public class GlowingBlaruMossBlock extends FlowerBlock implements FlammableBlock
     }
 
     @Override
-    protected void entityInside(BlockState blockstate, Level world, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
-        super.entityInside(blockstate, world, pos, entity, effectApplier, isPrecise);
+    protected void entityInside(BlockState blockstate, Level world, BlockPos pos, Entity entity) {
+        super.entityInside(blockstate, world, pos, entity);
         GlowingBlaruMossParticleEvents.execute(world, pos.getY(), entity);
     }
 

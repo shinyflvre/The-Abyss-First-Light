@@ -16,7 +16,7 @@ public class WeakElectricityOnEffectActiveEvents {
             }
 
             if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
-                _entity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 30, 1, false, false));
+                _entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30, 1, false, false));
             }
         }
     }

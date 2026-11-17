@@ -16,8 +16,8 @@ public class BlueShroomlightBlock extends Block {
                 .sound(SoundType.SHROOMLIGHT)
                 .strength(0.25F, 10.0F)
                 .lightLevel(s -> 15)
-                .postProcess((bs, br, bp) -> bp)
-                .emissiveRendering(bs -> true)
+                .hasPostProcess((bs, br, bp) -> true)
+                .emissiveRendering((bs, br, bp) -> true)
         );
     }
 

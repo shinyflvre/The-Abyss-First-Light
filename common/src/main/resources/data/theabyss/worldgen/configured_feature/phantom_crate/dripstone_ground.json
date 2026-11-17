@@ -1,0 +1,8 @@
+{
+  "type": "theabyss:dripstone_spires",
+  "config": {
+    "max_height": 6,
+    "min_height": 1,
+    "mode": "ground"
+  }
+}

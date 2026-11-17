@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:somnium",
-    "b": "minecraft:glass_bottle"
+    "a": {
+      "item": "theabyss:somnium"
+    },
+    "b": {
+      "item": "minecraft:glass_bottle"
+    }
   },
   "pattern": [
     "a",

@@ -16,8 +16,8 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
-import net.minecraft.world.entity.projectile.throwableitemprojectile.AbstractThrownPotion;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -45,23 +45,26 @@ public class IceKnightEntity extends Monster {
     @Override
     protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(level, source, recentlyHitIn);
-        this.spawnAtLocation(level, new ItemStack(TheabyssModItems.KNIGHT_SHARD.get()));
+        this.spawnAtLocation(new ItemStack(TheabyssModItems.KNIGHT_SHARD.get()));
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource damagesource, float amount) {
+    public boolean hurt(DamageSource damagesource, float amount) {
+        if (!(this.level() instanceof ServerLevel level)) {
+            return false;
+        }
         IceKnightEntityIsHurtEvents.execute(level, this.getX(), this.getY(), this.getZ());
         if (damagesource.is(DamageTypes.IN_FIRE)
             || damagesource.is(DamageTypes.CAMPFIRE)
             || damagesource.getDirectEntity() instanceof AbstractArrow
-            || damagesource.getDirectEntity() instanceof AbstractThrownPotion
+            || damagesource.getDirectEntity() instanceof ThrownPotion
             || damagesource.getDirectEntity() instanceof AreaEffectCloud
             || damagesource.is(DamageTypes.FALL)
             || damagesource.is(DamageTypes.CACTUS)
             || damagesource.is(DamageTypes.DROWN)) {
             return false;
         }
-        return super.hurtServer(level, damagesource, amount);
+        return super.hurt(damagesource, amount);
     }
 
     public static void init(RegisterSpawnPlacementsEvent event) {

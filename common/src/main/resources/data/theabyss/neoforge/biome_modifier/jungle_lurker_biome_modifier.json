@@ -3,11 +3,8 @@
   "biomes": "theabyss:nightgrove",
   "spawners": {
     "type": "theabyss:jungle_lurker",
-    "weight": 40,
-    "count": {
-      "type": "minecraft:uniform",
-      "max_inclusive": 4,
-      "min_inclusive": 1
-    }
+    "maxCount": 4,
+    "minCount": 1,
+    "weight": 40
   }
 }

@@ -2,7 +2,7 @@ package net.yezon.theabyss.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.Difficulty;
@@ -46,33 +46,36 @@ public class HauntedSkeletonEntity extends Monster {
     @Override
     protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(level, source, recentlyHitIn);
-        this.spawnAtLocation(level, new ItemStack(TheabyssModItems.BROKEN_BONE.get()));
+        this.spawnAtLocation(new ItemStack(TheabyssModItems.BROKEN_BONE.get()));
     }
 
     @Override
     public void playStepSound(BlockPos pos, BlockState blockIn) {
-        this.playSound(BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.skeleton.step")), 0.15F, 1.0F);
+        this.playSound(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.skeleton.step")), 0.15F, 1.0F);
     }
 
     @Override
     public SoundEvent getHurtSound(DamageSource ds) {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.skeleton_horse.hurt"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.skeleton_horse.hurt"));
     }
 
     @Override
     public SoundEvent getDeathSound() {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.skeleton.death"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.skeleton.death"));
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource damagesource, float amount) {
+    public boolean hurt(DamageSource damagesource, float amount) {
+        if (!(this.level() instanceof ServerLevel level)) {
+            return false;
+        }
         if (damagesource.is(DamageTypes.IN_FIRE)
             || damagesource.is(DamageTypes.CAMPFIRE)
             || damagesource.is(DamageTypes.FALL)
             || damagesource.is(DamageTypes.CACTUS)) {
             return false;
         }
-        return super.hurtServer(level, damagesource, amount);
+        return super.hurt(damagesource, amount);
     }
 
     public static void init(RegisterSpawnPlacementsEvent event) {

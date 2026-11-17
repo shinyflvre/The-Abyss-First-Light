@@ -1,5 +1,7 @@
 package net.yezon.theabyss.item;
 
+import net.minecraft.world.InteractionResultHolder;
+import java.util.List;
 import java.util.function.Consumer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,7 +14,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -30,9 +31,8 @@ public class RingOfPossessionItem extends Item {
     }
 
     @Override
-    public void appendHoverText(
-        ItemStack itemstack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag
-    ) {
+    public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, List<Component> tooltipLines, TooltipFlag flag) {
+        Consumer<Component> tooltip = tooltipLines::add;
         AbyssTooltip.ability(tooltip, "tooltip.theabyss.ring_of_possession.ability", "tooltip.theabyss.ring_of_possession.text");
         tooltip.accept(AbyssTooltip.rightClick("tooltip.theabyss.ring_of_possession.action"));
         tooltip.accept(AbyssTooltip.text("tooltip.theabyss.ring_of_possession.note"));
@@ -41,8 +41,8 @@ public class RingOfPossessionItem extends Item {
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        return this.activate(player, hand, null);
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        return new InteractionResultHolder<>(this.activate(player, hand, null), player.getItemInHand(hand));
     }
 
     @Override
@@ -63,18 +63,18 @@ public class RingOfPossessionItem extends Item {
         if (PossessionManager.isPossessing(player)) {
             int cooldown = PossessionManager.useAbility(serverPlayer);
             if (cooldown > 0) {
-                player.getCooldowns().addCooldown(stack, cooldown);
+                player.getCooldowns().addCooldown(stack.getItem(), cooldown);
             }
-            return InteractionResult.SUCCESS;
+            return InteractionResult.CONSUME;
         }
         Mob target = clicked instanceof Mob mob ? mob : PossessionManager.findTarget(player);
         if (target == null) {
-            serverPlayer.sendOverlayMessage(Component.translatable("possession.theabyss.no_target"));
+            serverPlayer.displayClientMessage(Component.translatable("possession.theabyss.no_target"), true);
             return InteractionResult.FAIL;
         }
         if (PossessionManager.tryPossess(serverPlayer, target)) {
-            net.yezon.theabyss.ring.RingWear.wear(stack, serverPlayer.level(), serverPlayer, 1);
+            net.yezon.theabyss.ring.RingWear.wear(stack, serverPlayer.serverLevel(), serverPlayer, 1);
         }
-        return InteractionResult.SUCCESS;
+        return InteractionResult.CONSUME;
     }
 }

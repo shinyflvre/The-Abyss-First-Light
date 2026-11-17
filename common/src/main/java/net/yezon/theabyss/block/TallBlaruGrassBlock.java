@@ -14,10 +14,10 @@ public class TallBlaruGrassBlock extends DoublePlantBlock {
                 .mapColor(MapColor.PLANT)
                 .sound(SoundType.MOSS_CARPET)
                 .instabreak()
-                .noCollision()
+                .noCollission()
                 .replaceable()
                 .offsetType(OffsetType.XYZ)
-                .pushReaction(PushReaction.POPPED)
+                .pushReaction(PushReaction.DESTROY)
         );
     }
 }

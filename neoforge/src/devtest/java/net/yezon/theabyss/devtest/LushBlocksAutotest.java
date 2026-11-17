@@ -56,8 +56,8 @@ final class LushBlocksAutotest {
         add.add("lb shot left", () -> shot.accept("113_lush_blocks_left"), 2);
         add.add("lb right", () -> command.accept("execute in minecraft:overworld run tp @s 22 201.5 -1.5 0 25"), 20);
         add.add("lb shot right", () -> shot.accept("113_lush_blocks_right"), 2);
-        add.add("lb inventory", () -> mc.gui.setScreen(new net.minecraft.client.gui.screens.inventory.InventoryScreen(mc.player)), 20);
+        add.add("lb inventory", () -> mc.setScreen(new net.minecraft.client.gui.screens.inventory.InventoryScreen(mc.player)), 20);
         add.add("lb shot inventory", () -> shot.accept("113_lush_blocks_inventory"), 2);
-        add.add("lb close", () -> mc.gui.setScreen(null), 4);
+        add.add("lb close", () -> mc.setScreen(null), 4);
     }
 }

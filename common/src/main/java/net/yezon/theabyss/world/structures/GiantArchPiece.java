@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.SpeleothemThickness;
+import net.minecraft.world.level.block.state.properties.DripstoneThickness;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
@@ -31,7 +31,7 @@ public class GiantArchPiece extends StructurePiece {
     public GiantArchPiece(CompoundTag tag) {
         super(GiantArchStructure.GIANT_ARCH_PIECE.get(), tag);
         this.shape = GiantArchShape.load(tag);
-        this.materials = tag.read("Materials", GiantArchMaterials.CODEC).orElseThrow();
+        this.materials = net.yezon.theabyss.compat.ValueInput.of(tag, null).read("Materials", GiantArchMaterials.CODEC).orElseThrow();
     }
 
     public GiantArchShape shape() {
@@ -41,7 +41,7 @@ public class GiantArchPiece extends StructurePiece {
     @Override
     protected void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag tag) {
         this.shape.save(tag);
-        tag.store("Materials", GiantArchMaterials.CODEC, this.materials);
+        net.yezon.theabyss.compat.ValueOutput.of(tag, null).store("Materials", GiantArchMaterials.CODEC, this.materials);
     }
 
     private static long hash(long seed, int x, int y, int z) {
@@ -88,7 +88,7 @@ public class GiantArchPiece extends StructurePiece {
             free++;
         }
         BlockState drip = this.materials.drip().defaultBlockState();
-        boolean speleothem = drip.hasProperty(BlockStateProperties.VERTICAL_DIRECTION) && drip.hasProperty(BlockStateProperties.SPELEOTHEM_THICKNESS);
+        boolean speleothem = drip.hasProperty(BlockStateProperties.VERTICAL_DIRECTION) && drip.hasProperty(BlockStateProperties.DRIPSTONE_THICKNESS);
         if (speleothem) {
             free = Math.min(free, 6);
         }
@@ -96,9 +96,9 @@ public class GiantArchPiece extends StructurePiece {
             pos.set(x, y - d, z);
             BlockState state;
             if (speleothem) {
-                SpeleothemThickness thickness = d == free ? SpeleothemThickness.TIP
-                    : d == free - 1 ? SpeleothemThickness.FRUSTUM : d == 1 ? SpeleothemThickness.BASE : SpeleothemThickness.MIDDLE;
-                state = drip.setValue(BlockStateProperties.VERTICAL_DIRECTION, Direction.DOWN).setValue(BlockStateProperties.SPELEOTHEM_THICKNESS, thickness);
+                DripstoneThickness thickness = d == free ? DripstoneThickness.TIP
+                    : d == free - 1 ? DripstoneThickness.FRUSTUM : d == 1 ? DripstoneThickness.BASE : DripstoneThickness.MIDDLE;
+                state = drip.setValue(BlockStateProperties.VERTICAL_DIRECTION, Direction.DOWN).setValue(BlockStateProperties.DRIPSTONE_THICKNESS, thickness);
             } else if (d == free && this.materials.dripTip().isPresent()) {
                 state = this.materials.dripTip().get().defaultBlockState();
             } else {
@@ -120,8 +120,8 @@ public class GiantArchPiece extends StructurePiece {
         int maxX = Math.min(chunkBB.maxX(), this.boundingBox.maxX());
         int minZ = Math.max(chunkBB.minZ(), this.boundingBox.minZ());
         int maxZ = Math.min(chunkBB.maxZ(), this.boundingBox.maxZ());
-        int worldMin = Math.max(level.getMinY() + 1, chunkBB.minY());
-        int worldMax = Math.min(level.getMaxY() - 1, chunkBB.maxY());
+        int worldMin = Math.max(level.getMinBuildHeight() + 1, chunkBB.minY());
+        int worldMax = Math.min(level.getMaxBuildHeight() - 2, chunkBB.maxY());
         double topY = shape.topY();
         double footReachA = shape.rLeg * shape.legA * 1.4 * Math.max(1.0, shape.widthRatio);
         double footReachB = shape.rLeg * shape.legB * 1.4 * Math.max(1.0, shape.widthRatio);

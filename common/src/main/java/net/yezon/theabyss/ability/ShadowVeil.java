@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -41,7 +41,7 @@ public final class ShadowVeil {
     private static final double RECHARGE = 0.5;
     private static final double SOMNIUM_EPSILON = 0.01;
     private static final int COLOR = 0x8FE8FF;
-    private static final ResourceKey<Level> ABYSS = ResourceKey.create(Registries.DIMENSION, Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "the_abyss"));
+    private static final ResourceKey<Level> ABYSS = ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "the_abyss"));
     private static final Map<UUID, State> STATES = new HashMap<>();
 
     private static final class State {
@@ -83,7 +83,7 @@ public final class ShadowVeil {
         state.waitRelease = true;
         PacketDistributor.sendToPlayer(player, new ShadowVeilMessage(false, (int)state.energy));
         if (broken) {
-            ServerLevel level = player.level();
+            ServerLevel level = player.serverLevel();
             Vec3 feet = player.position();
             RingFx.ring(level, GlowParticleOptions.of(COLOR, 0.06F, 16), feet.add(0.0, 0.3, 0.0), RADIUS, 48, 0.12, 0.03);
             RingFx.burst(level, GlowParticleOptions.of(0xE8FFFE, 0.05F, 12), feet.add(0.0, 1.0, 0.0), 12, 0.4, 0.05);

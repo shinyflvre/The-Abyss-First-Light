@@ -28,8 +28,8 @@ final class PhantomAutotest {
         Minecraft mc = Minecraft.getInstance();
         net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.entity.living.LivingDamageEvent.Post e) -> {
             if (e.getEntity() instanceof ServerPlayer) {
-                hits.add(e.getSource().getMsgId() + " " + e.getHealthDamage());
-                TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] phantom player damage {} from {}", e.getHealthDamage(), e.getSource().getMsgId());
+                hits.add(e.getSource().getMsgId() + " " + e.getNewDamage());
+                TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] phantom player damage {} from {}", e.getNewDamage(), e.getSource().getMsgId());
             }
         });
         net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.tick.EntityTickEvent.Post e) -> {
@@ -44,13 +44,13 @@ final class PhantomAutotest {
             command.accept("time set midnight");
             command.accept("weather clear");
             command.accept("difficulty normal");
-            command.accept("gamerule spawn_mobs false");
+            command.accept("gamerule doMobSpawning false");
             command.accept("kill @e[type=theabyss:infected_phantom]");
         }, 60);
         add.add("ph player", () -> {
             command.accept("execute in minecraft:overworld run tp @s 0 200 -6 0 -8");
             command.accept("gamemode survival @s");
-            command.accept("attribute @s minecraft:max_health base set 200");
+            command.accept("attribute @s minecraft:generic.max_health base set 200");
             command.accept("effect clear @s");
             onServer(sp -> sp.setHealth(sp.getMaxHealth()));
         }, 40);
@@ -109,7 +109,7 @@ final class PhantomAutotest {
         add.add("ph shot rend through", () -> shot.accept("114_phantom_13_rend_through"), 20);
         add.add("ph rend check", () -> onServer(sp -> {
             check("rend hit (" + hits + ")", hits.stream().anyMatch(h -> h.startsWith("mob")));
-            check("rend slowness", sp.hasEffect(MobEffects.SLOWNESS));
+            check("rend slowness", sp.hasEffect(MobEffects.MOVEMENT_SLOWDOWN));
             hits.clear();
             sp.removeAllEffects();
             sp.setHealth(sp.getMaxHealth());
@@ -135,7 +135,7 @@ final class PhantomAutotest {
         add.add("ph cleanup", () -> {
             command.accept("kill @e[type=theabyss:infected_phantom]");
             command.accept("effect clear @s");
-            command.accept("attribute @s minecraft:max_health base set 20");
+            command.accept("attribute @s minecraft:generic.max_health base set 20");
         }, 5);
     }
 
@@ -153,7 +153,7 @@ final class PhantomAutotest {
 
     private static void phantom(PhantomAction action) {
         onServer(sp -> {
-            for (InfectedPhantomEntity p : sp.level().getEntitiesOfClass(InfectedPhantomEntity.class, new AABB(sp.blockPosition()).inflate(48))) {
+            for (InfectedPhantomEntity p : sp.serverLevel().getEntitiesOfClass(InfectedPhantomEntity.class, new AABB(sp.blockPosition()).inflate(48))) {
                 action.run(p, sp);
             }
         });

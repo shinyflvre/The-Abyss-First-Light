@@ -15,7 +15,7 @@ public class TheabyssDevTest {
     public TheabyssDevTest() {
         NeoForge.EVENT_BUS.register(ServerSelfTest.class);
         NeoForge.EVENT_BUS.register(MixinAuditCheck.class);
-        if (FMLEnvironment.getDist() == Dist.CLIENT) {
+        if (FMLEnvironment.dist == Dist.CLIENT) {
             NeoForge.EVENT_BUS.register(ClientAutotest.class);
         }
     }

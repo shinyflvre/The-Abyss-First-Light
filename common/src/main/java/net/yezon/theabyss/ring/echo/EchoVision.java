@@ -9,7 +9,7 @@ import java.util.UUID;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -100,24 +100,24 @@ public final class EchoVision {
         }
         SilentEchoEntity echo = SilentEchoes.echoOf(player);
         if (echo == null) {
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.echo.no_echo"));
+            player.displayClientMessage(Component.translatable("ring.theabyss.echo.no_echo"), true);
             return false;
         }
         if (player.isPassenger() || player.isSpectator() || player.isSleeping() || PossessionManager.isPossessing(player) || AstralData.isAstral(player)
             || echo.level() != player.level()) {
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.echo.cannot"));
+            player.displayClientMessage(Component.translatable("ring.theabyss.echo.cannot"), true);
             return false;
         }
         long now = player.level().getGameTime();
         Long ready = READY.get(player.getUUID());
         if (ready != null && now < ready) {
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.secondary.cooldown",
-                Component.translatable("tooltip.theabyss.ring_of_silent_echoes.secondary.ability"), (int)Math.ceil((ready - now) / 20.0)));
+            player.displayClientMessage(Component.translatable("ring.theabyss.secondary.cooldown",
+                Component.translatable("tooltip.theabyss.ring_of_silent_echoes.secondary.ability"), (int)Math.ceil((ready - now) / 20.0)), true);
             return false;
         }
         double range = range(vars);
         if (echo.distanceTo(player) > range) {
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.echo.too_far", (int)range));
+            player.displayClientMessage(Component.translatable("ring.theabyss.echo.too_far", (int)range), true);
             return false;
         }
         RingCast cast = RingCast.start(player.level(), player, ring, COST, player.getEyePosition());
@@ -130,7 +130,7 @@ public final class EchoVision {
     }
 
     private static void enter(ServerPlayer player, SilentEchoEntity echo, double range) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         Vec3 body = player.position();
         float yaw = player.getYRot();
         float pitch = player.getXRot();
@@ -143,7 +143,7 @@ public final class EchoVision {
 
         SESSIONS.put(player.getUUID(), new Session(echo.getUUID(), level.dimension(), body, yaw, range, realHealth, hold(level, body)));
         CompoundTag saved = new CompoundTag();
-        saved.putString("dim", level.dimension().identifier().toString());
+        saved.putString("dim", level.dimension().location().toString());
         saved.putDouble("x", body.x);
         saved.putDouble("y", body.y);
         saved.putDouble("z", body.z);
@@ -153,7 +153,7 @@ public final class EchoVision {
 
         echo.becomeVessel(body, yaw, headYaw, realHealth);
         EchoVisionMessage.send(player, true, fromEye, yaw, pitch, body, (float)range);
-        player.teleportTo(level, echoAt.x, echoAt.y, echoAt.z, Set.of(), echoYaw, pitch, true);
+        net.yezon.theabyss.util.AbyssTeleport.level(player, level, echoAt.x, echoAt.y, echoAt.z, echoYaw, pitch);
         player.setHealth(Math.min(echoHealth, player.getMaxHealth()));
         player.resetFallDistance();
 
@@ -161,7 +161,7 @@ public final class EchoVision {
             List.of(body.x, body.y + 1.2, body.z, echoAt.x, echoAt.y + 1.2, echoAt.z), 16));
         RingVisuals.sound(level, body, SoundEvents.ILLUSIONER_MIRROR_MOVE, 0.7F, 0.6F);
         RingVisuals.sound(level, echoAt, SoundEvents.ILLUSIONER_PREPARE_MIRROR, 0.5F, 1.2F);
-        player.sendOverlayMessage(Component.translatable("ring.theabyss.echo.vision", (int)range));
+        player.displayClientMessage(Component.translatable("ring.theabyss.echo.vision", (int)range), true);
     }
 
     public static void leave(ServerPlayer player, Reason reason, @Nullable DamageSource hit, float hitAmount) {
@@ -175,7 +175,7 @@ public final class EchoVision {
         MinecraftServer server = player.level().getServer();
         ServerLevel bodyLevel = server.getLevel(session.dimension());
         if (bodyLevel == null) {
-            bodyLevel = player.level();
+            bodyLevel = player.serverLevel();
         }
         SilentEchoEntity vessel = bodyLevel.getEntity(session.echo()) instanceof SilentEchoEntity v && !v.isRemoved() ? v : null;
         Vec3 body = vessel != null ? vessel.position() : session.body();
@@ -186,7 +186,7 @@ public final class EchoVision {
         boolean keep = reason == Reason.VOLUNTARY && vessel != null && player.isAlive() && player.level() == bodyLevel;
 
         EchoVisionMessage.send(player, false, player.getEyePosition(), player.getYRot(), player.getXRot(), body, (float)session.range());
-        player.teleportTo(bodyLevel, body.x, body.y, body.z, Set.of(), bodyYaw, player.getXRot(), true);
+        net.yezon.theabyss.util.AbyssTeleport.level(player, bodyLevel, body.x, body.y, body.z, bodyYaw, player.getXRot());
         player.setHealth(Math.max(1.0F, Math.min(session.realHealth(), player.getMaxHealth())));
         player.resetFallDistance();
         player.clearFire();
@@ -204,10 +204,10 @@ public final class EchoVision {
         double factor = TheabyssModVariables.getPlayerVariables(player).ManaCooldown;
         READY.put(player.getUUID(), bodyLevel.getGameTime() + (long)(COOLDOWN * factor));
         if (!reason.message.isEmpty()) {
-            player.sendOverlayMessage(Component.translatable(reason.message));
+            player.displayClientMessage(Component.translatable(reason.message), true);
         }
         if (hit != null && hitAmount > 0.0F) {
-            player.hurtServer(bodyLevel, hit, hitAmount);
+            player.hurt(hit, hitAmount);
         }
     }
 
@@ -218,13 +218,13 @@ public final class EchoVision {
     }
 
     private static Runnable hold(ServerLevel level, Vec3 at) {
-        ChunkPos chunk = ChunkPos.containing(net.minecraft.core.BlockPos.containing(at));
-        if (level.getForceLoadedChunks().contains(chunk.pack())) {
+        ChunkPos chunk = new ChunkPos(net.minecraft.core.BlockPos.containing(at));
+        if (level.getForcedChunks().contains(chunk.toLong())) {
             return () -> {
             };
         }
-        level.setChunkForced(chunk.x(), chunk.z(), true);
-        return () -> level.setChunkForced(chunk.x(), chunk.z(), false);
+        level.setChunkForced(chunk.x, chunk.z, true);
+        return () -> level.setChunkForced(chunk.x, chunk.z, false);
     }
 
     private static void later(ServerPlayer player, Reason reason, @Nullable DamageSource hit, float amount) {
@@ -256,7 +256,7 @@ public final class EchoVision {
             leave(player, Reason.WORLD, null, 0.0F);
             return;
         }
-        Entity vessel = player.level().getEntity(session.echo());
+        Entity vessel = player.serverLevel().getEntity(session.echo());
         if (!(vessel instanceof SilentEchoEntity) || vessel.isRemoved()) {
             leave(player, Reason.VESSEL_LOST, null, 0.0F);
             return;
@@ -330,22 +330,21 @@ public final class EchoVision {
         if (!(event.getEntity() instanceof ServerPlayer player) || active(player)) {
             return;
         }
-        CompoundTag saved = net.yezon.theabyss.platform.PersistentData.get(player).getCompoundOrEmpty(KEY);
+        CompoundTag saved = net.yezon.theabyss.compat.NbtCompat.getCompoundOrEmpty(net.yezon.theabyss.platform.PersistentData.get(player), KEY);
         if (!saved.contains("x")) {
             return;
         }
         net.yezon.theabyss.platform.PersistentData.get(player).remove(KEY);
-        ServerLevel level = player.level();
-        Identifier id = Identifier.tryParse(saved.getStringOr("dim", ""));
+        ServerLevel level = player.serverLevel();
+        ResourceLocation id = ResourceLocation.tryParse(net.yezon.theabyss.compat.NbtCompat.getStringOr(saved, "dim", ""));
         if (id != null) {
             ServerLevel target = player.level().getServer().getLevel(ResourceKey.create(Registries.DIMENSION, id));
             if (target != null) {
                 level = target;
             }
         }
-        player.teleportTo(level, saved.getDoubleOr("x", player.getX()), saved.getDoubleOr("y", player.getY()), saved.getDoubleOr("z", player.getZ()),
-            Set.of(), saved.getFloatOr("yaw", player.getYRot()), player.getXRot(), true);
-        player.setHealth(Math.max(1.0F, Math.min(saved.getFloatOr("health", player.getHealth()), player.getMaxHealth())));
+        net.yezon.theabyss.util.AbyssTeleport.level(player, level, net.yezon.theabyss.compat.NbtCompat.getDoubleOr(saved, "x", player.getX()), net.yezon.theabyss.compat.NbtCompat.getDoubleOr(saved, "y", player.getY()), net.yezon.theabyss.compat.NbtCompat.getDoubleOr(saved, "z", player.getZ()), net.yezon.theabyss.compat.NbtCompat.getFloatOr(saved, "yaw", player.getYRot()), player.getXRot());
+        player.setHealth(Math.max(1.0F, Math.min(net.yezon.theabyss.compat.NbtCompat.getFloatOr(saved, "health", player.getHealth()), player.getMaxHealth())));
         player.resetFallDistance();
     }
 

@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:fixed_bone"
+    "a": {
+      "item": "theabyss:fixed_bone"
+    }
   },
   "pattern": [
     "a a",

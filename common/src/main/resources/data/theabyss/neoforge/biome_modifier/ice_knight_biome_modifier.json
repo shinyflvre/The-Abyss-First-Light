@@ -6,7 +6,8 @@
   ],
   "spawners": {
     "type": "theabyss:ice_knight",
-    "weight": 4,
-    "count": 1
+    "maxCount": 1,
+    "minCount": 1,
+    "weight": 4
   }
 }

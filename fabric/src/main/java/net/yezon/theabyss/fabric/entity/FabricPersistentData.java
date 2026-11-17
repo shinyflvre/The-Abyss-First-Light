@@ -3,8 +3,7 @@ package net.yezon.theabyss.fabric.entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.nbt.Tag;
 
 public final class FabricPersistentData {
     public static final String KEY = "NeoForgeData";
@@ -17,12 +16,17 @@ public final class FabricPersistentData {
         return ((FabricPersistentDataHolder)entity).theabyss$persistentData();
     }
 
-    public static void save(Entity entity, ValueOutput output) {
-        output.storeNullable(KEY, CompoundTag.CODEC, ((FabricPersistentDataHolder)entity).theabyss$persistentDataOrNull());
+    public static void save(Entity entity, CompoundTag tag) {
+        CompoundTag data = ((FabricPersistentDataHolder)entity).theabyss$persistentDataOrNull();
+        if (data != null) {
+            tag.put(KEY, data.copy());
+        }
     }
 
-    public static void load(Entity entity, ValueInput input) {
-        input.read(KEY, CompoundTag.CODEC).ifPresent(((FabricPersistentDataHolder)entity)::theabyss$setPersistentData);
+    public static void load(Entity entity, CompoundTag tag) {
+        if (tag.contains(KEY, Tag.TAG_COMPOUND)) {
+            ((FabricPersistentDataHolder)entity).theabyss$setPersistentData(tag.getCompound(KEY));
+        }
     }
 
     public static void copyPlayerPersisted(ServerPlayer from, ServerPlayer to) {

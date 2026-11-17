@@ -4,13 +4,21 @@
   "key": {
     "#": {
       "fabric:type": "fabric:difference",
-      "base": "#c:rods/wooden",
+      "base": {
+        "tag": "c:rods/wooden"
+      },
       "subtracted": [
-        "theabyss:nightgrove_stick",
-        "theabyss:luna_stick"
+        {
+          "item": "theabyss:nightgrove_stick"
+        },
+        {
+          "item": "theabyss:luna_stick"
+        }
       ]
     },
-    "X": "minecraft:string"
+    "X": {
+      "item": "minecraft:string"
+    }
   },
   "pattern": [
     " #X",
@@ -18,6 +26,7 @@
     " #X"
   ],
   "result": {
+    "count": 1,
     "id": "minecraft:bow"
   }
 }

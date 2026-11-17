@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -54,10 +54,10 @@ public final class Chronicles {
     public static final int END = 20;
     private static final int[] BLACK_INK = {FIRST_RETURN, WOLF, DEATH, PILLARS, SOUL_HEART, FALLEN};
 
-    private static final ResourceKey<Level> ABYSS = ResourceKey.create(Registries.DIMENSION, Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "the_abyss"));
-    private static final ResourceKey<Level> FROST = ResourceKey.create(Registries.DIMENSION, Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "frost_world"));
-    private static final ResourceKey<Biome> LUSH = ResourceKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "lush_glow_cave"));
-    private static final ResourceKey<Structure> ALTAR_STRUCTURE = ResourceKey.create(Registries.STRUCTURE, Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "altar"));
+    private static final ResourceKey<Level> ABYSS = ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "the_abyss"));
+    private static final ResourceKey<Level> FROST = ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "frost_world"));
+    private static final ResourceKey<Biome> LUSH = ResourceKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "lush_glow_cave"));
+    private static final ResourceKey<Structure> ALTAR_STRUCTURE = ResourceKey.create(Registries.STRUCTURE, ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "altar"));
     private static final Map<UUID, Double> SOMNIUM_BEFORE = new ConcurrentHashMap<>();
 
     private Chronicles() {
@@ -87,7 +87,7 @@ public final class Chronicles {
         ChronicleMessage.send(sp, page);
         net.yezon.theabyss.rift.RiftStory.onDeed(sp, page);
         String key = blackInk(page) ? "chronicle.theabyss.noted_black" : "chronicle.theabyss.noted";
-        sp.sendOverlayMessage(Component.translatable(key, Component.translatable(String.format("chronicle.theabyss.page_%02d", page))));
+        sp.displayClientMessage(Component.translatable(key, Component.translatable(String.format("chronicle.theabyss.page_%02d", page))), true);
         if (page != END && !data.has(END) && data.count() >= ChronicleData.COUNT - 1) {
             note(sp, END);
         }
@@ -212,7 +212,7 @@ public final class Chronicles {
             note(player, ROOTS);
         }
         if (!data.has(ALTAR) && player.tickCount % 40 == 0) {
-            Structure altar = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getValue(ALTAR_STRUCTURE);
+            Structure altar = level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(ALTAR_STRUCTURE);
             if (altar != null && level.structureManager().getStructureAt(pos, altar).isValid()) {
                 note(player, ALTAR);
             }

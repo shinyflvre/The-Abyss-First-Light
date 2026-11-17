@@ -1,14 +1,13 @@
-#version 330
-#extension GL_ARB_separate_shader_objects : require
+#version 150
 
-#include <minecraft:dynamictransforms.glsl>
-#include <minecraft:projection.glsl>
+in vec3 Position;
+
+uniform mat4 ModelViewMat;
+uniform mat4 ProjMat;
 
 // Abyss nebula sky: a cube around the camera; the fragment shader paints by view direction.
 
-layout(location = 0) in vec3 Position;
-
-layout(location = 0) out vec3 direction;
+out vec3 direction;
 
 void main() {
     gl_Position = ProjMat * ModelViewMat * vec4(Position, 1.0);

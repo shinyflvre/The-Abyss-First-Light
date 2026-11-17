@@ -1,5 +1,7 @@
 package net.yezon.theabyss.entity;
 
+
+import net.minecraft.nbt.CompoundTag;
 import java.util.HashSet;
 import java.util.Set;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -16,8 +18,8 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.yezon.theabyss.compat.ValueInput;
+import net.yezon.theabyss.compat.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.boss.nightblade.NightbladeParry;
@@ -178,12 +180,12 @@ public class NightbladeBladeEntity extends Entity {
                 return;
             }
             DamageSource source = this.owner != null ? this.damageSources().mobProjectile(this, this.owner) : this.damageSources().indirectMagic(this, this.caster);
-            victim.damageCooldownTime = 0;
-            victim.hurtServer(level, source, this.damage);
+            victim.invulnerableTime = 0;
+            victim.hurt(source, this.damage);
             Vec3 push = b.subtract(a).normalize().scale(0.6);
             victim.push(push.x, 0.2, push.z);
             if (this.owner != null) {
-                level.sendParticles(new DustParticleOptions(0xFF5959, 1.2F), victim.getX(), victim.getY() + 1.0, victim.getZ(), 12, 0.3, 0.4, 0.3, 0.0);
+                level.sendParticles(new DustParticleOptions(Vec3.fromRGB24(0xFF5959).toVector3f(), 1.2F), victim.getX(), victim.getY() + 1.0, victim.getZ(), 12, 0.3, 0.4, 0.3, 0.0);
             } else {
                 net.yezon.theabyss.ring.fx.RingFx.burst(level, net.yezon.theabyss.ring.RingVisuals.sparkle(net.yezon.theabyss.ring.RingVisuals.NIGHTBLADE, 0.14F, 18)
                     .flags(net.yezon.theabyss.ring.fx.FxOptions.FLICKER | net.yezon.theabyss.ring.fx.FxOptions.HOT), victim.getBoundingBox().getCenter(), 14, 0.25, 0.2);
@@ -214,7 +216,7 @@ public class NightbladeBladeEntity extends Entity {
         DamageSource source = this.deflector != null ? this.damageSources().playerAttack(this.deflector) : this.damageSources().magic();
         this.owner.hurtUnavoidable(level, source, DEFLECT_DAMAGE);
         level.sendParticles(ParticleTypes.EXPLOSION, at.x, at.y, at.z, 1, 0.0, 0.0, 0.0, 0.0);
-        level.sendParticles(new DustParticleOptions(0xFF5959, 1.4F), at.x, at.y, at.z, 24, 0.4, 0.6, 0.4, 0.0);
+        level.sendParticles(new DustParticleOptions(Vec3.fromRGB24(0xFF5959).toVector3f(), 1.4F), at.x, at.y, at.z, 24, 0.4, 0.6, 0.4, 0.0);
         level.playSound(null, at.x, at.y, at.z, SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.PLAYERS, 1.4F, 0.7F);
         this.finish(false);
     }
@@ -247,7 +249,10 @@ public class NightbladeBladeEntity extends Entity {
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+    public boolean hurt(DamageSource source, float amount) {
+        if (!(this.level() instanceof ServerLevel level)) {
+            return false;
+        }
         return false;
     }
 
@@ -262,10 +267,12 @@ public class NightbladeBladeEntity extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(ValueInput input) {
+    public void readAdditionalSaveData(CompoundTag inputTag) {
+        ValueInput input = ValueInput.of(inputTag, this.registryAccess());
     }
 
     @Override
-    protected void addAdditionalSaveData(ValueOutput output) {
+    public void addAdditionalSaveData(CompoundTag outputTag) {
+        ValueOutput output = ValueOutput.of(outputTag, this.registryAccess());
     }
 }

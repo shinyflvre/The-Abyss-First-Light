@@ -2,7 +2,6 @@ package net.yezon.theabyss.neoforge.mixin.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -32,9 +31,9 @@ public abstract class PlayerDestroyListenerMixin extends Block {
     }
 
     @Override
-    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, ItemStack toolStack, boolean willHarvest, FluidState fluid) {
-        boolean removed = super.onDestroyedByPlayer(state, level, pos, player, toolStack, willHarvest, fluid);
-        ((PlayerDestroyListener)this).afterDestroyedByPlayer(state, level, pos, player, toolStack, willHarvest, fluid);
+    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
+        boolean removed = super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
+        ((PlayerDestroyListener)this).afterDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
         return removed;
     }
 }

@@ -2,7 +2,7 @@ package net.yezon.theabyss.events;
 
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
@@ -14,7 +14,7 @@ public class TheAbyssAdvGrantEvents {
     }
 
     static void grant(ServerPlayer _player, String id) {
-        AdvancementHolder _adv = _player.level().getServer().getAdvancements().get(Identifier.parse(id));
+        AdvancementHolder _adv = _player.level().getServer().getAdvancements().get(ResourceLocation.parse(id));
         if (_adv != null) {
             AdvancementProgress _ap = _player.getAdvancements().getOrStartProgress(_adv);
             if (!_ap.isDone()) {

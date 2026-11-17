@@ -2,10 +2,13 @@ package net.yezon.theabyss.neoforge.core;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.yezon.theabyss.compat.ValueInput;
+import net.yezon.theabyss.compat.ValueOutput;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -46,15 +49,17 @@ public final class NeoForgeAttachments {
             net.neoforged.neoforge.attachment.AttachmentType.builder(holder -> type.createDefault(holder(holder)));
         AttachmentType.Serializer<T> serializer = type.serializer();
         if (serializer != null) {
-            builder.serialize(new IAttachmentSerializer<>() {
+            builder.serialize(new IAttachmentSerializer<Tag, T>() {
                 @Override
-                public T read(net.neoforged.neoforge.attachment.IAttachmentHolder holder, ValueInput input) {
-                    return serializer.read(holder(holder), input);
+                public T read(net.neoforged.neoforge.attachment.IAttachmentHolder holder, Tag tag, HolderLookup.Provider provider) {
+                    CompoundTag compound = tag instanceof CompoundTag c ? c : new CompoundTag();
+                    return serializer.read(holder(holder), ValueInput.of(compound, provider));
                 }
 
                 @Override
-                public boolean write(T attachment, ValueOutput output) {
-                    return serializer.write(attachment, output);
+                public @Nullable Tag write(T attachment, HolderLookup.Provider provider) {
+                    CompoundTag compound = new CompoundTag();
+                    return serializer.write(attachment, ValueOutput.of(compound, provider)) ? compound : null;
                 }
             });
         }

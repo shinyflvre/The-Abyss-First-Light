@@ -6,6 +6,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.yezon.theabyss.network.TheabyssModNetwork;
 import net.yezon.theabyss.platform.network.handling.IPayloadContext;
 import net.yezon.theabyss.platform.network.handling.IPayloadHandler;
@@ -65,7 +66,8 @@ public final class NeoForgeNetwork {
         @Override
         public <T extends CustomPacketPayload> PayloadRegistrar playBidirectional(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec,
             IPayloadHandler<T> serverHandler, @Nullable IPayloadHandler<T> clientHandler) {
-            this.registrar = this.registrar.playBidirectional(type, codec, wrap(serverHandler), clientHandler == null ? null : wrap(clientHandler));
+            this.registrar = this.registrar.playBidirectional(type, codec, clientHandler == null ? wrap(serverHandler)
+                : new DirectionalPayloadHandler<>(wrap(clientHandler), wrap(serverHandler)));
             return this;
         }
 

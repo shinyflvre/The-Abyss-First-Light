@@ -1,0 +1,62 @@
+{
+  "type": "minecraft:tree",
+  "config": {
+    "decorators": [],
+    "dirt_provider": {
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "theabyss:lush_rooted_dirt"
+      }
+    },
+    "foliage_placer": {
+      "type": "minecraft:random_spread_foliage_placer",
+      "offset": 0,
+      "radius": 3,
+      "foliage_height": 2,
+      "leaf_placement_attempts": 50
+    },
+    "foliage_provider": {
+      "type": "minecraft:weighted_state_provider",
+      "entries": [
+        {
+          "data": {
+            "Name": "theabyss:lush_azalea_leaves"
+          },
+          "weight": 3
+        },
+        {
+          "data": {
+            "Name": "theabyss:lush_flowering_azalea_leaves"
+          },
+          "weight": 1
+        }
+      ]
+    },
+    "force_dirt": true,
+    "ignore_vines": false,
+    "minimum_size": {
+      "type": "minecraft:two_layers_feature_size"
+    },
+    "trunk_placer": {
+      "type": "minecraft:bending_trunk_placer",
+      "base_height": 4,
+      "height_rand_a": 2,
+      "height_rand_b": 0,
+      "bend_length": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 1,
+        "max_inclusive": 2
+      },
+      "min_height_for_leaves": 3
+    },
+    "trunk_provider": {
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "theabyss:blaru_log",
+        "Properties": {
+          "axis": "y"
+        }
+      }
+    }
+  }
+}

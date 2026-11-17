@@ -11,7 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.yezon.theabyss.TheabyssMod;
@@ -43,9 +43,9 @@ public final class CodexBook {
 
     public final String title;
     public final String landingText;
-    public final Identifier texture;
-    public final Identifier background;
-    public final Identifier filler;
+    public final ResourceLocation texture;
+    public final ResourceLocation background;
+    public final ResourceLocation filler;
     public final int textColor;
     public final int headerColor;
     public final int linkColor;
@@ -57,9 +57,9 @@ public final class CodexBook {
     private CodexBook(JsonObject book, List<Category> categories) {
         this.title = translated(book, "title", "The Abyss");
         this.landingText = translated(book, "landing_text", "");
-        this.texture = Identifier.parse(text(book, "texture", "theabyss:textures/gui/guide_book.png"));
-        this.background = Identifier.parse(text(book, "background", "theabyss:textures/gui/codex_book.png"));
-        this.filler = Identifier.parse(text(book, "filler", "theabyss:textures/gui/page_filler.png"));
+        this.texture = ResourceLocation.parse(text(book, "texture", "theabyss:textures/gui/guide_book.png"));
+        this.background = ResourceLocation.parse(text(book, "background", "theabyss:textures/gui/codex_book.png"));
+        this.filler = ResourceLocation.parse(text(book, "filler", "theabyss:textures/gui/page_filler.png"));
         this.textColor = 0xFF000000 | Integer.parseInt(text(book, "text_color", "000000"), 16);
         this.headerColor = 0xFF000000 | Integer.parseInt(text(book, "header_color", "333333"), 16);
         this.linkColor = 0xFF000000 | Integer.parseInt(text(book, "link_color", "00AAAA"), 16);
@@ -81,7 +81,7 @@ public final class CodexBook {
 
     public static CodexBook load() {
         ResourceManager resources = Minecraft.getInstance().getResourceManager();
-        JsonObject book = read(resources, Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "codex/book.json"));
+        JsonObject book = read(resources, ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "codex/book.json"));
         String lang = Minecraft.getInstance().getLanguageManager().getSelected();
         Map<String, JsonObject> categoryJson = files(resources, "codex/" + lang + "/categories");
         Map<String, JsonObject> entryJson = files(resources, "codex/" + lang + "/entries");
@@ -125,7 +125,7 @@ public final class CodexBook {
 
     private static Map<String, JsonObject> files(ResourceManager resources, String folder) {
         Map<String, JsonObject> out = new LinkedHashMap<>();
-        for (Map.Entry<Identifier, Resource> e : resources.listResources(folder, id -> id.getPath().endsWith(".json")).entrySet()) {
+        for (Map.Entry<ResourceLocation, Resource> e : resources.listResources(folder, id -> id.getPath().endsWith(".json")).entrySet()) {
             if (!TheabyssMod.MODID.equals(e.getKey().getNamespace())) {
                 continue;
             }
@@ -140,7 +140,7 @@ public final class CodexBook {
         return out;
     }
 
-    private static JsonObject read(ResourceManager resources, Identifier id) {
+    private static JsonObject read(ResourceManager resources, ResourceLocation id) {
         try (Reader reader = resources.getResourceOrThrow(id).openAsReader()) {
             return JsonParser.parseReader(reader).getAsJsonObject();
         } catch (Exception ex) {

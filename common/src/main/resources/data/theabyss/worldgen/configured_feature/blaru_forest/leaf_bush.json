@@ -1,0 +1,12 @@
+{
+  "type": "theabyss:leaf_bush",
+  "config": {
+    "carpet": {
+      "Name": "theabyss:blaru_leave_carpet"
+    },
+    "carpet_reach": 4,
+    "leaves": {
+      "Name": "theabyss:blaru_leaves"
+    }
+  }
+}

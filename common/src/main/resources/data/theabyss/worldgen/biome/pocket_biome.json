@@ -1,21 +1,33 @@
 {
-  "attributes": {
-    "minecraft:audio/background_music": {
-      "default": {
-        "max_delay": 24000,
-        "min_delay": 12000,
-        "sound": "theabyss:theabyss_dimension_music",
-        "replace_current_music": true
-      }
-    },
-    "minecraft:visual/sky_color": "#78a7ff"
-  },
-  "carvers": [],
+  "carvers": {},
   "downfall": 0.4,
   "effects": {
-    "water_color": "#3f76e4"
+    "fog_color": 12638463,
+    "sky_color": 7907327,
+    "water_color": 4159204,
+    "water_fog_color": 329011,
+    "music": {
+      "max_delay": 24000,
+      "min_delay": 12000,
+      "replace_current_music": true,
+      "sound": "theabyss:theabyss_dimension_music"
+    }
   },
-  "features": [],
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+  ],
   "has_precipitation": false,
+  "spawn_costs": {},
+  "spawners": {},
   "temperature": 0.8
 }

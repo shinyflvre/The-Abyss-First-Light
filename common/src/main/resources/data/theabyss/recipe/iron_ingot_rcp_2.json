@@ -3,7 +3,9 @@
   "category": "misc",
   "cookingtime": 100,
   "experience": 1,
-  "ingredient": "theabyss:iron_variant",
+  "ingredient": {
+    "item": "theabyss:iron_variant"
+  },
   "result": {
     "id": "minecraft:iron_ingot"
   }

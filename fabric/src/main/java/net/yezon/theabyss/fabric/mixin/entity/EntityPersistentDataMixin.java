@@ -2,8 +2,6 @@ package net.yezon.theabyss.fabric.mixin.entity;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.yezon.theabyss.fabric.entity.FabricPersistentData;
 import net.yezon.theabyss.fabric.entity.FabricPersistentDataHolder;
 import org.jspecify.annotations.Nullable;
@@ -12,6 +10,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
 public abstract class EntityPersistentDataMixin implements FabricPersistentDataHolder {
@@ -36,13 +35,13 @@ public abstract class EntityPersistentDataMixin implements FabricPersistentDataH
         this.theabyss$persistentData = data;
     }
 
-    @Inject(method = "saveWithoutId", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;addAdditionalSaveData(Lnet/minecraft/world/level/storage/ValueOutput;)V"))
-    private void theabyss$savePersistentData(ValueOutput output, CallbackInfo ci) {
-        FabricPersistentData.save((Entity)(Object)this, output);
+    @Inject(method = "saveWithoutId", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;addAdditionalSaveData(Lnet/minecraft/nbt/CompoundTag;)V"))
+    private void theabyss$savePersistentData(CompoundTag tag, CallbackInfoReturnable<CompoundTag> cir) {
+        FabricPersistentData.save((Entity)(Object)this, tag);
     }
 
-    @Inject(method = "load", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;readAdditionalSaveData(Lnet/minecraft/world/level/storage/ValueInput;)V"))
-    private void theabyss$loadPersistentData(ValueInput input, CallbackInfo ci) {
-        FabricPersistentData.load((Entity)(Object)this, input);
+    @Inject(method = "load", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;readAdditionalSaveData(Lnet/minecraft/nbt/CompoundTag;)V"))
+    private void theabyss$loadPersistentData(CompoundTag tag, CallbackInfo ci) {
+        FabricPersistentData.load((Entity)(Object)this, tag);
     }
 }

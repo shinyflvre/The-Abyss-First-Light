@@ -30,7 +30,7 @@ public class ApplyGhostFireAttackEvents {
             if (!RingMode.spares(entity, target)) {
                 target.igniteForSeconds(15);
                 target.addEffect(new MobEffectInstance(MobEffects.GLOWING, 30, 0, false, false));
-                target.hurtServer(level, fire, damage);
+                target.hurt(fire, damage);
                 hit.add(target);
             }
         }

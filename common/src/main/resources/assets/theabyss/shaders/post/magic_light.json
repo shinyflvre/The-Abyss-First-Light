@@ -1,0 +1,54 @@
+{
+  "targets": [
+    "swap"
+  ],
+  "passes": [
+    {
+      "name": "theabyss:magic_light",
+      "intarget": "minecraft:main",
+      "outtarget": "swap",
+      "auxtargets": [
+        {
+          "name": "InSampler",
+          "id": "minecraft:main"
+        },
+        {
+          "name": "DepthSampler",
+          "id": "minecraft:main:depth"
+        },
+        {
+          "name": "StateSampler",
+          "id": "theabyss:fx_state",
+          "width": 176,
+          "height": 1,
+          "bilinear": false
+        },
+        {
+          "name": "LightsSampler",
+          "id": "theabyss:magic_lights",
+          "width": 49,
+          "height": 1,
+          "bilinear": false
+        },
+        {
+          "name": "HandSampler",
+          "id": "theabyss:hand_depth",
+          "width": 1,
+          "height": 1,
+          "bilinear": false
+        }
+      ]
+    },
+    {
+      "name": "theabyss:copy",
+      "intarget": "swap",
+      "outtarget": "minecraft:main",
+      "auxtargets": [
+        {
+          "name": "InSampler",
+          "id": "swap"
+        }
+      ]
+    }
+  ]
+}

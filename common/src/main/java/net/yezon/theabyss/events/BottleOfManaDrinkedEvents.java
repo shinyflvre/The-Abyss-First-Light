@@ -14,7 +14,7 @@ public class BottleOfManaDrinkedEvents {
         double _mana = TheabyssModVariables.getPlayerVariables(entity).Mana;
         if (_mana > 81.0) {
             if (entity instanceof Player _player && !_player.level().isClientSide()) {
-                _player.sendOverlayMessage(Component.translatable("event.theabyss.no_effect"));
+                _player.displayClientMessage(Component.translatable("event.theabyss.no_effect"), true);
             }
         } else {
             TheabyssModVariables.updatePlayerVariables(entity, capability -> {

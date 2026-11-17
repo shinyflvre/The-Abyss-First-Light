@@ -15,7 +15,7 @@ public final class MixinAuditCheck {
 
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent event) {
-        if (!FMLEnvironment.getDist().isClient()) {
+        if (!FMLEnvironment.dist.isClient()) {
             audit("server");
         }
     }

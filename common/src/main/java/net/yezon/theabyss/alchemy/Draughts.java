@@ -101,7 +101,7 @@ public final class Draughts {
         }
         float back = (event.getOriginalDamage() - event.getBlockedDamage()) * SHARED_PART;
         if (back > 0.0F) {
-            attacker.hurtServer(level, level.damageSources().thorns(target), back);
+            attacker.hurt(level.damageSources().thorns(target), back);
         }
     }
 

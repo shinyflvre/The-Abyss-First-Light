@@ -1,5 +1,7 @@
 package net.yezon.theabyss.entity;
 
+
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -15,8 +17,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.yezon.theabyss.compat.ValueInput;
+import net.yezon.theabyss.compat.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -130,7 +132,7 @@ public class CrystalGolemShardEntity extends Entity {
         Vec3 at = this.position();
         CrystalGolemFx.shardShatter(level, at);
         DamageSource source = this.damageSources().thrown(this, null);
-        this.owner.hurtServer(level, source, CrystalGolemEntity.halfHearts(this.damage * 2.0F));
+        this.owner.hurt(source, CrystalGolemEntity.halfHearts(this.damage * 2.0F));
         this.owner.dazeFromReflectedShard();
         this.discard();
     }
@@ -141,7 +143,7 @@ public class CrystalGolemShardEntity extends Entity {
         level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.AMETHYST_BLOCK.defaultBlockState()), at.x, at.y + 0.2, at.z, 30, 0.5, 0.3, 0.5, 0.2);
         for (LivingEntity victim : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(SPLASH), this::hittable)) {
             if (victim.getBoundingBox().getCenter().distanceTo(at) <= SPLASH + victim.getBbWidth() * 0.5) {
-                victim.hurtServer(level, this.damageSources().mobProjectile(this, this.owner), this.damage);
+                victim.hurt(this.damageSources().mobProjectile(this, this.owner), this.damage);
             }
         }
         this.discard();
@@ -158,7 +160,10 @@ public class CrystalGolemShardEntity extends Entity {
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+    public boolean hurt(DamageSource source, float amount) {
+        if (!(this.level() instanceof ServerLevel level)) {
+            return false;
+        }
         return false;
     }
 
@@ -173,10 +178,12 @@ public class CrystalGolemShardEntity extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(ValueInput input) {
+    public void readAdditionalSaveData(CompoundTag inputTag) {
+        ValueInput input = ValueInput.of(inputTag, this.registryAccess());
     }
 
     @Override
-    protected void addAdditionalSaveData(ValueOutput output) {
+    public void addAdditionalSaveData(CompoundTag outputTag) {
+        ValueOutput output = ValueOutput.of(outputTag, this.registryAccess());
     }
 }

@@ -1,0 +1,30 @@
+{
+  "type": "theabyss:shroom_tree",
+  "config": {
+    "cap": {
+      "Name": "theabyss:rena_shroom_leave"
+    },
+    "gill": {
+      "Name": "theabyss:rena_log",
+      "Properties": {
+        "axis": "y"
+      }
+    },
+    "hanging": {
+      "plant": "theabyss:violet_weeper",
+      "chance": 0.35,
+      "length": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 2,
+        "max_inclusive": 6
+      }
+    },
+    "stem": {
+      "Name": "theabyss:rena_log",
+      "Properties": {
+        "axis": "y"
+      }
+    },
+    "variant": "bell"
+  }
+}

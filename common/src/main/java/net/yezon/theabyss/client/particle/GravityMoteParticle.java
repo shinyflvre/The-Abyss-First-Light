@@ -3,12 +3,12 @@ package net.yezon.theabyss.client.particle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.util.RandomSource;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.yezon.theabyss.gravity.GravityMoteOptions;
 
-public class GravityMoteParticle extends SingleQuadParticle {
+public class GravityMoteParticle extends TextureSheetParticle {
     private static final float[] FAR = {0.69F, 0.34F, 0.87F};
     private static final float[] NEAR = {1.0F, 0.80F, 0.97F};
     private final double startX;
@@ -20,7 +20,8 @@ public class GravityMoteParticle extends SingleQuadParticle {
     private final float startSize;
 
     protected GravityMoteParticle(ClientLevel level, double x, double y, double z, double dx, double dy, double dz, SpriteSet sprites) {
-        super(level, x, y, z, sprites.first());
+        super(level, x, y, z);
+        this.setSprite(sprites.get(0, 1));
         this.startX = x;
         this.startY = y;
         this.startZ = z;
@@ -58,13 +59,13 @@ public class GravityMoteParticle extends SingleQuadParticle {
     }
 
     @Override
-    public int getLightCoords(float partialTick) {
+    public int getLightColor(float partialTick) {
         return 15728880;
     }
 
     @Override
-    public SingleQuadParticle.Layer getLayer() {
-        return NightbladeTrailParticle.GLOW_LAYER;
+    public ParticleRenderType getRenderType() {
+        return NightbladeTrailParticle.GLOW_TYPE;
     }
 
     public static Provider provider(SpriteSet sprites) {
@@ -79,8 +80,7 @@ public class GravityMoteParticle extends SingleQuadParticle {
         }
 
         @Override
-        public Particle createParticle(GravityMoteOptions options, ClientLevel level, double x, double y, double z, double vx, double vy, double vz,
-                                       RandomSource random) {
+        public Particle createParticle(GravityMoteOptions options, ClientLevel level, double x, double y, double z, double vx, double vy, double vz) {
             return new GravityMoteParticle(level, x, y, z, vx, vy, vz, this.sprites);
         }
     }

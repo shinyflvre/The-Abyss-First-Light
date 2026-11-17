@@ -3,7 +3,9 @@
   "category": "building",
   "group": "bark",
   "key": {
-    "#": "theabyss:stripped_rena_log"
+    "#": {
+      "item": "theabyss:stripped_rena_log"
+    }
   },
   "pattern": [
     "##",

@@ -1,14 +1,14 @@
 package net.yezon.theabyss.entity;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -39,21 +39,24 @@ public class SummonedSeekerEntity extends PathfinderMob {
 
     @Override
     public SoundEvent getAmbientSound() {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:seeker_ambient"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:seeker_ambient"));
     }
 
     @Override
     public SoundEvent getHurtSound(DamageSource ds) {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.blaze.hurt"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.blaze.hurt"));
     }
 
     @Override
     public SoundEvent getDeathSound() {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:seeker_ambient"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:seeker_ambient"));
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource damagesource, float amount) {
+    public boolean hurt(DamageSource damagesource, float amount) {
+        if (!(this.level() instanceof ServerLevel level)) {
+            return false;
+        }
         if (damagesource.is(DamageTypes.IN_FIRE)
             || damagesource.is(DamageTypes.CAMPFIRE)
             || damagesource.is(DamageTypes.FALL)
@@ -61,12 +64,12 @@ public class SummonedSeekerEntity extends PathfinderMob {
             || damagesource.is(DamageTypes.FALLING_ANVIL)) {
             return false;
         }
-        return super.hurtServer(level, damagesource, amount);
+        return super.hurt(damagesource, amount);
     }
 
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(
-        ServerLevelAccessor world, DifficultyInstance difficulty, EntitySpawnReason reason, @Nullable SpawnGroupData livingdata
+        ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData livingdata
     ) {
         SpawnGroupData retval = super.finalizeSpawn(world, difficulty, reason, livingdata);
         SummonedSeekerOnEntityTickUpdateEvents.execute(world, this.getX(), this.getY(), this.getZ(), this);
@@ -74,8 +77,8 @@ public class SummonedSeekerEntity extends PathfinderMob {
     }
 
     @Override
-    public void awardKillScore(Entity entity, DamageSource damageSource) {
-        super.awardKillScore(entity, damageSource);
+    public void awardKillScore(Entity entity, int score, DamageSource damageSource) {
+        super.awardKillScore(entity, score, damageSource);
         SummonedSeekerOnEntityTickUpdateEvents.execute(this.level(), this.getX(), this.getY(), this.getZ(), entity);
     }
 

@@ -6,10 +6,10 @@ import net.minecraft.resources.ResourceKey;
 import org.jspecify.annotations.Nullable;
 
 public final class ValueHolder<R, T extends R> extends DeferredHolder<R, T> {
-    private final Function<net.minecraft.resources.Identifier, ? extends T> factory;
+    private final Function<net.minecraft.resources.ResourceLocation, ? extends T> factory;
     private volatile @Nullable T value;
 
-    ValueHolder(ResourceKey<R> key, Function<net.minecraft.resources.Identifier, ? extends T> factory) {
+    ValueHolder(ResourceKey<R> key, Function<net.minecraft.resources.ResourceLocation, ? extends T> factory) {
         super(key);
         this.factory = factory;
     }
@@ -21,7 +21,7 @@ public final class ValueHolder<R, T extends R> extends DeferredHolder<R, T> {
             synchronized (this) {
                 current = this.value;
                 if (current == null) {
-                    current = this.factory.apply(this.key.identifier());
+                    current = this.factory.apply(this.key.location());
                     this.value = current;
                 }
             }

@@ -4,12 +4,12 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.ARGB;
+import net.yezon.theabyss.compat.ARGB;
 import net.minecraft.util.Mth;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 import net.minecraft.world.level.Level;
 import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
@@ -21,25 +21,25 @@ import net.yezon.theabyss.configuration.ConfigConfiguration;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public final class ScreenFx {
-    public static final Identifier STATE_TEXTURE = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "textures/effect/fx_state.png");
-    public static final Identifier ASTRAL_EFFECT = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "astral");
-    public static final Identifier LIGHT_ENGINE_EFFECT = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "colored_light");
-    public static final Identifier PRESENCE_EFFECT = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "nightblade_presence");
-    public static final Identifier STORM_EFFECT = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "nightblade_storm");
-    public static final Identifier RING_FX_EFFECT = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "ring_fx");
-    public static final Identifier IMPACT_EFFECT = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "impact_frame");
-    public static final Identifier ABYSS_GRADE_EFFECT = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "abyss_grade");
-    public static final Identifier TIME_STOP_EFFECT = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "time_stop");
-    public static final Identifier FOG_EFFECT = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "volumetric_fog");
-    public static final Identifier DREAMSHIFT_EFFECT = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "dreamshift");
-    public static final Identifier POCKET_FOLD_EFFECT = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "pocket_fold");
-    public static final Identifier FEAR_EFFECT = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "fear");
-    public static final Identifier AFTERLIFE_EFFECT = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "afterlife");
-    public static final Identifier RIFT_EFFECT = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "rift_atmosphere");
-    public static final Identifier RIFT_SHIFT_EFFECT = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "rift_shift");
-    public static final Identifier WRAITH_EFFECT = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "wraith");
-    public static final Identifier ECHO_VISION_EFFECT = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "echo_vision");
-    public static final Identifier OVERGROWTH_EFFECT = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "overgrowth");
+    public static final ResourceLocation STATE_TEXTURE = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "textures/effect/fx_state.png");
+    public static final ResourceLocation ASTRAL_EFFECT = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "astral");
+    public static final ResourceLocation LIGHT_ENGINE_EFFECT = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "colored_light");
+    public static final ResourceLocation PRESENCE_EFFECT = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "nightblade_presence");
+    public static final ResourceLocation STORM_EFFECT = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "nightblade_storm");
+    public static final ResourceLocation RING_FX_EFFECT = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "ring_fx");
+    public static final ResourceLocation IMPACT_EFFECT = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "impact_frame");
+    public static final ResourceLocation ABYSS_GRADE_EFFECT = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "abyss_grade");
+    public static final ResourceLocation TIME_STOP_EFFECT = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "time_stop");
+    public static final ResourceLocation FOG_EFFECT = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "volumetric_fog");
+    public static final ResourceLocation DREAMSHIFT_EFFECT = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "dreamshift");
+    public static final ResourceLocation POCKET_FOLD_EFFECT = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "pocket_fold");
+    public static final ResourceLocation FEAR_EFFECT = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "fear");
+    public static final ResourceLocation AFTERLIFE_EFFECT = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "afterlife");
+    public static final ResourceLocation RIFT_EFFECT = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "rift_atmosphere");
+    public static final ResourceLocation RIFT_SHIFT_EFFECT = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "rift_shift");
+    public static final ResourceLocation WRAITH_EFFECT = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "wraith");
+    public static final ResourceLocation ECHO_VISION_EFFECT = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "echo_vision");
+    public static final ResourceLocation OVERGROWTH_EFFECT = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "overgrowth");
 
     private static final float ASTRAL_FADE_SECONDS = 0.7F;
     private static final float ASTRAL_FLASH_SECONDS = 0.9F;
@@ -58,7 +58,7 @@ public final class ScreenFx {
     private static final int[] uploaded = new int[STATE_WIDTH];
     private static final float[] cameraMatrix = {1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1};
     private static int fogColour = 0xFF406060;
-    private static final Identifier[] ORDER = {FOG_EFFECT, LIGHT_ENGINE_EFFECT, MagicLights.EFFECT, RIFT_EFFECT, ABYSS_GRADE_EFFECT, TIME_STOP_EFFECT, PRESENCE_EFFECT, STORM_EFFECT, RING_FX_EFFECT, ASTRAL_EFFECT, DREAMSHIFT_EFFECT, POCKET_FOLD_EFFECT, RIFT_SHIFT_EFFECT, FEAR_EFFECT, WRAITH_EFFECT, ECHO_VISION_EFFECT, OVERGROWTH_EFFECT, AFTERLIFE_EFFECT, IMPACT_EFFECT};
+    private static final ResourceLocation[] ORDER = {FOG_EFFECT, LIGHT_ENGINE_EFFECT, MagicLights.EFFECT, RIFT_EFFECT, ABYSS_GRADE_EFFECT, TIME_STOP_EFFECT, PRESENCE_EFFECT, STORM_EFFECT, RING_FX_EFFECT, ASTRAL_EFFECT, DREAMSHIFT_EFFECT, POCKET_FOLD_EFFECT, RIFT_SHIFT_EFFECT, FEAR_EFFECT, WRAITH_EFFECT, ECHO_VISION_EFFECT, OVERGROWTH_EFFECT, AFTERLIFE_EFFECT, IMPACT_EFFECT};
     private static float cameraYaw;
     private static float cameraPitch;
     private static float cameraFov = 70.0F;
@@ -165,7 +165,7 @@ public final class ScreenFx {
 
         if (foldClock >= 0.0F) {
             foldClock += dt;
-            boolean loading = mc.gui.screen() instanceof net.minecraft.client.gui.screens.LevelLoadingScreen;
+            boolean loading = mc.screen instanceof net.minecraft.client.gui.screens.LevelLoadingScreen;
             if (!unfolding && !loading && (foldFrom != null && mc.level.dimension() != foldFrom || foldClock > FOLD_ABORT_SECONDS)) {
                 unfolding = true;
                 foldClock = 0.0F;
@@ -188,7 +188,7 @@ public final class ScreenFx {
 
         if (riftClock >= 0.0F) {
             riftClock += dt;
-            boolean loading = mc.gui.screen() instanceof net.minecraft.client.gui.screens.LevelLoadingScreen;
+            boolean loading = mc.screen instanceof net.minecraft.client.gui.screens.LevelLoadingScreen;
             if (!riftArriving && !loading && (riftFrom != null && mc.level.dimension() != riftFrom || riftClock > RIFT_ABORT_SECONDS)) {
                 riftArriving = true;
                 riftClock = 0.0F;
@@ -212,7 +212,7 @@ public final class ScreenFx {
 
         updateFogGround(mc, dt);
         upload(mc);
-        List<Identifier> effects = mc.player.getActivePostEffects();
+        List<ResourceLocation> effects = PostFx.activeEffects();
         toggle(effects, FOG_EFFECT, volumetricFog(mc) && !net.yezon.theabyss.client.debug.OreHighlighter.active());
         toggle(effects, LIGHT_ENGINE_EFFECT, ColoredLight.active());
         toggle(effects, MagicLights.EFFECT, MagicLights.active());
@@ -233,7 +233,7 @@ public final class ScreenFx {
         toggle(effects, RING_FX_EFFECT, RingFxClient.active());
         toggle(effects, PRESENCE_EFFECT, NightbladeAtmosphere.presence() > 0.005F || NightbladeAtmosphere.ripple() > 0.0F);
         int index = 0;
-        for (Identifier ours : ORDER) {
+        for (ResourceLocation ours : ORDER) {
             if (effects.remove(ours)) {
                 effects.add(Math.min(index, effects.size()), ours);
                 index++;
@@ -242,7 +242,7 @@ public final class ScreenFx {
     }
 
     private static void updateFogGround(Minecraft mc, float dt) {
-        net.minecraft.core.BlockPos centre = mc.gameRenderer.mainCamera().blockPosition();
+        net.minecraft.core.BlockPos centre = mc.gameRenderer.getMainCamera().getBlockPosition();
         float sum = 0.0F;
         int count = 0;
         for (int dx = -20; dx <= 20; dx += 20) {
@@ -250,7 +250,7 @@ public final class ScreenFx {
                 int x = centre.getX() + dx;
                 int z = centre.getZ() + dz;
                 if (mc.level.hasChunk(net.minecraft.core.SectionPos.blockToSectionCoord(x), net.minecraft.core.SectionPos.blockToSectionCoord(z))) {
-                    sum += mc.level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+                    sum += ClientGroundHeight.noLeaves(mc.level, x, z);
                     count++;
                 }
             }
@@ -276,7 +276,7 @@ public final class ScreenFx {
         if (!enabled || mc.level == null) {
             return false;
         }
-        String dimension = mc.level.dimension().identifier().toString();
+        String dimension = mc.level.dimension().location().toString();
         return dimension.equals("theabyss:the_abyss") || dimension.equals("theabyss:frost_world");
     }
 
@@ -285,23 +285,30 @@ public final class ScreenFx {
         fogColour = ARGB.color(255, unit(event.getRed()), unit(event.getGreen()), unit(event.getBlue()));
     }
 
-    private static void toggle(List<Identifier> effects, Identifier effect, boolean on) {
+    private static void toggle(List<ResourceLocation> effects, ResourceLocation effect, boolean on) {
         if (on && !effects.contains(effect)) {
             effects.add(effect);
-            boolean loaded = Minecraft.getInstance().getShaderManager()
-                .getPostChain(effect, net.minecraft.client.renderer.LevelTargetBundle.MAIN_TARGETS) != null;
+            boolean loaded = PostFx.chain(effect) != null;
             TheabyssMod.LOGGER.info("[ScreenFx] {} on, post chain loaded: {}, state {}", effect, loaded, java.util.Arrays.toString(uploaded));
         } else if (!on) {
             effects.remove(effect);
         }
     }
 
-    private static void upload(Minecraft mc) {
+    public static void prepareTextures(Minecraft mc) {
         if (state == null) {
-            state = new DynamicTexture(() -> "theabyss fx state", STATE_WIDTH, 1, true);
+            state = new DynamicTexture(STATE_WIDTH, 1, true);
             java.util.Arrays.fill(uploaded, -1);
             mc.getTextureManager().register(STATE_TEXTURE, state);
         }
+    }
+
+    private static void setPixel(int index, int argb) {
+        state.getPixels().setPixelRGBA(index, 0, net.minecraft.util.FastColor.ABGR32.fromArgb32(argb));
+    }
+
+    private static void upload(Minecraft mc) {
+        prepareTextures(mc);
         int[] pixels = {
             ARGB.color(unit(NightbladeAtmosphere.ripple()), unit(astral), unit(astralFlash), unit(NightbladeAtmosphere.presence())),
             ARGB.color(unit(NightbladeAtmosphere.heartbeat()), unit(shift), arriving ? 255 : 0, unit(ImpactFrame.strength())),
@@ -315,7 +322,7 @@ public final class ScreenFx {
         boolean changed = false;
         for (int i = 0; i < pixels.length; i++) {
             if (pixels[i] != uploaded[i]) {
-                state.getPixels().setPixel(i, 0, pixels[i]);
+                setPixel(i, pixels[i]);
                 uploaded[i] = pixels[i];
                 changed = true;
             }
@@ -325,7 +332,7 @@ public final class ScreenFx {
         for (int i = 0; i < 2; i++) {
             int pixel = i == 0 ? slotB : slotBz;
             if (pixel != uploaded[24 + i]) {
-                state.getPixels().setPixel(24 + i, 0, pixel);
+                setPixel(24 + i, pixel);
                 uploaded[24 + i] = pixel;
                 changed = true;
             }
@@ -369,14 +376,14 @@ public final class ScreenFx {
         putChanged = false;
         int lightLook = packed16(configPercent(ConfigConfiguration.LIGHT_SATURATION) / 4.0F, configPercent(ConfigConfiguration.LIGHT_BRIGHTNESS) / 4.0F);
         if (lightLook != uploaded[22]) {
-            state.getPixels().setPixel(22, 0, lightLook);
+            setPixel(22, lightLook);
             uploaded[22] = lightLook;
             changed = true;
         }
         for (int i = 0; i < cameraMatrix.length; i++) {
             int pixel = floatPixel(cameraMatrix[i]);
             if (pixel != uploaded[8 + i]) {
-                state.getPixels().setPixel(8 + i, 0, pixel);
+                setPixel(8 + i, pixel);
                 uploaded[8 + i] = pixel;
                 changed = true;
             }
@@ -390,7 +397,7 @@ public final class ScreenFx {
 
     private static void put(int index, int pixel) {
         if (pixel != uploaded[index]) {
-            state.getPixels().setPixel(index, 0, pixel);
+            setPixel(index, pixel);
             uploaded[index] = pixel;
             putChanged = true;
         }
@@ -410,7 +417,7 @@ public final class ScreenFx {
     }
 
     private static boolean abyssGrading(Minecraft mc) {
-        return mc.level != null && mc.level.dimension().identifier().toString().equals("theabyss:the_abyss")
+        return mc.level != null && mc.level.dimension().location().toString().equals("theabyss:the_abyss")
             && (configInt(ConfigConfiguration.ABYSS_HUE) != 0 || configInt(ConfigConfiguration.ABYSS_SATURATION) != 0
                 || configInt(ConfigConfiguration.ABYSS_LIGHTNESS) != 0);
     }
@@ -430,33 +437,39 @@ public final class ScreenFx {
     }
 
     @SubscribeEvent(priority = net.yezon.theabyss.platform.event.EventPriority.LOWEST)
-    public static void onExtractLevel(net.yezon.theabyss.platform.client.event.ExtractLevelRenderStateEvent event) {
-        net.minecraft.client.renderer.state.level.CameraRenderState camera = event.getRenderState().cameraRenderState;
-        net.minecraft.client.renderer.state.OptionsRenderState options = event.getOptionsRenderState();
-        net.minecraft.client.renderer.state.level.CameraEntityRenderState entity = camera.entityRenderState;
+    public static void onRenderStage(net.yezon.theabyss.platform.client.event.RenderLevelStageEvent event) {
+        if (event.getStage() != net.yezon.theabyss.platform.client.event.RenderLevelStageEvent.Stage.AFTER_SKY) {
+            return;
+        }
+        Minecraft mc = Minecraft.getInstance();
+        net.minecraft.client.Camera camera = event.getCamera();
+        float partialTick = camera.getPartialTickTime();
         com.mojang.blaze3d.vertex.PoseStack bob = new com.mojang.blaze3d.vertex.PoseStack();
-        if (entity.isLiving) {
-            if (entity.isDeadOrDying) {
-                float duration = Math.min(entity.deathTime, 20.0F);
-                bob.rotateDegrees(com.mojang.math.Axis.ZP, 40.0F - 8000.0F / (duration + 200.0F));
+        if (mc.getCameraEntity() instanceof net.minecraft.world.entity.LivingEntity living) {
+            float hurtTime = living.hurtTime - partialTick;
+            if (living.isDeadOrDying()) {
+                float duration = Math.min(living.deathTime + partialTick, 20.0F);
+                bob.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(40.0F - 8000.0F / (duration + 200.0F)));
             }
-            if (entity.hurtTime >= 0.0F && !net.yezon.theabyss.platform.services.ClientPlatformHooks.get().preventFlinch(entity)) {
-                float hurt = entity.hurtTime / entity.hurtDuration;
+            if (hurtTime >= 0.0F && !net.yezon.theabyss.platform.services.ClientPlatformHooks.get().preventFlinch(living)) {
+                float hurt = hurtTime / living.hurtDuration;
                 hurt = Mth.sin(hurt * hurt * hurt * hurt * (float)Math.PI);
-                float direction = entity.hurtDir;
-                bob.rotateDegrees(com.mojang.math.Axis.YP, -direction);
-                bob.rotateDegrees(com.mojang.math.Axis.ZP, (float)(-hurt * 14.0 * options.damageTiltStrength));
-                bob.rotateDegrees(com.mojang.math.Axis.YP, direction);
+                float direction = living.getHurtDir();
+                bob.mulPose(com.mojang.math.Axis.YP.rotationDegrees(-direction));
+                bob.mulPose(com.mojang.math.Axis.ZP.rotationDegrees((float)(-hurt * 14.0 * mc.options.damageTiltStrength().get())));
+                bob.mulPose(com.mojang.math.Axis.YP.rotationDegrees(direction));
             }
         }
-        if (options.bobView && entity.isPlayer) {
-            float walk = entity.backwardsInterpolatedWalkDistance;
-            float amount = entity.bob;
+        if (mc.options.bobView().get() && mc.getCameraEntity() instanceof net.minecraft.world.entity.player.Player player) {
+            float step = player.walkDist - player.walkDistO;
+            float walk = -(player.walkDist + step * partialTick);
+            float amount = Mth.lerp(partialTick, player.oBob, player.bob);
             bob.translate(Mth.sin(walk * (float)Math.PI) * amount * 0.5F, -Math.abs(Mth.cos(walk * (float)Math.PI) * amount), 0.0F);
-            bob.rotateDegrees(com.mojang.math.Axis.ZP, Mth.sin(walk * (float)Math.PI) * amount * 3.0F);
-            bob.rotateDegrees(com.mojang.math.Axis.XP, Math.abs(Mth.cos(walk * (float)Math.PI - 0.2F) * amount) * 5.0F);
+            bob.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(Mth.sin(walk * (float)Math.PI) * amount * 3.0F));
+            bob.mulPose(com.mojang.math.Axis.XP.rotationDegrees(Math.abs(Mth.cos(walk * (float)Math.PI - 0.2F) * amount) * 5.0F));
         }
-        org.joml.Matrix4f inverse = new org.joml.Matrix4f(bob.last().pose()).mul(camera.viewRotationMatrix).invert();
+        org.joml.Matrix4f inverse = new org.joml.Matrix4f(bob.last().pose()).mul(event.getModelViewMatrix()).invert();
+        org.joml.Matrix4f projection = PostFx.levelProjection();
         float[] m = cameraMatrix;
         m[0] = inverse.m00();
         m[1] = inverse.m01();
@@ -470,23 +483,24 @@ public final class ScreenFx {
         m[9] = inverse.m30();
         m[10] = inverse.m31();
         m[11] = inverse.m32();
-        m[12] = camera.projectionMatrix.m00();
-        m[13] = camera.projectionMatrix.m11();
+        m[12] = projection.m00();
+        m[13] = projection.m11();
 
-        cameraYaw = camera.yRot;
-        cameraPitch = camera.xRot;
-        cameraFov = (float)Math.toDegrees(2.0 * Math.atan(1.0 / Math.max(1.0E-4F, camera.projectionMatrix.m11())));
-        lightVolume = ColoredLight.originRelativeTo(0, camera.pos);
-        lightVolumeB = ColoredLight.originRelativeTo(1, camera.pos);
-        timeStopCentre = net.yezon.theabyss.timestop.client.TimeStopClient.centreRelativeTo(camera.pos);
-        stormBoss = NightbladeStormClient.bossRelativeTo(camera.pos);
-        NightbladeStormClient.fillSlots(camera.pos, stormRings);
-        NightbladeArenaClient.fill(camera.pos, arena);
-        RingFxClient.fill(camera.pos, ringFx);
-        AfterLifeClient.fill(camera.pos, afterLife);
-        daylight = ColoredLight.daylight(Minecraft.getInstance());
+        net.minecraft.world.phys.Vec3 pos = camera.getPosition();
+        cameraYaw = camera.getYRot();
+        cameraPitch = camera.getXRot();
+        cameraFov = (float)Math.toDegrees(2.0 * Math.atan(1.0 / Math.max(1.0E-4F, projection.m11())));
+        lightVolume = ColoredLight.originRelativeTo(0, pos);
+        lightVolumeB = ColoredLight.originRelativeTo(1, pos);
+        timeStopCentre = net.yezon.theabyss.timestop.client.TimeStopClient.centreRelativeTo(pos);
+        stormBoss = NightbladeStormClient.bossRelativeTo(pos);
+        NightbladeStormClient.fillSlots(pos, stormRings);
+        NightbladeArenaClient.fill(pos, arena);
+        RingFxClient.fill(pos, ringFx);
+        AfterLifeClient.fill(pos, afterLife);
+        daylight = ColoredLight.daylight(mc);
         if (state != null) {
-            upload(Minecraft.getInstance());
+            upload(mc);
         }
     }
 

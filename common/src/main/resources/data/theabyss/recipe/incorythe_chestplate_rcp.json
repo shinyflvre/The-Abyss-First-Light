@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:incorythe_gem",
-    "b": "minecraft:iron_chestplate"
+    "a": {
+      "item": "theabyss:incorythe_gem"
+    },
+    "b": {
+      "item": "minecraft:iron_chestplate"
+    }
   },
   "pattern": [
     "aba",

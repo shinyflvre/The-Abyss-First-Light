@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:stripped_rena_log"
+    "a": {
+      "item": "theabyss:stripped_rena_log"
+    }
   },
   "pattern": [
     "a"

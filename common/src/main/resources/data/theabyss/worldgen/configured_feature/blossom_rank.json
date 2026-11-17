@@ -1,0 +1,12 @@
+{
+  "type": "theabyss:blossom_rank_patch",
+  "config": {
+    "bulb_chance": 0.25,
+    "cluster_chance": 0.2,
+    "cluster_max": 5,
+    "cluster_min": 3,
+    "max_height": 12,
+    "min_height": 3,
+    "spread": 4
+  }
+}

@@ -1,13 +1,13 @@
 package net.yezon.theabyss.entity;
 
-import com.geckolib.animatable.GeoEntity;
-import com.geckolib.animatable.instance.AnimatableInstanceCache;
-import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.animation.AnimationController;
-import com.geckolib.animation.RawAnimation;
-import com.geckolib.animation.object.PlayState;
-import com.geckolib.animation.state.AnimationTest;
-import com.geckolib.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.PlayState;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerBossEvent;
@@ -21,10 +21,9 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -36,8 +35,8 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
-import net.minecraft.world.entity.projectile.throwableitemprojectile.AbstractThrownPotion;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -70,7 +69,7 @@ public class NightbladeBossEntity extends Monster implements GeoEntity {
     private boolean mirror;
     private static final double MIRROR_HEALTH = 40.0;
     private final ServerBossEvent bossInfo = new ServerBossEvent(
-        Mth.createInsecureUUID(this.random), this.getDisplayName(), BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.PROGRESS
+        this.getDisplayName(), BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.PROGRESS
     );
 
     public NightbladeBossEntity(EntityType<NightbladeBossEntity> type, Level world) {
@@ -117,14 +116,14 @@ public class NightbladeBossEntity extends Monster implements GeoEntity {
     }
 
     public static void spawnMirror(ServerLevel level, NightbladeBossEntity original, Vec3 at, LivingEntity target, int phase, int delay) {
-        NightbladeBossEntity image = net.yezon.theabyss.init.TheabyssModEntities.NIGHTBLADE_BOSS.get().create(level, EntitySpawnReason.MOB_SUMMONED);
+        NightbladeBossEntity image = net.yezon.theabyss.init.TheabyssModEntities.NIGHTBLADE_BOSS.get().create(level);
         if (image == null) {
             return;
         }
         image.mirror = true;
         image.entityData.set(MIRROR, true);
         image.xpReward = 0;
-        image.snapTo(at.x, at.y, at.z, original.getYRot(), original.getXRot());
+        image.moveTo(at.x, at.y, at.z, original.getYRot(), original.getXRot());
         var health = image.getAttribute(Attributes.MAX_HEALTH);
         if (health != null) {
             health.setBaseValue(MIRROR_HEALTH);
@@ -139,14 +138,14 @@ public class NightbladeBossEntity extends Monster implements GeoEntity {
     }
 
     public static @Nullable NightbladeBossEntity spawnPuppet(ServerLevel level, NightbladeBossEntity original, Vec3 at) {
-        NightbladeBossEntity image = net.yezon.theabyss.init.TheabyssModEntities.NIGHTBLADE_BOSS.get().create(level, EntitySpawnReason.MOB_SUMMONED);
+        NightbladeBossEntity image = net.yezon.theabyss.init.TheabyssModEntities.NIGHTBLADE_BOSS.get().create(level);
         if (image == null) {
             return null;
         }
         image.mirror = true;
         image.entityData.set(MIRROR, true);
         image.xpReward = 0;
-        image.snapTo(at.x, at.y, at.z, original.getYRot(), original.getXRot());
+        image.moveTo(at.x, at.y, at.z, original.getYRot(), original.getXRot());
         var health = image.getAttribute(Attributes.MAX_HEALTH);
         if (health != null) {
             health.setBaseValue(MIRROR_HEALTH);
@@ -191,20 +190,23 @@ public class NightbladeBossEntity extends Monster implements GeoEntity {
             return;
         }
         super.dropCustomDeathLoot(level, source, recentlyHitIn);
-        this.spawnAtLocation(level, new ItemStack(TheabyssModItems.ABYSS_SWORD.get()));
+        this.spawnAtLocation(new ItemStack(TheabyssModItems.ABYSS_SWORD.get()));
     }
 
     public void hurtUnavoidable(ServerLevel level, DamageSource source, float amount) {
         this.unavoidable = true;
         try {
-            this.hurtServer(level, source, amount);
+            this.hurt(source, amount);
         } finally {
             this.unavoidable = false;
         }
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource damagesource, float amount) {
+    public boolean hurt(DamageSource damagesource, float amount) {
+        if (!(this.level() instanceof ServerLevel level)) {
+            return false;
+        }
         if (!this.unavoidable && this.combat != null && this.combat.interceptHit(level, damagesource)) {
             return false;
         }
@@ -214,7 +216,7 @@ public class NightbladeBossEntity extends Monster implements GeoEntity {
         if (damagesource.is(DamageTypes.IN_FIRE)
             || damagesource.is(DamageTypes.CAMPFIRE)
             || damagesource.getDirectEntity() instanceof AbstractArrow
-            || damagesource.getDirectEntity() instanceof AbstractThrownPotion
+            || damagesource.getDirectEntity() instanceof ThrownPotion
             || damagesource.getDirectEntity() instanceof AreaEffectCloud
             || damagesource.is(DamageTypes.FALL)
             || damagesource.is(DamageTypes.CACTUS)
@@ -230,12 +232,12 @@ public class NightbladeBossEntity extends Monster implements GeoEntity {
         if (this.combat != null) {
             amount *= this.combat.damageMultiplier();
         }
-        return super.hurtServer(level, damagesource, amount);
+        return super.hurt(damagesource, amount);
     }
 
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(
-        ServerLevelAccessor world, DifficultyInstance difficulty, EntitySpawnReason reason, @Nullable SpawnGroupData livingdata
+        ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData livingdata
     ) {
         return super.finalizeSpawn(world, difficulty, reason, livingdata);
     }
@@ -257,15 +259,15 @@ public class NightbladeBossEntity extends Monster implements GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<NightbladeBossEntity>("base", 5, this::baseAnimation));
-        AnimationController<NightbladeBossEntity> action = new AnimationController<>("action", 2, test -> PlayState.STOP);
+        controllers.add(new AnimationController<NightbladeBossEntity>(this, "base", 5, this::baseAnimation));
+        AnimationController<NightbladeBossEntity> action = new AnimationController<>(this, "action", 2, test -> PlayState.STOP);
         for (String name : ACTIONS) {
             action.triggerableAnim(name, RawAnimation.begin().thenPlay(ANIM + name));
         }
         controllers.add(action);
     }
 
-    private PlayState baseAnimation(AnimationTest<NightbladeBossEntity> test) {
+    private PlayState baseAnimation(AnimationState<NightbladeBossEntity> test) {
         if (this.isDashing()) {
             return test.setAndContinue(DASH);
         }
@@ -284,12 +286,11 @@ public class NightbladeBossEntity extends Monster implements GeoEntity {
     }
 
     @Override
-    public boolean swing(InteractionHand hand, SwingAnimation animation, boolean updateSelf) {
-        boolean swung = super.swing(hand, animation, updateSelf);
+    public void swing(InteractionHand hand, boolean updateSelf) {
+        super.swing(hand, updateSelf);
         if (!this.level().isClientSide() && this.combat != null) {
             this.combat.slash(hand);
         }
-        return swung;
     }
 
     @Override
@@ -320,8 +321,9 @@ public class NightbladeBossEntity extends Monster implements GeoEntity {
     }
 
     @Override
-    protected void customServerAiStep(ServerLevel level) {
-        super.customServerAiStep(level);
+    protected void customServerAiStep() {
+        ServerLevel level = (ServerLevel) this.level();
+        super.customServerAiStep();
         this.bossInfo.setProgress(this.getHealth() / this.getMaxHealth());
         this.combat.tick(level);
     }

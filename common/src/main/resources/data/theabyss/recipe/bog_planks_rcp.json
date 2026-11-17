@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:bog_shroom_log"
+    "a": {
+      "item": "theabyss:bog_shroom_log"
+    }
   },
   "pattern": [
     "a"

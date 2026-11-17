@@ -1,22 +1,18 @@
 package net.yezon.theabyss.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BrightnessCombiner;
-import net.minecraft.client.renderer.blockentity.ChestRenderer;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.DoubleBlockCombiner;
@@ -24,23 +20,22 @@ import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
 import net.yezon.theabyss.platform.event.EventBusSubscriber;
 import net.yezon.theabyss.platform.client.event.EntityRenderersEvent;
-import net.yezon.theabyss.platform.client.event.RegisterSpecialModelRendererEvent;
+import net.yezon.theabyss.platform.client.event.RegisterItemRenderersEvent;
 import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.block.AbyssChestBlock;
 import net.yezon.theabyss.block.entity.AbyssChestBlockEntity;
 import net.yezon.theabyss.client.model.AbyssChestModel;
 import net.yezon.theabyss.init.TheabyssModBlockEntities;
-import org.jspecify.annotations.Nullable;
+import net.yezon.theabyss.init.TheabyssModChests;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
-public class AbyssChestRenderer implements BlockEntityRenderer<AbyssChestBlockEntity, AbyssChestRenderer.State> {
+public class AbyssChestRenderer implements BlockEntityRenderer<AbyssChestBlockEntity> {
     static final int FULL_BRIGHT = 15728880;
-    private static final Map<String, Identifier> TEXTURES = new HashMap<>();
+    private static final Map<String, ResourceLocation> TEXTURES = new HashMap<>();
     private final AbyssChestModel single;
     private final AbyssChestModel left;
     private final AbyssChestModel right;
@@ -64,73 +59,55 @@ public class AbyssChestRenderer implements BlockEntityRenderer<AbyssChestBlockEn
     }
 
     @SubscribeEvent
-    public static void registerSpecial(RegisterSpecialModelRendererEvent event) {
-        event.register(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "abyss_chest"), AbyssChestSpecialRenderer.Unbaked.MAP_CODEC);
+    public static void registerItems(RegisterItemRenderersEvent event) {
+        TheabyssModChests.ITEMS.forEach((wood, item) -> event.register(new AbyssChestSpecialRenderer(wood), item.get()));
     }
 
-    static Identifier texture(String wood, ChestType type) {
+    static ResourceLocation texture(String wood, ChestType type) {
         String suffix = switch (type) {
             case SINGLE -> "";
             case LEFT -> "_left";
             case RIGHT -> "_right";
         };
-        return TEXTURES.computeIfAbsent(wood + suffix, key -> Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "textures/entity/abyss_chest/" + key + ".png"));
+        return TEXTURES.computeIfAbsent(wood + suffix, key -> ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "textures/entity/abyss_chest/" + key + ".png"));
     }
 
     static RenderType glow(ChestType type) {
-        return RenderTypes.eyes(texture("glow", type));
-    }
-
-    public static class State extends BlockEntityRenderState {
-        ChestType type = ChestType.SINGLE;
-        Direction facing = Direction.SOUTH;
-        String wood = "nightgrove";
-        float open;
+        return AbyssRenderTypes.eyes(texture("glow", type));
     }
 
     @Override
-    public State createRenderState() {
-        return new State();
-    }
-
-    @Override
-    public void extractRenderState(AbyssChestBlockEntity chest, State state, float partialTicks, Vec3 cameraPosition,
-                                   ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
-        BlockEntityRenderer.super.extractRenderState(chest, state, partialTicks, cameraPosition, breakProgress);
+    public void render(AbyssChestBlockEntity chest, float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int light, int overlay) {
         BlockState blockState = chest.getBlockState();
         Level level = chest.getLevel();
-        state.type = blockState.hasProperty(ChestBlock.TYPE) ? blockState.getValue(ChestBlock.TYPE) : ChestType.SINGLE;
-        state.facing = blockState.hasProperty(ChestBlock.FACING) ? blockState.getValue(ChestBlock.FACING) : Direction.SOUTH;
-        state.wood = blockState.getBlock() instanceof AbyssChestBlock block ? block.wood() : "nightgrove";
+        ChestType type = blockState.hasProperty(ChestBlock.TYPE) ? blockState.getValue(ChestBlock.TYPE) : ChestType.SINGLE;
+        Direction facing = blockState.hasProperty(ChestBlock.FACING) ? blockState.getValue(ChestBlock.FACING) : Direction.SOUTH;
+        String wood = blockState.getBlock() instanceof AbyssChestBlock block ? block.wood() : "nightgrove";
         DoubleBlockCombiner.NeighborCombineResult<? extends ChestBlockEntity> combined;
         if (level != null && blockState.getBlock() instanceof ChestBlock block) {
             combined = block.combine(blockState, level, chest.getBlockPos(), true);
         } else {
             combined = DoubleBlockCombiner.Combiner::acceptNone;
         }
-        state.open = combined.apply(ChestBlock.opennessCombiner(chest)).get(partialTicks);
-        if (state.type != ChestType.SINGLE) {
-            state.lightCoords = combined.apply(new BrightnessCombiner<>()).applyAsInt(state.lightCoords);
+        float lid = combined.apply(ChestBlock.opennessCombiner(chest)).get(partialTicks);
+        int lightCoords = light;
+        if (type != ChestType.SINGLE) {
+            lightCoords = combined.apply(new BrightnessCombiner<>()).applyAsInt(lightCoords);
         }
-    }
-
-    @Override
-    public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         poseStack.pushPose();
-        poseStack.mulPose(ChestRenderer.modelTransformation(state.facing));
-        float closed = 1.0F - state.open;
+        poseStack.translate(0.5F, 0.5F, 0.5F);
+        poseStack.mulPose(Axis.YP.rotationDegrees(-facing.toYRot()));
+        poseStack.translate(-0.5F, -0.5F, -0.5F);
+        float closed = 1.0F - lid;
         float open = 1.0F - closed * closed * closed;
-        AbyssChestModel model = switch (state.type) {
+        AbyssChestModel model = switch (type) {
             case SINGLE -> this.single;
             case LEFT -> this.left;
             case RIGHT -> this.right;
         };
-        RenderType base = model.renderType(texture(state.wood, state.type));
-        collector.submitModel(model, open, poseStack, base, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
-        collector.order(1).submitModel(model, open, poseStack, glow(state.type), FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
-        if (state.breakProgress != null) {
-            collector.order(2).submitCrumblingOverlay(model, open, poseStack, base, state.lightCoords, OverlayTexture.NO_OVERLAY, -1, state.breakProgress);
-        }
+        model.setupAnim(open);
+        model.renderToBuffer(poseStack, buffers.getBuffer(model.renderType(texture(wood, type))), lightCoords, OverlayTexture.NO_OVERLAY);
+        model.renderToBuffer(poseStack, buffers.getBuffer(glow(type)), FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         poseStack.popPose();
     }
 

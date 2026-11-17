@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -54,14 +54,14 @@ public final class PhantomStaffBolts {
     }
 
     public static void fire(ServerPlayer player) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         Vec3 look = player.getViewVector(1.0F).normalize();
         Vec3 from = player.getEyePosition().add(look.scale(0.6)).subtract(0.0, 0.15, 0.0);
         int id = player.getId() * 64 + (next++ & 63);
         Bolt bolt = new Bolt(level, player.getUUID(), id, from, look.scale(PhantomHazards.BOLT_SPEED));
         BOLTS.add(bolt);
         SpellFxMessage.around(level, from, SpellFxMessage.PHANTOM_BOLT, List.of(id), SpellFxMessage.points(from, bolt.velocity), PhantomHazards.BOLT_LIFE);
-        SoundEvent sound = BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:phantom_attack"));
+        SoundEvent sound = BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:phantom_attack"));
         if (sound != null) {
             level.playSound(null, player.getX(), player.getY() + 1.0, player.getZ(), sound, SoundSource.PLAYERS, 1.0F, 1.2F);
         }
@@ -112,7 +112,7 @@ public final class PhantomStaffBolts {
         }
         if (hit != null) {
             DamageSource source = level.damageSources().indirectMagic(owner, owner);
-            if (hit.hurtServer(level, source, PhantomHazards.BOLT_DAMAGE)) {
+            if (hit.hurt(source, PhantomHazards.BOLT_DAMAGE)) {
                 hit.addEffect(new MobEffectInstance(MobEffects.POISON, 60, 0), owner);
             }
             PhantomHazards.splash(level, hitAt, bolt.id);

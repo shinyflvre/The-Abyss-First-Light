@@ -5,47 +5,55 @@
       "rules": [
         {
           "input_predicate": {
-            "block": "theabyss:infected_path",
-            "predicate_type": "minecraft:block_match"
+            "predicate_type": "minecraft:block_match",
+            "block": "theabyss:infected_path"
           },
           "location_predicate": {
-            "block": "minecraft:water",
-            "predicate_type": "minecraft:block_match"
+            "predicate_type": "minecraft:block_match",
+            "block": "minecraft:water"
           },
-          "output_state": "theabyss:blaru_planks"
+          "output_state": {
+            "Name": "theabyss:blaru_planks"
+          }
         },
         {
           "input_predicate": {
-            "block": "theabyss:infected_path",
             "predicate_type": "minecraft:random_block_match",
+            "block": "theabyss:infected_path",
             "probability": 0.1
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": "theabyss:blaru_moss"
+          "output_state": {
+            "Name": "theabyss:blaru_moss"
+          }
         },
         {
           "input_predicate": {
-            "block": "theabyss:blaru_moss",
-            "predicate_type": "minecraft:block_match"
+            "predicate_type": "minecraft:block_match",
+            "block": "theabyss:blaru_moss"
           },
           "location_predicate": {
-            "block": "minecraft:water",
-            "predicate_type": "minecraft:block_match"
+            "predicate_type": "minecraft:block_match",
+            "block": "minecraft:water"
           },
-          "output_state": "minecraft:water"
+          "output_state": {
+            "Name": "minecraft:water"
+          }
         },
         {
           "input_predicate": {
-            "block": "theabyss:dirt",
-            "predicate_type": "minecraft:block_match"
+            "predicate_type": "minecraft:block_match",
+            "block": "theabyss:dirt"
           },
           "location_predicate": {
-            "block": "minecraft:water",
-            "predicate_type": "minecraft:block_match"
+            "predicate_type": "minecraft:block_match",
+            "block": "minecraft:water"
           },
-          "output_state": "minecraft:water"
+          "output_state": {
+            "Name": "minecraft:water"
+          }
         }
       ]
     },

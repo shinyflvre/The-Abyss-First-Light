@@ -2,11 +2,21 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:roka_horn",
-    "b": "theabyss:crystal_hand",
-    "c": "minecraft:ender_eye",
-    "d": "theabyss:elder_eye",
-    "e": "minecraft:ghast_tear"
+    "a": {
+      "item": "theabyss:roka_horn"
+    },
+    "b": {
+      "item": "theabyss:crystal_hand"
+    },
+    "c": {
+      "item": "minecraft:ender_eye"
+    },
+    "d": {
+      "item": "theabyss:elder_eye"
+    },
+    "e": {
+      "item": "minecraft:ghast_tear"
+    }
   },
   "pattern": [
     " a ",

@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "group": "shelf",
   "key": {
-    "#": "theabyss:stripped_slimed_log"
+    "#": {
+      "item": "theabyss:stripped_slimed_log"
+    }
   },
   "pattern": [
     "###",

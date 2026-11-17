@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:fixed_bone",
-    "b": "theabyss:phantom_soul_item",
-    "c": "minecraft:glass_bottle"
+    "a": {
+      "item": "theabyss:fixed_bone"
+    },
+    "b": {
+      "item": "theabyss:phantom_soul_item"
+    },
+    "c": {
+      "item": "minecraft:glass_bottle"
+    }
   },
   "pattern": [
     "aba",

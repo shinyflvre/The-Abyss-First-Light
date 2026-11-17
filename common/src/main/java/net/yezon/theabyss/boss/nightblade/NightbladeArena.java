@@ -127,7 +127,7 @@ final class NightbladeArena {
 
     private void teleport(ServerLevel level, LivingEntity entity, Vec3 to, float yaw) {
         if (entity instanceof ServerPlayer player) {
-            player.teleportTo(level, to.x, to.y, to.z, Set.of(), yaw, player.getXRot(), true);
+            net.yezon.theabyss.util.AbyssTeleport.level(player, level, to.x, to.y, to.z, yaw, player.getXRot());
             NightbladeImpactMessage.send(player, false);
         } else {
             entity.teleportTo(to.x, to.y, to.z);

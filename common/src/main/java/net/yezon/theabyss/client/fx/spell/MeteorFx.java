@@ -1,9 +1,8 @@
 package net.yezon.theabyss.client.fx.spell;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.resources.Identifier;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.network.SpellFxMessage;
@@ -13,7 +12,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 final class MeteorFx extends Effect {
-    private static final RenderType ROCK = RenderTypes.entityCutout(Identifier.withDefaultNamespace("textures/block/magma.png"));
+    private static final RenderType ROCK = RenderType.entityCutout(ResourceLocation.withDefaultNamespace("textures/block/magma.png"));
     private static final int FIRE = 0xFF5A1E;
     private static final int EMBER = 0xFFB040;
     private static final int HOT = 0xFFE6B0;

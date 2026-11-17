@@ -1,6 +1,6 @@
 package net.yezon.theabyss.client.model;
 
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -9,18 +9,20 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 
-public class Modelinfected_jellyfish<S extends EntityRenderState> extends EntityModel<S> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath("theabyss", "modelinfected_jellyfish"), "main");
+public class Modelinfected_jellyfish<T extends Entity> extends HierarchicalModel<T> {
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("theabyss", "modelinfected_jellyfish"), "main");
     public final ModelPart SideHead;
     public final ModelPart Ranks;
     public final ModelPart MainRank;
     public final ModelPart bb_main;
 
+    private final ModelPart root;
+
     public Modelinfected_jellyfish(ModelPart root) {
-        super(root);
+        this.root = root;
         this.SideHead = root.getChild("SideHead");
         this.Ranks = root.getChild("Ranks");
         this.MainRank = root.getChild("MainRank");
@@ -85,5 +87,14 @@ public class Modelinfected_jellyfish<S extends EntityRenderState> extends Entity
             PartPose.offset(0.0F, 24.0F, 0.0F)
         );
         return LayerDefinition.create(meshdefinition, 32, 32);
+    }
+
+    @Override
+    public ModelPart root() {
+        return this.root;
+    }
+
+    @Override
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
     }
 }

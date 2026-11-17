@@ -9,7 +9,7 @@ import net.minecraft.world.level.LevelAccessor;
 public class ArenoDamageHandlerEvents {
     public static void execute(LevelAccessor world, Entity entity) {
         if (entity != null) {
-            entity.hurtOrSimulate(new DamageSource(world.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.LAVA)), 1.0F);
+            entity.hurt(new DamageSource(world.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.LAVA)), 1.0F);
         }
     }
 }

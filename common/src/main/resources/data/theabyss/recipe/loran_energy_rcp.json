@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:loran",
-    "b": "theabyss:incorythe_gem"
+    "a": {
+      "item": "theabyss:loran"
+    },
+    "b": {
+      "item": "theabyss:incorythe_gem"
+    }
   },
   "pattern": [
     "aaa",

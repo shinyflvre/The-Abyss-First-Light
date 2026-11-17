@@ -4,5 +4,5 @@
     "texture": "theabyss:block/blaru_trapdoor",
     "particle": "theabyss:block/blaru_trapdoor"
   },
-  "render_type": "solid"
+  "render_type": "minecraft:cutout"
 }

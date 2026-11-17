@@ -79,7 +79,7 @@ public final class FabricEntityRegistration {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private static void apply(EntityType<?> type, Placement<?> placement) {
-        SpawnPlacements.register((EntityType)type, placement.placementType, placement.heightmap, (SpawnPlacements.SpawnPredicate)placement.build());
+        SpawnPlacementsAccessor.theabyss$register((EntityType)type, placement.placementType, placement.heightmap, (SpawnPlacements.SpawnPredicate)placement.build());
     }
 
     private static final class Placement<T extends Entity> {

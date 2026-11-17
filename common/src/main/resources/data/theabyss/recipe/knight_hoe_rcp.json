@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:knight_ingot",
-    "b": "theabyss:icora_stone",
-    "c": "#c:rods/wooden"
+    "a": {
+      "item": "theabyss:knight_ingot"
+    },
+    "b": {
+      "item": "theabyss:icora_stone"
+    },
+    "c": {
+      "tag": "c:rods/wooden"
+    }
   },
   "pattern": [
     " aa",

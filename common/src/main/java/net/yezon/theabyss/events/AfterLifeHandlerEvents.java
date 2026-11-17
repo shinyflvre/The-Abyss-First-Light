@@ -8,7 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -60,8 +60,8 @@ public final class AfterLifeHandlerEvents {
         player.setHealth(GHOST_HEALTH);
         rememberGameMode(player);
         player.addEffect(new MobEffectInstance(TheabyssModMobEffects.AFTER_LIFE.getDelegate(), DURATION, 1, false, false));
-        player.teleportTo(deathAt.x + player.getRandom().nextDouble() * SPREAD, deathAt.y, deathAt.z + player.getRandom().nextDouble() * SPREAD);
-        PlayerBodyEntity body = TheabyssModEntities.PLAYER_BODY.get().spawn(player.level(), BlockPos.containing(deathAt), EntitySpawnReason.MOB_SUMMONED);
+        net.yezon.theabyss.util.AbyssTeleport.to(player, deathAt.x + player.getRandom().nextDouble() * SPREAD, deathAt.y, deathAt.z + player.getRandom().nextDouble() * SPREAD);
+        PlayerBodyEntity body = TheabyssModEntities.PLAYER_BODY.get().spawn(player.serverLevel(), BlockPos.containing(deathAt), MobSpawnType.MOB_SUMMONED);
         if (body != null) {
             body.setYRot(player.getRandom().nextFloat() * 360.0F);
         }
@@ -87,7 +87,7 @@ public final class AfterLifeHandlerEvents {
             return;
         }
         if (player.tickCount % MESSAGE_INTERVAL == 0 && bodyWithin(player, NEARBY)) {
-            player.sendOverlayMessage(Component.translatable("message.theabyss.body_nearby"));
+            player.displayClientMessage(Component.translatable("message.theabyss.body_nearby"), true);
         }
     }
 
@@ -104,7 +104,7 @@ public final class AfterLifeHandlerEvents {
             if (found) {
                 player.setHealth(REVIVED_HEALTH);
             } else {
-                player.hurtServer(player.level(), player.damageSources().generic(), FINAL_DAMAGE);
+                player.hurt(player.damageSources().generic(), FINAL_DAMAGE);
             }
         });
     }
@@ -124,13 +124,13 @@ public final class AfterLifeHandlerEvents {
     }
 
     private static void rememberGameMode(ServerPlayer player) {
-        if (!net.yezon.theabyss.platform.PersistentData.get(player).contains(MODE_KEY) && player.gameMode() != GameType.SPECTATOR) {
-            net.yezon.theabyss.platform.PersistentData.get(player).putString(MODE_KEY, player.gameMode().getName());
+        if (!net.yezon.theabyss.platform.PersistentData.get(player).contains(MODE_KEY) && player.gameMode.getGameModeForPlayer() != GameType.SPECTATOR) {
+            net.yezon.theabyss.platform.PersistentData.get(player).putString(MODE_KEY, player.gameMode.getGameModeForPlayer().getName());
         }
     }
 
     private static void restoreGameMode(ServerPlayer player) {
-        GameType mode = GameType.byName(net.yezon.theabyss.platform.PersistentData.get(player).getStringOr(MODE_KEY, GameType.SURVIVAL.getName()), GameType.SURVIVAL);
+        GameType mode = GameType.byName(net.yezon.theabyss.compat.NbtCompat.getStringOr(net.yezon.theabyss.platform.PersistentData.get(player), MODE_KEY, GameType.SURVIVAL.getName()), GameType.SURVIVAL);
         net.yezon.theabyss.platform.PersistentData.get(player).remove(MODE_KEY);
         player.setGameMode(mode);
     }

@@ -8,7 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
@@ -54,14 +54,14 @@ final class EnergeticaAutotest {
                 float yaw = (float)Math.toDegrees(Math.atan2(-d.x, d.z));
                 float pitch = (float)-Math.toDegrees(Math.atan2(d.y, Math.sqrt(d.x * d.x + d.z * d.z)));
                 command.accept("execute in minecraft:overworld run tp @s " + stand.x + " " + stand.y + " " + stand.z + " " + yaw + " " + pitch);
-                mc.player.getInventory().setSelectedSlot(corner);
+                mc.player.getInventory().selected = corner;
             }, 12);
             add.add("en charge " + i, () -> KeyMapping.click(mc.options.keyUse.getKey()), 8);
             if (i == 2) {
                 add.add("en three", () -> onServer(sp -> {
                     check("three pillars charged (" + charged(sp) + ")", charged(sp) == 3);
                     fillRecipe(sp);
-                    sp.openMenu((MenuProvider)sp.level().getBlockEntity(ARCANE), ARCANE);
+                    sp.openMenu((MenuProvider)sp.serverLevel().getBlockEntity(ARCANE), ARCANE);
                 }), 10);
                 add.add("en three result", () -> onServer(sp -> {
                     boolean empty = sp.containerMenu instanceof ArcaneMenu menu && menu.getSlot(9).getItem().isEmpty() && !menu.powered();
@@ -74,14 +74,14 @@ final class EnergeticaAutotest {
         add.add("en four", () -> onServer(sp -> {
             check("four pillars charged, the Loran Energy left the hotbar (" + charged(sp) + ")",
                 charged(sp) == 4 && sp.getInventory().countItem(item("loran_energy")) == 0);
-            check("the workbench is powered", ArcanePower.powered(sp.level(), ARCANE));
-            sp.openMenu((MenuProvider)sp.level().getBlockEntity(ARCANE), ARCANE);
+            check("the workbench is powered", ArcanePower.powered(sp.serverLevel(), ARCANE));
+            sp.openMenu((MenuProvider)sp.serverLevel().getBlockEntity(ARCANE), ARCANE);
         }), 10);
         add.add("en four result", () -> onServer(sp -> check("with four pillars the recipe works (" + sp.containerMenu.getSlot(9).getItem() + ")",
             sp.containerMenu instanceof ArcaneMenu menu && menu.powered() && menu.getSlot(9).getItem().is(item("ring_of_spectral")))), 2);
         add.add("en shot four gui", () -> shot.accept("110_energetica_2_four_gui"), 2);
-        add.add("en craft", () -> mc.gameMode.handleContainerInput(mc.player.containerMenu.containerId, 9, 0,
-            net.minecraft.world.inventory.ContainerInput.QUICK_MOVE, mc.player), 6);
+        add.add("en craft", () -> mc.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, 9, 0,
+            net.minecraft.world.inventory.ClickType.QUICK_MOVE, mc.player), 6);
         add.add("en crafted", () -> onServer(sp -> {
             check("crafted the ring", sp.getInventory().countItem(item("ring_of_spectral")) == 1);
             boolean whole = true;
@@ -108,30 +108,30 @@ final class EnergeticaAutotest {
             float yaw = (float)Math.toDegrees(Math.atan2(-d.x, d.z));
             float pitch = (float)-Math.toDegrees(Math.atan2(d.y, Math.sqrt(d.x * d.x + d.z * d.z)));
             command.accept("execute in minecraft:overworld run tp @s -3.5 200 -3.5 " + yaw + " " + pitch);
-            mc.player.getInventory().setSelectedSlot(5);
+            mc.player.getInventory().selected = 5;
         }, 12);
         add.add("en take", () -> KeyMapping.click(mc.options.keyUse.getKey()), 8);
         add.add("en taken", () -> onServer(sp -> {
             check("an empty hand takes the Loran Energy back (" + charged(sp) + " charged, " + sp.getInventory().countItem(item("loran_energy")) + " in inventory)",
                 charged(sp) == 3 && sp.getInventory().countItem(item("loran_energy")) == 1);
-            check("the workbench is off again", !ArcanePower.powered(sp.level(), ARCANE));
+            check("the workbench is off again", !ArcanePower.powered(sp.serverLevel(), ARCANE));
         }), 2);
         add.add("en result", () -> TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] RESULT energetica {} ({} checks{})", failures.isEmpty() ? "PASS" : "FAIL",
             checks, failures.isEmpty() ? "" : ", failed: " + failures), 2);
     }
 
     private static net.minecraft.world.item.Item item(String id) {
-        return BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath("theabyss", id));
+        return BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("theabyss", id));
     }
 
     private static AbyssalEnergeticaBlockEntity pillar(ServerPlayer sp, int[] c) {
-        return (AbyssalEnergeticaBlockEntity)sp.level().getBlockEntity(ARCANE.offset(c[0], 0, c[1]));
+        return (AbyssalEnergeticaBlockEntity)sp.serverLevel().getBlockEntity(ARCANE.offset(c[0], 0, c[1]));
     }
 
     private static int charged(ServerPlayer sp) {
         int n = 0;
         for (int[] c : ArcanePower.CORNERS) {
-            if (sp.level().getBlockEntity(ARCANE.offset(c[0], 0, c[1])) instanceof AbyssalEnergeticaBlockEntity p && p.charged()) {
+            if (sp.serverLevel().getBlockEntity(ARCANE.offset(c[0], 0, c[1])) instanceof AbyssalEnergeticaBlockEntity p && p.charged()) {
                 n++;
             }
         }
@@ -139,7 +139,7 @@ final class EnergeticaAutotest {
     }
 
     private static void fillRecipe(ServerPlayer sp) {
-        Container c = (Container)sp.level().getBlockEntity(ARCANE);
+        Container c = (Container)sp.serverLevel().getBlockEntity(ARCANE);
         c.setItem(0, new ItemStack(item("ring_of_invisibility")));
         for (int i = 1; i <= 8; i++) {
             c.setItem(i, new ItemStack(item(i % 2 == 1 ? "phantom_essence" : "hollow_powder")));

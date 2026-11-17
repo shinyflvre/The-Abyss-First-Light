@@ -41,7 +41,7 @@ public final class SkillClient {
         }
         spent = spentLevels;
         if (open) {
-            Minecraft.getInstance().gui.setScreen(new SkillTreeScreen());
+            Minecraft.getInstance().setScreen(new SkillTreeScreen());
         }
     }
 
@@ -62,7 +62,7 @@ public final class SkillClient {
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         ticks++;
-        if (player == null || mc.gui.screen() != null) {
+        if (player == null || mc.screen != null) {
             wasDown = false;
             return;
         }
@@ -87,8 +87,8 @@ public final class SkillClient {
 
     private static boolean sprintHeld(Minecraft mc) {
         InputConstants.Key key = ((net.yezon.theabyss.mixin.accessor.client.KeyMappingAccessor)mc.options.keySprint).theabyss$key();
-        if (key.getType() == InputConstants.Type.KEYBOARD && !mc.options.keySprint.isUnbound()) {
-            return InputConstants.isKeyDown(key.getValue());
+        if (key.getType() == InputConstants.Type.KEYSYM && !mc.options.keySprint.isUnbound()) {
+            return InputConstants.isKeyDown(mc.getWindow().getWindow(), key.getValue());
         }
         return mc.options.keySprint.isDown();
     }

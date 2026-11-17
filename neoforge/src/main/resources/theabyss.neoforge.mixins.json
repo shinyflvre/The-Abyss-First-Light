@@ -2,15 +2,20 @@
   "required": true,
   "minVersion": "0.8",
   "package": "net.yezon.theabyss.neoforge.mixin",
-  "compatibilityLevel": "JAVA_25",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
     "entity.AbyssaurEntityMixin",
     "fluids.BaseFlowingFluidMixin",
     "blocks.PlayerDestroyListenerMixin",
-    "blocks.LevelLoadListenerMixin"
+    "blocks.LevelLoadListenerMixin",
+    "blocks.PlantSoilBlockMixin",
+    "server.LivingEntityTotemMixin",
+    "blocks.BushBlockFarmlandMixin",
+    "blocks.StemBlockFruitFarmlandMixin"
   ],
   "client": [
-    "client.LevelExtractorGravityMixin"
+    "client.ScreenEffectGravityMixin",
+    "client.BlockColorsAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

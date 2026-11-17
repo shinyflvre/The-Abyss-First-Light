@@ -1,16 +1,20 @@
 package net.yezon.theabyss.init;
 
-import java.util.Set;
+import java.util.function.BiFunction;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.yezon.theabyss.block.wood.AbyssShelfBlockEntity;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
 import net.yezon.theabyss.platform.event.EventBusSubscriber;
 import net.yezon.theabyss.platform.capabilities.RegisterCapabilitiesEvent;
 import net.yezon.theabyss.platform.registries.DeferredBlock;
 import net.yezon.theabyss.platform.registries.DeferredHolder;
 import net.yezon.theabyss.platform.registries.DeferredRegister;
+import net.yezon.theabyss.platform.services.BlockItemHooks;
 import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.block.entity.AbyssChestBlockEntity;
 import net.yezon.theabyss.block.entity.ArcaneWorkbenchBlockEntity;
@@ -49,13 +53,20 @@ public class TheabyssModBlockEntities {
     );
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AbyssChestBlockEntity>> ABYSS_CHEST = REGISTRY.register(
-        "abyss_chest", () -> new BlockEntityType<>(AbyssChestBlockEntity::new, Set.of(TheabyssModChests.blocks()))
+        "abyss_chest", () -> type(AbyssChestBlockEntity::new, TheabyssModChests.blocks())
+    );
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AbyssShelfBlockEntity>> SHELF = REGISTRY.register(
+        "shelf", () -> type(AbyssShelfBlockEntity::new, TheabyssModWoodSets.shelves())
     );
 
     private static <T extends BlockEntity> DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> register(
-        String name, DeferredBlock<Block> block, BlockEntityType.BlockEntitySupplier<T> supplier
+        String name, DeferredBlock<Block> block, BiFunction<BlockPos, BlockState, T> supplier
     ) {
-        return REGISTRY.register(name, () -> new BlockEntityType<>(supplier, Set.of(block.get())));
+        return REGISTRY.register(name, () -> type(supplier, block.get()));
+    }
+
+    private static <T extends BlockEntity> BlockEntityType<T> type(BiFunction<BlockPos, BlockState, ? extends T> factory, Block... blocks) {
+        return BlockItemHooks.get().blockEntityType(factory, blocks);
     }
 
     @SubscribeEvent
@@ -66,6 +77,7 @@ public class TheabyssModBlockEntities {
         event.registerSidedItemContainer(CRYSTAL_CUTTER.get());
         event.registerSidedItemContainer(SOMNIUM_INFUSER.get());
         event.registerSidedItemContainer(MORTAR_AND_PESTLE.get());
+        event.registerItemContainer(SHELF.get());
         event.registerChestItemContainer(TheabyssModChests.blocks());
     }
 }

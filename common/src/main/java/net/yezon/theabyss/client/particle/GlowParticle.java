@@ -3,19 +3,20 @@ package net.yezon.theabyss.client.particle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.util.ARGB;
-import net.minecraft.util.RandomSource;
+import net.minecraft.client.particle.TextureSheetParticle;
+import net.yezon.theabyss.compat.ARGB;
 import net.yezon.theabyss.ring.fx.GlowParticleOptions;
 
-public class GlowParticle extends SingleQuadParticle {
+public class GlowParticle extends TextureSheetParticle {
     private final float startSize;
     private final int flags;
     private final float drag;
 
     protected GlowParticle(ClientLevel level, double x, double y, double z, double vx, double vy, double vz, GlowParticleOptions options, SpriteSet sprites) {
-        super(level, x, y, z, sprites.first());
+        super(level, x, y, z);
+        this.setSprite(sprites.get(0, 1));
         this.xd = vx;
         this.yd = vy;
         this.zd = vz;
@@ -66,13 +67,13 @@ public class GlowParticle extends SingleQuadParticle {
     }
 
     @Override
-    public int getLightCoords(float partialTick) {
+    public int getLightColor(float partialTick) {
         return 15728880;
     }
 
     @Override
-    public SingleQuadParticle.Layer getLayer() {
-        return NightbladeTrailParticle.GLOW_LAYER;
+    public ParticleRenderType getRenderType() {
+        return NightbladeTrailParticle.GLOW_TYPE;
     }
 
     public static Provider provider(SpriteSet sprites) {
@@ -87,8 +88,7 @@ public class GlowParticle extends SingleQuadParticle {
         }
 
         @Override
-        public Particle createParticle(GlowParticleOptions options, ClientLevel level, double x, double y, double z, double vx, double vy, double vz,
-                                       RandomSource random) {
+        public Particle createParticle(GlowParticleOptions options, ClientLevel level, double x, double y, double z, double vx, double vy, double vz) {
             return new GlowParticle(level, x, y, z, vx, vy, vz, options, this.sprites);
         }
     }

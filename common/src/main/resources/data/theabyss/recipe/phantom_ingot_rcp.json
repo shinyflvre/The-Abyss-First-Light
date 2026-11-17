@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "minecraft:iron_ingot",
-    "b": "theabyss:phantom_essence"
+    "a": {
+      "item": "minecraft:iron_ingot"
+    },
+    "b": {
+      "item": "theabyss:phantom_essence"
+    }
   },
   "pattern": [
     " a ",

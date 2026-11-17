@@ -22,7 +22,6 @@
         "angle": 22.5,
         "rescale": true
       },
-      "shade": false,
       "faces": {
         "up": {
           "uv": [
@@ -65,7 +64,6 @@
         "angle": -22.5,
         "rescale": true
       },
-      "shade": false,
       "faces": {
         "up": {
           "uv": [

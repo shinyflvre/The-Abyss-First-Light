@@ -8,7 +8,7 @@ import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,7 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 final class LushCaveAutotest {
-    private static final ResourceKey<Level> ABYSS = ResourceKey.create(Registries.DIMENSION, Identifier.parse("theabyss:the_abyss"));
+    private static final ResourceKey<Level> ABYSS = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse("theabyss:the_abyss"));
     private static int CX = 640;
     private static int CZ = -240;
     private static BlockPos view = new BlockPos(CX, 16, CZ);
@@ -27,8 +27,8 @@ final class LushCaveAutotest {
     static void addSteps(PossessionAutotest.StepAdder add, Consumer<String> command, Consumer<String> shot) {
         Minecraft mc = Minecraft.getInstance();
         add.add("lush find", () -> onServer(sp -> {
-            ServerLevel level = sp.level().getServer().getLevel(ABYSS);
-            var found = level.findClosestBiome3d(h -> h.is(ResourceKey.create(Registries.BIOME, Identifier.parse("theabyss:lush_glow_cave"))),
+            ServerLevel level = sp.serverLevel().getServer().getLevel(ABYSS);
+            var found = level.findClosestBiome3d(h -> h.is(ResourceKey.create(Registries.BIOME, ResourceLocation.parse("theabyss:lush_glow_cave"))),
                 new BlockPos(-6000, 0, -6000), 3000, 32, 64);
             if (found != null) {
                 CX = found.getFirst().getX();
@@ -42,7 +42,7 @@ final class LushCaveAutotest {
             command.accept("execute in theabyss:the_abyss run tp @s " + CX + " 40 " + CZ);
         }, 400);
         add.add("lush scan", () -> onServer(sp -> {
-            ServerLevel level = sp.level().getServer().getLevel(ABYSS);
+            ServerLevel level = sp.serverLevel().getServer().getLevel(ABYSS);
             Map<String, Integer> counts = new TreeMap<>();
             BlockPos best = null;
             int bestScore = -1;
@@ -58,7 +58,7 @@ final class LushCaveAutotest {
                         String ns = BuiltInRegistries.BLOCK.getKey(s.getBlock()).getNamespace();
                         if (ns.equals("minecraft") && !s.isAir() && !s.is(net.minecraft.world.level.block.Blocks.WATER)
                             && !s.is(net.minecraft.world.level.block.Blocks.BEDROCK) && !s.is(net.minecraft.world.level.block.Blocks.LAVA)
-                            && level.getBiome(p).is(ResourceKey.create(Registries.BIOME, Identifier.parse("theabyss:lush_glow_cave")))) {
+                            && level.getBiome(p).is(ResourceKey.create(Registries.BIOME, ResourceLocation.parse("theabyss:lush_glow_cave")))) {
                             counts.merge("VANILLA " + id, 1, Integer::sum);
                         }
                     }

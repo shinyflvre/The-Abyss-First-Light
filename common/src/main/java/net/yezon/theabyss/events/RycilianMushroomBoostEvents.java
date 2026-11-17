@@ -1,7 +1,7 @@
 package net.yezon.theabyss.events;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -15,13 +15,13 @@ import net.minecraft.core.registries.BuiltInRegistries;
 public class RycilianMushroomBoostEvents {
     public static void execute(LevelAccessor world, double x, double y, double z, Entity entity) {
         if (entity instanceof Player) {
-            if (!(entity instanceof LivingEntity _livEnt0 && _livEnt0.hasEffect(MobEffects.SPEED))) {
+            if (!(entity instanceof LivingEntity _livEnt0 && _livEnt0.hasEffect(MobEffects.MOVEMENT_SPEED))) {
                 if (world instanceof Level _level) {
                     if (!_level.isClientSide()) {
                         _level.playSound(
                             (Player)null,
                             BlockPos.containing(x, y, z),
-                            BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:rycilian_mushroom")),
+                            BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:rycilian_mushroom")),
                             SoundSource.NEUTRAL,
                             1.0F,
                             1.0F
@@ -31,7 +31,7 @@ public class RycilianMushroomBoostEvents {
                             x,
                             y,
                             z,
-                            BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:rycilian_mushroom")),
+                            BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:rycilian_mushroom")),
                             SoundSource.NEUTRAL,
                             1.0F,
                             1.0F,
@@ -41,7 +41,7 @@ public class RycilianMushroomBoostEvents {
                 }
 
                 if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
-                    _entity.addEffect(new MobEffectInstance(MobEffects.SPEED, 100, 1, false, false));
+                    _entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 100, 1, false, false));
                 }
             }
         }

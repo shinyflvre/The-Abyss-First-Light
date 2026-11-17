@@ -18,8 +18,6 @@
         32.0,
         15.68
       ],
-      "shade": false,
-      "light_emission": 15,
       "faces": {
         "north": {
           "uv": [
@@ -39,6 +37,10 @@
           ],
           "texture": "#rim"
         }
+      },
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
       }
     }
   ]

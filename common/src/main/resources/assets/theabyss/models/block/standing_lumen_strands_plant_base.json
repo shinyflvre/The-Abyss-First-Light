@@ -27,7 +27,6 @@
         "angle": 45,
         "rescale": true
       },
-      "shade_direction_override": "up",
       "faces": {
         "north": {
           "uv": [
@@ -47,7 +46,8 @@
           ],
           "texture": "#cross"
         }
-      }
+      },
+      "shade": false
     },
     {
       "from": [
@@ -70,7 +70,6 @@
         "angle": 45,
         "rescale": true
       },
-      "shade_direction_override": "up",
       "faces": {
         "west": {
           "uv": [
@@ -90,7 +89,8 @@
           ],
           "texture": "#cross"
         }
-      }
+      },
+      "shade": false
     }
   ],
   "render_type": "cutout"

@@ -10,11 +10,9 @@ import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
 import net.minecraft.server.level.FullChunkStatus;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
@@ -54,7 +52,7 @@ public final class LevelFabricEvents {
         }
         boolean preCancel = false;
         ItemStack held = player.getMainHandItem();
-        if (!held.isEmpty() && !held.canDestroyBlock(state, level, pos, player)) {
+        if (!held.isEmpty() && !held.getItem().canAttackBlock(state, level, pos, player)) {
             preCancel = true;
         }
         if (player.blockActionRestricted(level, pos, gameType)) {
@@ -176,10 +174,6 @@ public final class LevelFabricEvents {
                     capture.theabyss$setRestoring(false);
                 }
             }
-            if (player instanceof ServerPlayer serverPlayer) {
-                int slot = context.getHand() == InteractionHand.MAIN_HAND ? serverPlayer.getInventory().getSelectedSlot() : Inventory.SLOT_OFFHAND;
-                serverPlayer.connection.send(serverPlayer.getInventory().createInventoryUpdatePacket(slot));
-            }
             return InteractionResult.FAIL;
         }
         stack.setCount(newSize);
@@ -208,7 +202,7 @@ public final class LevelFabricEvents {
             level.sendBlockUpdated(pos, oldState, blockState, flags);
         }
         if ((flags & Block.UPDATE_NEIGHBORS) != 0) {
-            level.updateNeighborsAt(pos, oldState.getBlock());
+            level.blockUpdated(pos, oldState.getBlock());
             if (!level.isClientSide() && blockState.hasAnalogOutputSignal()) {
                 level.updateNeighbourForOutputSignal(pos, block);
             }
@@ -219,7 +213,7 @@ public final class LevelFabricEvents {
             blockState.updateNeighbourShapes(level, pos, neighbourFlags, updateLimit - 1);
             blockState.updateIndirectNeighbourShapes(level, pos, neighbourFlags, updateLimit - 1);
         }
-        level.updatePOIOnBlockStateChange(pos, oldState, newState);
+        level.onBlockStateChange(pos, oldState, newState);
     }
 
     public static boolean isLevelAccessorCapturing(LevelAccessor level) {

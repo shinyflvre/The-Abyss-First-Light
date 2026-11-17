@@ -27,7 +27,7 @@ public final class UseSliceEvents {
             TheabyssMod.queueServerWork(delay, () -> {
                 level.sendParticles(ParticleTypes.SWEEP_ATTACK, x, y, z, 2, 1.0, 2.0, 1.0, 0.1);
                 if (target.isAlive()) {
-                    target.hurtServer(level, level.damageSources().generic(), SLICE_DAMAGE);
+                    target.hurt(level.damageSources().generic(), SLICE_DAMAGE);
                 }
                 playSliceSound(level, x, y, z);
             });

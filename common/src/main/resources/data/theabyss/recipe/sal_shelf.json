@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "group": "shelf",
   "key": {
-    "#": "theabyss:stripped_sal_shroom_log"
+    "#": {
+      "item": "theabyss:stripped_sal_shroom_log"
+    }
   },
   "pattern": [
     "###",

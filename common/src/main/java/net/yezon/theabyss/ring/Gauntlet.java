@@ -4,7 +4,7 @@ import java.util.function.UnaryOperator;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -29,7 +29,7 @@ public final class Gauntlet {
         if (stack.isEmpty()) {
             return false;
         }
-        Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
         return id.getNamespace().equals(TheabyssMod.MODID) && id.getPath().startsWith("ring_of_") && !id.getPath().equals("ring_of_ring")
             && !id.getPath().endsWith("_attack");
     }
@@ -58,7 +58,7 @@ public final class Gauntlet {
 
     public static int selected(ItemStack gauntlet) {
         CustomData data = gauntlet.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
-        int slot = data.copyTag().getIntOr(SELECTED_KEY, 0);
+        int slot = net.yezon.theabyss.compat.NbtCompat.getIntOr(data.copyTag(), SELECTED_KEY, 0);
         return slot < 0 || slot >= SLOTS ? 0 : slot;
     }
 

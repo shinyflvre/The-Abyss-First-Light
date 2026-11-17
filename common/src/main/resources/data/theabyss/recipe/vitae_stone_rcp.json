@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:vitae_nugget",
-    "b": "#minecraft:stone_tool_materials"
+    "a": {
+      "item": "theabyss:vitae_nugget"
+    },
+    "b": {
+      "tag": "minecraft:stone_tool_materials"
+    }
   },
   "pattern": [
     "aaa",

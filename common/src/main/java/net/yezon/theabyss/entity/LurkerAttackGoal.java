@@ -262,7 +262,7 @@ public class LurkerAttackGoal extends Goal {
             if (!this.ambushLeap) {
                 double speed = Mth.clamp(reach / 7.0, 0.5, 1.0) * LEAP_SPEED;
                 this.lurker.setDeltaMovement(this.leapDir.x * speed, 0.42, this.leapDir.z * speed);
-                this.lurker.needsSync = true;
+                this.lurker.hasImpulse = true;
             }
             LurkerFx.leap(level, this.lurker);
         }
@@ -296,7 +296,7 @@ public class LurkerAttackGoal extends Goal {
         double arc = 4.0 * LEAP_HEIGHT * s1 * (1.0 - s1);
         double dy = baseY + arc - pos.y;
         this.lurker.setDeltaMovement(step.x, Mth.clamp(dy, -0.9, 0.9), step.z);
-        this.lurker.needsSync = true;
+        this.lurker.hasImpulse = true;
         this.lurker.resetFallDistance();
         if (aim && (this.lurker.getBoundingBox().inflate(0.9, 0.5, 0.9).intersects(target.getBoundingBox()) || this.reachTo(target) <= 1.4
             || s1 >= 0.999)) {
@@ -309,7 +309,7 @@ public class LurkerAttackGoal extends Goal {
             if (hit) {
                 Vec3 push = this.leapDir.scale(0.7);
                 target.push(push.x, 0.3, push.z);
-                target.needsSync = true;
+                target.hasImpulse = true;
             }
             this.lurker.setDeltaMovement(this.lurker.getDeltaMovement().multiply(0.2, 1.0, 0.2));
             LurkerFx.bite(level, this.jaws(), hit);
@@ -326,14 +326,14 @@ public class LurkerAttackGoal extends Goal {
             if (hit) {
                 Vec3 push = this.leapDir.scale(0.6);
                 target.push(push.x, 0.25, push.z);
-                target.needsSync = true;
+                target.hasImpulse = true;
             }
             LurkerFx.bite(level, this.jaws(), hit);
         }
     }
 
     private boolean strike(ServerLevel level, LivingEntity victim, float amount) {
-        return this.hittable(victim) && victim.hurtServer(level, this.lurker.damageSources().mobAttack(this.lurker), amount);
+        return this.hittable(victim) && victim.hurt(this.lurker.damageSources().mobAttack(this.lurker), amount);
     }
 
     boolean hittable(LivingEntity e) {

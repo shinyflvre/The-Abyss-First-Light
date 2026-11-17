@@ -4,15 +4,15 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -20,11 +20,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.TagValueOutput;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.yezon.theabyss.compat.ValueInput;
+import net.yezon.theabyss.compat.ValueOutput;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
 import net.yezon.theabyss.platform.event.EventBusSubscriber;
 import net.yezon.theabyss.platform.attachment.AttachmentType;
@@ -79,13 +76,13 @@ public class TheabyssModVariables {
     public static class PlayerVariables implements ValueIOSerializable {
         public static final StreamCodec<RegistryFriendlyByteBuf, PlayerVariables> STREAM_CODEC = StreamCodec.of(
             (buf, vars) -> {
-                TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, buf.registryAccess());
-                vars.serialize(output);
-                ByteBufCodecs.COMPOUND_TAG.encode(buf, output.buildResult());
+                CompoundTag tag = new CompoundTag();
+                vars.serialize(ValueOutput.of(tag, buf.registryAccess()));
+                ByteBufCodecs.COMPOUND_TAG.encode(buf, tag);
             },
             buf -> {
                 PlayerVariables vars = new PlayerVariables();
-                vars.deserialize(TagValueInput.create(ProblemReporter.DISCARDING, buf.registryAccess(), ByteBufCodecs.COMPOUND_TAG.decode(buf)));
+                vars.deserialize(ValueInput.of(ByteBufCodecs.COMPOUND_TAG.decode(buf), buf.registryAccess()));
                 return vars;
             }
         );
@@ -376,9 +373,8 @@ public class TheabyssModVariables {
             Codec.DOUBLE.optionalFieldOf("ZTest", 0.0).forGetter(v -> v.ZTest),
             Codec.BOOL.optionalFieldOf("FullSomnium", false).forGetter(v -> v.FullSomnium)
         ).apply(i, MapVariables::new));
-        public static final SavedDataType<MapVariables> TYPE = new SavedDataType<>(
-            Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "map_variables"), MapVariables::new, CODEC, null
-        );
+        public static final String DATA_NAME = "theabyss_mapvars";
+        public static final SavedData.Factory<MapVariables> FACTORY = new SavedData.Factory<>(MapVariables::new, (tag, registries) -> fromTag(tag), null);
         static MapVariables clientSide = new MapVariables();
 
         public double XTest = 0.0;
@@ -398,6 +394,12 @@ public class TheabyssModVariables {
             return (CompoundTag) CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, this).getOrThrow();
         }
 
+        @Override
+        public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+            tag.merge(this.toTag());
+            return tag;
+        }
+
         static MapVariables fromTag(CompoundTag tag) {
             return CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag).result().orElseGet(MapVariables::new);
         }
@@ -411,7 +413,7 @@ public class TheabyssModVariables {
 
         public static MapVariables get(LevelAccessor world) {
             if (world instanceof ServerLevelAccessor serverLevelAcc) {
-                return serverLevelAcc.getLevel().getServer().getDataStorage().computeIfAbsent(TYPE);
+                return net.yezon.theabyss.util.AbyssSavedData.server(serverLevelAcc.getLevel().getServer(), "map_variables", FACTORY, DATA_NAME);
             }
             return clientSide;
         }
@@ -423,9 +425,8 @@ public class TheabyssModVariables {
             Codec.DOUBLE.optionalFieldOf("PocketDimensionX", 0.0).forGetter(v -> v.PocketDimensionX),
             Codec.DOUBLE.optionalFieldOf("PocketDimensionZ", 0.0).forGetter(v -> v.PocketDimensionZ)
         ).apply(i, WorldVariables::new));
-        public static final SavedDataType<WorldVariables> TYPE = new SavedDataType<>(
-            Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "world_variables"), WorldVariables::new, CODEC, null
-        );
+        public static final String DATA_NAME = "theabyss_worldvars";
+        public static final SavedData.Factory<WorldVariables> FACTORY = new SavedData.Factory<>(WorldVariables::new, (tag, registries) -> fromTag(tag), null);
         static WorldVariables clientSide = new WorldVariables();
 
         public double MobLevel = 0.0;
@@ -445,6 +446,12 @@ public class TheabyssModVariables {
             return (CompoundTag) CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, this).getOrThrow();
         }
 
+        @Override
+        public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+            tag.merge(this.toTag());
+            return tag;
+        }
+
         static WorldVariables fromTag(CompoundTag tag) {
             return CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag).result().orElseGet(WorldVariables::new);
         }
@@ -458,7 +465,7 @@ public class TheabyssModVariables {
 
         public static WorldVariables get(LevelAccessor world) {
             if (world instanceof ServerLevel level) {
-                return level.getDataStorage().computeIfAbsent(TYPE);
+                return net.yezon.theabyss.util.AbyssSavedData.level(level, "world_variables", FACTORY, DATA_NAME);
             }
             return clientSide;
         }
@@ -467,7 +474,7 @@ public class TheabyssModVariables {
     public record SavedDataSyncMessage(int dataType, CompoundTag data) implements CustomPacketPayload {
         public static final int MAP = 0;
         public static final int WORLD = 1;
-        public static final Type<SavedDataSyncMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "saved_data_sync"));
+        public static final Type<SavedDataSyncMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "saved_data_sync"));
         public static final StreamCodec<RegistryFriendlyByteBuf, SavedDataSyncMessage> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SavedDataSyncMessage::dataType,
             ByteBufCodecs.COMPOUND_TAG, SavedDataSyncMessage::data,

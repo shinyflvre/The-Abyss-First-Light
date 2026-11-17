@@ -21,7 +21,7 @@ public class FirestormOnPotionActiveEvents {
         float damage = net.yezon.theabyss.ring.RingDamage.FIRESTORM.at(entity);
         for (Entity target : level.getEntitiesOfClass(Entity.class, new AABB(centre, centre).inflate(20.0), e -> e != entity)) {
             if (!RingMode.spares(entity, target)) {
-                target.hurtServer(level, fire, damage);
+                target.hurt(fire, damage);
                 target.igniteForSeconds(5);
             }
         }

@@ -1,6 +1,8 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": "theabyss:cobble_stone",
+  "ingredient": {
+    "item": "theabyss:cobble_stone"
+  },
   "result": {
     "id": "theabyss:cobble_stone_slab",
     "count": 2

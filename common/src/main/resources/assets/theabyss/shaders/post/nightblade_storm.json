@@ -1,0 +1,40 @@
+{
+  "targets": [
+    "swap"
+  ],
+  "passes": [
+    {
+      "name": "theabyss:nightblade_storm",
+      "intarget": "minecraft:main",
+      "outtarget": "swap",
+      "auxtargets": [
+        {
+          "name": "InSampler",
+          "id": "minecraft:main"
+        },
+        {
+          "name": "DepthSampler",
+          "id": "minecraft:main:depth"
+        },
+        {
+          "name": "StateSampler",
+          "id": "theabyss:fx_state",
+          "width": 176,
+          "height": 1,
+          "bilinear": false
+        }
+      ]
+    },
+    {
+      "name": "theabyss:copy",
+      "intarget": "swap",
+      "outtarget": "minecraft:main",
+      "auxtargets": [
+        {
+          "name": "InSampler",
+          "id": "swap"
+        }
+      ]
+    }
+  ]
+}

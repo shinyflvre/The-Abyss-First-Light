@@ -363,7 +363,6 @@
         17,
         8
       ],
-      "shade": false,
       "rotation": {
         "angle": 45,
         "axis": "y",
@@ -406,7 +405,6 @@
         17,
         15.2
       ],
-      "shade": false,
       "rotation": {
         "angle": 45,
         "axis": "y",
@@ -449,7 +447,6 @@
         17,
         8
       ],
-      "shade": false,
       "rotation": {
         "angle": 45,
         "axis": "y",
@@ -480,7 +477,10 @@
           "texture": "#glow_tenuem_fire"
         }
       },
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -493,7 +493,6 @@
         17,
         15.2
       ],
-      "shade": false,
       "rotation": {
         "angle": 45,
         "axis": "y",
@@ -524,7 +523,10 @@
           "texture": "#glow_tenuem_fire"
         }
       },
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     }
   ],
   "render_type": "cutout",

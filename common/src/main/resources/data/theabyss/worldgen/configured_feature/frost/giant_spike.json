@@ -1,0 +1,8 @@
+{
+  "type": "theabyss:frost_formation",
+  "config": {
+    "max_size": 44,
+    "min_size": 26,
+    "shape": "spike"
+  }
+}

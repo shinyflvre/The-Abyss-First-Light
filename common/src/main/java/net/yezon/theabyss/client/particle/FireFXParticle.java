@@ -3,12 +3,12 @@ package net.yezon.theabyss.client.particle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.util.RandomSource;
 
-public class FireFXParticle extends SingleQuadParticle {
+public class FireFXParticle extends TextureSheetParticle {
     private final SpriteSet spriteSet;
     private float angularVelocity;
     private float angularAcceleration;
@@ -18,7 +18,8 @@ public class FireFXParticle extends SingleQuadParticle {
     }
 
     protected FireFXParticle(ClientLevel world, double x, double y, double z, double vx, double vy, double vz, SpriteSet spriteSet) {
-        super(world, x, y, z, spriteSet.first());
+        super(world, x, y, z);
+        this.setSprite(spriteSet.get(0, 1));
         this.spriteSet = spriteSet;
         this.setSize(0.0F, 0.0F);
         this.quadSize *= 2.5F;
@@ -34,13 +35,13 @@ public class FireFXParticle extends SingleQuadParticle {
     }
 
     @Override
-    public int getLightCoords(float partialTick) {
+    public int getLightColor(float partialTick) {
         return 15728880;
     }
 
     @Override
-    public SingleQuadParticle.Layer getLayer() {
-        return SingleQuadParticle.Layer.OPAQUE;
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     @Override
@@ -63,8 +64,7 @@ public class FireFXParticle extends SingleQuadParticle {
 
         @Override
         public Particle createParticle(
-            SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random
-        ) {
+            SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             return new FireFXParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
         }
     }

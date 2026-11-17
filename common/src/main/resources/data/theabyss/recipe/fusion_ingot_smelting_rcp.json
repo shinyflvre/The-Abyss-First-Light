@@ -3,7 +3,9 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 1,
-  "ingredient": "theabyss:unactive_fusion_ingot",
+  "ingredient": {
+    "item": "theabyss:unactive_fusion_ingot"
+  },
   "result": {
     "id": "theabyss:fusion_ingot"
   }

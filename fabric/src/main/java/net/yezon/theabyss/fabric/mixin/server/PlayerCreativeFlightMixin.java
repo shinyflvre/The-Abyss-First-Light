@@ -18,7 +18,7 @@ public abstract class PlayerCreativeFlightMixin {
         return builder.add(FabricAttributes.CREATIVE_FLIGHT);
     }
 
-    @WrapOperation(method = {"causeFallDamage", "hasEnoughFoodToDoExhaustiveManoeuvres"},
+    @WrapOperation(method = "causeFallDamage",
         at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/player/Abilities;mayfly:Z", opcode = Opcodes.GETFIELD))
     private boolean theabyss$mayFly(Abilities abilities, Operation<Boolean> original) {
         return original.call(abilities) || FabricAttributes.attributeFlight((Player)(Object)this);

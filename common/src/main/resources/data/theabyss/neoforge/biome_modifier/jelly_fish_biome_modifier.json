@@ -14,11 +14,8 @@
   ],
   "spawners": {
     "type": "theabyss:jelly_fish",
-    "weight": 2,
-    "count": {
-      "type": "minecraft:uniform",
-      "max_inclusive": 30,
-      "min_inclusive": 20
-    }
+    "maxCount": 30,
+    "minCount": 20,
+    "weight": 2
   }
 }

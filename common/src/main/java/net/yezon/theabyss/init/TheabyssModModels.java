@@ -7,8 +7,8 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.model.player.PlayerModel;
-import net.minecraft.resources.Identifier;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.resources.ResourceLocation;
 import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
 import net.yezon.theabyss.platform.event.EventBusSubscriber;
@@ -46,8 +46,8 @@ import net.yezon.theabyss.client.model.Modelzombie1;
 
 @EventBusSubscriber(value = Dist.CLIENT)
 public class TheabyssModModels {
-    public static final ModelLayerLocation HUMANOID = new ModelLayerLocation(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "humanoid"), "main");
-    public static final ModelLayerLocation INFECTED_COW = new ModelLayerLocation(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "infected_cow"), "main");
+    public static final ModelLayerLocation HUMANOID = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "humanoid"), "main");
+    public static final ModelLayerLocation INFECTED_COW = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "infected_cow"), "main");
 
     @SubscribeEvent
     public static void registerLayerDefinitions(RegisterLayerDefinitions event) {
@@ -86,12 +86,6 @@ public class TheabyssModModels {
 
     private static LayerDefinition createHumanoidLayer() {
         MeshDefinition mesh = PlayerModel.createMesh(CubeDeformation.NONE, false);
-        PartDefinition root = mesh.getRoot();
-        root.getChild("left_arm").clearChild("left_sleeve");
-        root.getChild("right_arm").clearChild("right_sleeve");
-        root.getChild("left_leg").clearChild("left_pants");
-        root.getChild("right_leg").clearChild("right_pants");
-        root.getChild("body").clearChild("jacket");
         return LayerDefinition.create(mesh, 64, 64);
     }
 

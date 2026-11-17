@@ -1,15 +1,20 @@
-#version 330
-#extension GL_ARB_separate_shader_objects : require
+#version 150
 
-#include <minecraft:globals.glsl>
-#include <minecraft:dynamictransforms.glsl>
-#include <minecraft:fog.glsl>
+#moj_import <fog.glsl>
 
-layout(location = 0) in vec4 vertexColor;
-layout(location = 1) in vec3 worldPos;
-layout(location = 2) in vec3 viewPos;
+uniform vec4 ColorModulator;
+uniform float FogStart;
+uniform float FogEnd;
+uniform vec4 FogColor;
+uniform int FogShape;
+uniform float GameTime;
+uniform int Pass;
 
-layout(location = 0) out vec4 fragColor;
+in vec4 vertexColor;
+in vec3 worldPos;
+in vec3 viewPos;
+
+out vec4 fragColor;
 
 const vec3 CORE = vec3(0.86, 1.0, 0.98);
 const vec3 GLOW = vec3(0.16, 0.88, 1.0);
@@ -38,28 +43,27 @@ void main() {
     float flow = vnoise(texel * 0.22 + vec2(t * 0.35, -t * 0.21), 41u);
     float energy = (0.62 + 0.55 * flow) * (0.92 + 0.08 * sin(t * 1.1));
     vec3 light = mix(DEEP, GLOW, 0.65 + 0.35 * flow) * energy;
-    float fog = total_fog_value(fog_spherical_distance(viewPos), fog_cylindrical_distance(viewPos), FogEnvironmentalStart, FogEnvironmentalEnd,
-        FogRenderDistanceStart, FogRenderDistanceEnd) * FogColor.a;
+    float fog = (1.0 - linear_fog_fade(fog_distance(viewPos, FogShape), FogStart, FogEnd)) * FogColor.a;
     float k = ColorModulator.a * (1.0 - fog);
     float value = vertexColor.r;
 
-#if PASS == 0
-    fragColor = vec4(0.0, 0.0, 0.0, 0.6 * k);
-#elif PASS == 1
-    fragColor = vec4(light * 1.7 * value * k, 1.0);
-#elif PASS == 2
-    fragColor = vec4(light * 0.22 * value * k, 1.0);
-#else
-    vec3 inner;
-    float alpha;
-    if (vertexColor.b > 0.5) {
-        inner = GLOW * (0.55 + 0.45 * energy);
-        alpha = 0.85 * value;
+    if (Pass == 0) {
+        fragColor = vec4(0.0, 0.0, 0.0, 0.6 * k);
+    } else if (Pass == 1) {
+        fragColor = vec4(light * 1.7 * value * k, 1.0);
+    } else if (Pass == 2) {
+        fragColor = vec4(light * 0.22 * value * k, 1.0);
     } else {
-        inner = mix(GLOW, CORE, value * energy) * (0.8 + 0.5 * energy);
-        alpha = 1.0;
+        vec3 inner;
+        float alpha;
+        if (vertexColor.b > 0.5) {
+            inner = GLOW * (0.55 + 0.45 * energy);
+            alpha = 0.85 * value;
+        } else {
+            inner = mix(GLOW, CORE, value * energy) * (0.8 + 0.5 * energy);
+            alpha = 1.0;
+        }
+        inner = mix(inner, FogColor.rgb, fog);
+        fragColor = vec4(inner, alpha * ColorModulator.a);
     }
-    inner = mix(inner, FogColor.rgb, fog);
-    fragColor = vec4(inner, alpha * ColorModulator.a);
-#endif
 }

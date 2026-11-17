@@ -1,18 +1,12 @@
 package net.yezon.theabyss.fabric.mixin.event.client;
 
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import java.util.List;
 import net.minecraft.client.Camera;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.fog.FogData;
-import net.minecraft.client.renderer.fog.FogRenderer;
-import net.minecraft.client.renderer.fog.environment.FogEnvironment;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.material.FogType;
+import net.minecraft.client.renderer.FogRenderer;
 import net.yezon.theabyss.fabric.event.ClientFabricEvents;
-import org.joml.Vector4f;
-import org.spongepowered.asm.mixin.Final;
+import org.joml.Vector3f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,29 +16,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(FogRenderer.class)
 public abstract class FogRendererEventsMixin {
     @Shadow
-    @Final
-    private static List<FogEnvironment> FOG_ENVIRONMENTS;
+    private static float fogRed;
+    @Shadow
+    private static float fogGreen;
+    @Shadow
+    private static float fogBlue;
 
-    @Inject(method = "computeFogColor", at = @At("TAIL"))
-    private void theabyss$fogColor(Camera camera, float partialTicks, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector4f dest,
-        CallbackInfo ci) {
-        ClientFabricEvents.fogColor(dest);
+    @WrapOperation(method = "setupColor", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;clearColor(FFFF)V", ordinal = 1))
+    private static void theabyss$fogColor(float red, float green, float blue, float alpha, Operation<Void> original, @Local(argsOnly = true) Camera camera,
+        @Local(argsOnly = true, ordinal = 0) float partialTick) {
+        if (ClientFabricEvents.listensToFogColor()) {
+            Vector3f color = ClientFabricEvents.fogColor(camera, partialTick, fogRed, fogGreen, fogBlue);
+            fogRed = color.x();
+            fogGreen = color.y();
+            fogBlue = color.z();
+        }
+        original.call(fogRed, fogGreen, fogBlue, alpha);
     }
 
-    @ModifyReturnValue(method = "setupFog", at = @At("RETURN"))
-    private FogData theabyss$renderFog(FogData fog, @Local(argsOnly = true) Camera camera, @Local FogType fogType) {
-        if (!ClientFabricEvents.listensToRenderFog()) {
-            return fog;
-        }
-        Entity entity = camera.entity();
-        FogEnvironment chosen = null;
-        for (FogEnvironment environment : FOG_ENVIRONMENTS) {
-            if (environment.isApplicable(fogType, entity)) {
-                chosen = environment;
-                break;
-            }
-        }
-        ClientFabricEvents.renderFog(chosen, fog);
-        return fog;
+    @Inject(method = "setupFog", at = @At("TAIL"))
+    private static void theabyss$renderFog(Camera camera, FogRenderer.FogMode mode, float renderDistance, boolean foggy, float partialTick, CallbackInfo ci) {
+        ClientFabricEvents.renderFog(mode, camera, partialTick);
     }
 }

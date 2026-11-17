@@ -1,9 +1,9 @@
 package net.yezon.theabyss.platform.common.world;
 
-import net.minecraft.world.attribute.EnvironmentAttributeMap;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
+import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.yezon.theabyss.platform.services.ServerHooks;
 
 public final class ModifiableBiomeInfo {
@@ -18,6 +18,6 @@ public final class ModifiableBiomeInfo {
         ServerHooks.get().setModifiedBiomeInfo(biome, info);
     }
 
-    public record BiomeInfo(Object climateSettings, EnvironmentAttributeMap attributes, BiomeSpecialEffects effects, BiomeGenerationSettings generationSettings) {
+    public record BiomeInfo(Object climateSettings, BiomeSpecialEffects effects, BiomeGenerationSettings generationSettings, MobSpawnSettings mobSpawnSettings) {
     }
 }

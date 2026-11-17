@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(Player.class)
 public abstract class PlayerPartAttackMixin {
-    @ModifyVariable(method = "itemAttackInteraction", at = @At(value = "STORE", ordinal = 0), name = "hurtTarget")
+    @ModifyVariable(method = "attack", at = @At(value = "STORE", ordinal = 0), ordinal = 1)
     private Entity theabyss$partHurtTarget(Entity hurtTarget) {
         return hurtTarget instanceof FabricPartEntity part ? part.getParent() : hurtTarget;
     }

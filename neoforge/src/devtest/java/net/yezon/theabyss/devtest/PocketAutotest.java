@@ -12,7 +12,7 @@ import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -49,7 +49,7 @@ final class PocketAutotest {
                 c.Mana = 1000.0;
                 c.syncPlayerVariables(sp);
             });
-            PocketCells cells = PocketCells.get(sp.level().getServer());
+            PocketCells cells = PocketCells.get(sp.serverLevel().getServer());
             Set<Integer> got = new HashSet<>();
             List<Integer> list = new ArrayList<>();
             for (int i = 0; i < 5; i++) {
@@ -74,14 +74,14 @@ final class PocketAutotest {
         }), 4);
         add.add("pk enter", () -> KeyMapping.click(mc.options.keyUse.getKey()), 60);
         add.add("pk check enter", () -> onServer(sp -> {
-            cell = PocketCells.get(sp.level().getServer()).find(sp.getUUID());
+            cell = PocketCells.get(sp.serverLevel().getServer()).find(sp.getUUID());
             Vec3 arrival = cell < 0 ? Vec3.ZERO : PocketCells.arrival(cell);
-            check("the ring takes the player into the pocket dimension (" + sp.level().dimension().identifier() + ")",
-                sp.level().dimension() == PocketCells.DIMENSION);
+            check("the ring takes the player into the pocket dimension (" + sp.serverLevel().dimension().location() + ")",
+                sp.serverLevel().dimension() == PocketCells.DIMENSION);
             check("arrival at the north wall of the own box (cell " + cell + ", at " + sp.position() + ", want " + arrival + ")",
                 cell >= 0 && sp.position().distanceTo(arrival) < 1.0 && PocketCells.inBox(cell, sp.getX(), sp.getZ(), 0.0));
             check("looking into the box (yaw " + sp.getYRot() + ")", Math.abs(net.minecraft.util.Mth.wrapDegrees(sp.getYRot())) < 1.0F);
-            BlockState under = sp.level().getBlockState(BlockPos.containing(sp.getX(), sp.getY() - 0.5, sp.getZ()));
+            BlockState under = sp.serverLevel().getBlockState(BlockPos.containing(sp.getX(), sp.getY() - 0.5, sp.getZ()));
             check("standing on grass (" + under + " at y " + sp.getY() + ")", under.is(Blocks.GRASS_BLOCK));
         }), 4);
         add.add("pk check client", () -> {
@@ -90,7 +90,7 @@ final class PocketAutotest {
         }, 30);
         add.add("pk shot arrival", () -> shot.accept("108_pocket_1_arrival"), 2);
         add.add("pk check land", () -> onServer(sp -> {
-            ServerLevel level = sp.level();
+            ServerLevel level = sp.serverLevel();
             int ox = PocketCells.originX(cell);
             int oz = PocketCells.originZ(cell);
             int logs = 0;
@@ -144,10 +144,10 @@ final class PocketAutotest {
                 empty &= level.getBlockState(new BlockPos(ox - 20, y, oz + 30)).isAir() && level.getBlockState(new BlockPos(ox + 30, y, oz + 90)).isAir();
             }
             check("outside the cell the dimension is empty", empty);
-            sp.level().setBlockAndUpdate(new BlockPos(bx + 5, PocketCells.FLOOR + 1, bz + 5), Blocks.GOLD_BLOCK.defaultBlockState());
+            sp.serverLevel().setBlockAndUpdate(new BlockPos(bx + 5, PocketCells.FLOOR + 1, bz + 5), Blocks.GOLD_BLOCK.defaultBlockState());
         }), 4);
-        add.add("pk walk setup", () -> onServer(sp -> sp.teleportTo(sp.level(), PocketCells.boxX(cell) + 3.0, PocketCells.FLOOR + 1, PocketCells.centreZ(cell),
-            java.util.Set.of(), 90.0F, 10.0F, true)), 20);
+        add.add("pk walk setup", () -> onServer(sp -> sp.teleportTo(sp.serverLevel(), PocketCells.boxX(cell) + 3.0, PocketCells.FLOOR + 1, PocketCells.centreZ(cell),
+            90.0F, 10.0F)), 20);
         add.add("pk walk", () -> {
             mc.options.keyUp.setDown(true);
             mc.options.keySprint.setDown(true);
@@ -165,7 +165,7 @@ final class PocketAutotest {
             sp.getAbilities().mayfly = true;
             sp.getAbilities().flying = true;
             sp.onUpdateAbilities();
-            sp.teleportTo(sp.level(), PocketCells.centreX(cell), PocketCells.TOP_BLOCK - 2.0, PocketCells.centreZ(cell), java.util.Set.of(), 0.0F, -60.0F, true);
+            sp.teleportTo(sp.serverLevel(), PocketCells.centreX(cell), PocketCells.TOP_BLOCK - 2.0, PocketCells.centreZ(cell), 0.0F, -60.0F);
         }), 20);
         add.add("pk rise", () -> mc.options.keyJump.setDown(true), 40);
         add.add("pk shot ceiling", () -> shot.accept("108_pocket_2c_ceiling"), 2);
@@ -180,7 +180,7 @@ final class PocketAutotest {
             sp.getAbilities().flying = false;
             sp.getAbilities().mayfly = false;
             sp.onUpdateAbilities();
-            ServerLevel level = sp.level();
+            ServerLevel level = sp.serverLevel();
             int x = (int)PocketCells.centreX(cell) + 3;
             int z = (int)PocketCells.centreZ(cell);
             level.setBlockAndUpdate(new BlockPos(x, PocketCells.TOP_BLOCK - 1, z), Blocks.STONE.defaultBlockState());
@@ -199,77 +199,77 @@ final class PocketAutotest {
         }), 4);
         add.add("pk break outside", () -> onServer(sp -> {
             BlockPos outside = new BlockPos(PocketCells.boxX(cell) - 1, PocketCells.FLOOR, PocketCells.centreZ(cell) > 0 ? (int)PocketCells.centreZ(cell) : 0);
-            BlockState before = sp.level().getBlockState(outside);
+            BlockState before = sp.serverLevel().getBlockState(outside);
             boolean broken = sp.gameMode.destroyBlock(outside);
-            check("a block outside the box cannot be broken (" + before + ", broken " + broken + ")", !broken && sp.level().getBlockState(outside) == before);
+            check("a block outside the box cannot be broken (" + before + ", broken " + broken + ")", !broken && sp.serverLevel().getBlockState(outside) == before);
         }), 2);
-        add.add("pk centre", () -> onServer(sp -> sp.teleportTo(sp.level(), PocketCells.centreX(cell), PocketCells.FLOOR + 1, PocketCells.centreZ(cell),
-            java.util.Set.of(), 90.0F, 0.0F, true)), 30);
+        add.add("pk centre", () -> onServer(sp -> sp.teleportTo(sp.serverLevel(), PocketCells.centreX(cell), PocketCells.FLOOR + 1, PocketCells.centreZ(cell),
+            90.0F, 0.0F)), 30);
         add.add("pk shot centre", () -> shot.accept("108_pocket_2b_centre"), 2);
-        add.add("pk to wall", () -> onServer(sp -> sp.teleportTo(sp.level(), PocketCells.centreX(cell) - 6, PocketCells.FLOOR + 1, PocketCells.boxZ(cell) + 1.2,
-            java.util.Set.of(), 160.0F, 5.0F, true)), 30);
+        add.add("pk to wall", () -> onServer(sp -> sp.teleportTo(sp.serverLevel(), PocketCells.centreX(cell) - 6, PocketCells.FLOOR + 1, PocketCells.boxZ(cell) + 1.2,
+            160.0F, 5.0F)), 30);
         add.add("pk shot border", () -> shot.accept("108_pocket_2_border"), 2);
         add.add("pk to overview", () -> onServer(sp -> {
             sp.getAbilities().mayfly = true;
             sp.getAbilities().flying = true;
             sp.onUpdateAbilities();
-            sp.teleportTo(sp.level(), PocketCells.boxX(cell) + 2.0, PocketCells.FLOOR + 14, PocketCells.boxZ(cell) + 2.0, java.util.Set.of(), -45.0F, 25.0F, true);
+            sp.teleportTo(sp.serverLevel(), PocketCells.boxX(cell) + 2.0, PocketCells.FLOOR + 14, PocketCells.boxZ(cell) + 2.0, -45.0F, 25.0F);
         }), 30);
         add.add("pk shot overview", () -> shot.accept("108_pocket_3_overview"), 2);
-        add.add("pk turn", () -> onServer(sp -> sp.teleportTo(sp.level(), PocketCells.boxX(cell) + 30.0, PocketCells.FLOOR + 6, PocketCells.boxZ(cell) + 30.0,
-            java.util.Set.of(), 120.0F, 10.0F, true)), 30);
+        add.add("pk turn", () -> onServer(sp -> sp.teleportTo(sp.serverLevel(), PocketCells.boxX(cell) + 30.0, PocketCells.FLOOR + 6, PocketCells.boxZ(cell) + 30.0,
+            120.0F, 10.0F)), 30);
         add.add("pk shot pond side", () -> shot.accept("108_pocket_4_landscape"), 2);
         add.add("pk night", () -> command.accept("time set midnight"), 100);
         add.add("pk shot night", () -> shot.accept("108_pocket_5_night"), 2);
         add.add("pk check night", () -> onServer(sp -> {
-            int monsters = sp.level().getEntitiesOfClass(Monster.class, new AABB(sp.blockPosition()).inflate(64)).size();
+            int monsters = sp.serverLevel().getEntitiesOfClass(Monster.class, new AABB(sp.blockPosition()).inflate(64)).size();
             check("no monsters spawn at night (" + monsters + ")", monsters == 0);
             sp.getAbilities().flying = false;
             sp.getAbilities().mayfly = false;
             sp.onUpdateAbilities();
         }), 2);
         add.add("pk day", () -> command.accept("time set noon"), 4);
-        add.add("pk fall", () -> onServer(sp -> sp.teleportTo(sp.level(), PocketCells.centreX(cell), PocketCells.BOTTOM - 20, PocketCells.centreZ(cell),
-            java.util.Set.of(), 0.0F, 0.0F, true)), 12);
+        add.add("pk fall", () -> onServer(sp -> sp.teleportTo(sp.serverLevel(), PocketCells.centreX(cell), PocketCells.BOTTOM - 20, PocketCells.centreZ(cell),
+            0.0F, 0.0F)), 12);
         add.add("pk check fall", () -> onServer(sp -> check("falling into the void puts you back into the own box (" + sp.position() + ", health " + sp.getHealth() + ")",
-            sp.level().dimension() == PocketCells.DIMENSION && sp.position().distanceTo(PocketCells.arrival(cell)) < 1.0 && sp.getHealth() >= sp.getMaxHealth())), 2);
-        add.add("pk out", () -> onServer(sp -> sp.teleportTo(sp.level(), PocketCells.boxX(cell) - 6.0, PocketCells.FLOOR + 6, PocketCells.centreZ(cell),
-            java.util.Set.of(), 0.0F, 0.0F, true)), 12);
+            sp.serverLevel().dimension() == PocketCells.DIMENSION && sp.position().distanceTo(PocketCells.arrival(cell)) < 1.0 && sp.getHealth() >= sp.getMaxHealth())), 2);
+        add.add("pk out", () -> onServer(sp -> sp.teleportTo(sp.serverLevel(), PocketCells.boxX(cell) - 6.0, PocketCells.FLOOR + 6, PocketCells.centreZ(cell),
+            0.0F, 0.0F)), 12);
         add.add("pk check out", () -> onServer(sp -> check("standing outside the border puts you back into the box (" + sp.position() + ")",
             PocketCells.inBox(cell, sp.getX(), sp.getZ(), 0.0))), 2);
         add.add("pk cow", () -> onServer(sp -> {
-            var cow = net.minecraft.world.entity.EntityTypes.COW.spawn(sp.level(), BlockPos.containing(PocketCells.boxX(cell) - 5.0, PocketCells.FLOOR + 8, PocketCells.centreZ(cell)),
-                EntitySpawnReason.COMMAND);
+            var cow = net.minecraft.world.entity.EntityType.COW.spawn(sp.serverLevel(), BlockPos.containing(PocketCells.boxX(cell) - 5.0, PocketCells.FLOOR + 8, PocketCells.centreZ(cell)),
+                MobSpawnType.COMMAND);
             cowId = cow == null ? null : cow.getUUID();
         }), 45);
         add.add("pk check cow", () -> onServer(sp -> {
-            var cow = cowId == null ? null : sp.level().getEntity(cowId);
+            var cow = cowId == null ? null : sp.serverLevel().getEntity(cowId);
             check("a creature outside the box is set back inside (" + (cow == null ? "gone" : cow.position()) + ")",
                 cow != null && PocketCells.inBox(cell, cow.getX(), cow.getZ(), 0.0));
         }), 2);
         add.add("pk prepare back", () -> onServer(sp -> {
-            sp.getCooldowns().removeCooldown(sp.getCooldowns().getCooldownGroup(sp.getMainHandItem()));
+            sp.getCooldowns().removeCooldown(sp.getMainHandItem().getItem());
             sp.setXRot(-30.0F);
         }), 4);
         add.add("pk back", () -> KeyMapping.click(mc.options.keyUse.getKey()), 60);
-        add.add("pk check back", () -> onServer(sp -> check("the ring takes you back to where you were (" + sp.level().dimension().identifier() + " " + sp.position() + ")",
-            sp.level().dimension() == Level.OVERWORLD && sp.position().distanceTo(new Vec3(1.0, 200.0, 1.0)) < 1.5)), 4);
+        add.add("pk check back", () -> onServer(sp -> check("the ring takes you back to where you were (" + sp.serverLevel().dimension().location() + " " + sp.position() + ")",
+            sp.serverLevel().dimension() == Level.OVERWORLD && sp.position().distanceTo(new Vec3(1.0, 200.0, 1.0)) < 1.5)), 4);
         add.add("pk check client back", () -> {
             check("client: render distance and border normal again (" + mc.options.getEffectiveRenderDistance() + ", border " + mc.level.getWorldBorder().getSize() + ")",
                 mc.options.getEffectiveRenderDistance() > 2 && mc.level.getWorldBorder().getSize() > 1000.0);
         }, 2);
         add.add("pk again", () -> onServer(sp -> {
-            sp.getCooldowns().removeCooldown(sp.getCooldowns().getCooldownGroup(sp.getMainHandItem()));
+            sp.getCooldowns().removeCooldown(sp.getMainHandItem().getItem());
             sp.setXRot(-30.0F);
         }), 4);
         add.add("pk enter again", () -> KeyMapping.click(mc.options.keyUse.getKey()), 60);
         add.add("pk check again", () -> onServer(sp -> {
             check("the second journey goes into the same box, the gold block is still there",
-                PocketCells.get(sp.level().getServer()).find(sp.getUUID()) == cell && sp.level().dimension() == PocketCells.DIMENSION
-                    && sp.level().getBlockState(new BlockPos(PocketCells.boxX(cell) + 5, PocketCells.FLOOR + 1, PocketCells.boxZ(cell) + 5)).is(Blocks.GOLD_BLOCK));
+                PocketCells.get(sp.serverLevel().getServer()).find(sp.getUUID()) == cell && sp.serverLevel().dimension() == PocketCells.DIMENSION
+                    && sp.serverLevel().getBlockState(new BlockPos(PocketCells.boxX(cell) + 5, PocketCells.FLOOR + 1, PocketCells.boxZ(cell) + 5)).is(Blocks.GOLD_BLOCK));
         }), 4);
         add.add("pk leave", () -> onServer(sp -> {
-            sp.getCooldowns().removeCooldown(sp.getCooldowns().getCooldownGroup(sp.getMainHandItem()));
+            sp.getCooldowns().removeCooldown(sp.getMainHandItem().getItem());
             sp.setXRot(-30.0F);
         }), 4);
         add.add("pk leave use", () -> KeyMapping.click(mc.options.keyUse.getKey()), 40);

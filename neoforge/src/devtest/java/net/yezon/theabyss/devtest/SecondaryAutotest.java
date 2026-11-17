@@ -10,7 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.zombie.Husk;
+import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.phys.AABB;
 import net.yezon.theabyss.init.TheabyssModKeyMappings;
 import net.yezon.theabyss.network.TheabyssModVariables;
@@ -32,7 +32,7 @@ final class SecondaryAutotest {
             command.accept("time set noon");
             command.accept("weather clear");
             command.accept("difficulty normal");
-            command.accept("gamerule spawn_mobs false");
+            command.accept("gamerule doMobSpawning false");
             command.accept("gamemode creative @s");
             command.accept("ta2 somnium set infinite");
         }, 60);
@@ -83,7 +83,7 @@ final class SecondaryAutotest {
         if (wants(filter, "heal")) {
             ability(add, command, shot, "heal", "theabyss:ring_of_reg", "usage 2", "0.5 200 -6 0 20",
                 new String[] {}, new int[] {3, 8, 14, 24}, new String[] {"1_column", "2_beams", "3_halo", "4_after"},
-                "the pulse heals the tamed wolves", (sp, hurt) -> sp.level().getEntitiesOfClass(net.minecraft.world.entity.animal.wolf.Wolf.class,
+                "the pulse heals the tamed wolves", (sp, hurt) -> sp.serverLevel().getEntitiesOfClass(net.minecraft.world.entity.animal.Wolf.class,
                     new AABB(sp.blockPosition()).inflate(12)).stream().allMatch(w -> w.getHealth() > 6.0F), () -> {
                     add.add("heal wolves", () -> {
                         command.accept("kill @e[type=minecraft:wolf]");
@@ -106,7 +106,7 @@ final class SecondaryAutotest {
                 new String[] {"0.5 200 10.5", "2.5 200 11.5", "-1.5 200 12.5"}, new int[] {3, 20}, new String[] {"1_bolt", "2_branded"},
                 "the hex leaps on when the branded husk dies", (sp, hurt) -> husks(sp).stream().filter(net.yezon.theabyss.ring.secondary.HexMark::marked).count() >= 2,
                 null, () -> add.add("hex kill", () -> onServer(sp -> husks(sp).stream().filter(net.yezon.theabyss.ring.secondary.HexMark::marked).findFirst()
-                    .ifPresent(h -> h.hurtServer(sp.level(), sp.damageSources().playerAttack(sp), 100.0F))), 4));
+                    .ifPresent(h -> h.hurt(sp.damageSources().playerAttack(sp), 100.0F))), 4));
         }
         if (wants(filter, "puppet")) {
             ability(add, command, shot, "puppet", "theabyss:ring_of_possession", "damage 3", "0.5 200 -6 0 6",
@@ -126,7 +126,7 @@ final class SecondaryAutotest {
         if (wants(filter, "bring")) {
             ability(add, command, shot, "bring", "theabyss:ring_of_pocket_box", "usage 2", "0.5 200 -6 0 10",
                 new String[] {"0.5 200 2.5"}, new int[] {4, 11, 45, 55}, new String[] {"1_tether", "2_gather", "3_arrived", "4_after"},
-                "bring along takes the husk into the pocket room", (sp, hurt) -> sp.level().dimension().identifier().toString().equals("theabyss:pocket_dimension")
+                "bring along takes the husk into the pocket room", (sp, hurt) -> sp.serverLevel().dimension().location().toString().equals("theabyss:pocket_dimension")
                     && !husks(sp).isEmpty(), null);
         }
         if (wants(filter, "bring2")) {
@@ -140,26 +140,26 @@ final class SecondaryAutotest {
             }, 20);
             add.add("bring2 prepare", () -> onServer(sp -> {
                 Secondary.resetCooldowns(sp);
-                sp.getCooldowns().removeCooldown(sp.getCooldowns().getCooldownGroup(sp.getMainHandItem()));
+                sp.getCooldowns().removeCooldown(sp.getMainHandItem().getItem());
             }), 4);
             add.add("bring2 in", () -> KeyMapping.click(TheabyssModKeyMappings.ABYSS_ECHOES.getKey()), 50);
             add.add("bring2 shot in", () -> shot.accept("105_bring2_1_in"), 2);
-            add.add("bring2 check in", () -> onServer(sp -> check("survival: the tamed wolf comes into the box (" + sp.level().dimension().identifier() + ", wolves "
-                + sp.level().getEntitiesOfClass(net.minecraft.world.entity.animal.wolf.Wolf.class, new AABB(sp.blockPosition()).inflate(20)).size() + ")",
-                sp.level().dimension().identifier().toString().equals("theabyss:pocket_dimension")
-                    && !sp.level().getEntitiesOfClass(net.minecraft.world.entity.animal.wolf.Wolf.class, new AABB(sp.blockPosition()).inflate(20)).isEmpty())), 4);
+            add.add("bring2 check in", () -> onServer(sp -> check("survival: the tamed wolf comes into the box (" + sp.serverLevel().dimension().location() + ", wolves "
+                + sp.serverLevel().getEntitiesOfClass(net.minecraft.world.entity.animal.Wolf.class, new AABB(sp.blockPosition()).inflate(20)).size() + ")",
+                sp.serverLevel().dimension().location().toString().equals("theabyss:pocket_dimension")
+                    && !sp.serverLevel().getEntitiesOfClass(net.minecraft.world.entity.animal.Wolf.class, new AABB(sp.blockPosition()).inflate(20)).isEmpty())), 4);
             add.add("bring2 aim back", () -> onServer(sp -> {
                 husks(sp).forEach(h -> h.discard());
                 Secondary.resetCooldowns(sp);
-                sp.getCooldowns().removeCooldown(sp.getCooldowns().getCooldownGroup(sp.getMainHandItem()));
-                sp.level().getEntitiesOfClass(net.minecraft.world.entity.animal.wolf.Wolf.class, new AABB(sp.blockPosition()).inflate(20)).stream().findFirst()
+                sp.getCooldowns().removeCooldown(sp.getMainHandItem().getItem());
+                sp.serverLevel().getEntitiesOfClass(net.minecraft.world.entity.animal.Wolf.class, new AABB(sp.blockPosition()).inflate(20)).stream().findFirst()
                     .ifPresent(w -> sp.lookAt(net.minecraft.commands.arguments.EntityAnchorArgument.Anchor.EYES, w.position().add(0.0, 0.4, 0.0)));
             }), 6);
             add.add("bring2 out", () -> KeyMapping.click(TheabyssModKeyMappings.ABYSS_ECHOES.getKey()), 50);
-            add.add("bring2 check out", () -> onServer(sp -> check("survival: the wolf comes back out (" + sp.level().dimension().identifier() + ", wolves "
-                + sp.level().getEntitiesOfClass(net.minecraft.world.entity.animal.wolf.Wolf.class, new AABB(sp.blockPosition()).inflate(20)).size() + ")",
-                sp.level().dimension() == net.minecraft.world.level.Level.OVERWORLD
-                    && !sp.level().getEntitiesOfClass(net.minecraft.world.entity.animal.wolf.Wolf.class, new AABB(sp.blockPosition()).inflate(20)).isEmpty())), 4);
+            add.add("bring2 check out", () -> onServer(sp -> check("survival: the wolf comes back out (" + sp.serverLevel().dimension().location() + ", wolves "
+                + sp.serverLevel().getEntitiesOfClass(net.minecraft.world.entity.animal.Wolf.class, new AABB(sp.blockPosition()).inflate(20)).size() + ")",
+                sp.serverLevel().dimension() == net.minecraft.world.level.Level.OVERWORLD
+                    && !sp.serverLevel().getEntitiesOfClass(net.minecraft.world.entity.animal.Wolf.class, new AABB(sp.blockPosition()).inflate(20)).isEmpty())), 4);
             add.add("bring2 creative", () -> command.accept("gamemode creative @s"), 2);
         }
         Runnable third = () -> add.add("third person", () -> Minecraft.getInstance().options.setCameraType(net.minecraft.client.CameraType.THIRD_PERSON_BACK), 2);
@@ -249,10 +249,11 @@ final class SecondaryAutotest {
         add.add("sec tooltips", () -> {
             Minecraft mc = Minecraft.getInstance();
             for (String id : new String[] {"ring_of_time", "ring_of_teleport", "ring_of_thunder"}) {
-                net.minecraft.world.item.Item item = net.minecraft.core.registries.BuiltInRegistries.ITEM.getValue(net.minecraft.resources.Identifier.parse("theabyss:" + id));
+                net.minecraft.world.item.Item item = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(net.minecraft.resources.ResourceLocation.parse("theabyss:" + id));
                 net.minecraft.world.item.ItemStack stack = new net.minecraft.world.item.ItemStack(item);
-                item.appendHoverText(stack, net.minecraft.world.item.Item.TooltipContext.of(mc.level), net.minecraft.world.item.component.TooltipDisplay.DEFAULT,
-                    line -> TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] tooltip {} | {}", id, line.getString()), net.minecraft.world.item.TooltipFlag.NORMAL);
+                List<net.minecraft.network.chat.Component> tip = new ArrayList<>();
+                item.appendHoverText(stack, net.minecraft.world.item.Item.TooltipContext.of(mc.level), tip, net.minecraft.world.item.TooltipFlag.NORMAL);
+                tip.forEach(line -> TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] tooltip {} | {}", id, line.getString()));
             }
         }, 2);
         add.add("sec result", () -> TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] RESULT secondary {} ({} checks{})", failures.isEmpty() ? "PASS" : "FAIL",
@@ -325,14 +326,14 @@ final class SecondaryAutotest {
                 }
                 state.add(String.format("%.1f", h.getHealth()));
             }
-            int dead = (int)health.keySet().stream().filter(id -> sp.level().getEntity(id) == null || !((LivingEntity)sp.level().getEntity(id)).isAlive()).count();
+            int dead = (int)health.keySet().stream().filter(id -> sp.serverLevel().getEntity(id) == null || !((LivingEntity)sp.serverLevel().getEntity(id)).isAlive()).count();
             check(check + " (hurt " + hurt + ", dead " + dead + ", hp " + state + ", player " + String.format("%.1f %.1f %.1f", sp.getX(), sp.getY(), sp.getZ()) + ")",
                 ok.test(sp, hurt + dead));
         }), 4);
     }
 
     private static List<Husk> husks(ServerPlayer sp) {
-        return sp.level().getEntitiesOfClass(Husk.class, new AABB(sp.blockPosition()).inflate(50));
+        return sp.serverLevel().getEntitiesOfClass(Husk.class, new AABB(sp.blockPosition()).inflate(50));
     }
 
     private static void check(String name, boolean ok) {

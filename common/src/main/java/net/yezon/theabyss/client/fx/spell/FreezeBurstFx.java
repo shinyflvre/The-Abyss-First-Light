@@ -1,26 +1,15 @@
 package net.yezon.theabyss.client.fx.spell;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.renderpearl.api.pipeline.BlendFactor;
-import com.mojang.renderpearl.api.pipeline.BlendFunction;
-import com.mojang.renderpearl.api.pipeline.ColorTargetState;
-import com.mojang.renderpearl.api.pipeline.CompareOp;
-import com.mojang.renderpearl.api.pipeline.DepthStencilState;
-import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
-import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.BindGroupLayouts;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.rendertype.RenderSetup;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
@@ -30,30 +19,20 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
 import net.yezon.theabyss.platform.event.EventBusSubscriber;
-import net.yezon.theabyss.platform.client.event.RegisterRenderPipelinesEvent;
+import net.yezon.theabyss.platform.client.event.RegisterShadersEvent;
 import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.network.SpellFxMessage;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public final class FreezeBurstFx extends Effect {
-    private static final RenderPipeline.Snippet SNIPPET = RenderPipeline.builder(net.yezon.theabyss.mixin.accessor.client.RenderPipelinesAccessor.theabyss$matricesFogSnippet())
-        .withVertexShader(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "core/unlit_particle"))
-        .withFragmentShader(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "core/unlit_particle"))
-        .withBindGroupLayout(BindGroupLayouts.SAMPLER0)
-        .withVertexBinding(0, DefaultVertexFormat.POSITION_TEX_COLOR)
-        .withPrimitiveTopology(PrimitiveTopology.QUADS)
-        .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
-        .withColorTargetState(new ColorTargetState(new BlendFunction(BlendFactor.ONE, BlendFactor.ONE_MINUS_SRC_ALPHA, BlendFactor.ZERO, BlendFactor.ONE)))
-        .withCull(false)
-        .buildSnippet();
-    static final RenderPipeline FLASH_PIPELINE = pipeline("flash", 2.3773587F);
-    static final RenderPipeline GLOW_PIPELINE = pipeline("glow", 1.0F);
-    static final RenderPipeline SPARK_PIPELINE = pipeline("spark", 6.3479204F);
-    private static final RenderPipeline CRATER_PIPELINE = pipeline("crater", 4.0000005F);
-    private static final RenderType FLASH = type(FLASH_PIPELINE, "flash");
-    private static final RenderType GLOW = type(GLOW_PIPELINE, "glow");
-    static final RenderType SPARK = type(SPARK_PIPELINE, "spark");
-    static final RenderType CRATER = type(CRATER_PIPELINE, "crater");
+    static final float FLASH_TINT = 2.3773587F;
+    static final float GLOW_TINT = 1.0F;
+    static final float SPARK_TINT = 6.3479204F;
+    private static final float CRATER_TINT = 4.0000005F;
+    private static final RenderType FLASH = type(FLASH_TINT, "flash");
+    private static final RenderType GLOW = type(GLOW_TINT, "glow");
+    static final RenderType SPARK = type(SPARK_TINT, "spark");
+    static final RenderType CRATER = type(CRATER_TINT, "crater");
 
     private static final float STEP = 0.025F;
     private static final float BURST_TIME = 0.15F;
@@ -133,25 +112,14 @@ public final class FreezeBurstFx extends Effect {
         }
     }
 
-    static RenderPipeline pipeline(String name, float tint) {
-        return RenderPipeline.builder(SNIPPET)
-            .withLocation(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "pipeline/unlit_particle_" + name))
-            .withShaderDefine("TINT", (float)Math.pow(tint, 2.2))
-            .build();
-    }
-
-    private static RenderType type(RenderPipeline pipeline, String texture) {
-        return net.yezon.theabyss.mixin.accessor.client.RenderTypeAccessor.theabyss$create("theabyss_freeze_burst_" + texture, RenderSetup.builder(pipeline)
-            .withTexture("Sampler0", Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "textures/fx/freeze/" + texture + ".png"))
-            .createRenderSetup());
+    private static RenderType type(float tint, String texture) {
+        return SpellRenderTypes.unlit("theabyss_freeze_burst_" + texture,
+            ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "textures/fx/freeze/" + texture + ".png"), tint);
     }
 
     @SubscribeEvent
-    public static void registerPipelines(RegisterRenderPipelinesEvent event) {
-        event.registerPipeline(FLASH_PIPELINE);
-        event.registerPipeline(GLOW_PIPELINE);
-        event.registerPipeline(SPARK_PIPELINE);
-        event.registerPipeline(CRATER_PIPELINE);
+    public static void registerShaders(RegisterShadersEvent event) {
+        SpellRenderTypes.registerShaders(event);
     }
 
     @Override

@@ -5,13 +5,12 @@ import java.util.List;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -22,6 +21,7 @@ import net.yezon.theabyss.platform.client.event.ClientPlayerNetworkEvent;
 import net.yezon.theabyss.platform.client.event.ClientTickEvent;
 import net.yezon.theabyss.platform.client.network.ClientPacketDistributor;
 import net.yezon.theabyss.TheabyssMod;
+import net.yezon.theabyss.compat.GuiGraphicsCompat;
 import net.yezon.theabyss.init.TheabyssModKeyMappings;
 import net.yezon.theabyss.init.TheabyssModSounds;
 import net.yezon.theabyss.network.DialogueMessage;
@@ -29,12 +29,12 @@ import net.yezon.theabyss.network.DialogueReplyMessage;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public final class DialogueClient {
-    private static final Identifier BOX = sprite("box");
-    private static final Identifier ARROW = sprite("arrow");
-    private static final Identifier ARROW_HIGHLIGHTED = sprite("arrow_highlighted");
-    private static final Identifier OPTION = sprite("option");
-    private static final Identifier OPTION_HIGHLIGHTED = sprite("option_highlighted");
-    private static final Identifier POINTER_HIGHLIGHTED = sprite("pointer_highlighted");
+    private static final ResourceLocation BOX = sprite("box");
+    private static final ResourceLocation ARROW = sprite("arrow");
+    private static final ResourceLocation ARROW_HIGHLIGHTED = sprite("arrow_highlighted");
+    private static final ResourceLocation OPTION = sprite("option");
+    private static final ResourceLocation OPTION_HIGHLIGHTED = sprite("option_highlighted");
+    private static final ResourceLocation POINTER_HIGHLIGHTED = sprite("pointer_highlighted");
     private static final int NAME_COLOUR = 0xFF7FE8FF;
     private static final int INFO_COLOUR = 0xFFFFA040;
     private static final String INFO_SPEAKER = "dialog.theabyss.speaker.info";
@@ -92,8 +92,8 @@ public final class DialogueClient {
     private DialogueClient() {
     }
 
-    private static Identifier sprite(String name) {
-        return Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "dialog/" + name);
+    private static ResourceLocation sprite(String name) {
+        return ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "dialog/" + name);
     }
 
     public static void show(DialogueMessage message) {
@@ -243,7 +243,7 @@ public final class DialogueClient {
     public static void onClientTick(ClientTickEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
         while (TheabyssModKeyMappings.DIALOG_CONTINUE.consumeClick()) {
-            if (mc.gui.screen() == null && !voiceFirst()) {
+            if (mc.screen == null && !voiceFirst()) {
                 onContinue();
             }
         }
@@ -251,10 +251,10 @@ public final class DialogueClient {
             return;
         }
         boolean hold = holdsPlayer() && mc.player.isAlive();
-        if (hold && mc.gui.screen() == null) {
-            mc.gui.setScreen(new DialogueScreen());
-        } else if (!hold && mc.gui.screen() instanceof DialogueScreen) {
-            mc.gui.setScreen(null);
+        if (hold && mc.screen == null) {
+            mc.setScreen(new DialogueScreen());
+        } else if (!hold && mc.screen instanceof DialogueScreen) {
+            mc.setScreen(null);
         }
     }
 
@@ -286,7 +286,7 @@ public final class DialogueClient {
 
     static boolean typing() {
         Minecraft mc = Minecraft.getInstance();
-        return active && !lineTyped() && !voiceFirst() && !mc.isPaused() && mc.player != null && !mc.gui.hud.isHidden();
+        return active && !lineTyped() && !voiceFirst() && !mc.isPaused() && mc.player != null && !mc.options.hideGui;
     }
 
     private static void speak() {
@@ -362,9 +362,9 @@ public final class DialogueClient {
         return rows;
     }
 
-    public static void render(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
+    public static void render(GuiGraphics graphics, DeltaTracker deltaTracker) {
         Minecraft mc = Minecraft.getInstance();
-        if (!active || mc.player == null || mc.gui.hud.isHidden()) {
+        if (!active || mc.player == null || mc.options.hideGui) {
             return;
         }
         if (voiceFirst()) {
@@ -382,15 +382,15 @@ public final class DialogueClient {
         }
         int x = (screenWidth - boxWidth) / 2;
         int y = graphics.guiHeight() - HUD_CLEARANCE - boxHeight;
-        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BOX, x, y, boxWidth, boxHeight);
-        graphics.text(font, speaker, x + PAD_X, y + TOP, info ? INFO_COLOUR : NAME_COLOUR, true);
+        GuiGraphicsCompat.blitSprite(graphics, BOX, x, y, boxWidth, boxHeight);
+        GuiGraphicsCompat.text(graphics, font, speaker, x + PAD_X, y + TOP, info ? INFO_COLOUR : NAME_COLOUR, true);
         int left = (int)typed;
         int ty = y + TOP + LINE_H + 1;
         for (String row : wrap(font, current(), boxWidth - 2 * PAD_X)) {
             if (left <= 0) {
                 break;
             }
-            graphics.text(font, row.substring(0, Math.min(row.length(), left)), x + PAD_X, ty, TEXT_COLOUR, true);
+            GuiGraphicsCompat.text(graphics, font, row.substring(0, Math.min(row.length(), left)), x + PAD_X, ty, TEXT_COLOUR, true);
             left -= row.length() + 1;
             ty += LINE_H;
         }
@@ -398,11 +398,11 @@ public final class DialogueClient {
             renderChoices(graphics, font, x, y);
         } else if (lineTyped()) {
             boolean lit = (int)(clock / BLINK_SECONDS) % 2 == 0;
-            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, lit ? ARROW_HIGHLIGHTED : ARROW, x + boxWidth - PAD_X - 4, y + boxHeight - BOTTOM_PAD, 9, 6);
+            GuiGraphicsCompat.blitSprite(graphics, lit ? ARROW_HIGHLIGHTED : ARROW, x + boxWidth - PAD_X - 4, y + boxHeight - BOTTOM_PAD, 9, 6);
         }
     }
 
-    private static void renderChoices(GuiGraphicsExtractor graphics, Font font, int boxX, int boxY) {
+    private static void renderChoices(GuiGraphics graphics, Font font, int boxX, int boxY) {
         choiceRects.clear();
         int gap = GAP_X + (boxWidth - GAP_X) % 2;
         int cell = (boxWidth - gap) / 2;
@@ -424,15 +424,15 @@ public final class DialogueClient {
                 int cx = boxX + (i % 2) * (cell + gap);
                 boolean selected = i == highlight;
                 choiceRects.add(new int[] {cx, y, cell, row[1]});
-                graphics.blitSprite(RenderPipelines.GUI_TEXTURED, selected ? OPTION_HIGHLIGHTED : OPTION, cx, y, cell, row[1]);
+                GuiGraphicsCompat.blitSprite(graphics, selected ? OPTION_HIGHLIGHTED : OPTION, cx, y, cell, row[1]);
                 List<String> wrapped = wrap(font, choices.get(i), cell - textX(font, i) - OPTION_RIGHT_PAD);
                 int top = y + (row[1] - (wrapped.size() * LINE_H - 2)) / 2;
                 if (selected) {
-                    graphics.blitSprite(RenderPipelines.GUI_TEXTURED, POINTER_HIGHLIGHTED, cx + 5, y + (row[1] - 9) / 2, 6, 9);
+                    GuiGraphicsCompat.blitSprite(graphics, POINTER_HIGHLIGHTED, cx + 5, y + (row[1] - 9) / 2, 6, 9);
                 }
-                graphics.text(font, (i + 1) + ".", cx + OPTION_TEXT_X, top, NUMBER_COLOUR, true);
+                GuiGraphicsCompat.text(graphics, font, (i + 1) + ".", cx + OPTION_TEXT_X, top, NUMBER_COLOUR, true);
                 for (int n = 0; n < wrapped.size(); n++) {
-                    graphics.text(font, wrapped.get(n), cx + textX(font, i), top + n * LINE_H, selected ? OPTION_SELECTED_COLOUR : OPTION_COLOUR, true);
+                    GuiGraphicsCompat.text(graphics, font, wrapped.get(n), cx + textX(font, i), top + n * LINE_H, selected ? OPTION_SELECTED_COLOUR : OPTION_COLOUR, true);
                 }
             }
             y += row[1] + GAP_Y;

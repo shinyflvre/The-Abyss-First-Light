@@ -1,6 +1,6 @@
 package net.yezon.theabyss.ring;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -17,7 +17,7 @@ import net.yezon.theabyss.network.TheabyssModVariables;
 public final class OceanPassive {
     public static final int BREATH_LEVEL = 3;
     public static final int SWIM_LEVEL = 4;
-    private static final Identifier SWIM = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "ocean_ring_swim");
+    private static final ResourceLocation SWIM = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "ocean_ring_swim");
 
     private OceanPassive() {
     }
@@ -42,13 +42,14 @@ public final class OceanPassive {
                 }
             }
         }
-        if (net.yezon.theabyss.platform.PersistentData.get(player).getBooleanOr("theabyss_ocean_passive", false) && player.getAirSupply() < player.getMaxAirSupply()) {
+        if (net.yezon.theabyss.compat.NbtCompat.getBooleanOr(net.yezon.theabyss.platform.PersistentData.get(player), "theabyss_ocean_passive", false) && player.getAirSupply() < player.getMaxAirSupply()) {
             player.setAirSupply(player.getMaxAirSupply());
         }
     }
 
     private static boolean carries(ServerPlayer player) {
-        for (ItemStack stack : player.getInventory()) {
+        for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
+            ItemStack stack = player.getInventory().getItem(slot);
             if (stack.is(TheabyssModItems.RING_OF_OCEAN.get())) {
                 return true;
             }

@@ -59,8 +59,6 @@
         16,
         16
       ],
-      "shade": false,
-      "light_emission": 15,
       "faces": {
         "up": {
           "texture": "#front_glow",
@@ -82,6 +80,10 @@
           "texture": "#side_glow",
           "cullface": "east"
         }
+      },
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
       }
     }
   ]

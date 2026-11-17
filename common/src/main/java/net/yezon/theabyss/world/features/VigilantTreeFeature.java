@@ -26,7 +26,7 @@ import net.yezon.theabyss.platform.registries.DeferredHolder;
 import net.yezon.theabyss.platform.registries.DeferredRegister;
 import net.yezon.theabyss.TheabyssMod;
 
-public record VigilantTreeFeature(Variant variant, BlockState logState, BlockState leavesState, BlockState fruitState) implements Feature {
+public record VigilantTreeFeature(Variant variant, BlockState logState, BlockState leavesState, BlockState fruitState) implements AbyssFeature.Config {
     public enum Variant implements StringRepresentable {
         SPIRAL_SLIM("spiral_slim"), SPIRAL_TALL("spiral_tall"), STAIRCASE("staircase"), DOUBLE_HELIX("double_helix");
 
@@ -49,9 +49,9 @@ public record VigilantTreeFeature(Variant variant, BlockState logState, BlockSta
         BlockState.CODEC.fieldOf("leaves").forGetter(VigilantTreeFeature::leavesState),
         BlockState.CODEC.fieldOf("fruit").forGetter(VigilantTreeFeature::fruitState)
     ).apply(i, VigilantTreeFeature::new));
-    public static final DeferredRegister<MapCodec<? extends Feature>> REGISTRY = DeferredRegister.create(Registries.FEATURE_TYPE, TheabyssMod.MODID);
-    public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<VigilantTreeFeature>> VIGILANT_TREE = REGISTRY.register(
-        "vigilant_tree", () -> CODEC
+    public static final DeferredRegister<Feature<?>> REGISTRY = DeferredRegister.create(Registries.FEATURE, TheabyssMod.MODID);
+    public static final DeferredHolder<Feature<?>, AbyssFeature<VigilantTreeFeature>> VIGILANT_TREE = REGISTRY.register(
+        "vigilant_tree", () -> new AbyssFeature<>(CODEC)
     );
 
     private static final int LOG = 1;

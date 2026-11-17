@@ -1,18 +1,20 @@
 package net.yezon.theabyss.client.renderer;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.EyesLayer;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.AABB;
 import net.yezon.theabyss.client.model.Modelwhale;
 import net.yezon.theabyss.entity.VersaWhaleEntity;
 
-public class VersaWhaleRenderer extends MobRenderer<VersaWhaleEntity, LivingEntityRenderState, Modelwhale<LivingEntityRenderState>> {
-    private static final Identifier TEXTURE = Identifier.parse("theabyss:textures/entity/versa_whale.png");
-    private static final RenderType GLOW = RenderTypes.eyes(Identifier.parse("theabyss:textures/entity/versa_whale_glow.png"));
+public class VersaWhaleRenderer extends MobRenderer<VersaWhaleEntity, Modelwhale<VersaWhaleEntity>> {
+    private static final ResourceLocation TEXTURE = ResourceLocation.parse("theabyss:textures/entity/versa_whale.png");
+    private static final RenderType GLOW = AbyssRenderTypes.eyes(ResourceLocation.parse("theabyss:textures/entity/versa_whale_glow.png"));
 
     public VersaWhaleRenderer(Context context) {
         super(context, new Modelwhale<>(context.bakeLayer(Modelwhale.LAYER_LOCATION)), 0.5F);
@@ -25,24 +27,26 @@ public class VersaWhaleRenderer extends MobRenderer<VersaWhaleEntity, LivingEnti
     }
 
     @Override
-    public LivingEntityRenderState createRenderState() {
-        return new LivingEntityRenderState();
-    }
-
-    @Override
-    public Identifier getTextureLocation(LivingEntityRenderState state) {
+    public ResourceLocation getTextureLocation(VersaWhaleEntity entity) {
         return TEXTURE;
     }
 
     @Override
-    protected net.minecraft.world.phys.AABB getBoundingBoxForCulling(VersaWhaleEntity entity, float partialTicks) {
+    public boolean shouldRender(VersaWhaleEntity entity, Frustum frustum, double camX, double camY, double camZ) {
+        if (super.shouldRender(entity, frustum, camX, camY, camZ)) {
+            return true;
+        }
+        if (!entity.shouldRender(camX, camY, camZ) || entity.noCulling) {
+            return false;
+        }
         float scale = entity.getScale();
-        return super.getBoundingBoxForCulling(entity, partialTicks).inflate(13.0 * scale, 5.0 * scale, 13.0 * scale);
+        AABB box = entity.getBoundingBoxForCulling().inflate(13.0 * scale, 5.0 * scale, 13.0 * scale).inflate(0.5);
+        return !box.hasNaN() && frustum.isVisible(box);
     }
 
     @Override
-    protected void setupRotations(LivingEntityRenderState state, com.mojang.blaze3d.vertex.PoseStack poseStack, float bodyRot, float entityScale) {
-        super.setupRotations(state, poseStack, bodyRot, entityScale);
-        poseStack.rotateDegrees(com.mojang.math.Axis.XP, state.xRot);
+    protected void setupRotations(VersaWhaleEntity entity, PoseStack poseStack, float bob, float yBodyRot, float partialTick, float scale) {
+        super.setupRotations(entity, poseStack, bob, yBodyRot, partialTick, scale);
+        poseStack.mulPose(Axis.XP.rotationDegrees(entity.getViewXRot(partialTick)));
     }
 }

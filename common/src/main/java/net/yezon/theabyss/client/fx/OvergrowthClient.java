@@ -14,7 +14,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.EventPriority;
@@ -172,7 +171,7 @@ public final class OvergrowthClient {
     }
 
     private static void spawnNightblade(ClientLevel level, LocalPlayer player) {
-        Entity e = TheabyssModEntities.RIFT_NIGHTBLADE.get().create(level, EntitySpawnReason.LOAD);
+        Entity e = TheabyssModEntities.RIFT_NIGHTBLADE.get().create(level);
         if (e == null) {
             return;
         }
@@ -182,7 +181,7 @@ public final class OvergrowthClient {
         Vec3 at = player.position().add(flat.scale(2.2));
         float yaw = (float)(Mth.atan2(-flat.z, -flat.x) * Mth.RAD_TO_DEG) - 90.0F;
         e.setId(NIGHTBLADE_ID);
-        e.snapTo(at.x, player.getY() - 0.8, at.z, yaw, 0.0F);
+        e.moveTo(at.x, player.getY() - 0.8, at.z, yaw, 0.0F);
         e.setYHeadRot(yaw);
         e.setYBodyRot(yaw);
         level.addEntity(e);
@@ -207,7 +206,7 @@ public final class OvergrowthClient {
             || sound.getSource() == SoundSource.MASTER) {
             return;
         }
-        String path = sound.getIdentifier().getPath();
+        String path = sound.getLocation().getPath();
         if (path.contains("heartbeat") || path.contains("night_notice")) {
             return;
         }
@@ -247,7 +246,7 @@ public final class OvergrowthClient {
         float c = collapse();
         if (c > 0.0F && mc.player != null) {
             Camera camera = event.getCamera();
-            TeleportDashClient.moveCamera(camera, camera.position().add(0.0, -sinkOf(c), 0.0));
+            TeleportDashClient.moveCamera(camera, camera.getPosition().add(0.0, -sinkOf(c), 0.0));
         }
         if (pulse > 0.0F) {
             event.setFOV(event.getFOV() * (1.0F - 0.025F * pulse * Math.max(0.3F, stage)));
@@ -260,7 +259,7 @@ public final class OvergrowthClient {
         if (event.isCanceled() || OTHERS.isEmpty()) {
             return;
         }
-        Other other = OTHERS.get(event.getRenderState().id);
+        Other other = OTHERS.get(event.getEntity().getId());
         if (other == null || other.collapse < 0) {
             return;
         }

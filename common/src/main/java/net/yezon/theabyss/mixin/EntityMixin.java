@@ -77,7 +77,7 @@ public abstract class EntityMixin implements GravityEntity {
     private double theabyss$steerZ;
 
     @Shadow
-    protected static Vec3 getInputVector(Vec3 input, float speed, float yRot) {
+    private static Vec3 getInputVector(Vec3 input, float speed, float yRot) {
         throw new AssertionError();
     }
 
@@ -129,12 +129,12 @@ public abstract class EntityMixin implements GravityEntity {
         return Direction.from3DDataValue(this.theabyss$gravity);
     }
 
-    @ModifyReturnValue(method = "makeBoundingBox(Lnet/minecraft/world/phys/Vec3;)Lnet/minecraft/world/phys/AABB;", at = @At("RETURN"))
-    private AABB theabyss$gravityBox(AABB original, Vec3 feet) {
+    @ModifyReturnValue(method = "makeBoundingBox()Lnet/minecraft/world/phys/AABB;", at = @At("RETURN"))
+    private AABB theabyss$gravityBox(AABB original) {
         if (this.theabyss$gravity == 0 || this.dimensions == null) {
             return original;
         }
-        return Gravity.box(feet, this.theabyss$dir(), this.dimensions.width(), this.dimensions.height());
+        return Gravity.box(this.position, this.theabyss$dir(), this.dimensions.width(), this.dimensions.height());
     }
 
     @ModifyReturnValue(method = "getEyeY", at = @At("RETURN"))

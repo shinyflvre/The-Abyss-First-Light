@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "#": "theabyss:nightgrove_stick",
-    "X": "minecraft:string"
+    "#": {
+      "item": "theabyss:nightgrove_stick"
+    },
+    "X": {
+      "item": "minecraft:string"
+    }
   },
   "pattern": [
     " #X",

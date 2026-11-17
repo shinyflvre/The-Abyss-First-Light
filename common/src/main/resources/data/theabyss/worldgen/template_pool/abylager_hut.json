@@ -10,7 +10,7 @@
               "processor_type": "minecraft:block_ignore",
               "blocks": [
                 {
-                  "id": "minecraft:structure_block"
+                  "Name": "minecraft:structure_block"
                 }
               ]
             }

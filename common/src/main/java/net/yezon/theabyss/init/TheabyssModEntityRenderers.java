@@ -40,6 +40,7 @@ import net.yezon.theabyss.client.renderer.MudZombieRenderer;
 import net.yezon.theabyss.client.renderer.NightBladeBossCloneRenderer;
 import net.yezon.theabyss.client.renderer.NightbladeBossRenderer;
 import net.yezon.theabyss.client.renderer.PlayerBodyRenderer;
+import net.yezon.theabyss.possession.client.PossessionBodyRenderer;
 import net.yezon.theabyss.client.renderer.RiftNightbladeRenderer;
 import net.yezon.theabyss.client.renderer.PoweredWolfRenderer;
 import net.yezon.theabyss.client.renderer.RaluFishRenderer;
@@ -96,6 +97,7 @@ public class TheabyssModEntityRenderers {
         event.registerEntityRenderer(TheabyssModEntities.SCORPION.get(), ScorpionRenderer::new);
         event.registerEntityRenderer(TheabyssModEntities.SEEKER.get(), SeekerRenderer::new);
         event.registerEntityRenderer(TheabyssModEntities.PLAYER_BODY.get(), PlayerBodyRenderer::new);
+        event.registerEntityRenderer(TheabyssModEntities.POSSESSION_BODY.get(), PossessionBodyRenderer::new);
         event.registerEntityRenderer(TheabyssModEntities.RIFT_NIGHTBLADE.get(), RiftNightbladeRenderer::new);
         event.registerEntityRenderer(TheabyssModEntities.HAUNTED_SKELETON.get(), HauntedSkeletonRenderer::new);
         event.registerEntityRenderer(TheabyssModEntities.SHATTERED_ZOMBIE.get(), ShatteredZombieRenderer::new);
@@ -113,7 +115,7 @@ public class TheabyssModEntityRenderers {
         event.registerEntityRenderer(TheabyssModEntities.JELLY_FISH.get(), JellyFishRenderer::new);
         event.registerEntityRenderer(TheabyssModEntities.INFECTED_DRAGONFLY.get(), InfectedDragonflyRenderer::new);
         event.registerEntityRenderer(TheabyssModEntities.HUMMINGBIRD.get(), HummingbirdRenderer::new);
-        event.registerEntityRenderer(TheabyssModEntities.VIGILANT_HUMMINGBIRD.get(), context -> new HummingbirdRenderer<>(context, HummingbirdLayer.VIGILANT));
+        event.registerEntityRenderer(TheabyssModEntities.VIGILANT_HUMMINGBIRD.get(), context -> new HummingbirdRenderer(context, HummingbirdLayer.VIGILANT));
         event.registerEntityRenderer(TheabyssModEntities.ANCIENT_SEEKER.get(), AncientSeekerRenderer::new);
         event.registerEntityRenderer(TheabyssModEntities.MAGIC.get(), MagicRenderer::new);
         event.registerEntityRenderer(TheabyssModEntities.PHANTOM_ATTACK_PROJECTILE.get(), ThrownItemRenderer::new);

@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:slimed_planks"
+    "a": {
+      "item": "theabyss:slimed_planks"
+    }
   },
   "pattern": [
     "aaa"

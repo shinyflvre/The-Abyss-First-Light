@@ -1,15 +1,33 @@
 {
   "type": "theabyss:arcane_recipe_type",
   "ingredients": [
-    "theabyss:infected_slime",
-    "theabyss:abyss_crystal_shard",
-    "theabyss:infected_leather",
-    "theabyss:abyss_crystal_shard",
-    "theabyss:infected_leather",
-    "theabyss:abyss_crystal_shard",
-    "theabyss:infected_leather",
-    "theabyss:abyss_crystal_shard",
-    "theabyss:infected_leather"
+    {
+      "item": "theabyss:infected_slime"
+    },
+    {
+      "item": "theabyss:abyss_crystal_shard"
+    },
+    {
+      "item": "theabyss:infected_leather"
+    },
+    {
+      "item": "theabyss:abyss_crystal_shard"
+    },
+    {
+      "item": "theabyss:infected_leather"
+    },
+    {
+      "item": "theabyss:abyss_crystal_shard"
+    },
+    {
+      "item": "theabyss:infected_leather"
+    },
+    {
+      "item": "theabyss:abyss_crystal_shard"
+    },
+    {
+      "item": "theabyss:infected_leather"
+    }
   ],
   "output": {
     "id": "theabyss:infected_gauntlet",

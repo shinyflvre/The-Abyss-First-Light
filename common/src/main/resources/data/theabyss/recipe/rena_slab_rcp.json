@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:rena_planks"
+    "a": {
+      "item": "theabyss:rena_planks"
+    }
   },
   "pattern": [
     "aaa"

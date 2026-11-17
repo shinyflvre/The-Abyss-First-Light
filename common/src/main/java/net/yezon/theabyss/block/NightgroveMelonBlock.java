@@ -17,7 +17,7 @@ public class NightgroveMelonBlock extends Block {
                 .sound(SoundType.CROP)
                 .strength(0.6F, 10.0F)
                 .lightLevel(s -> 5)
-                .postProcess((bs, br, bp) -> bp)
+                .hasPostProcess((bs, br, bp) -> true)
         );
     }
 

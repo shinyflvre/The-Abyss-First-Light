@@ -3,5 +3,6 @@
   "textures": {
     "flowerbed": "theabyss:block/duskveil_blossoms",
     "stem": "theabyss:block/duskveil_blossoms_stem"
-  }
+  },
+  "render_type": "minecraft:cutout"
 }

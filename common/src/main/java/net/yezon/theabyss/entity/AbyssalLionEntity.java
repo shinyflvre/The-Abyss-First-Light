@@ -1,7 +1,7 @@
 package net.yezon.theabyss.entity;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.Difficulty;
@@ -21,7 +21,7 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.throwableitemprojectile.AbstractThrownPotion;
+import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.yezon.theabyss.platform.event.entity.RegisterSpawnPlacementsEvent;
@@ -46,24 +46,27 @@ public class AbyssalLionEntity extends Monster {
 
     @Override
     public SoundEvent getAmbientSound() {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.wolf.ambient"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.wolf.ambient"));
     }
 
     @Override
     public SoundEvent getHurtSound(DamageSource ds) {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.wolf.hurt"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.wolf.hurt"));
     }
 
     @Override
     public SoundEvent getDeathSound() {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.wolf.death"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.wolf.death"));
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource damagesource, float amount) {
+    public boolean hurt(DamageSource damagesource, float amount) {
+        if (!(this.level() instanceof ServerLevel level)) {
+            return false;
+        }
         if (damagesource.is(DamageTypes.IN_FIRE)
             || damagesource.is(DamageTypes.CAMPFIRE)
-            || damagesource.getDirectEntity() instanceof AbstractThrownPotion
+            || damagesource.getDirectEntity() instanceof ThrownPotion
             || damagesource.getDirectEntity() instanceof AreaEffectCloud
             || damagesource.is(DamageTypes.FALL)
             || damagesource.is(DamageTypes.CACTUS)
@@ -72,7 +75,7 @@ public class AbyssalLionEntity extends Monster {
             || damagesource.is(DamageTypes.WITHER_SKULL)) {
             return false;
         }
-        return super.hurtServer(level, damagesource, amount);
+        return super.hurt(damagesource, amount);
     }
 
     @Override

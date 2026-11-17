@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:fusion_ingot",
-    "b": "#c:rods/wooden"
+    "a": {
+      "item": "theabyss:fusion_ingot"
+    },
+    "b": {
+      "tag": "c:rods/wooden"
+    }
   },
   "pattern": [
     "a",

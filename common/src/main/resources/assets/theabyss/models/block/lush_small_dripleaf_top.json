@@ -18,7 +18,6 @@
         3,
         15
       ],
-      "shade_direction_override": "up",
       "faces": {
         "down": {
           "uv": [
@@ -38,7 +37,8 @@
           ],
           "texture": "#top"
         }
-      }
+      },
+      "shade": false
     },
     {
       "from": [
@@ -51,7 +51,6 @@
         8.02,
         8
       ],
-      "shade_direction_override": "up",
       "faces": {
         "down": {
           "uv": [
@@ -71,7 +70,8 @@
           ],
           "texture": "#top"
         }
-      }
+      },
+      "shade": false
     },
     {
       "from": [
@@ -84,7 +84,6 @@
         12.02,
         15
       ],
-      "shade_direction_override": "up",
       "faces": {
         "down": {
           "uv": [
@@ -106,7 +105,8 @@
           "texture": "#top",
           "rotation": 270
         }
-      }
+      },
+      "shade": false
     },
     {
       "from": [
@@ -119,7 +119,6 @@
         3,
         15
       ],
-      "shade_direction_override": "up",
       "faces": {
         "east": {
           "uv": [
@@ -157,7 +156,8 @@
           ],
           "texture": "#side"
         }
-      }
+      },
+      "shade": false
     },
     {
       "from": [
@@ -170,7 +170,6 @@
         8.02,
         8
       ],
-      "shade_direction_override": "up",
       "faces": {
         "east": {
           "uv": [
@@ -208,7 +207,8 @@
           ],
           "texture": "#side"
         }
-      }
+      },
+      "shade": false
     },
     {
       "from": [
@@ -221,7 +221,6 @@
         12.02,
         15
       ],
-      "shade_direction_override": "up",
       "faces": {
         "east": {
           "uv": [
@@ -259,7 +258,8 @@
           ],
           "texture": "#side"
         }
-      }
+      },
+      "shade": false
     },
     {
       "from": [
@@ -282,7 +282,6 @@
         "angle": 45,
         "rescale": false
       },
-      "shade_direction_override": "up",
       "faces": {
         "north": {
           "uv": [
@@ -302,7 +301,8 @@
           ],
           "texture": "#stem"
         }
-      }
+      },
+      "shade": false
     },
     {
       "from": [
@@ -325,7 +325,6 @@
         "angle": -45,
         "rescale": false
       },
-      "shade_direction_override": "up",
       "faces": {
         "north": {
           "uv": [
@@ -345,7 +344,9 @@
           ],
           "texture": "#stem"
         }
-      }
+      },
+      "shade": false
     }
-  ]
+  ],
+  "render_type": "minecraft:cutout"
 }

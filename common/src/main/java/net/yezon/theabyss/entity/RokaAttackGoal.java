@@ -316,14 +316,14 @@ public class RokaAttackGoal extends Goal {
     }
 
     private boolean strike(ServerLevel level, LivingEntity victim, float amount, Vec3 velocity) {
-        if (!victim.hurtServer(level, this.roka.damageSources().mobAttack(this.roka), amount)) {
+        if (!victim.hurt(this.roka.damageSources().mobAttack(this.roka), amount)) {
             return false;
         }
         if (velocity != null) {
             victim.setDeltaMovement(velocity);
             net.yezon.theabyss.util.FallGuard.protect(victim, 80);
-            victim.needsSync = true;
-            victim.syncVelocity = true;
+            victim.hasImpulse = true;
+            victim.hurtMarked = true;
         }
         return true;
     }
@@ -378,17 +378,17 @@ public class RokaAttackGoal extends Goal {
         RokaFx.roar(level, this.roka);
         NightbladeShakeMessage.around(level, this.roka.position(), ROAR_RADIUS + 4.0, 1.4F, 0.8F);
         this.enragedUntil = level.getGameTime() + 200;
-        this.roka.addEffect(new MobEffectInstance(MobEffects.SPEED, 200, 0, false, false));
+        this.roka.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 200, 0, false, false));
         for (LivingEntity victim : level.getEntitiesOfClass(LivingEntity.class, this.roka.getBoundingBox().inflate(ROAR_RADIUS), this::hittable)) {
             if (victim.distanceTo(this.roka) > ROAR_RADIUS) {
                 continue;
             }
-            victim.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 100, 1));
+            victim.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 1));
             victim.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 100, 0));
             Vec3 push = this.away(victim, 1.0, 0.3);
             victim.setDeltaMovement(push);
-            victim.needsSync = true;
-            victim.syncVelocity = true;
+            victim.hasImpulse = true;
+            victim.hurtMarked = true;
         }
     }
 

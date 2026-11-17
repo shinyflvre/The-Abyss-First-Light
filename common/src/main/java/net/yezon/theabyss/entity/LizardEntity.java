@@ -1,13 +1,15 @@
 package net.yezon.theabyss.entity;
 
-import com.geckolib.animatable.GeoEntity;
-import com.geckolib.animatable.instance.AnimatableInstanceCache;
-import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.animation.AnimationController;
-import com.geckolib.animation.RawAnimation;
-import com.geckolib.animation.object.PlayState;
-import com.geckolib.animation.state.AnimationTest;
-import com.geckolib.util.GeckoLibUtil;
+
+import net.minecraft.nbt.CompoundTag;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.PlayState;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -18,7 +20,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.BlockTags;
@@ -30,7 +32,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.AreaEffectCloud;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -49,7 +51,7 @@ import net.minecraft.world.entity.ai.goal.target.OwnerHurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.OwnerHurtTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.throwableitemprojectile.AbstractThrownPotion;
+import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
@@ -59,8 +61,8 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.yezon.theabyss.compat.ValueInput;
+import net.yezon.theabyss.compat.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.event.EventHooks;
 import net.yezon.theabyss.platform.event.entity.RegisterSpawnPlacementsEvent;
@@ -170,15 +172,15 @@ public class LizardEntity extends TamableAnimal implements GeoEntity {
     }
 
     @Override
-    public boolean causeFallDamage(double fallDistance, float damageModifier, DamageSource damageSource) {
+    public boolean causeFallDamage(float fallDistance, float damageModifier, DamageSource damageSource) {
         return false;
     }
 
     @Override
-    public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
+    public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason,
                                                   @Nullable SpawnGroupData data) {
         SpawnGroupData result = super.finalizeSpawn(level, difficulty, reason, data);
-        if ((reason == EntitySpawnReason.NATURAL || reason == EntitySpawnReason.CHUNK_GENERATION) && this.random.nextFloat() < 0.6F) {
+        if ((reason == MobSpawnType.NATURAL || reason == MobSpawnType.CHUNK_GENERATION) && this.random.nextFloat() < 0.6F) {
             this.clingToNearbyTree(level);
         }
         return result;
@@ -213,20 +215,22 @@ public class LizardEntity extends TamableAnimal implements GeoEntity {
         BlockPos cell = cells.get(i);
         Direction wall = walls.get(i);
         double gap = 0.5 - HALF_WIDTH - 0.01;
-        this.snapTo(cell.getX() + 0.5 + wall.getStepX() * gap, cell.getY() + 0.1, cell.getZ() + 0.5 + wall.getStepZ() * gap, wall.toYRot(), 0.0F);
+        this.moveTo(cell.getX() + 0.5 + wall.getStepX() * gap, cell.getY() + 0.1, cell.getZ() + 0.5 + wall.getStepZ() * gap, wall.toYRot(), 0.0F);
         this.setWall(wall);
     }
 
     @Override
-    protected void addAdditionalSaveData(ValueOutput output) {
-        super.addAdditionalSaveData(output);
+    public void addAdditionalSaveData(CompoundTag outputTag) {
+        ValueOutput output = ValueOutput.of(outputTag, this.registryAccess());
+        super.addAdditionalSaveData(output.tag());
         Direction wall = this.wall();
         output.putInt("Wall", wall == null ? -1 : wall.get3DDataValue());
     }
 
     @Override
-    protected void readAdditionalSaveData(ValueInput input) {
-        super.readAdditionalSaveData(input);
+    public void readAdditionalSaveData(CompoundTag inputTag) {
+        ValueInput input = ValueInput.of(inputTag, this.registryAccess());
+        super.readAdditionalSaveData(input.tag());
         int wall = input.getIntOr("Wall", -1);
         if (wall >= 2 && wall <= 5) {
             this.entityData.set(DATA_WALL, (byte)wall);
@@ -236,31 +240,34 @@ public class LizardEntity extends TamableAnimal implements GeoEntity {
 
     @Override
     public SoundEvent getAmbientSound() {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:lizard_idle"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:lizard_idle"));
     }
 
     @Override
     public SoundEvent getHurtSound(DamageSource ds) {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.generic.hurt"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.generic.hurt"));
     }
 
     @Override
     public SoundEvent getDeathSound() {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.generic.death"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.generic.death"));
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource damagesource, float amount) {
+    public boolean hurt(DamageSource damagesource, float amount) {
+        if (!(this.level() instanceof ServerLevel level)) {
+            return false;
+        }
         if (damagesource.is(DamageTypes.IN_FIRE)
             || damagesource.is(DamageTypes.CAMPFIRE)
-            || damagesource.getDirectEntity() instanceof AbstractThrownPotion
+            || damagesource.getDirectEntity() instanceof ThrownPotion
             || damagesource.getDirectEntity() instanceof AreaEffectCloud
             || damagesource.is(DamageTypes.FALL)
             || damagesource.is(DamageTypes.CACTUS)
             || damagesource.is(DamageTypes.DROWN)) {
             return false;
         }
-        boolean hurt = super.hurtServer(level, damagesource, amount);
+        boolean hurt = super.hurt(damagesource, amount);
         if (hurt && this.wall() != null) {
             this.setWall(null);
         }
@@ -303,7 +310,7 @@ public class LizardEntity extends TamableAnimal implements GeoEntity {
             retval = InteractionResult.SUCCESS;
         } else {
             retval = super.mobInteract(sourceentity, hand);
-            if (retval instanceof InteractionResult.Success) {
+            if (retval.consumesAction()) {
                 this.setPersistenceRequired();
             }
         }
@@ -313,9 +320,9 @@ public class LizardEntity extends TamableAnimal implements GeoEntity {
 
     @Override
     public @Nullable AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob ageable) {
-        LizardEntity retval = TheabyssModEntities.LIZARD.get().create(serverWorld, EntitySpawnReason.BREEDING);
+        LizardEntity retval = TheabyssModEntities.LIZARD.get().create(serverWorld);
         if (retval != null) {
-            retval.finalizeSpawn(serverWorld, serverWorld.getCurrentDifficultyAt(retval.blockPosition()), EntitySpawnReason.BREEDING, null);
+            retval.finalizeSpawn(serverWorld, serverWorld.getCurrentDifficultyAt(retval.blockPosition()), MobSpawnType.BREEDING, null);
         }
         return retval;
     }
@@ -325,7 +332,7 @@ public class LizardEntity extends TamableAnimal implements GeoEntity {
         return stack.is(TheabyssModItems.LORAN.get());
     }
 
-    private PlayState movement(AnimationTest<LizardEntity> state) {
+    private PlayState movement(AnimationState<LizardEntity> state) {
         boolean climbing = this.wall() != null;
         boolean moving = climbing ? Math.abs(this.getY() - this.yo) > 0.004 : state.isMoving();
         if (climbing) {
@@ -336,7 +343,7 @@ public class LizardEntity extends TamableAnimal implements GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<LizardEntity>("movement", 4, this::movement));
+        controllers.add(new AnimationController<LizardEntity>(this, "movement", 4, this::movement));
     }
 
     @Override
@@ -355,7 +362,7 @@ public class LizardEntity extends TamableAnimal implements GeoEntity {
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return Animal.createAnimalAttributes()
+        return Mob.createMobAttributes()
             .add(Attributes.MOVEMENT_SPEED, 0.2)
             .add(Attributes.MAX_HEALTH, 10.0)
             .add(Attributes.ARMOR, 0.0)
@@ -364,7 +371,7 @@ public class LizardEntity extends TamableAnimal implements GeoEntity {
     }
 
     @Override
-    public boolean checkSpawnRules(LevelAccessor level, EntitySpawnReason reason) {
+    public boolean checkSpawnRules(LevelAccessor level, MobSpawnType reason) {
         return true;
     }
 

@@ -2,13 +2,15 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "condition": {
-        "type": "minecraft:match_block",
-        "blocks": "theabyss:lush_cave_vines",
-        "state": {
-          "berries": "true"
+      "conditions": [
+        {
+          "condition": "minecraft:block_state_property",
+          "block": "theabyss:lush_cave_vines",
+          "properties": {
+            "berries": "true"
+          }
         }
-      },
+      ],
       "entries": [
         {
           "type": "minecraft:item",

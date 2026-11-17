@@ -1,29 +1,44 @@
 package net.yezon.theabyss.platform.client.event;
 
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.LerpingBossEvent;
 import net.yezon.theabyss.platform.event.Event;
 import net.yezon.theabyss.platform.event.ICancellableEvent;
 
 public abstract class CustomizeGuiOverlayEvent extends Event {
+    private final GuiGraphics guiGraphics;
+    private final DeltaTracker partialTick;
+
+    protected CustomizeGuiOverlayEvent(GuiGraphics guiGraphics, DeltaTracker partialTick) {
+        this.guiGraphics = guiGraphics;
+        this.partialTick = partialTick;
+    }
+
+    public GuiGraphics getGuiGraphics() {
+        return this.guiGraphics;
+    }
+
+    public DeltaTracker getPartialTick() {
+        return this.partialTick;
+    }
 
     public static class BossEventProgress extends CustomizeGuiOverlayEvent implements ICancellableEvent {
-        private final net.minecraft.client.gui.components.LerpingBossEvent bossEvent;
-        private final net.minecraft.client.gui.GuiGraphicsExtractor guiGraphics;
+        private final LerpingBossEvent bossEvent;
         private final int x;
         private final int y;
+        private int increment;
 
-        public BossEventProgress(net.minecraft.client.gui.components.LerpingBossEvent bossEvent, net.minecraft.client.gui.GuiGraphicsExtractor guiGraphics, int x, int y) {
+        public BossEventProgress(GuiGraphics guiGraphics, DeltaTracker partialTick, LerpingBossEvent bossEvent, int x, int y, int increment) {
+            super(guiGraphics, partialTick);
             this.bossEvent = bossEvent;
-            this.guiGraphics = guiGraphics;
             this.x = x;
             this.y = y;
+            this.increment = increment;
         }
 
-        public net.minecraft.client.gui.components.LerpingBossEvent getBossEvent() {
+        public LerpingBossEvent getBossEvent() {
             return this.bossEvent;
-        }
-
-        public net.minecraft.client.gui.GuiGraphicsExtractor getGuiGraphics() {
-            return this.guiGraphics;
         }
 
         public int getX() {
@@ -32,6 +47,14 @@ public abstract class CustomizeGuiOverlayEvent extends Event {
 
         public int getY() {
             return this.y;
+        }
+
+        public int getIncrement() {
+            return this.increment;
+        }
+
+        public void setIncrement(int value) {
+            this.increment = value;
         }
     }
 }

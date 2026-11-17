@@ -4,7 +4,7 @@ import java.util.List;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -26,11 +26,11 @@ public final class BladeThrow {
     }
 
     static boolean cast(ServerPlayer player, ItemStack ring, TheabyssModVariables.PlayerVariables vars) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         LivingEntity target = Aim.creature(level, player, RANGE);
         Vec3 through = target != null ? target.getBoundingBox().getCenter() : Aim.spot(level, player, RANGE).add(0.0, 1.0, 0.0);
         Vec3 start = RingVisuals.hand(player);
-        NightbladeBladeEntity blade = TheabyssModEntities.NIGHTBLADE_BLADE.get().create(level, EntitySpawnReason.MOB_SUMMONED);
+        NightbladeBladeEntity blade = TheabyssModEntities.NIGHTBLADE_BLADE.get().create(level);
         if (blade == null) {
             return false;
         }

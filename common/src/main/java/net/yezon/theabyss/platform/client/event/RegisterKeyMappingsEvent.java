@@ -4,5 +4,4 @@ import net.yezon.theabyss.platform.event.Event;
 
 public abstract class RegisterKeyMappingsEvent extends Event {
     public abstract void register(net.minecraft.client.KeyMapping a0);
-    public abstract void registerCategory(net.minecraft.client.KeyMapping.Category a0);
 }

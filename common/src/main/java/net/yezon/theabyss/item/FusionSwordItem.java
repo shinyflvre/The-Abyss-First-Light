@@ -1,9 +1,13 @@
 package net.yezon.theabyss.item;
 
+import net.yezon.theabyss.item.TheabyssModToolMaterials.ToolMaterial;
+import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Item;
 
-public class FusionSwordItem extends Item {
+public class FusionSwordItem extends SwordItem {
+    private static final ToolMaterial MATERIAL = TheabyssModToolMaterials.FUSION;
+
     public FusionSwordItem(Item.Properties properties) {
-        super(properties.sword(TheabyssModToolMaterials.FUSION, 8.0F, -2.2F));
+        super(MATERIAL, TheabyssModToolMaterials.tool(properties, MATERIAL, 8.0F, -2.2F));
     }
 }

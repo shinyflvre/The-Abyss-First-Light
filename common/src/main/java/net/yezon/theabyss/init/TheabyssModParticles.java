@@ -1,7 +1,10 @@
 package net.yezon.theabyss.init;
 
 import net.yezon.theabyss.platform.Dist;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.yezon.theabyss.platform.client.event.RegisterParticleProvidersEvent;
+import net.yezon.theabyss.platform.client.event.RenderLevelStageEvent;
+import net.yezon.theabyss.platform.event.EventPriority;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
 import net.yezon.theabyss.platform.event.EventBusSubscriber;
 import net.yezon.theabyss.client.particle.EndSwordPTParticle;
@@ -21,9 +24,11 @@ import net.yezon.theabyss.client.particle.SpursFXParticle;
 
 @EventBusSubscriber(value = Dist.CLIENT)
 public class TheabyssModParticles {
-    @SubscribeEvent
-    public static void registerParticleGroups(net.yezon.theabyss.platform.client.event.RegisterParticleGroupsEvent event) {
-        event.register(net.yezon.theabyss.client.particle.SpriteFxParticleGroup.TYPE, net.yezon.theabyss.client.particle.SpriteFxParticleGroup::new);
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void afterParticles(RenderLevelStageEvent event) {
+        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
+            RenderSystem.defaultBlendFunc();
+        }
     }
 
     @SubscribeEvent
@@ -90,5 +95,6 @@ public class TheabyssModParticles {
         event.registerSpriteSet(TheabyssModParticleTypes.DRIPPING_INFUSED_LAVA.get(), sprites -> FluidDripParticle.provider(sprites, FluidDripParticle.Stage.HANG, TheabyssModFluids.INFUSED_LAVA, TheabyssModParticleTypes.FALLING_INFUSED_LAVA, 0xECFFFD, 0x00D6C6));
         event.registerSpriteSet(TheabyssModParticleTypes.FALLING_INFUSED_LAVA.get(), sprites -> FluidDripParticle.provider(sprites, FluidDripParticle.Stage.FALL, TheabyssModFluids.INFUSED_LAVA, TheabyssModParticleTypes.LANDING_INFUSED_LAVA, 0xECFFFD, 0x00D6C6));
         event.registerSpriteSet(TheabyssModParticleTypes.LANDING_INFUSED_LAVA.get(), sprites -> FluidDripParticle.provider(sprites, FluidDripParticle.Stage.LAND, TheabyssModFluids.INFUSED_LAVA, null, 0xECFFFD, 0x00D6C6));
+        event.registerSpriteSet(TheabyssModParticleTypes.TINTED_LEAVES.get(), net.yezon.theabyss.client.particle.TintedLeavesParticle::provider);
     }
 }

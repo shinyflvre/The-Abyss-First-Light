@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "group": "shelf",
   "key": {
-    "#": "theabyss:vigilant_log"
+    "#": {
+      "item": "theabyss:vigilant_log"
+    }
   },
   "pattern": [
     "###",

@@ -25,14 +25,14 @@ public class ApplyRingOfCurseEvents {
         ServerLevel level = cast.server();
         if (level != null) {
             if (entity instanceof LivingEntity caster) {
-                caster.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 400, 1, false, false));
+                caster.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 400, 1, false, false));
                 caster.addEffect(new MobEffectInstance(TheabyssModMobEffects.CURSED_AURA.getDelegate(), 400, 1, false, false));
                 RingVisuals.curse(level, centre, caster);
             }
             int amplifier = (int)cast.vars().ManaDamage;
             for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, new AABB(centre, centre).inflate(200.0), e -> e != entity)) {
                 if (!RingMode.spares(entity, target)) {
-                    target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 400, 1, false, false));
+                    target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 400, 1, false, false));
                     target.addEffect(new MobEffectInstance(MobEffects.HUNGER, 400, amplifier, false, false));
                     target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 400, amplifier, false, false));
                     target.addEffect(new MobEffectInstance(TheabyssModMobEffects.CURSE.getDelegate(), 400, amplifier, false, false));

@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:garnite_ingot"
+    "a": {
+      "item": "theabyss:garnite_ingot"
+    }
   },
   "pattern": [
     "aaa",

@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.ModList;
@@ -15,7 +15,7 @@ import net.yezon.theabyss.events.GiveBookOnFirstJoinEvents;
 import net.yezon.theabyss.network.TheabyssModVariables;
 
 final class BookAutotest {
-    private static final Identifier BOOK = Identifier.fromNamespaceAndPath("theabyss", "the_abyss");
+    private static final ResourceLocation BOOK = ResourceLocation.fromNamespaceAndPath("theabyss", "the_abyss");
     private static final List<String> failures = new ArrayList<>();
     private static int checks;
 
@@ -28,7 +28,7 @@ final class BookAutotest {
         add.add("first join", () -> onServer(sp -> {
             sp.getInventory().clearContent();
             TheabyssModVariables.updatePlayerVariables(sp, vars -> vars.BookSpawn = false);
-            GiveBookOnFirstJoinEvents.execute(sp.level(), sp.getX(), sp.getY(), sp.getZ(), sp);
+            GiveBookOnFirstJoinEvents.execute(sp.serverLevel(), sp.getX(), sp.getY(), sp.getZ(), sp);
         }), 20);
         add.add("book in inventory", () -> onServer(sp -> {
             boolean found = false;
@@ -45,20 +45,20 @@ final class BookAutotest {
         add.add("shot hotbar book", () -> shot.accept("70_guide_book_hotbar"), 10);
         add.add("open book", () -> check("book GUI opens", openBook(null)), 40);
         add.add("shot book landing", () -> shot.accept("71_guide_book_landing"), 10);
-        add.add("open entry", () -> check("entry opens", openBook(Identifier.fromNamespaceAndPath("theabyss", "getting_started/portal"))), 40);
+        add.add("open entry", () -> check("entry opens", openBook(ResourceLocation.fromNamespaceAndPath("theabyss", "getting_started/portal"))), 40);
         add.add("shot book entry", () -> shot.accept("72_guide_book_entry"), 10);
-        add.add("close book", () -> mc.gui.setScreen(null), 10);
+        add.add("close book", () -> mc.setScreen(null), 10);
         add.add("book result", () -> TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] RESULT book {} ({} checks{})",
             failures.isEmpty() ? "PASS" : "FAIL", checks, failures.isEmpty() ? "" : ", failed: " + failures), 10);
     }
 
-    private static boolean openBook(Identifier entry) {
+    private static boolean openBook(ResourceLocation entry) {
         try {
             Class<?> api = Class.forName("vazkii.patchouli.api.PatchouliAPI");
             Object instance = api.getMethod("get").invoke(null);
             for (Method method : instance.getClass().getMethods()) {
                 if (entry == null && method.getName().equals("openBookGUI") && method.getParameterCount() == 1
-                    && method.getParameterTypes()[0] == Identifier.class) {
+                    && method.getParameterTypes()[0] == ResourceLocation.class) {
                     method.invoke(instance, BOOK);
                     return true;
                 }

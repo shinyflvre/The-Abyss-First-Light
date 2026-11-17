@@ -3,7 +3,9 @@
   "category": "misc",
   "group": "sticks",
   "key": {
-    "#": "theabyss:blaru_planks"
+    "#": {
+      "item": "theabyss:blaru_planks"
+    }
   },
   "pattern": [
     "#",

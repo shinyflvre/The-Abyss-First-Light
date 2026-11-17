@@ -24,7 +24,7 @@ public class FrozenLeavesBlock extends Block implements FireSpreadingBlock, Play
     }
 
     @Override
-    protected boolean propagatesSkylightDown(BlockState state) {
+    protected boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
         return true;
     }
 
@@ -39,7 +39,7 @@ public class FrozenLeavesBlock extends Block implements FireSpreadingBlock, Play
     }
 
     @Override
-    public void afterDestroyedByPlayer(BlockState blockstate, Level world, BlockPos pos, Player entity, ItemStack toolStack, boolean willHarvest, FluidState fluid) {
+    public void afterDestroyedByPlayer(BlockState blockstate, Level world, BlockPos pos, Player entity, boolean willHarvest, FluidState fluid) {
         FrozenLeavesHandlerEvents.execute(world, pos.getX(), pos.getY(), pos.getZ(), entity);
     }
 }

@@ -6,33 +6,28 @@ import java.util.Arrays;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
-import net.minecraft.data.AtlasIds;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.context.ContextKey;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
 import net.yezon.theabyss.platform.event.EventBusSubscriber;
-import net.yezon.theabyss.platform.client.event.ExtractLevelRenderStateEvent;
-import net.yezon.theabyss.platform.client.event.SubmitCustomGeometryEvent;
+import net.yezon.theabyss.platform.client.event.RenderLevelStageEvent;
 import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.block.ChiseledGravityStoneBlock;
 import net.yezon.theabyss.gravity.GravityIndex;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public final class GravityRimRenderer {
-    private static final ContextKey<float[]> RIMS = new ContextKey<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "gravity_rims"));
-    private static final Identifier SPRITE = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "block/chiseled_gravity_stone_rim");
-    private static final float[] NONE = new float[0];
+    private static final ResourceLocation SPRITE = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "block/chiseled_gravity_stone_rim");
     private static final double INSET = 0.02;
     private static final int STRIDE = 19;
     private static RenderType type;
@@ -52,15 +47,17 @@ public final class GravityRimRenderer {
     }
 
     @SubscribeEvent
-    public static void onExtract(ExtractLevelRenderStateEvent event) {
-        ClientLevel level = event.getLevel();
-        if (level == null || !GravityStoneLook.installed() || !GravityIndex.any(level)) {
-            net.yezon.theabyss.platform.client.renderstate.RenderData.set(event.getRenderState(), RIMS, NONE);
+    public static void onRender(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) {
             return;
         }
         Minecraft mc = Minecraft.getInstance();
-        TextureAtlasSprite sprite = mc.getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).getSprite(SPRITE);
-        Vec3 camera = event.getCamera().position();
+        ClientLevel level = mc.level;
+        if (level == null || !GravityStoneLook.installed() || !GravityIndex.any(level)) {
+            return;
+        }
+        TextureAtlasSprite sprite = mc.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(SPRITE);
+        Vec3 camera = event.getCamera().getPosition();
         Frustum frustum = event.getFrustum();
         int range = mc.options.getEffectiveRenderDistance();
         int csx = SectionPos.blockToSectionCoord(camera.x);
@@ -95,7 +92,9 @@ public final class GravityRimRenderer {
                 }
             });
         });
-        net.yezon.theabyss.platform.client.renderstate.RenderData.set(event.getRenderState(), RIMS, quads.size == 0 ? NONE : Arrays.copyOf(quads.data, quads.size));
+        if (quads.size > 0) {
+            draw(event, Arrays.copyOf(quads.data, quads.size));
+        }
     }
 
     private static void add(Quads quads, BlockPos pos, Direction facing, Direction side, Vec3 camera, TextureAtlasSprite sprite) {
@@ -143,17 +142,13 @@ public final class GravityRimRenderer {
         return a;
     }
 
-    @SubscribeEvent
-    public static void onSubmit(SubmitCustomGeometryEvent event) {
-        float[] data = net.yezon.theabyss.platform.client.renderstate.RenderData.get(event.getLevelRenderState(), RIMS);
-        if (data == null || data.length == 0) {
-            return;
-        }
+    private static void draw(RenderLevelStageEvent event, float[] data) {
         if (type == null) {
-            type = RenderTypes.beaconBeam(Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).location(), true);
+            type = RenderType.beaconBeam(TextureAtlas.LOCATION_BLOCKS, true);
         }
-        PoseStack poseStack = event.getPoseStack();
-        event.getSubmitNodeCollector().submitCustomGeometry(poseStack, type, (pose, buffer) -> {
+        PoseStack.Pose pose = event.getPoseStack().last();
+        VertexConsumer buffer = event.getBufferSource().getBuffer(type);
+        {
             for (int o = 0; o < data.length; o += STRIDE) {
                 float u0 = data[o + 12];
                 float u1 = data[o + 13];
@@ -171,7 +166,7 @@ public final class GravityRimRenderer {
                 vertex(pose, buffer, data, o + 3, u1, v1, -nx, -ny, -nz);
                 vertex(pose, buffer, data, o, u0, v1, -nx, -ny, -nz);
             }
-        });
+        }
     }
 
     private static void vertex(PoseStack.Pose pose, VertexConsumer buffer, float[] d, int o, float u, float v, float nx, float ny, float nz) {

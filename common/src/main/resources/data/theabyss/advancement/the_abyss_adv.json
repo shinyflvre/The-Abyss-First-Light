@@ -1,6 +1,6 @@
 {
   "display": {
-    "background": "minecraft:block/stone",
+    "background": "minecraft:textures/block/stone.png",
     "icon": {
       "id": "theabyss:eye_of_abyss"
     },

@@ -20,13 +20,13 @@ public class OldExoliusPlantBlock extends DoublePlantBlock {
                 .mapColor(MapColor.PLANT)
                 .sound(SoundType.GRASS)
                 .instabreak()
-                .postProcess((bs, br, bp) -> bp)
-                .emissiveRendering(bs -> true)
+                .hasPostProcess((bs, br, bp) -> true)
+                .emissiveRendering((bs, br, bp) -> true)
                 .lightLevel(s -> 10)
-                .noCollision()
+                .noCollission()
                 .replaceable()
                 .offsetType(OffsetType.XZ)
-                .pushReaction(PushReaction.POPPED)
+                .pushReaction(PushReaction.DESTROY)
         );
     }
 

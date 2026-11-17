@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:phantom_ingot",
-    "b": "theabyss:phantom_soul_item",
-    "c": "#c:rods/wooden"
+    "a": {
+      "item": "theabyss:phantom_ingot"
+    },
+    "b": {
+      "item": "theabyss:phantom_soul_item"
+    },
+    "c": {
+      "tag": "c:rods/wooden"
+    }
   },
   "pattern": [
     " a ",

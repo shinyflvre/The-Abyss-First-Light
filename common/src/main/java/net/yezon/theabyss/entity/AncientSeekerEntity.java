@@ -37,11 +37,14 @@ public class AncientSeekerEntity extends Monster {
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource damagesource, float amount) {
+    public boolean hurt(DamageSource damagesource, float amount) {
+        if (!(this.level() instanceof ServerLevel level)) {
+            return false;
+        }
         if (damagesource.is(DamageTypes.IN_FIRE) || damagesource.is(DamageTypes.CAMPFIRE) || damagesource.is(DamageTypes.FALL)) {
             return false;
         }
-        return super.hurtServer(level, damagesource, amount);
+        return super.hurt(damagesource, amount);
     }
 
     @Override

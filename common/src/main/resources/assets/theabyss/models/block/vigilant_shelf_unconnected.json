@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:block/template_shelf_unconnected",
+  "parent": "theabyss:block/template_shelf_unconnected",
   "textures": {
     "all": "theabyss:block/vigilant_shelf",
     "particle": "theabyss:block/log_sides_vigilant"

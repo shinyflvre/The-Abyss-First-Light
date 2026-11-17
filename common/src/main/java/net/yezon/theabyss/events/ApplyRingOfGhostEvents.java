@@ -2,7 +2,7 @@ package net.yezon.theabyss.events;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -17,7 +17,7 @@ import net.yezon.theabyss.init.TheabyssModMobEffects;
 import net.yezon.theabyss.ring.RingCast;
 
 public class ApplyRingOfGhostEvents {
-    private static final ResourceKey<Level> POCKET_DIMENSION = ResourceKey.create(Registries.DIMENSION, Identifier.parse("theabyss:pocket_dimension"));
+    private static final ResourceKey<Level> POCKET_DIMENSION = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse("theabyss:pocket_dimension"));
 
     public static void execute(LevelAccessor world, double x, double y, double z, Entity entity, ItemStack itemstack) {
         if (entity == null) {
@@ -25,7 +25,7 @@ public class ApplyRingOfGhostEvents {
         }
         if (entity.level().dimension() == POCKET_DIMENSION) {
             if (entity instanceof Player player && !player.level().isClientSide()) {
-                player.sendOverlayMessage(Component.translatable("ring.theabyss.not_here"));
+                player.displayClientMessage(Component.translatable("ring.theabyss.not_here"), true);
             }
             return;
         }

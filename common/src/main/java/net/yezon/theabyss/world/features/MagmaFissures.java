@@ -20,7 +20,7 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.yezon.theabyss.init.TheabyssModBlocks;
 
 public record MagmaFissures(String mode, int minSize, int maxSize, int rim, int columns, float crackChance, int branches, float dripstoneChance,
-                             int dripstoneMin, int dripstoneMax) implements Feature {
+                             int dripstoneMin, int dripstoneMax) implements AbyssFeature.Config {
     public static final MapCodec<MagmaFissures> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.STRING.fieldOf("mode").forGetter(MagmaFissures::mode),
             Codec.INT.optionalFieldOf("min_size", 1).forGetter(MagmaFissures::minSize),

@@ -5,7 +5,7 @@ import java.util.WeakHashMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,8 +22,8 @@ import net.yezon.theabyss.network.TheabyssModVariables;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID)
 public final class InfectHandlerEvents {
-    private static final ResourceKey<Level> THE_ABYSS = ResourceKey.create(Registries.DIMENSION, Identifier.parse("theabyss:the_abyss"));
-    private static final ResourceKey<Level> FROST_WORLD = ResourceKey.create(Registries.DIMENSION, Identifier.parse("theabyss:frost_world"));
+    private static final ResourceKey<Level> THE_ABYSS = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse("theabyss:the_abyss"));
+    private static final ResourceKey<Level> FROST_WORLD = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse("theabyss:frost_world"));
     private static final double INFECT_RATE = 7.5E-5;
     private static final double FREEZE_RATE = 5.0E-5;
     private static final double RECOVERY = 0.005;
@@ -82,7 +82,7 @@ public final class InfectHandlerEvents {
                 vars.Freeze -= RECOVERY;
             }
             if (vars.Freeze > THRESHOLD && player.getRandom().nextFloat() < 0.05F) {
-                player.hurtServer((ServerLevel)player.level(), namedGenericDamage(player, "death.attack.freeze"), 1.0F);
+                player.hurt(namedGenericDamage(player, "death.attack.freeze"), 1.0F);
             }
         } else {
             net.yezon.theabyss.infection.Overgrowth.clear(player);

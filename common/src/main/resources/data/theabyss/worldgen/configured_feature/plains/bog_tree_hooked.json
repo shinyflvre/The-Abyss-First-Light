@@ -1,0 +1,12 @@
+{
+  "type": "theabyss:bog_tree",
+  "config": {
+    "log": {
+      "Name": "theabyss:bog_shroom_log",
+      "Properties": {
+        "axis": "y"
+      }
+    },
+    "variant": "hooked"
+  }
+}

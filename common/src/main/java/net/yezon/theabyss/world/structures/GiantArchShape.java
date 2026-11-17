@@ -76,10 +76,10 @@ public final class GiantArchShape {
     }
 
     public static GiantArchShape load(CompoundTag tag) {
-        return new GiantArchShape(tag.getLongOr("Seed", 0L), tag.getIntOr("AX", 0), tag.getIntOr("AY", 0), tag.getIntOr("AZ", 0), tag.getIntOr("BX", 0),
-            tag.getIntOr("BY", 0), tag.getIntOr("BZ", 0), tag.getFloatOr("Rise", 40.0F), tag.getFloatOr("RTop", 6.0F), tag.getFloatOr("RLeg", 14.0F),
-            tag.getFloatOr("Width", 1.4F), tag.getFloatOr("Bow", 0.0F), tag.getFloatOr("Gamma", 1.0F), tag.getFloatOr("Power", 2.0F),
-            tag.getFloatOr("LegA", 1.0F), tag.getFloatOr("LegB", 1.0F), tag.getFloatOr("Twist", 0.0F), tag.getFloatOr("Period", 7.0F));
+        return new GiantArchShape(net.yezon.theabyss.compat.NbtCompat.getLongOr(tag, "Seed", 0L), net.yezon.theabyss.compat.NbtCompat.getIntOr(tag, "AX", 0), net.yezon.theabyss.compat.NbtCompat.getIntOr(tag, "AY", 0), net.yezon.theabyss.compat.NbtCompat.getIntOr(tag, "AZ", 0), net.yezon.theabyss.compat.NbtCompat.getIntOr(tag, "BX", 0),
+            net.yezon.theabyss.compat.NbtCompat.getIntOr(tag, "BY", 0), net.yezon.theabyss.compat.NbtCompat.getIntOr(tag, "BZ", 0), net.yezon.theabyss.compat.NbtCompat.getFloatOr(tag, "Rise", 40.0F), net.yezon.theabyss.compat.NbtCompat.getFloatOr(tag, "RTop", 6.0F), net.yezon.theabyss.compat.NbtCompat.getFloatOr(tag, "RLeg", 14.0F),
+            net.yezon.theabyss.compat.NbtCompat.getFloatOr(tag, "Width", 1.4F), net.yezon.theabyss.compat.NbtCompat.getFloatOr(tag, "Bow", 0.0F), net.yezon.theabyss.compat.NbtCompat.getFloatOr(tag, "Gamma", 1.0F), net.yezon.theabyss.compat.NbtCompat.getFloatOr(tag, "Power", 2.0F),
+            net.yezon.theabyss.compat.NbtCompat.getFloatOr(tag, "LegA", 1.0F), net.yezon.theabyss.compat.NbtCompat.getFloatOr(tag, "LegB", 1.0F), net.yezon.theabyss.compat.NbtCompat.getFloatOr(tag, "Twist", 0.0F), net.yezon.theabyss.compat.NbtCompat.getFloatOr(tag, "Period", 7.0F));
     }
 
     public void save(CompoundTag tag) {
@@ -289,17 +289,17 @@ public final class GiantArchShape {
     }
 
     public double band(double x, double y, double z) {
-        return (y + 4.0 * this.strata.get(x * 0.02, z * 0.02)) / this.period;
+        return (y + 4.0 * sample(this.strata, x * 0.02, z * 0.02)) / this.period;
     }
 
     public boolean vein(double x, double y, double z) {
-        return Math.abs(this.vein.get(x * 0.045, y * 0.045, z * 0.045)) < 0.018;
+        return Math.abs(sample(this.vein, x * 0.045, y * 0.045, z * 0.045)) < 0.018;
     }
 
     public double distance(double x, double y, double z, int[] candidates, int candidateCount) {
-        double qx = x + WARP * this.warp.get(x * 0.013, y * 0.013, z * 0.013);
-        double qy = y + WARP * 0.6 * this.warp.get(x * 0.013 + 31.7, y * 0.013, z * 0.013);
-        double qz = z + WARP * this.warp.get(x * 0.013, y * 0.013 + 71.3, z * 0.013);
+        double qx = x + WARP * sample(this.warp, x * 0.013, y * 0.013, z * 0.013);
+        double qy = y + WARP * 0.6 * sample(this.warp, x * 0.013 + 31.7, y * 0.013, z * 0.013);
+        double qz = z + WARP * sample(this.warp, x * 0.013, y * 0.013 + 71.3, z * 0.013);
         int best = -1;
         double bestSq = Double.MAX_VALUE;
         for (int c = 0; c < candidateCount; c++) {
@@ -331,9 +331,17 @@ public final class GiantArchShape {
         double e = Math.sqrt(ru * ru / (w * w) + rv * rv / (h * h));
         double dist = (e - 1.0) * Math.min(w, h);
         double amount = Math.min(1.0, h / 10.0);
-        dist -= amount * (LUMP * this.lump.get(qx * 0.035, qy * 0.035, qz * 0.035) + 1.2 * this.lump.get(qx * 0.11 + 17.0, qy * 0.11, qz * 0.11));
+        dist -= amount * (LUMP * sample(this.lump, qx * 0.035, qy * 0.035, qz * 0.035) + 1.2 * sample(this.lump, qx * 0.11 + 17.0, qy * 0.11, qz * 0.11));
         double band = band(x, y, z);
         dist -= amount * 1.2 * (band - Math.floor(band) - 0.5);
         return dist;
+    }
+
+    private static double sample(SimplexNoise noise, double x, double z) {
+        return (float)noise.getValue(x + noise.xo, z + noise.yo);
+    }
+
+    private static double sample(SimplexNoise noise, double x, double y, double z) {
+        return (float)noise.getValue(x + noise.xo, y + noise.yo, z + noise.zo);
     }
 }

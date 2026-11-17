@@ -14,7 +14,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,7 +26,7 @@ import net.yezon.theabyss.platform.registries.DeferredRegister;
 import net.yezon.theabyss.TheabyssMod;
 import org.jspecify.annotations.Nullable;
 
-public record BogTreeFeature(Variant variant, BlockState logState) implements Feature {
+public record BogTreeFeature(Variant variant, BlockState logState) implements AbyssFeature.Config {
     public enum Variant implements StringRepresentable {
         TALL("tall"), LEANING("leaning"), FORKED("forked"), HOOKED("hooked");
 
@@ -47,8 +47,8 @@ public record BogTreeFeature(Variant variant, BlockState logState) implements Fe
         Variant.CODEC.fieldOf("variant").forGetter(BogTreeFeature::variant),
         BlockState.CODEC.fieldOf("log").forGetter(BogTreeFeature::logState)
     ).apply(i, BogTreeFeature::new));
-    public static final DeferredRegister<MapCodec<? extends Feature>> REGISTRY = DeferredRegister.create(Registries.FEATURE_TYPE, TheabyssMod.MODID);
-    public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<BogTreeFeature>> BOG_TREE = REGISTRY.register("bog_tree", () -> CODEC);
+    public static final DeferredRegister<Feature<?>> REGISTRY = DeferredRegister.create(Registries.FEATURE, TheabyssMod.MODID);
+    public static final DeferredHolder<Feature<?>, AbyssFeature<BogTreeFeature>> BOG_TREE = REGISTRY.register("bog_tree", () -> new AbyssFeature<>(CODEC));
 
     private static final int[][] DIRS = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
     private static final int[][] FOOT_SPOTS = {{2, 0}, {2, 1}, {-1, 0}, {-1, 1}, {0, 2}, {1, 2}, {0, -1}, {1, -1}};
@@ -91,7 +91,7 @@ public record BogTreeFeature(Variant variant, BlockState logState) implements Fe
         int z = Math.clamp(origin.getZ(), loZ, hiZ);
         int y = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z);
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, y - 1, z);
-        while (pos.getY() > level.getMinY() && canReplace(level.getBlockState(pos))) {
+        while (pos.getY() > level.getMinBuildHeight() && canReplace(level.getBlockState(pos))) {
             pos.move(Direction.DOWN);
         }
         y = pos.getY() + 1;

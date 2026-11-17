@@ -1,19 +1,19 @@
 package net.yezon.theabyss.client.particle;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
-import net.minecraft.util.ARGB;
+import net.minecraft.client.particle.TextureSheetParticle;
+import net.yezon.theabyss.compat.ARGB;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.yezon.theabyss.ring.fx.FxOptions;
 import org.joml.Quaternionf;
 
-public class SpriteFxParticle extends SingleQuadParticle {
+public class SpriteFxParticle extends TextureSheetParticle {
     private final SpriteSet sprites;
     private final int flags;
     private final float drag;
@@ -28,7 +28,8 @@ public class SpriteFxParticle extends SingleQuadParticle {
     private int loopPhase;
 
     protected SpriteFxParticle(ClientLevel level, double x, double y, double z, double vx, double vy, double vz, FxOptions options, SpriteSet sprites) {
-        super(level, x, y, z, sprites.first());
+        super(level, x, y, z);
+        this.setSprite(sprites.get(0, 1));
         this.sprites = sprites;
         this.flags = options.flags();
         this.drag = options.drag();
@@ -122,13 +123,13 @@ public class SpriteFxParticle extends SingleQuadParticle {
     }
 
     @Override
-    public void extract(QuadParticleRenderState state, Camera camera, float partialTick) {
+    public void render(VertexConsumer buffer, Camera camera, float partialTick) {
         if ((this.flags & FxOptions.FLAT) == 0) {
-            super.extract(state, camera, partialTick);
+            super.render(buffer, camera, partialTick);
             return;
         }
-        this.extractRotatedQuad(state, camera, new Quaternionf().rotationX((float)(-Math.PI / 2.0)), partialTick);
-        this.extractRotatedQuad(state, camera, new Quaternionf().rotationX((float)(Math.PI / 2.0)), partialTick);
+        this.renderRotatedQuad(buffer, camera, new Quaternionf().rotationX((float)(-Math.PI / 2.0)), partialTick);
+        this.renderRotatedQuad(buffer, camera, new Quaternionf().rotationX((float)(Math.PI / 2.0)), partialTick);
     }
 
     @Override
@@ -142,8 +143,8 @@ public class SpriteFxParticle extends SingleQuadParticle {
     }
 
     @Override
-    public int getLightCoords(float partialTick) {
-        return (this.flags & FxOptions.SMOKE) != 0 ? super.getLightCoords(partialTick) : 15728880;
+    public int getLightColor(float partialTick) {
+        return (this.flags & FxOptions.SMOKE) != 0 ? super.getLightColor(partialTick) : 15728880;
     }
 
     public net.minecraft.world.phys.AABB cullBox() {
@@ -151,14 +152,13 @@ public class SpriteFxParticle extends SingleQuadParticle {
         return new net.minecraft.world.phys.AABB(this.x - r, this.y - r, this.z - r, this.x + r, this.y + r, this.z + r);
     }
 
-    @Override
-    public net.minecraft.client.particle.ParticleRenderType getGroup() {
-        return SpriteFxParticleGroup.TYPE;
+    public net.minecraft.world.phys.AABB getRenderBoundingBox(float partialTicks) {
+        return this.cullBox();
     }
 
     @Override
-    public SingleQuadParticle.Layer getLayer() {
-        return this.loopFrames > 0 || (this.flags & (FxOptions.SMOKE | FxOptions.FLAT)) != 0 ? SingleQuadParticle.Layer.TRANSLUCENT : SingleQuadParticle.Layer.OPAQUE;
+    public ParticleRenderType getRenderType() {
+        return this.loopFrames > 0 || (this.flags & (FxOptions.SMOKE | FxOptions.FLAT)) != 0 ? ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT : ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     public static Provider provider(SpriteSet sprites) {
@@ -187,7 +187,7 @@ public class SpriteFxParticle extends SingleQuadParticle {
         }
 
         @Override
-        public Particle createParticle(FxOptions options, ClientLevel level, double x, double y, double z, double vx, double vy, double vz, RandomSource random) {
+        public Particle createParticle(FxOptions options, ClientLevel level, double x, double y, double z, double vx, double vy, double vz) {
             SpriteFxParticle particle = new SpriteFxParticle(level, x, y, z, vx, vy, vz, options, this.sprites);
             if (this.frames > 0) {
                 particle.startLoop(this.frames, this.ticks, this.freeRoll);

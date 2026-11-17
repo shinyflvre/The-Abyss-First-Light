@@ -1,5 +1,7 @@
 package net.yezon.theabyss.item;
 
+import net.minecraft.world.InteractionResultHolder;
+import java.util.List;
 import java.util.function.Consumer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -9,7 +11,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,9 +28,8 @@ public class RingOfFirestrikeItem extends Item {
     }
 
     @Override
-    public void appendHoverText(
-        ItemStack itemstack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag
-    ) {
+    public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, List<Component> tooltipLines, TooltipFlag flag) {
+        Consumer<Component> tooltip = tooltipLines::add;
         AbyssTooltip.ring(tooltip, "tooltip.theabyss.ring_of_firestrike.ability", "tooltip.theabyss.ring_of_firestrike.text", "tooltip.theabyss.ring_of_firestrike.action", 25);
         tooltip.accept(AbyssTooltip.damage(net.yezon.theabyss.events.ApplyRingOfFirestrikeEvents.damage(AbyssTooltip.damageUpgrade()), net.yezon.theabyss.events.ApplyRingOfFirestrikeEvents.damage(0), ""));
         tooltip.accept(AbyssTooltip.cooldown(20));
@@ -37,8 +37,8 @@ public class RingOfFirestrikeItem extends Item {
     }
 
     @Override
-    public InteractionResult use(Level world, Player entity, InteractionHand hand) {
-        InteractionResult result = super.use(world, entity, hand);
+    public InteractionResultHolder<ItemStack> use(Level world, Player entity, InteractionHand hand) {
+        InteractionResultHolder<ItemStack> result = super.use(world, entity, hand);
         ApplyRingOfFirestrikeEvents.execute(world, entity.getX(), entity.getY(), entity.getZ(), entity, entity.getItemInHand(hand));
         return result;
     }
@@ -53,6 +53,6 @@ public class RingOfFirestrikeItem extends Item {
             context.getPlayer(),
             context.getItemInHand()
         );
-        return InteractionResult.SUCCESS;
+        return InteractionResult.sidedSuccess(context.getLevel().isClientSide());
     }
 }

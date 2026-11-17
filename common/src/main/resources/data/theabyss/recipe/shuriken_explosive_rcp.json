@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:shuriken",
-    "b": "minecraft:tnt"
+    "a": {
+      "item": "theabyss:shuriken"
+    },
+    "b": {
+      "item": "minecraft:tnt"
+    }
   },
   "pattern": [
     "ab"

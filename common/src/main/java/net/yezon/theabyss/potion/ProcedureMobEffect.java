@@ -40,7 +40,10 @@ public abstract class ProcedureMobEffect extends MobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(ServerLevel level, LivingEntity entity, int amplifier) {
+    public boolean applyEffectTick(LivingEntity entity, int amplifier) {
+        if (!(entity.level() instanceof ServerLevel)) {
+            return true;
+        }
         this.onTick(entity, amplifier);
         return true;
     }

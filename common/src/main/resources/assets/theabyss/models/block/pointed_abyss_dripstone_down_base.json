@@ -2,5 +2,6 @@
   "parent": "theabyss:block/pointed_abyss_dripstone",
   "textures": {
     "cross": "theabyss:block/pointed_abyss_dripstone_down_base"
-  }
+  },
+  "render_type": "minecraft:cutout"
 }

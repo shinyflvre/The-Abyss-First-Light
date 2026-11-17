@@ -1,7 +1,7 @@
 package net.yezon.theabyss.platform.common.util;
 
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.yezon.theabyss.compat.ValueInput;
+import net.yezon.theabyss.compat.ValueOutput;
 
 public interface ValueIOSerializable {
     void serialize(ValueOutput output);

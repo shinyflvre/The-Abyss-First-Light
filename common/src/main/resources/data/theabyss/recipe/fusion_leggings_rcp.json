@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:fusion_ingot"
+    "a": {
+      "item": "theabyss:fusion_ingot"
+    }
   },
   "pattern": [
     "aaa",

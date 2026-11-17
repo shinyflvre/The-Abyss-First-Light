@@ -1,0 +1,30 @@
+{
+  "type": "theabyss:shroom_tree",
+  "config": {
+    "cap": {
+      "Name": "theabyss:luna_shroom_leave"
+    },
+    "gill": {
+      "Name": "theabyss:luna_log",
+      "Properties": {
+        "axis": "y"
+      }
+    },
+    "hanging": {
+      "plant": "theabyss:soulbud_vine",
+      "chance": 0.35,
+      "length": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 2,
+        "max_inclusive": 6
+      }
+    },
+    "stem": {
+      "Name": "theabyss:luna_log",
+      "Properties": {
+        "axis": "y"
+      }
+    },
+    "variant": "forked"
+  }
+}

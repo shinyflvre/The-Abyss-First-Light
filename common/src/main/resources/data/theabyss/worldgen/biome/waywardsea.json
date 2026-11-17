@@ -1,65 +1,37 @@
 {
-  "attributes": {
-    "minecraft:audio/ambient_sounds": {
-      "loop": "theabyss:frost_world_ambience"
-    },
-    "minecraft:audio/background_music": {
-      "default": {
-        "max_delay": 24000,
-        "min_delay": 12000,
-        "sound": "theabyss:theabyss_dimension_music",
-        "replace_current_music": true
-      }
-    },
-    "minecraft:gameplay/natural_mob_spawns": {
-      "argument": {
-        "spawn_costs": {},
-        "spawns_by_category": {
-          "monster": [
-            {
-              "type": "minecraft:polar_bear",
-              "count": {
-                "type": "minecraft:uniform",
-                "max_inclusive": 2,
-                "min_inclusive": 1
-              },
-              "weight": 20
-            }
-          ]
-        }
-      },
-      "modifier": "overlay"
-    },
-    "minecraft:visual/ambient_particles": {
-      "argument": [
-        {
-          "particle": {
-            "type": "minecraft:white_ash"
-          },
-          "probability": 0.02
-        }
-      ],
-      "modifier": "append"
-    },
-    "minecraft:visual/fog_color": "#232d47",
-    "minecraft:visual/sky_color": "#000000",
-    "minecraft:visual/water_fog_color": "#b7b7b7"
+  "carvers": {
+    "air": [
+      "minecraft:cave",
+      "minecraft:cave_extra_underground",
+      "minecraft:canyon"
+    ]
   },
-  "carvers": [
-    "minecraft:cave",
-    "minecraft:cave_extra_underground",
-    "minecraft:canyon"
-  ],
   "downfall": 1,
   "effects": {
-    "foliage_color": "#aaf4ff",
-    "grass_color": "#ecfdff",
-    "water_color": "#333367"
+    "fog_color": 2305351,
+    "sky_color": 0,
+    "water_color": 3355495,
+    "water_fog_color": 12040119,
+    "foliage_color": 11203839,
+    "grass_color": 15531519,
+    "particle": {
+      "options": {
+        "type": "minecraft:white_ash"
+      },
+      "probability": 0.02
+    },
+    "ambient_sound": "theabyss:frost_world_ambience",
+    "music": {
+      "max_delay": 24000,
+      "min_delay": 12000,
+      "replace_current_music": true,
+      "sound": "theabyss:theabyss_dimension_music"
+    }
   },
   "features": [
     [],
     [
-      "minecraft:lake_lava_underground"
+      "theabyss:lake_lava_underground"
     ],
     [],
     [
@@ -77,5 +49,16 @@
     ]
   ],
   "has_precipitation": true,
+  "spawn_costs": {},
+  "spawners": {
+    "monster": [
+      {
+        "type": "minecraft:polar_bear",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 20
+      }
+    ]
+  },
   "temperature": -1
 }

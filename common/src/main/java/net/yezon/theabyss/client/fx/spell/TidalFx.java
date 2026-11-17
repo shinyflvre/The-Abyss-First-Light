@@ -3,10 +3,9 @@ package net.yezon.theabyss.client.fx.spell;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.network.SpellFxMessage;
@@ -14,7 +13,7 @@ import net.yezon.theabyss.ring.fx.FxOptions;
 import net.yezon.theabyss.ring.secondary.TidalWave;
 
 final class TidalFx extends Effect {
-    private static final RenderType WATER = RenderTypes.entityTranslucent(Identifier.withDefaultNamespace("textures/block/water_still.png"));
+    private static final RenderType WATER = RenderType.entityTranslucent(ResourceLocation.withDefaultNamespace("textures/block/water_still.png"));
     private static final double[][] PROFILE = {
         {-3.6, 0.0}, {-2.8, 0.22}, {-2.0, 0.62}, {-1.3, 1.22}, {-0.7, 1.86}, {-0.2, 2.38}, {0.3, 2.74},
         {0.75, 2.82}, {1.1, 2.6}, {1.2, 2.25}, {1.0, 1.95}

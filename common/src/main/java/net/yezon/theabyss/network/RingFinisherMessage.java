@@ -3,12 +3,12 @@ package net.yezon.theabyss.network;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.yezon.theabyss.platform.network.handling.IPayloadContext;
 import net.yezon.theabyss.TheabyssMod;
 
 public record RingFinisherMessage() implements CustomPacketPayload {
-    public static final Type<RingFinisherMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "ring_finisher"));
+    public static final Type<RingFinisherMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "ring_finisher"));
     public static final StreamCodec<RegistryFriendlyByteBuf, RingFinisherMessage> STREAM_CODEC = StreamCodec.unit(new RingFinisherMessage());
 
     @Override

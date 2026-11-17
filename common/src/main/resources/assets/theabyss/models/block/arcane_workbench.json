@@ -1349,8 +1349,10 @@
           "cullface": "down"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -1419,8 +1421,10 @@
           "texture": "#glow_arcane_crafting"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -1489,8 +1493,10 @@
           "texture": "#glow_arcane_crafting"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -1559,8 +1565,10 @@
           "texture": "#glow_arcane_crafting"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -1629,8 +1637,10 @@
           "texture": "#glow_arcane_crafting"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -1699,8 +1709,10 @@
           "texture": "#glow_arcane_crafting"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -1769,8 +1781,10 @@
           "texture": "#glow_arcane_crafting"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -1839,8 +1853,10 @@
           "texture": "#glow_arcane_crafting"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -1909,8 +1925,10 @@
           "texture": "#glow_arcane_crafting"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -1979,8 +1997,10 @@
           "texture": "#glow_arcane_crafting"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -2049,8 +2069,10 @@
           "texture": "#glow_arcane_crafting"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -2119,8 +2141,10 @@
           "texture": "#glow_arcane_crafting"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -2189,8 +2213,10 @@
           "texture": "#glow_arcane_crafting"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -2268,8 +2294,10 @@
           "texture": "#glow_arcane_crafting"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -2347,8 +2375,10 @@
           "texture": "#glow_arcane_crafting"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -2417,8 +2447,10 @@
           "texture": "#fluid"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -2496,8 +2528,10 @@
           "texture": "#glow_ring_item"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -2577,8 +2611,10 @@
           "texture": "#glow_ring_item"
         }
       },
-      "light_emission": 15,
-      "shade": false
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     }
   ],
   "render_type": "cutout",

@@ -172,14 +172,14 @@ public class AbyssaurAttackGoal extends Goal {
     }
 
     private boolean strike(ServerLevel level, LivingEntity victim, float amount, Vec3 velocity) {
-        if (!victim.hurtServer(level, this.dino.damageSources().mobAttack(this.dino), amount)) {
+        if (!victim.hurt(this.dino.damageSources().mobAttack(this.dino), amount)) {
             return false;
         }
         if (velocity != null) {
             victim.setDeltaMovement(velocity);
             net.yezon.theabyss.util.FallGuard.protect(victim, 80);
-            victim.needsSync = true;
-            victim.syncVelocity = true;
+            victim.hasImpulse = true;
+            victim.hurtMarked = true;
         }
         return true;
     }
@@ -403,8 +403,8 @@ public class AbyssaurAttackGoal extends Goal {
             }
             victim.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 120, 1));
             victim.addEffect(new MobEffectInstance(MobEffects.HUNGER, 120, 1));
-            victim.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 120, 2));
-            victim.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 160, 0));
+            victim.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 120, 2));
+            victim.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 160, 0));
             AbyssaurFx.dread(level, victim);
         }
     }
@@ -420,7 +420,7 @@ public class AbyssaurAttackGoal extends Goal {
                 Vec3 to = victim.getBoundingBox().getCenter().subtract(jaws);
                 Vec3 flat = new Vec3(to.x, 0.0, to.z);
                 if (flat.length() <= BREATH_RANGE && flat.length() > 0.01 && flat.normalize().dot(dir) >= Math.cos(BREATH_HALF_ANGLE)) {
-                    victim.hurtServer(level, this.dino.damageSources().mobAttack(this.dino), amount);
+                    victim.hurt(this.dino.damageSources().mobAttack(this.dino), amount);
                     victim.addEffect(new MobEffectInstance(MobEffects.POISON, 60, 0));
                 }
             }

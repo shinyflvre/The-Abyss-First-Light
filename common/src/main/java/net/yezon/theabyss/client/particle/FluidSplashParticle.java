@@ -2,21 +2,22 @@ package net.yezon.theabyss.client.particle;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.util.LightCoordsUtil;
 
-public class FluidSplashParticle extends SingleQuadParticle {
+public class FluidSplashParticle extends TextureSheetParticle {
     private static final int[] FRAME_END = {3, 6, 8};
     private final SpriteSet sprites;
 
     public static ParticleProvider<SimpleParticleType> provider(SpriteSet sprites) {
-        return (type, level, x, y, z, vx, vy, vz, random) -> new FluidSplashParticle(level, x, y, z, sprites);
+        return (type, level, x, y, z, vx, vy, vz) -> new FluidSplashParticle(level, x, y, z, sprites);
     }
 
     protected FluidSplashParticle(ClientLevel level, double x, double y, double z, SpriteSet sprites) {
-        super(level, x, y, z, sprites.first());
+        super(level, x, y, z);
+        this.setSprite(sprites.get(0, 1));
         this.sprites = sprites;
         this.quadSize = 0.12F + this.random.nextFloat() * 0.06F;
         this.setPos(x, y + this.quadSize, z);
@@ -33,13 +34,14 @@ public class FluidSplashParticle extends SingleQuadParticle {
     }
 
     @Override
-    public SingleQuadParticle.Layer getLayer() {
-        return SingleQuadParticle.Layer.OPAQUE;
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     @Override
-    public int getLightCoords(float partialTick) {
-        return LightCoordsUtil.withBlock(super.getLightCoords(partialTick), 15);
+    public int getLightColor(float partialTick) {
+        int light = super.getLightColor(partialTick);
+        return light & 0xFF0000 | 15 << 4;
     }
 
     @Override

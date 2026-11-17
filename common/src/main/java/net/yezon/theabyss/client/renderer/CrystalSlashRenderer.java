@@ -3,22 +3,20 @@ package net.yezon.theabyss.client.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
+import net.minecraft.resources.ResourceLocation;
+import net.yezon.theabyss.compat.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.entity.CrystalSlashEntity;
 
-public class CrystalSlashRenderer extends EntityRenderer<CrystalSlashEntity, CrystalSlashRenderer.State> {
+public class CrystalSlashRenderer extends EntityRenderer<CrystalSlashEntity> {
     private static final RenderType[] FRAMES = new RenderType[8];
     private static final RenderType[] GLOW_FRAMES = new RenderType[8];
     private static final int TINT = 0xFF82E1;
@@ -29,29 +27,14 @@ public class CrystalSlashRenderer extends EntityRenderer<CrystalSlashEntity, Cry
 
     static {
         for (int i = 0; i < 8; i++) {
-            Identifier sweep = Identifier.withDefaultNamespace("textures/particle/sweep_" + i + ".png");
-            FRAMES[i] = RenderTypes.entityTranslucent(sweep);
+            ResourceLocation sweep = ResourceLocation.withDefaultNamespace("textures/particle/sweep_" + i + ".png");
+            FRAMES[i] = RenderType.entityTranslucent(sweep);
             GLOW_FRAMES[i] = LightTrail.type(sweep);
         }
     }
 
-    public static class State extends EntityRenderState {
-        float yaw;
-        float pitch;
-        float age;
-        float half;
-        float sway;
-        float stop = -1.0F;
-        Vec3 dir = new Vec3(0.0, 0.0, 1.0);
-    }
-
     public CrystalSlashRenderer(EntityRendererProvider.Context context) {
         super(context);
-    }
-
-    @Override
-    public State createRenderState() {
-        return new State();
     }
 
     @Override
@@ -60,53 +43,52 @@ public class CrystalSlashRenderer extends EntityRenderer<CrystalSlashEntity, Cry
     }
 
     @Override
-    public void extractRenderState(CrystalSlashEntity entity, State state, float partialTick) {
-        super.extractRenderState(entity, state, partialTick);
+    public void render(CrystalSlashEntity entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffers, int light) {
         Vec3 v = entity.getDeltaMovement();
-        state.yaw = (float)Math.toDegrees(Math.atan2(v.x, v.z));
-        state.pitch = (float)Math.toDegrees(Math.atan2(v.y, v.horizontalDistance()));
-        state.age = entity.tickCount + partialTick;
-        state.stop = entity.stopTick();
-        state.half = (float)CrystalSlashEntity.halfWidth(state.stop >= 0 ? state.stop : state.age);
-        state.sway = (entity.getId() % 30 - 15) * Mth.sin(state.age * 0.045F);
-        state.dir = v.lengthSqr() < 1.0E-8 ? new Vec3(0.0, 0.0, 1.0) : v.normalize();
-    }
-
-    @Override
-    public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
-        boolean stopped = state.stop >= 0.0F;
-        float life = stopped ? 1.0F - (state.age - state.stop) / CrystalSlashEntity.FADE
-            : Mth.clamp((CrystalSlashEntity.MAX_AGE + 1 - state.age) / CrystalSlashEntity.FADE, 0.0F, 1.0F);
+        float yaw = (float)Math.toDegrees(Math.atan2(v.x, v.z));
+        float pitch = (float)Math.toDegrees(Math.atan2(v.y, v.horizontalDistance()));
+        float age = entity.tickCount + partialTick;
+        float stop = entity.stopTick();
+        float half = (float)CrystalSlashEntity.halfWidth(stop >= 0 ? stop : age);
+        float sway = (entity.getId() % 30 - 15) * Mth.sin(age * 0.045F);
+        boolean stopped = stop >= 0.0F;
+        float life = stopped ? 1.0F - (age - stop) / CrystalSlashEntity.FADE
+            : Mth.clamp((CrystalSlashEntity.MAX_AGE + 1 - age) / CrystalSlashEntity.FADE, 0.0F, 1.0F);
         if (life <= 0.0F) {
-            super.submit(state, poseStack, collector, camera);
+            super.render(entity, entityYaw, partialTick, poseStack, buffers, light);
             return;
         }
         poseStack.pushPose();
-        poseStack.rotateDegrees(Axis.YP, state.yaw);
-        poseStack.rotateDegrees(Axis.XP, -state.pitch);
-        poseStack.rotateDegrees(Axis.ZP, state.sway);
-        this.trail(state, poseStack, collector, life);
-        int frame = (int)(state.age * 0.5F);
+        poseStack.mulPose(Axis.YP.rotationDegrees(yaw));
+        poseStack.mulPose(Axis.XP.rotationDegrees(-pitch));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(sway));
+        this.trail(age, stop, poseStack, buffers, life);
+        int frame = (int)(age * 0.5F);
         int alpha = Math.round(255 * life);
-        poseStack.rotateDegrees(Axis.YP, -15.0F);
-        poseStack.rotateDegrees(Axis.ZP, -10.0F);
-        this.crescent(poseStack, collector, (frame + 4) % 8, state.half, alpha, life);
-        poseStack.rotateDegrees(Axis.YP, 30.0F);
-        poseStack.rotateDegrees(Axis.ZP, 20.0F);
-        this.crescent(poseStack, collector, frame % 8, state.half, alpha, life);
+        poseStack.mulPose(Axis.YP.rotationDegrees(-15.0F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(-10.0F));
+        this.crescent(poseStack, buffers, (frame + 4) % 8, half, alpha, life);
+        poseStack.mulPose(Axis.YP.rotationDegrees(30.0F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(20.0F));
+        this.crescent(poseStack, buffers, frame % 8, half, alpha, life);
         poseStack.popPose();
-        super.submit(state, poseStack, collector, camera);
+        super.render(entity, entityYaw, partialTick, poseStack, buffers, light);
     }
 
-    private void crescent(PoseStack poseStack, SubmitNodeCollector collector, int frame, float half, int alpha, float life) {
-        collector.submitCustomGeometry(poseStack, FRAMES[frame], (pose, buffer) -> quad(pose, buffer, half, ARGB.color(alpha, TINT)));
+    @Override
+    public ResourceLocation getTextureLocation(CrystalSlashEntity entity) {
+        return TextureAtlas.LOCATION_BLOCKS;
+    }
+
+    private void crescent(PoseStack poseStack, MultiBufferSource buffers, int frame, float half, int alpha, float life) {
+        quad(poseStack.last(), buffers.getBuffer(FRAMES[frame]), half, ARGB.color(alpha, TINT));
         int light = scale(GLOW, 0.7F * life);
-        collector.submitCustomGeometry(poseStack, GLOW_FRAMES[frame], (pose, buffer) -> quad(pose, buffer, half * 1.04F, ARGB.color(255, light)));
+        quad(poseStack.last(), buffers.getBuffer(GLOW_FRAMES[frame]), half * 1.04F, ARGB.color(255, light));
     }
 
-    private void trail(State state, PoseStack poseStack, SubmitNodeCollector collector, float life) {
-        float head = state.stop >= 0.0F ? state.stop : state.age;
-        float tail = Math.max(0.0F, state.age - TRAIL_TICKS);
+    private void trail(float age, float stop, PoseStack poseStack, MultiBufferSource buffers, float life) {
+        float head = stop >= 0.0F ? stop : age;
+        float tail = Math.max(0.0F, age - TRAIL_TICKS);
         if (head <= tail) {
             return;
         }
@@ -116,7 +98,7 @@ public class CrystalSlashRenderer extends EntityRenderer<CrystalSlashEntity, Cry
         int[] rgb = new int[ROWS];
         for (int i = 0; i < ROWS; i++) {
             float t = head - (head - tail) * i / (ROWS - 1);
-            float fresh = Math.max(0.0F, 1.0F - (state.age - t) / TRAIL_TICKS);
+            float fresh = Math.max(0.0F, 1.0F - (age - t) / TRAIL_TICKS);
             float z = (float)(-CrystalSlashEntity.SPEED * (head - t));
             float half = (float)CrystalSlashEntity.halfWidth(t) * 0.95F;
             left[i] = new Vec3(-half, -0.1, z);
@@ -124,7 +106,7 @@ public class CrystalSlashRenderer extends EntityRenderer<CrystalSlashEntity, Cry
             light[i] = (float)Math.pow(fresh, 1.2) * life;
             rgb[i] = ARGB.srgbLerp(fresh * fresh, GLOW, CORE) & 0xFFFFFF;
         }
-        collector.submitCustomGeometry(poseStack, LightTrail.SHEET, (pose, buffer) -> LightTrail.band(pose, buffer, left, right, light, rgb));
+        LightTrail.band(poseStack.last(), buffers.getBuffer(LightTrail.SHEET), left, right, light, rgb);
     }
 
     private static int scale(int rgb, float k) {

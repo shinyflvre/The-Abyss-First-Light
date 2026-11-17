@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:loran_ingot",
-    "b": "theabyss:loran",
-    "c": "minecraft:totem_of_undying"
+    "a": {
+      "item": "theabyss:loran_ingot"
+    },
+    "b": {
+      "item": "theabyss:loran"
+    },
+    "c": {
+      "item": "minecraft:totem_of_undying"
+    }
   },
   "pattern": [
     "aba",

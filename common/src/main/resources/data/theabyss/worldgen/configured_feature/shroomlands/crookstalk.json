@@ -1,0 +1,11 @@
+{
+  "type": "theabyss:triple_plant",
+  "config": {
+    "state": {
+      "Name": "theabyss:crookstalk",
+      "Properties": {
+        "part": "lower"
+      }
+    }
+  }
+}

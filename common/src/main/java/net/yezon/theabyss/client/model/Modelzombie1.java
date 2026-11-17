@@ -1,7 +1,6 @@
 package net.yezon.theabyss.client.model;
 
-import net.minecraft.client.model.AnimationUtils;
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -10,13 +9,13 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.entity.state.ZombieRenderState;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
 
-public class Modelzombie1<S extends LivingEntityRenderState> extends EntityModel<S> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath("theabyss", "modelzombie_1"), "main");
+public class Modelzombie1<T extends Entity> extends HierarchicalModel<T> {
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("theabyss", "modelzombie_1"), "main");
     public final ModelPart mob_head;
     public final ModelPart left_arm;
     public final ModelPart left_leg;
@@ -24,8 +23,10 @@ public class Modelzombie1<S extends LivingEntityRenderState> extends EntityModel
     public final ModelPart right_leg;
     public final ModelPart body;
 
+    private final ModelPart root;
+
     public Modelzombie1(ModelPart root) {
-        super(root);
+        this.root = root;
         this.mob_head = root.getChild("mob_head");
         this.left_arm = root.getChild("left_arm");
         this.left_leg = root.getChild("left_leg");
@@ -109,20 +110,33 @@ public class Modelzombie1<S extends LivingEntityRenderState> extends EntityModel
     }
 
     @Override
-    public void setupAnim(S state) {
-        super.setupAnim(state);
-        float limbSwing = state.walkAnimationPos;
-        float limbSwingAmount = state.walkAnimationSpeed;
-        float netHeadYaw = state.yRot;
-        float headPitch = state.xRot;
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.root.getAllParts().forEach(ModelPart::resetPose);
         this.left_leg.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
         this.right_arm.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * limbSwingAmount;
         this.mob_head.yRot = netHeadYaw / (180.0F / (float)Math.PI);
         this.mob_head.xRot = headPitch / (180.0F / (float)Math.PI);
         this.left_arm.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
         this.right_leg.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
-        if (state instanceof ZombieRenderState zombie) {
-            AnimationUtils.animateZombieArms(this.left_arm, this.right_arm, zombie.isAggressive, zombie);
+        if (entity instanceof Mob mob) {
+            boolean raiseArms = !mob.isBaby() || mob.getMainHandItem().isEmpty();
+            float armDrop = raiseArms ? (float) -Math.PI / (mob.isAggressive() ? 1.5F : 2.25F) : 0.0F;
+            float swing = this.attackTime;
+            float attackYRotModifier = (raiseArms ? 1.0F : -1.0F) * Mth.sin(swing * (float) Math.PI);
+            float attackXRotModifier = Mth.sin((1.0F - (1.0F - swing) * (1.0F - swing)) * (float) Math.PI);
+            float xRot = armDrop + attackYRotModifier * 1.2F - attackXRotModifier * 0.4F;
+            float yRot = 0.1F - attackYRotModifier * 0.6F;
+            this.right_arm.xRot = xRot;
+            this.right_arm.yRot = raiseArms ? -yRot : yRot;
+            this.right_arm.zRot = 0.0F;
+            this.left_arm.xRot = xRot;
+            this.left_arm.yRot = raiseArms ? yRot : -yRot;
+            this.left_arm.zRot = 0.0F;
         }
+    }
+
+    @Override
+    public ModelPart root() {
+        return this.root;
     }
 }

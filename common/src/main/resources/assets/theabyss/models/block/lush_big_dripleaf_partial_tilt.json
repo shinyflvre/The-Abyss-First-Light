@@ -28,7 +28,6 @@
         "axis": "x",
         "angle": -22.5
       },
-      "shade_direction_override": "up",
       "faces": {
         "down": {
           "uv": [
@@ -48,7 +47,8 @@
           ],
           "texture": "#top"
         }
-      }
+      },
+      "shade": false
     },
     {
       "from": [
@@ -70,7 +70,6 @@
         "axis": "x",
         "angle": -22.5
       },
-      "shade_direction_override": "up",
       "faces": {
         "north": {
           "uv": [
@@ -90,7 +89,8 @@
           ],
           "texture": "#tip"
         }
-      }
+      },
+      "shade": false
     },
     {
       "from": [
@@ -112,7 +112,6 @@
         "axis": "x",
         "angle": -22.5
       },
-      "shade_direction_override": "up",
       "faces": {
         "east": {
           "uv": [
@@ -133,7 +132,8 @@
           "texture": "#side",
           "cullface": "west"
         }
-      }
+      },
+      "shade": false
     },
     {
       "from": [
@@ -155,7 +155,6 @@
         "axis": "x",
         "angle": -22.5
       },
-      "shade_direction_override": "up",
       "faces": {
         "east": {
           "uv": [
@@ -176,7 +175,8 @@
           ],
           "texture": "#side"
         }
-      }
+      },
+      "shade": false
     },
     {
       "from": [
@@ -199,7 +199,6 @@
         "angle": 45,
         "rescale": true
       },
-      "shade_direction_override": "up",
       "faces": {
         "north": {
           "uv": [
@@ -219,7 +218,8 @@
           ],
           "texture": "#stem"
         }
-      }
+      },
+      "shade": false
     },
     {
       "from": [
@@ -242,7 +242,6 @@
         "angle": -45,
         "rescale": true
       },
-      "shade_direction_override": "up",
       "faces": {
         "north": {
           "uv": [
@@ -262,7 +261,9 @@
           ],
           "texture": "#stem"
         }
-      }
+      },
+      "shade": false
     }
-  ]
+  ],
+  "render_type": "minecraft:cutout"
 }

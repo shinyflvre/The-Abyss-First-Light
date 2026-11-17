@@ -6,7 +6,6 @@ import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
@@ -28,9 +27,8 @@ public abstract class MultiPlayerGameModeDestroyMixin {
         if (!(oldState.getBlock() instanceof PlayerDestroyListener listener) || this.minecraft.player == null) {
             return original.call(level, pos, replacement, flags);
         }
-        ItemStack tool = this.minecraft.player.getMainHandItem().copy();
         boolean changed = original.call(level, pos, replacement, flags);
-        listener.afterDestroyedByPlayer(oldState, level, pos, this.minecraft.player, tool, false, fluid);
+        listener.afterDestroyedByPlayer(oldState, level, pos, this.minecraft.player, false, fluid);
         return changed;
     }
 }

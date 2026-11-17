@@ -17,7 +17,7 @@ public class AbyssLeavesBlock extends Block implements FireSpreadingBlock {
     }
 
     @Override
-    protected boolean propagatesSkylightDown(BlockState state) {
+    protected boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
         return true;
     }
 

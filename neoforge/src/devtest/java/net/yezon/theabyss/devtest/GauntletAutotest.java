@@ -10,7 +10,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.yezon.theabyss.client.fx.SpellWheelClient;
 import net.yezon.theabyss.init.TheabyssModItems;
 import net.yezon.theabyss.init.TheabyssModKeyMappings;
@@ -35,7 +34,7 @@ final class GauntletAutotest {
             command.accept("execute in minecraft:overworld run fill -20 200 -20 20 212 20 minecraft:air");
             command.accept("time set noon");
             command.accept("weather clear");
-            command.accept("gamerule spawn_mobs false");
+            command.accept("gamerule doMobSpawning false");
         }, 60);
         add.add("gauntlet give", () -> {
             command.accept("execute in minecraft:overworld run tp @s 0.5 200 -5 0 0");
@@ -71,8 +70,9 @@ final class GauntletAutotest {
         add.add("upgrades tooltip", () -> {
             List<String> lines = new java.util.ArrayList<>();
             ItemStack ring = new ItemStack(TheabyssModItems.RING_OF_CRYSTALS.get());
-            ring.getItem().appendHoverText(ring, Item.TooltipContext.of(mc.level), net.minecraft.world.item.component.TooltipDisplay.DEFAULT,
-                line -> lines.add(line.getString()), net.minecraft.world.item.TooltipFlag.NORMAL);
+            List<net.minecraft.network.chat.Component> tip = new java.util.ArrayList<>();
+            ring.getItem().appendHoverText(ring, Item.TooltipContext.of(mc.level), tip, net.minecraft.world.item.TooltipFlag.NORMAL);
+            tip.forEach(line -> lines.add(line.getString()));
             lines.forEach(line -> TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] tooltip | {}", line));
             String all = String.join(" | ", lines);
             check("tooltip shows the real Somnium cost with the base (usage 5: 6 (12))", all.contains("6 (12)"));
@@ -106,8 +106,8 @@ final class GauntletAutotest {
         add.add("gauntlet cast main", () -> mc.gameMode.useItem(mc.player, InteractionHand.MAIN_HAND), 6);
         add.add("gauntlet main check", () -> onServer(sp -> {
             ItemStack hand = sp.getMainHandItem();
-            check("right click casts the selected ring (crystals cooldown " + sp.getCooldowns().isOnCooldown(new ItemStack(TheabyssModItems.RING_OF_CRYSTALS.get())) + ")",
-                sp.getCooldowns().isOnCooldown(new ItemStack(TheabyssModItems.RING_OF_CRYSTALS.get())));
+            check("right click casts the selected ring (crystals cooldown " + sp.getCooldowns().isOnCooldown(TheabyssModItems.RING_OF_CRYSTALS.get()) + ")",
+                sp.getCooldowns().isOnCooldown(TheabyssModItems.RING_OF_CRYSTALS.get()));
             check("the hand still holds the gauntlet with its rings", Gauntlet.is(hand) && Gauntlet.rings(hand).get(1).is(TheabyssModItems.RING_OF_CRYSTALS.get())
                 && Gauntlet.rings(hand).get(0).is(TheabyssModItems.RING_OF_FIRE.get()));
             double mana = TheabyssModVariables.getPlayerVariables(sp).Mana;

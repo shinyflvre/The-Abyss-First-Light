@@ -1,11 +1,12 @@
 package net.yezon.theabyss.client.screens;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
+import net.minecraft.resources.ResourceLocation;
+import net.yezon.theabyss.compat.ARGB;
+import net.yezon.theabyss.compat.GuiGraphicsCompat;
 import net.minecraft.util.Mth;
 import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
@@ -31,7 +32,7 @@ public final class TheabyssModGuiLayers {
 
         event.registerBelow(VanillaGuiLayers.AIR_LEVEL, id("somnium_bar"), (graphics, deltaTracker) -> {
             LocalPlayer player = Minecraft.getInstance().player;
-            if (player != null && !Minecraft.getInstance().gui.hud.isHidden() && !player.isSpectator()) {
+            if (player != null && !hudHidden() && !player.isSpectator()) {
                 SomniumBarOverlay.render(graphics, player);
             }
         });
@@ -47,29 +48,37 @@ public final class TheabyssModGuiLayers {
 
     @FunctionalInterface
     interface PlayerOverlay {
-        void render(GuiGraphicsExtractor graphics, LocalPlayer player);
+        void render(GuiGraphics graphics, LocalPlayer player);
+    }
+
+    static boolean hudHidden() {
+        return Minecraft.getInstance().options.hideGui;
     }
 
     private static GuiLayer whenHudShown(PlayerOverlay overlay) {
         return (graphics, deltaTracker) -> {
             Minecraft minecraft = Minecraft.getInstance();
-            if (minecraft.player != null && !minecraft.gui.hud.isHidden()) {
+            if (minecraft.player != null && !hudHidden()) {
                 overlay.render(graphics, minecraft.player);
             }
         };
     }
 
-    private static Identifier id(String path) {
-        return Identifier.fromNamespaceAndPath(TheabyssMod.MODID, path);
+    private static ResourceLocation id(String path) {
+        return ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, path);
     }
 
-    static void blitFullScreen(GuiGraphicsExtractor graphics, Identifier texture, int color) {
+    static void blitFullScreen(GuiGraphics graphics, ResourceLocation texture, int color) {
         int w = graphics.guiWidth();
         int h = graphics.guiHeight();
-        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, 0, 0, 0.0F, 0.0F, w, h, w, h, color);
+        RenderSystem.disableDepthTest();
+        RenderSystem.depthMask(false);
+        GuiGraphicsCompat.blit(graphics, texture, 0, 0, 0.0F, 0.0F, w, h, w, h, color);
+        RenderSystem.depthMask(true);
+        RenderSystem.enableDepthTest();
     }
 
-    static void blitFullScreenFaded(GuiGraphicsExtractor graphics, Identifier texture, double strength) {
+    static void blitFullScreenFaded(GuiGraphics graphics, ResourceLocation texture, double strength) {
         float s = Mth.clamp((float)strength, 0.0F, 1.0F);
         if (s > 0.0F) {
             blitFullScreen(graphics, texture, ARGB.colorFromFloat(s, s, s, s));

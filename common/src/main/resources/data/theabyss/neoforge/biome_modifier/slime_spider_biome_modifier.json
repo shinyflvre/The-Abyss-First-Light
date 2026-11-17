@@ -3,7 +3,8 @@
   "biomes": "theabyss:slime_forest",
   "spawners": {
     "type": "theabyss:slime_spider",
-    "weight": 35,
-    "count": 1
+    "maxCount": 1,
+    "minCount": 1,
+    "weight": 35
   }
 }

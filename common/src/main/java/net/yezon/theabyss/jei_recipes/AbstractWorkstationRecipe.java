@@ -9,40 +9,33 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeInput;
-import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.yezon.theabyss.mixin.accessor.NonNullListInvoker;
-import org.jspecify.annotations.Nullable;
 
 public abstract class AbstractWorkstationRecipe implements Recipe<RecipeInput> {
-    private static volatile RecipeMap clientRecipes = RecipeMap.EMPTY;
-
     private final NonNullList<Ingredient> ingredients;
-    private final ItemStackTemplate output;
+    private final ItemStack output;
 
-    protected AbstractWorkstationRecipe(List<Ingredient> ingredients, ItemStackTemplate output) {
-        this.ingredients = NonNullListInvoker.theabyss$create(List.copyOf(ingredients), null);
+    protected AbstractWorkstationRecipe(List<Ingredient> ingredients, ItemStack output) {
+        this.ingredients = NonNullList.of(Ingredient.EMPTY, ingredients.toArray(new Ingredient[0]));
         this.output = output;
     }
 
+    @Override
     public NonNullList<Ingredient> getIngredients() {
         return this.ingredients;
     }
 
-    public ItemStackTemplate output() {
+    public ItemStack output() {
         return this.output;
     }
 
-    public ItemStack getResultItem(HolderLookup.@Nullable Provider registries) {
-        return this.output.create();
+    @Override
+    public ItemStack getResultItem(HolderLookup.Provider registries) {
+        return this.output.copy();
     }
 
     @Override
@@ -51,8 +44,13 @@ public abstract class AbstractWorkstationRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public ItemStack assemble(RecipeInput input) {
-        return this.output.create();
+    public ItemStack assemble(RecipeInput input, HolderLookup.Provider registries) {
+        return this.output.copy();
+    }
+
+    @Override
+    public boolean canCraftInDimensions(int width, int height) {
+        return true;
     }
 
     @Override
@@ -66,48 +64,40 @@ public abstract class AbstractWorkstationRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public String group() {
+    public String getGroup() {
         return "";
-    }
-
-    @Override
-    public PlacementInfo placementInfo() {
-        return PlacementInfo.NOT_PLACEABLE;
-    }
-
-    @Override
-    public RecipeBookCategory recipeBookCategory() {
-        return RecipeBookCategories.CRAFTING_MISC;
-    }
-
-    static void setClientRecipes(RecipeMap recipes) {
-        clientRecipes = recipes;
-    }
-
-    public static RecipeMap clientRecipes() {
-        return clientRecipes;
     }
 
     @FunctionalInterface
     protected interface Factory<T extends AbstractWorkstationRecipe> {
-        T create(List<Ingredient> ingredients, ItemStackTemplate output);
+        T create(List<Ingredient> ingredients, ItemStack output);
     }
 
     protected static <T extends AbstractWorkstationRecipe> RecipeSerializer<T> serializer(int ingredientCount, Factory<T> factory) {
         MapCodec<T> codec = RecordCodecBuilder.mapCodec(
             i -> i.group(
-                    Ingredient.CODEC.listOf(ingredientCount, ingredientCount).fieldOf("ingredients").forGetter(AbstractWorkstationRecipe::getIngredients),
-                    ItemStackTemplate.CODEC.fieldOf("output").forGetter(AbstractWorkstationRecipe::output)
+                    Ingredient.CODEC_NONEMPTY.listOf(ingredientCount, ingredientCount).fieldOf("ingredients").forGetter(AbstractWorkstationRecipe::getIngredients),
+                    ItemStack.STRICT_CODEC.fieldOf("output").forGetter(AbstractWorkstationRecipe::output)
                 )
                 .apply(i, factory::create)
         );
         StreamCodec<RegistryFriendlyByteBuf, T> streamCodec = StreamCodec.composite(
             Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list(ingredientCount)),
             AbstractWorkstationRecipe::getIngredients,
-            ItemStackTemplate.STREAM_CODEC,
+            ItemStack.STREAM_CODEC,
             AbstractWorkstationRecipe::output,
             factory::create
         );
-        return new RecipeSerializer<>(codec, streamCodec);
+        return new RecipeSerializer<>() {
+            @Override
+            public MapCodec<T> codec() {
+                return codec;
+            }
+
+            @Override
+            public StreamCodec<RegistryFriendlyByteBuf, T> streamCodec() {
+                return streamCodec;
+            }
+        };
     }
 }

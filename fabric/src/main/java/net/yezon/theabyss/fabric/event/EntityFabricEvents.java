@@ -3,7 +3,7 @@ package net.yezon.theabyss.fabric.event;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -49,7 +49,7 @@ public final class EntityFabricEvents {
         return ((FabricMobSpawnState)mob).theabyss$isSpawnCancelled();
     }
 
-    public static @Nullable SpawnGroupData finalizeSpawn(Mob mob, ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
+    public static @Nullable SpawnGroupData finalizeSpawn(Mob mob, ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason,
         @Nullable SpawnGroupData data, Operation<SpawnGroupData> original) {
         if (!AbyssEventBus.hasListeners(FinalizeSpawnEvent.class)) {
             return original.call(mob, level, difficulty, reason, data);
@@ -64,7 +64,7 @@ public final class EntityFabricEvents {
         return AbyssEventBus.hasListeners(FinalizeSpawnEvent.class);
     }
 
-    public static boolean postFinalizeSpawn(Mob mob, EntitySpawnReason reason) {
+    public static boolean postFinalizeSpawn(Mob mob, MobSpawnType reason) {
         FinalizeSpawnEvent event = new FinalizeSpawnEvent(mob, reason, isSpawnCancelled(mob));
         AbyssEventBus.post(event);
         ((FabricMobSpawnState)mob).theabyss$setSpawnCancelled(event.getSpawnCancelled());

@@ -8,7 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -33,12 +33,12 @@ final class RootCracksAutotest {
     static void addSteps(PossessionAutotest.StepAdder add, Consumer<String> command, Consumer<String> shot) {
         add.add("rc setup", () -> {
             command.accept("gamemode spectator @s");
-            command.accept("gamerule spawn_mobs false");
+            command.accept("gamerule doMobSpawning false");
             ConfigConfiguration.ROOT_CRACKS.set(true);
         }, 4);
         add.add("rc find", () -> onServer(sp -> {
-            ServerLevel abyss = sp.level().getServer().getLevel(ResourceKey.create(Registries.DIMENSION, Identifier.parse("theabyss:the_abyss")));
-            var found = abyss.findClosestBiome3d(h -> h.is(ResourceKey.create(Registries.BIOME, Identifier.parse("theabyss:nightgrove"))),
+            ServerLevel abyss = sp.serverLevel().getServer().getLevel(ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse("theabyss:the_abyss")));
+            var found = abyss.findClosestBiome3d(h -> h.is(ResourceKey.create(Registries.BIOME, ResourceLocation.parse("theabyss:nightgrove"))),
                 new BlockPos(0, 100, 0), 3000, 32, 64);
             grove = found == null ? null : found.getFirst();
             TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] root cracks nightgrove at {}", grove);
@@ -52,14 +52,14 @@ final class RootCracksAutotest {
             }
         }, 200);
         add.add("rc ground", () -> onServer(sp -> {
-            groundY = sp.level().getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, sp.getBlockX(), sp.getBlockZ());
+            groundY = sp.serverLevel().getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, sp.getBlockX(), sp.getBlockZ());
             command.accept("execute in theabyss:the_abyss run tp @s " + (sp.getBlockX() + 0.5) + " " + (groundY + 2.6) + " " + (sp.getBlockZ() + 0.5) + " 0 38");
             int[][] spots = {{0, 4}, {2, 6}, {-2, 5}};
             String[] mobs = {"minecraft:zombie", "minecraft:iron_golem", "minecraft:cow"};
             for (int i = 0; i < spots.length; i++) {
                 int x = sp.getBlockX() + spots[i][0];
                 int z = sp.getBlockZ() + spots[i][1];
-                int y = sp.level().getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+                int y = sp.serverLevel().getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
                 command.accept("execute in theabyss:the_abyss run summon " + mobs[i] + " " + (x + 0.5) + " " + y + " " + (z + 0.5) + " {NoAI:1b,PersistenceRequired:1b}");
             }
         }), 160);
@@ -161,7 +161,7 @@ final class RootCracksAutotest {
             var field = RootCracks.class.getDeclaredField("CHUNKS");
             field.setAccessible(true);
             Map<?, ?> chunks = (Map<?, ?>)field.get(null);
-            return chunks.get(net.minecraft.world.level.ChunkPos.pack(x >> 4, z >> 4));
+            return chunks.get(net.minecraft.world.level.ChunkPos.asLong(x >> 4, z >> 4));
         } catch (ReflectiveOperationException e) {
             return null;
         }

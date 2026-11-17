@@ -1,8 +1,12 @@
 {
   "type": "theabyss:crystal_cutter_recipe_type",
   "ingredients": [
-    "theabyss:hollow_crystal_ore",
-    "theabyss:loran_energy"
+    {
+      "item": "theabyss:hollow_crystal_ore"
+    },
+    {
+      "item": "theabyss:loran_energy"
+    }
   ],
   "output": {
     "id": "theabyss:hollow_crystal_shard",

@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:vigilant_log"
+    "a": {
+      "item": "theabyss:vigilant_log"
+    }
   },
   "pattern": [
     "a"

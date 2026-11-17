@@ -1,7 +1,9 @@
 package net.yezon.theabyss.platform.event;
 
-import net.yezon.theabyss.platform.event.Event;
+import org.jspecify.annotations.Nullable;
 
 public abstract class OnDatapackSyncEvent extends Event {
-    public abstract void sendRecipes(net.minecraft.world.item.crafting.RecipeType<?>... a0);
+    public abstract net.minecraft.server.players.PlayerList getPlayerList();
+
+    public abstract net.minecraft.server.level.@Nullable ServerPlayer getPlayer();
 }

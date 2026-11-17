@@ -30,13 +30,13 @@ public class NightAltarActivatedBlock extends Block {
                 .lightLevel(s -> 5)
                 .requiresCorrectToolForDrops()
                 .noOcclusion()
-                .postProcess((bs, br, bp) -> bp)
+                .hasPostProcess((bs, br, bp) -> true)
                 .isRedstoneConductor((bs, br, bp) -> false)
         );
     }
 
     @Override
-    protected boolean propagatesSkylightDown(BlockState state) {
+    protected boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
         return true;
     }
 
@@ -54,6 +54,6 @@ public class NightAltarActivatedBlock extends Block {
     @Override
     protected InteractionResult useWithoutItem(BlockState blockstate, Level world, BlockPos pos, Player entity, BlockHitResult hit) {
         NightAltarSummonCheckEvents.execute();
-        return InteractionResult.SUCCESS;
+        return InteractionResult.sidedSuccess(world.isClientSide());
     }
 }

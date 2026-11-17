@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.TriState;
+import net.yezon.theabyss.compat.TriState;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
@@ -23,7 +23,7 @@ public class InfectedGrassBlock extends Block implements PlantSoilBlock {
     }
 
     @Override
-    protected boolean propagatesSkylightDown(BlockState state) {
+    protected boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
         return true;
     }
 
@@ -33,7 +33,7 @@ public class InfectedGrassBlock extends Block implements PlantSoilBlock {
     }
 
     @Override
-    public TriState canSustainPlant(BlockState state, BlockGetter level, BlockPos soilPosition, Direction facing, BlockState plant) {
+    public TriState sustainsPlant(BlockState state, BlockGetter level, BlockPos soilPosition, Direction facing, BlockState plant) {
         return TriState.TRUE;
     }
 

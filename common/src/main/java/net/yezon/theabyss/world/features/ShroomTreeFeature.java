@@ -27,7 +27,7 @@ import net.yezon.theabyss.platform.registries.DeferredHolder;
 import net.yezon.theabyss.platform.registries.DeferredRegister;
 import net.yezon.theabyss.TheabyssMod;
 
-public record ShroomTreeFeature(Variant variant, BlockState stemState, BlockState capState, BlockState gillState, Optional<HangingPlants> hanging) implements Feature {
+public record ShroomTreeFeature(Variant variant, BlockState stemState, BlockState capState, BlockState gillState, Optional<HangingPlants> hanging) implements AbyssFeature.Config {
     public enum Variant implements StringRepresentable {
         PARASOL("parasol"), BELL("bell"), TWIN("twin"), GROUP("group"), FORKED("forked"), TRIDENT("trident"), CROWN_BRANCH("crown_branch"),
         GIANT_FORK("giant_fork");
@@ -52,8 +52,8 @@ public record ShroomTreeFeature(Variant variant, BlockState stemState, BlockStat
         BlockState.CODEC.fieldOf("gill").forGetter(ShroomTreeFeature::gillState),
         HangingPlants.CODEC.optionalFieldOf("hanging").forGetter(ShroomTreeFeature::hanging)
     ).apply(i, ShroomTreeFeature::new));
-    public static final DeferredRegister<MapCodec<? extends Feature>> REGISTRY = DeferredRegister.create(Registries.FEATURE_TYPE, TheabyssMod.MODID);
-    public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<ShroomTreeFeature>> SHROOM_TREE = REGISTRY.register("shroom_tree", () -> CODEC);
+    public static final DeferredRegister<Feature<?>> REGISTRY = DeferredRegister.create(Registries.FEATURE, TheabyssMod.MODID);
+    public static final DeferredHolder<Feature<?>, AbyssFeature<ShroomTreeFeature>> SHROOM_TREE = REGISTRY.register("shroom_tree", () -> new AbyssFeature<>(CODEC));
 
     private static final int STEM = 1;
     private static final int CAP = 2;

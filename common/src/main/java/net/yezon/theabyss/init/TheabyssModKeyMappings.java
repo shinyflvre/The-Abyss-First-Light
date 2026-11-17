@@ -4,7 +4,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
@@ -21,7 +20,7 @@ import net.yezon.theabyss.network.GhostFireAttackMessage;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public class TheabyssModKeyMappings {
-    public static final KeyMapping.Category ABYSS_CATEGORY = new KeyMapping.Category(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "abyss"));
+    public static final String ABYSS_CATEGORY = "key.category." + TheabyssMod.MODID + ".abyss";
 
     public static final KeyMapping GHOST_ATTACK = new PressReleaseKeyMapping(
         "key.theabyss.ghost_attack", InputConstants.KEY_X, ABYSS_CATEGORY, GhostAttackMessage::new, GhostAttackMessage::pressAction
@@ -38,16 +37,16 @@ public class TheabyssModKeyMappings {
     public static final KeyMapping FRIENDLEY_FIRE_B = new PressKeyMapping(
         "key.theabyss.friendley_fire_b", InputConstants.KEY_LEFT, ABYSS_CATEGORY, FriendleyFireBMessage::new, FriendleyFireBMessage::pressAction
     );
-    public static final KeyMapping ABIL_DEBUG = new KeyMapping("key.theabyss.abil_debug", InputConstants.KEY_DOWN, KeyMapping.Category.MISC);
+    public static final KeyMapping ABIL_DEBUG = new KeyMapping("key.theabyss.abil_debug", InputConstants.KEY_DOWN, KeyMapping.CATEGORY_MISC);
     public static final KeyMapping ABYSS_ECHOES = new KeyMapping(
         "key.theabyss.abyss_echoes", InputConstants.Type.MOUSE, InputConstants.MOUSE_BUTTON_MIDDLE, ABYSS_CATEGORY
     );
     public static final KeyMapping MAIN_MAGIC = new KeyMapping(
         "key.theabyss.main_magic", InputConstants.Type.MOUSE, InputConstants.MOUSE_BUTTON_RIGHT, ABYSS_CATEGORY
     );
-    public static final KeyMapping SPELL_WHEEL = net.yezon.theabyss.platform.services.ClientPlatformHooks.get().keyMapping(
+    public static final KeyMapping SPELL_WHEEL = net.yezon.theabyss.platform.services.GuiPlatformHooks.get().keyMapping(
         "key.theabyss.spell_wheel", net.yezon.theabyss.platform.client.settings.KeyConflictContext.IN_GAME,
-        net.yezon.theabyss.platform.client.settings.KeyModifier.NONE, InputConstants.Type.KEYBOARD, InputConstants.KEY_R, ABYSS_CATEGORY
+        net.yezon.theabyss.platform.client.settings.KeyModifier.NONE, InputConstants.Type.KEYSYM, InputConstants.KEY_R, ABYSS_CATEGORY
     );
     public static final KeyMapping RIFT_OF_SINS = new KeyMapping("key.theabyss.rift_of_sins", InputConstants.KEY_B, ABYSS_CATEGORY);
     public static final KeyMapping DIALOG_CONTINUE = new KeyMapping("key.theabyss.dialog_continue", InputConstants.KEY_G, ABYSS_CATEGORY);
@@ -55,7 +54,6 @@ public class TheabyssModKeyMappings {
 
     @SubscribeEvent
     public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
-        event.registerCategory(ABYSS_CATEGORY);
         event.register(GHOST_ATTACK);
         event.register(GHOST_FIRE_ATTACK);
         event.register(GHOST_DEACTIVATE);
@@ -76,7 +74,7 @@ public class TheabyssModKeyMappings {
 
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
-        if (Minecraft.getInstance().gui.screen() == null) {
+        if (Minecraft.getInstance().screen == null) {
             GHOST_ATTACK.consumeClick();
             GHOST_FIRE_ATTACK.consumeClick();
             GHOST_DEACTIVATE.consumeClick();
@@ -138,7 +136,7 @@ public class TheabyssModKeyMappings {
         private final PressAction action;
         private boolean isDownOld;
 
-        PressKeyMapping(String name, int key, KeyMapping.Category category, MessageFactory message, PressAction action) {
+        PressKeyMapping(String name, int key, String category, MessageFactory message, PressAction action) {
             super(name, key, category);
             this.message = message;
             this.action = action;
@@ -177,7 +175,7 @@ public class TheabyssModKeyMappings {
     private static class PressReleaseKeyMapping extends PressKeyMapping {
         private long lastPress;
 
-        PressReleaseKeyMapping(String name, int key, KeyMapping.Category category, MessageFactory message, PressAction action) {
+        PressReleaseKeyMapping(String name, int key, String category, MessageFactory message, PressAction action) {
             super(name, key, category, message, action);
         }
 

@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:loran",
-    "b": "theabyss:cobble_stone",
-    "c": "minecraft:stonecutter"
+    "a": {
+      "item": "theabyss:loran"
+    },
+    "b": {
+      "item": "theabyss:cobble_stone"
+    },
+    "c": {
+      "item": "minecraft:stonecutter"
+    }
   },
   "pattern": [
     " a ",

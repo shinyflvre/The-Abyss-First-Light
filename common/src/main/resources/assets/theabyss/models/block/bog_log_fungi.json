@@ -17,7 +17,6 @@
         12.5,
         16
       ],
-      "shade": false,
       "rotation": {
         "angle": 0,
         "axis": "y",
@@ -86,7 +85,6 @@
         3,
         16
       ],
-      "shade": false,
       "rotation": {
         "angle": 0,
         "axis": "y",
@@ -155,7 +153,6 @@
         15,
         16
       ],
-      "shade": false,
       "rotation": {
         "angle": 0,
         "axis": "y",
@@ -224,7 +221,6 @@
         11,
         16
       ],
-      "shade": false,
       "rotation": {
         "angle": 0,
         "axis": "y",
@@ -293,7 +289,6 @@
         7,
         16
       ],
-      "shade": false,
       "rotation": {
         "angle": 0,
         "axis": "y",
@@ -362,7 +357,6 @@
         12.5,
         16
       ],
-      "shade": false,
       "rotation": {
         "angle": 0,
         "axis": "y",
@@ -419,7 +413,10 @@
           "texture": "#glow_bog_log_fungi"
         }
       },
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -432,7 +429,6 @@
         3,
         16
       ],
-      "shade": false,
       "rotation": {
         "angle": 0,
         "axis": "y",
@@ -489,7 +485,10 @@
           "texture": "#glow_bog_log_fungi"
         }
       },
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -502,7 +501,6 @@
         15,
         16
       ],
-      "shade": false,
       "rotation": {
         "angle": 0,
         "axis": "y",
@@ -559,7 +557,10 @@
           "texture": "#glow_bog_log_fungi"
         }
       },
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -572,7 +573,6 @@
         11,
         16
       ],
-      "shade": false,
       "rotation": {
         "angle": 0,
         "axis": "y",
@@ -629,7 +629,10 @@
           "texture": "#glow_bog_log_fungi"
         }
       },
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -642,7 +645,6 @@
         7,
         16
       ],
-      "shade": false,
       "rotation": {
         "angle": 0,
         "axis": "y",
@@ -699,7 +701,10 @@
           "texture": "#glow_bog_log_fungi"
         }
       },
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     }
   ],
   "render_type": "cutout",

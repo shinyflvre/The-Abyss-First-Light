@@ -1,5 +1,7 @@
 package net.yezon.theabyss.item;
 
+import net.minecraft.world.InteractionResultHolder;
+import java.util.List;
 import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -10,7 +12,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.yezon.theabyss.ring.Gauntlet;
 import net.yezon.theabyss.ring.RingMagic;
@@ -21,21 +22,22 @@ public class InfectedGauntletItem extends Item {
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack gauntlet = player.getItemInHand(hand);
         ItemStack ring = Gauntlet.selectedRing(gauntlet);
-        if (ring.isEmpty() || player.getCooldowns().isOnCooldown(ring)) {
+        if (ring.isEmpty() || player.getCooldowns().isOnCooldown(ring.getItem())) {
             if (!level.isClientSide()) {
                 RingMagic.castFromGauntlet(player, hand, gauntlet, false);
             }
-            return InteractionResult.PASS;
+            return InteractionResultHolder.pass(player.getItemInHand(hand));
         }
         RingMagic.castFromGauntlet(player, hand, gauntlet, false);
-        return InteractionResult.SUCCESS;
+        return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipLines, TooltipFlag flag) {
+        Consumer<Component> tooltip = tooltipLines::add;
         var rings = Gauntlet.rings(stack);
         int selected = Gauntlet.selected(stack);
         for (int i = 0; i < Gauntlet.SLOTS; i++) {

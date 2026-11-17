@@ -5,36 +5,42 @@
       "rules": [
         {
           "input_predicate": {
-            "block": "theabyss:ralom_plant",
             "predicate_type": "minecraft:random_block_match",
+            "block": "theabyss:ralom_plant",
             "probability": 0.3
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": "theabyss:fortis_ultima"
+          "output_state": {
+            "Name": "theabyss:fortis_ultima"
+          }
         },
         {
           "input_predicate": {
-            "block": "theabyss:ralom_plant",
             "predicate_type": "minecraft:random_block_match",
+            "block": "theabyss:ralom_plant",
             "probability": 0.2
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": "theabyss:flos_vitae"
+          "output_state": {
+            "Name": "theabyss:flos_vitae"
+          }
         },
         {
           "input_predicate": {
-            "block": "theabyss:ralom_plant",
             "predicate_type": "minecraft:random_block_match",
+            "block": "theabyss:ralom_plant",
             "probability": 0.1
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": "theabyss:exolius_plant"
+          "output_state": {
+            "Name": "theabyss:exolius_plant"
+          }
         }
       ]
     },

@@ -2,15 +2,16 @@ package net.yezon.theabyss.client.debug;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 import net.minecraft.world.level.biome.Biome;
+import net.yezon.theabyss.compat.GuiGraphicsCompat;
 
 public class BiomeColorScreen extends Screen {
     private static final int PANEL_WIDTH = 300;
@@ -61,7 +62,7 @@ public class BiomeColorScreen extends Screen {
             this.rebuildAt = -1L;
             if (this.minecraft.level != null) {
                 this.minecraft.level.clearTintCaches();
-                this.minecraft.levelExtractor.allChanged();
+                this.minecraft.levelRenderer.allChanged();
             }
         }
     }
@@ -72,24 +73,24 @@ public class BiomeColorScreen extends Screen {
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float a) {
         int left = this.panelLeft();
         int bottom = 34 + BiomeColors.Channel.values().length * ROW_HEIGHT + 48;
         graphics.fill(left, 4, left + PANEL_WIDTH, bottom, 0xC0101418);
-        graphics.outline(left, 4, PANEL_WIDTH, bottom - 4, 0xFF3A4A55);
+        graphics.renderOutline(left, 4, PANEL_WIDTH, bottom - 4, 0xFF3A4A55);
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-        super.extractRenderState(graphics, mouseX, mouseY, a);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float a) {
+        super.render(graphics, mouseX, mouseY, a);
         int left = this.panelLeft() + 6;
-        graphics.text(this.font, "Biome Colors", left, 10, 0xFFFFFFFF);
-        graphics.text(this.font, BiomeColors.id(this.biome).toString(), left, 21, 0xFF7FD4E6);
+        GuiGraphicsCompat.text(graphics, this.font, "Biome Colors", left, 10, 0xFFFFFFFF, true);
+        GuiGraphicsCompat.text(graphics, this.font, BiomeColors.id(this.biome).toString(), left, 21, 0xFF7FD4E6, true);
         for (Row row : this.rows) {
             row.draw(graphics);
         }
         int statusY = 34 + this.rows.size() * ROW_HEIGHT + 34;
-        graphics.text(this.font, this.status, left, statusY, 0xFFB0B0B0);
+        GuiGraphicsCompat.text(graphics, this.font, this.status, left, statusY, 0xFFB0B0B0, true);
     }
 
     private final class Row {
@@ -160,11 +161,11 @@ public class BiomeColorScreen extends Screen {
             this.updating = false;
         }
 
-        void draw(GuiGraphicsExtractor graphics) {
+        void draw(GuiGraphics graphics) {
             boolean edited = BiomeColors.isEdited(biome, this.channel);
-            graphics.text(font, this.channel.label, this.x, this.y + 5, edited ? 0xFFFFD27F : 0xFFE0E0E0);
+            GuiGraphicsCompat.text(graphics, font, this.channel.label, this.x, this.y + 5, edited ? 0xFFFFD27F : 0xFFE0E0E0, true);
             graphics.fill(this.x + 56, this.y + 1, this.x + 72, this.y + 17, 0xFF000000 | this.rgb);
-            graphics.outline(this.x + 56, this.y + 1, 16, 16, 0xFF808080);
+            graphics.renderOutline(this.x + 56, this.y + 1, 16, 16, 0xFF808080);
         }
     }
 

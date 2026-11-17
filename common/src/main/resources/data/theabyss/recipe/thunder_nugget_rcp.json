@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:thunder_dust",
-    "b": "minecraft:iron_nugget"
+    "a": {
+      "item": "theabyss:thunder_dust"
+    },
+    "b": {
+      "item": "minecraft:iron_nugget"
+    }
   },
   "pattern": [
     "ab"

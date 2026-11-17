@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ServerGamePacketListenerImpl.class)
 public abstract class ServerGamePacketListenerCreativeFlightMixin {
-    @WrapOperation(method = {"handlePlayerPositionChange", "handlePlayerAbilities"},
+    @WrapOperation(method = {"handleMovePlayer", "handlePlayerAbilities"},
         at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/player/Abilities;mayfly:Z", opcode = Opcodes.GETFIELD))
     private boolean theabyss$mayFly(Abilities abilities, Operation<Boolean> original) {
         return original.call(abilities) || FabricAttributes.attributeFlight(((ServerGamePacketListenerImpl)(Object)this).player);

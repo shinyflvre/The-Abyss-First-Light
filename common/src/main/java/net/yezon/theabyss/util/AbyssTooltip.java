@@ -87,8 +87,7 @@ public final class AbyssTooltip {
         List<Spell> out = new java.util.ArrayList<>();
         CAPTURE.set(out);
         try {
-            stack.getItem().appendHoverText(stack, context, net.minecraft.world.item.component.TooltipDisplay.DEFAULT, line -> {
-            }, net.minecraft.world.item.TooltipFlag.NORMAL);
+            stack.getItem().appendHoverText(stack, context, new java.util.ArrayList<>(), net.minecraft.world.item.TooltipFlag.NORMAL);
         } finally {
             CAPTURE.remove();
         }

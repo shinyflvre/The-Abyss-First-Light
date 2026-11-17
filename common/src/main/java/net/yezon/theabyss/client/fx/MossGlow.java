@@ -70,7 +70,7 @@ public final class MossGlow {
             int flags = FxOptions.FLAT | FxOptions.SHRINK;
             float size = 0.025F + random.nextFloat() * 0.02F;
             int life = 30 + random.nextInt(30);
-            level.addParticle(TheabyssModParticleTypes.FX_DOT.get().of(colour, size, life, flags), true, false, x, top, z, 0.0, 0.0, 0.0);
+            level.addParticle(TheabyssModParticleTypes.FX_DOT.get().of(colour, size, life, flags), true, x, top, z, 0.0, 0.0, 0.0);
         }
     }
 

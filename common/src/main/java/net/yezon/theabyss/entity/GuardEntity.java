@@ -6,7 +6,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.AreaEffectCloud;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
@@ -20,8 +20,8 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
-import net.minecraft.world.entity.projectile.throwableitemprojectile.AbstractThrownPotion;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -53,27 +53,30 @@ public class GuardEntity extends Monster {
     @Override
     protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(level, source, recentlyHitIn);
-        this.spawnAtLocation(level, new ItemStack(Items.GOLD_NUGGET));
+        this.spawnAtLocation(new ItemStack(Items.GOLD_NUGGET));
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource damagesource, float amount) {
+    public boolean hurt(DamageSource damagesource, float amount) {
+        if (!(this.level() instanceof ServerLevel level)) {
+            return false;
+        }
         if (damagesource.is(DamageTypes.IN_FIRE)
             || damagesource.is(DamageTypes.CAMPFIRE)
             || damagesource.getDirectEntity() instanceof AbstractArrow
-            || damagesource.getDirectEntity() instanceof AbstractThrownPotion
+            || damagesource.getDirectEntity() instanceof ThrownPotion
             || damagesource.getDirectEntity() instanceof AreaEffectCloud
             || damagesource.is(DamageTypes.FALL)
             || damagesource.is(DamageTypes.CACTUS)
             || damagesource.is(DamageTypes.DROWN)) {
             return false;
         }
-        return super.hurtServer(level, damagesource, amount);
+        return super.hurt(damagesource, amount);
     }
 
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(
-        ServerLevelAccessor world, DifficultyInstance difficulty, EntitySpawnReason reason, @Nullable SpawnGroupData livingdata
+        ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData livingdata
     ) {
         SpawnGroupData retval = super.finalizeSpawn(world, difficulty, reason, livingdata);
         GuardSpawnEffectEvents.execute(world, this.getX(), this.getY(), this.getZ(), this);

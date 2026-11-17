@@ -2,11 +2,21 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:ender_crystal_ore",
-    "b": "theabyss:crimson_crystal_ore",
-    "c": "theabyss:loran",
-    "d": "minecraft:ghast_tear",
-    "e": "theabyss:warped_crystal_ore"
+    "a": {
+      "item": "theabyss:ender_crystal_ore"
+    },
+    "b": {
+      "item": "theabyss:crimson_crystal_ore"
+    },
+    "c": {
+      "item": "theabyss:loran"
+    },
+    "d": {
+      "item": "minecraft:ghast_tear"
+    },
+    "e": {
+      "item": "theabyss:warped_crystal_ore"
+    }
   },
   "pattern": [
     "aba",

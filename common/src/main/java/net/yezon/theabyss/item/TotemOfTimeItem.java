@@ -1,19 +1,20 @@
 package net.yezon.theabyss.item;
 
+import java.util.List;
 import java.util.function.Consumer;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.block.state.BlockState;
 import net.yezon.theabyss.util.AbyssTooltip;
 
-public class TotemOfTimeItem extends Item {
+public class TotemOfTimeItem extends Item implements AbyssTotemEffect.Totem {
+    private static final AbyssTotemEffect EFFECT = AbyssTotemEffect.protection(AbyssTotemEffect.Kind.TIME);
+
     public TotemOfTimeItem(Item.Properties properties) {
-        super(properties.durability(100).rarity(Rarity.EPIC).component(DataComponents.DEATH_PROTECTION, AbyssTotemEffect.protection(AbyssTotemEffect.Kind.TIME)));
+        super(properties.durability(100).rarity(Rarity.EPIC));
     }
 
     @Override
@@ -22,9 +23,13 @@ public class TotemOfTimeItem extends Item {
     }
 
     @Override
-    public void appendHoverText(
-        ItemStack itemstack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag
-    ) {
+    public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, List<Component> tooltipLines, TooltipFlag flag) {
+        Consumer<Component> tooltip = tooltipLines::add;
         AbyssTooltip.ability(tooltip, "tooltip.theabyss.totem_of_time.ability", "tooltip.theabyss.totem_of_time.text");
+    }
+
+    @Override
+    public AbyssTotemEffect totemEffect() {
+        return EFFECT;
     }
 }

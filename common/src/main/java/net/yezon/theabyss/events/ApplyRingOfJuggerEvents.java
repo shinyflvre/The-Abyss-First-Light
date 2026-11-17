@@ -27,9 +27,9 @@ public class ApplyRingOfJuggerEvents {
         if (level != null && entity instanceof LivingEntity living) {
             int amplifier = (int)cast.vars().ManaDamage;
             living.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 2000, 5));
-            living.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 2000, amplifier));
+            living.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 2000, amplifier));
             living.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 2000, amplifier));
-            living.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 2000, 0));
+            living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2000, 0));
             RingVisuals.jugger(level, living);
         }
         cast.durability(TheabyssModItems.RING_OF_JUGGER.get(), 16).cooldown(4000).sound("theabyss:spell_of_jugger").charge(65.0);

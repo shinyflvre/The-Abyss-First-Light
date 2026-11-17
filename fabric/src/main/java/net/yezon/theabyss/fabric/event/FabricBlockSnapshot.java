@@ -2,18 +2,13 @@ package net.yezon.theabyss.fabric.event;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.TagValueInput;
 import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import com.mojang.logging.LogUtils;
 
 public final class FabricBlockSnapshot {
-    private static final Logger LOGGER = LogUtils.getLogger();
     final Level level;
     final BlockPos pos;
     final BlockState state;
@@ -43,10 +38,8 @@ public final class FabricBlockSnapshot {
         if (this.tag != null) {
             BlockEntity blockEntity = this.level.getBlockEntity(this.pos);
             if (blockEntity != null) {
-                try (ProblemReporter.ScopedCollector problems = new ProblemReporter.ScopedCollector(blockEntity.problemPath(), LOGGER)) {
-                    blockEntity.loadWithComponents(TagValueInput.create(problems, this.level.registryAccess(), this.tag));
-                    blockEntity.setChanged();
-                }
+                blockEntity.loadWithComponents(this.tag, this.level.registryAccess());
+                blockEntity.setChanged();
             }
         }
     }

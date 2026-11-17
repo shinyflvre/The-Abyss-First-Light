@@ -4,7 +4,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.yezon.theabyss.platform.network.handling.IPayloadContext;
@@ -16,7 +16,7 @@ public record GauntletMessage(int action, int value) implements CustomPacketPayl
     public static final int SELECT = 1;
     public static final int MAIN = 2;
     public static final int SECOND = 3;
-    public static final Type<GauntletMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "gauntlet"));
+    public static final Type<GauntletMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "gauntlet"));
     public static final StreamCodec<RegistryFriendlyByteBuf, GauntletMessage> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.VAR_INT, GauntletMessage::action,
         ByteBufCodecs.VAR_INT, GauntletMessage::value,

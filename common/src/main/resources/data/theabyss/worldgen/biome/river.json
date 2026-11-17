@@ -1,44 +1,48 @@
 {
-  "attributes": {
-    "minecraft:audio/ambient_sounds": {
-      "loop": "theabyss:blaru_forest",
-      "mood": {
-        "block_search_extent": 2,
-        "offset": 8,
-        "sound": "theabyss:random_fx",
-        "tick_delay": 300
-      }
-    },
-    "minecraft:audio/background_music": {
-      "default": {
-        "max_delay": 24000,
-        "min_delay": 12000,
-        "sound": "theabyss:theabyss_dimension_music",
-        "replace_current_music": true
-      }
-    },
-    "minecraft:visual/ambient_particles": {
-      "argument": [
-        {
-          "particle": {
-            "type": "theabyss:spurs_fx"
-          },
-          "probability": 0.03
-        }
-      ],
-      "modifier": "append"
-    },
-    "minecraft:visual/fog_color": "#00272f",
-    "minecraft:visual/water_fog_color": "#003333"
-  },
-  "carvers": [],
+  "carvers": {},
   "downfall": 0.3,
   "effects": {
-    "foliage_color": "#003333",
-    "grass_color": "#012626",
-    "water_color": "#002d33"
+    "fog_color": 10031,
+    "sky_color": 0,
+    "water_color": 11571,
+    "water_fog_color": 13107,
+    "foliage_color": 13107,
+    "grass_color": 75302,
+    "particle": {
+      "options": {
+        "type": "theabyss:spurs_fx"
+      },
+      "probability": 0.03
+    },
+    "ambient_sound": "theabyss:blaru_forest",
+    "mood_sound": {
+      "block_search_extent": 2,
+      "offset": 8,
+      "sound": "theabyss:random_fx",
+      "tick_delay": 300
+    },
+    "music": {
+      "max_delay": 24000,
+      "min_delay": 12000,
+      "replace_current_music": true,
+      "sound": "theabyss:theabyss_dimension_music"
+    }
   },
-  "features": [],
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+  ],
   "has_precipitation": false,
+  "spawn_costs": {},
+  "spawners": {},
   "temperature": 0.6
 }

@@ -31,7 +31,7 @@ public final class NightbladeStormClient {
 
     private static final List<Ring> RINGS = new ArrayList<>();
     private static int bossId = -1;
-    private static long lastRingEnd;
+    private static long lastRingEnd = Long.MIN_VALUE / 4;
     private static float darkness;
     private static long lastNanos;
     private static Level level;
@@ -133,7 +133,7 @@ public final class NightbladeStormClient {
             slot++;
         }
         List<float[]> lanterns = new ArrayList<>();
-        TelekinesisClient.lanterns(lanterns, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
+        TelekinesisClient.lanterns(lanterns, Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
         for (float[] l : lanterns) {
             if (slot >= SLOTS) {
                 break;

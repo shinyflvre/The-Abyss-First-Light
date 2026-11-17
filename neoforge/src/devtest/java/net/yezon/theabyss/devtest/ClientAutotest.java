@@ -19,10 +19,9 @@ import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.permissions.LevelBasedPermissionSet;
-import net.minecraft.util.FileUtil;
+import net.minecraft.FileUtil;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.LevelSettings;
@@ -64,12 +63,12 @@ public final class ClientAutotest {
             handleMenus(mc);
             return;
         }
-        if (mc.gui.screen() instanceof ConfirmScreen confirm) {
+        if (mc.screen instanceof ConfirmScreen confirm) {
             accept(confirm);
         }
         mc.options.pauseOnLostFocus = false;
-        if (mc.gui.screen() instanceof PauseScreen) {
-            mc.gui.setScreen(null);
+        if (mc.screen instanceof PauseScreen) {
+            mc.setScreen(null);
         }
         if (!scriptBuilt) {
             if (++inWorldTicks < 200) {
@@ -79,7 +78,7 @@ public final class ClientAutotest {
             scriptBuilt = true;
         }
         if (pendingShot != null && --pendingShotDelay <= 0) {
-            Screenshot.grab(mc.gameDirectory, "devtest_" + pendingShot + ".png", mc.gameRenderer.mainRenderTarget(), 1, msg -> {});
+            Screenshot.grab(mc.gameDirectory, "devtest_" + pendingShot + ".png", mc.getMainRenderTarget(), msg -> {});
             pendingShot = null;
         }
         if (wait > 0) {
@@ -107,7 +106,7 @@ public final class ClientAutotest {
         }
         iconified = true;
         try {
-            Class.forName("org.lwjgl.glfw.GLFW").getMethod("glfwIconifyWindow", long.class).invoke(null, mc.getWindow().handle());
+            Class.forName("org.lwjgl.glfw.GLFW").getMethod("glfwIconifyWindow", long.class).invoke(null, mc.getWindow().getWindow());
         } catch (ReflectiveOperationException | RuntimeException e) {
             TheabyssDevTest.LOGGER.warn("[ABYSS-AUTOTEST] could not minimize the window", e);
         }
@@ -115,29 +114,29 @@ public final class ClientAutotest {
     }
 
     private static void handleMenus(Minecraft mc) {
-        if (mc.gui.screen() instanceof LoadingErrorScreen loading) {
+        if (mc.screen instanceof LoadingErrorScreen loading) {
             proceedPastWarnings(loading);
             return;
         }
-        if (mc.gui.screen() instanceof ConfirmScreen confirm) {
+        if (mc.screen instanceof ConfirmScreen confirm) {
             accept(confirm);
             return;
         }
-        if (!worldRequested && mc.gui.screen() instanceof TitleScreen title && multiplayerAddress() != null) {
+        if (!worldRequested && mc.screen instanceof TitleScreen title && multiplayerAddress() != null) {
             worldRequested = true;
             String address = multiplayerAddress();
             TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] connecting to dedicated server {}", address);
             ConnectScreen.startConnecting(title, mc, ServerAddress.parseString(address), new ServerData("abyss-devtest", address, ServerData.Type.OTHER), false, null);
             return;
         }
-        if (!worldRequested && mc.gui.screen() instanceof TitleScreen) {
+        if (!worldRequested && mc.screen instanceof TitleScreen) {
             worldRequested = true;
             try {
                 String folder = FileUtil.findAvailableName(mc.getLevelSource().getBaseDir(), "abyss-devtest", "");
                 LevelSettings settings = new LevelSettings(
-                    "abyss-devtest", GameType.CREATIVE, LevelSettings.DifficultySettings.DEFAULT, true, WorldDataConfiguration.DEFAULT
+                    "abyss-devtest", GameType.CREATIVE, false, net.minecraft.world.Difficulty.NORMAL, true, new net.minecraft.world.level.GameRules(), WorldDataConfiguration.DEFAULT
                 );
-                mc.createWorldOpenFlows().createFreshLevel(folder, settings, new net.minecraft.world.level.levelgen.WorldOptions(20261008L, true, false), WorldPresets::createNormalWorldDimensions, mc.gui.screen());
+                mc.createWorldOpenFlows().createFreshLevel(folder, settings, new net.minecraft.world.level.levelgen.WorldOptions(20261008L, true, false), WorldPresets::createNormalWorldDimensions, mc.screen);
             } catch (Exception e) {
                 TheabyssDevTest.LOGGER.error("[ABYSS-AUTOTEST] could not create world", e);
             }
@@ -189,13 +188,13 @@ public final class ClientAutotest {
         server.execute(() -> {
             ServerPlayer sp = server.getPlayerList().getPlayer(mc.player.getUUID());
             if (sp != null) {
-                server.getCommands().performPrefixedCommand(sp.createCommandSourceStack().withPermission(LevelBasedPermissionSet.OWNER), cmd);
+                server.getCommands().performPrefixedCommand(sp.createCommandSourceStack().withPermission(4), cmd);
             }
         });
     }
 
     private static void shot(String name) {
-        Minecraft.getInstance().gui.hud.getChat().clearMessages(false);
+        Minecraft.getInstance().gui.getChat().clearMessages(false);
         pendingShot = name;
         pendingShotDelay = 2;
     }
@@ -268,12 +267,12 @@ public final class ClientAutotest {
             return;
         }
         if (scenario().equals("modlist")) {
-            add("open mod list", () -> mc.gui.setScreen(net.neoforged.neoforge.client.gui.modlist.ModListScreen.create(mc.gui.screen())), 40);
+            add("open mod list", () -> mc.setScreen(new net.neoforged.neoforge.client.gui.ModListScreen(mc.screen)), 40);
             add("search abyss", () -> {
                 try {
-                    var f = net.neoforged.neoforge.client.gui.modlist.ModListScreen.class.getDeclaredField("search");
+                    var f = net.neoforged.neoforge.client.gui.ModListScreen.class.getDeclaredField("search");
                     f.setAccessible(true);
-                    ((net.minecraft.client.gui.components.EditBox)f.get(mc.gui.screen())).setValue("other side");
+                    ((net.minecraft.client.gui.components.EditBox)f.get(mc.screen)).setValue("other side");
                 } catch (ReflectiveOperationException e) {
                     TheabyssDevTest.LOGGER.error("[ABYSS-AUTOTEST] mod list search failed", e);
                 }
@@ -281,9 +280,9 @@ public final class ClientAutotest {
             add("shot list", () -> shot("128_modlist"), 10);
             add("select abyss", () -> {
                 try {
-                    var f = net.neoforged.neoforge.client.gui.modlist.ModListScreen.class.getDeclaredField("displayList");
+                    var f = net.neoforged.neoforge.client.gui.ModListScreen.class.getDeclaredField("modList");
                     f.setAccessible(true);
-                    var list = (net.minecraft.client.gui.components.AbstractSelectionList<?>)f.get(mc.gui.screen());
+                    var list = (net.minecraft.client.gui.components.AbstractSelectionList<?>)f.get(mc.screen);
                     Object first = ((java.util.List<?>)list.children()).get(0);
                     java.lang.reflect.Method m = null;
                     for (var candidate : net.minecraft.client.gui.components.AbstractSelectionList.class.getDeclaredMethods()) {
@@ -292,6 +291,7 @@ public final class ClientAutotest {
                         }
                     }
                     m.setAccessible(true);
+                    ((net.neoforged.neoforge.client.gui.ModListScreen)mc.screen).setSelected((net.neoforged.neoforge.client.gui.widget.ModListWidget.ModEntry)first);
                     m.invoke(list, first);
                 } catch (ReflectiveOperationException | RuntimeException e) {
                     TheabyssDevTest.LOGGER.error("[ABYSS-AUTOTEST] mod list select failed", e);
@@ -455,7 +455,7 @@ public final class ClientAutotest {
             add("mb shot energetica 1", () -> shot("111_codex_energetica_1"), 10);
             add("mb energetica", () -> net.yezon.theabyss.client.codex.CodexScreen.openEntry("energetica", 0), 30);
             add("mb shot energetica", () -> shot("111_codex_multiblock_energetica"), 10);
-            add("mb close", () -> mc.gui.setScreen(null), 5);
+            add("mb close", () -> mc.setScreen(null), 5);
             add("done", () -> {
                 TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] DONE");
                 mc.stop();
@@ -472,6 +472,14 @@ public final class ClientAutotest {
         }
         if (scenario().equals("possclick")) {
             PossessionClickAutotest.addSteps(ClientAutotest::add, ClientAutotest::command, ClientAutotest::shot);
+            add("done", () -> {
+                TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] DONE");
+                mc.stop();
+            }, 0);
+            return;
+        }
+        if (scenario().equals("handlight")) {
+            HandLightAutotest.addSteps(ClientAutotest::add, ClientAutotest::command, ClientAutotest::shot);
             add("done", () -> {
                 TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] DONE");
                 mc.stop();
@@ -628,7 +636,7 @@ public final class ClientAutotest {
         add("arena light", () -> command("execute in theabyss:the_abyss run fill -12 161 -12 12 161 12 minecraft:glowstone"), 20);
         add("goto abyss arena", () -> command("execute in theabyss:the_abyss run tp @s 0 150 -7 0 15"), 200);
         List<String> mobs = new ArrayList<>();
-        for (Identifier id : BuiltInRegistries.ENTITY_TYPE.keySet()) {
+        for (ResourceLocation id : BuiltInRegistries.ENTITY_TYPE.keySet()) {
             if (ServerSelfTest.NS.equals(id.getNamespace()) && !id.getPath().contains("projectile") && !id.getPath().equals("magic")) {
                 mobs.add(id.toString());
             }
@@ -699,9 +707,9 @@ public final class ClientAutotest {
         }
 
         add("open config screen", () -> net.neoforged.fml.ModList.get().getModContainerById("theabyss").ifPresent(c ->
-            mc.gui.setScreen(new net.neoforged.neoforge.client.gui.ConfigurationScreen(c, null))), 30);
+            mc.setScreen(new net.neoforged.neoforge.client.gui.ConfigurationScreen(c, null))), 30);
         add("shot config screen", () -> shot("35_config_screen"), 10);
-        add("close config screen", () -> mc.gui.setScreen(null), 10);
+        add("close config screen", () -> mc.setScreen(null), 10);
         add("give items", () -> {
             command("give @s theabyss:aberythe_sword");
             command("give @s theabyss:aberythe_armor_chestplate");

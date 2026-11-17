@@ -19,8 +19,8 @@ import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
-import net.minecraft.world.entity.projectile.throwableitemprojectile.AbstractThrownPotion;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.yezon.theabyss.platform.event.entity.RegisterSpawnPlacementsEvent;
@@ -28,7 +28,7 @@ import net.yezon.theabyss.init.TheabyssModItems;
 
 public class NightBladeBossCloneEntity extends Monster {
     private final ServerBossEvent bossInfo = new ServerBossEvent(
-        Mth.createInsecureUUID(this.random), this.getDisplayName(), BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS
+        this.getDisplayName(), BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS
     );
 
     public NightBladeBossCloneEntity(EntityType<NightBladeBossCloneEntity> type, Level world) {
@@ -51,7 +51,10 @@ public class NightBladeBossCloneEntity extends Monster {
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource damagesource, float amount) {
+    public boolean hurt(DamageSource damagesource, float amount) {
+        if (!(this.level() instanceof ServerLevel level)) {
+            return false;
+        }
         if (damagesource.getEntity() instanceof net.minecraft.world.entity.LivingEntity attacker && attacker.distanceTo(this) < 5.0F
             && this.getRandom().nextFloat() < 0.2F && net.yezon.theabyss.boss.nightblade.NightbladeCombat.sidestep(this, attacker)) {
             return false;
@@ -59,7 +62,7 @@ public class NightBladeBossCloneEntity extends Monster {
         if (damagesource.is(DamageTypes.IN_FIRE)
             || damagesource.is(DamageTypes.CAMPFIRE)
             || damagesource.getDirectEntity() instanceof AbstractArrow
-            || damagesource.getDirectEntity() instanceof AbstractThrownPotion
+            || damagesource.getDirectEntity() instanceof ThrownPotion
             || damagesource.getDirectEntity() instanceof AreaEffectCloud
             || damagesource.is(DamageTypes.FALL)
             || damagesource.is(DamageTypes.CACTUS)
@@ -72,7 +75,7 @@ public class NightBladeBossCloneEntity extends Monster {
             || damagesource.is(DamageTypes.WITHER_SKULL)) {
             return false;
         }
-        return super.hurtServer(level, damagesource, amount);
+        return super.hurt(damagesource, amount);
     }
 
     @Override
@@ -93,8 +96,9 @@ public class NightBladeBossCloneEntity extends Monster {
     }
 
     @Override
-    protected void customServerAiStep(ServerLevel level) {
-        super.customServerAiStep(level);
+    protected void customServerAiStep() {
+        ServerLevel level = (ServerLevel) this.level();
+        super.customServerAiStep();
         this.bossInfo.setProgress(this.getHealth() / this.getMaxHealth());
     }
 

@@ -10,21 +10,21 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.yezon.theabyss.compat.ValueInput;
+import net.yezon.theabyss.compat.ValueOutput;
 import net.yezon.theabyss.init.TheabyssModBlockEntities;
 import net.yezon.theabyss.init.TheabyssModItems;
 import net.yezon.theabyss.jei_recipes.InfuserRecipeTypeRecipe;
@@ -102,7 +102,7 @@ public class SomniumInfuserBlockEntity extends RandomizableContainerBlockEntity 
             } else {
                 out.grow(result.getCount());
             }
-            SoundEvent sound = BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:somnium_infuser_bubble"));
+            SoundEvent sound = BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:somnium_infuser_bubble"));
             if (sound != null) {
                 level.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, sound, SoundSource.BLOCKS, 0.8F, 1.0F);
             }
@@ -131,8 +131,7 @@ public class SomniumInfuserBlockEntity extends RandomizableContainerBlockEntity 
         if (stack.isEmpty()) {
             return;
         }
-        ItemStackTemplate template = ServerHooks.get().getCraftingRemainder(stack);
-        ItemStack remainder = template == null ? ItemStack.EMPTY : template.create();
+        ItemStack remainder = ServerHooks.get().getCraftingRemainder(stack).copy();
         stack.shrink(1);
         if (stack.isEmpty()) {
             this.stacks.set(index, remainder);
@@ -150,20 +149,22 @@ public class SomniumInfuserBlockEntity extends RandomizableContainerBlockEntity 
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
-        if (!this.tryLoadLootTable(input)) {
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        ValueInput input = ValueInput.of(tag, registries);
+        if (!this.tryLoadLootTable(tag)) {
             this.stacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         }
-        ContainerHelper.loadAllItems(input, this.stacks);
+        ContainerHelper.loadAllItems(tag, this.stacks, registries);
         this.progress = input.getIntOr("progress", 0);
     }
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
-        if (!this.trySaveLootTable(output)) {
-            ContainerHelper.saveAllItems(output, this.stacks);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        ValueOutput output = ValueOutput.of(tag, registries);
+        if (!this.trySaveLootTable(tag)) {
+            ContainerHelper.saveAllItems(tag, this.stacks, registries);
         }
         output.putInt("progress", this.progress);
     }
@@ -244,5 +245,15 @@ public class SomniumInfuserBlockEntity extends RandomizableContainerBlockEntity 
     @Override
     public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction) {
         return index == RESULT;
+    }
+
+    @Override
+    public boolean canOpen(Player player) {
+        return AbyssContainerLock.canOpen(this, player);
+    }
+
+    @Override
+    public @Nullable AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
+        return AbyssContainerLock.createMenu(this, containerId, inventory, player, this::createMenu);
     }
 }

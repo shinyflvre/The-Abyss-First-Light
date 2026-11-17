@@ -1,0 +1,12 @@
+{
+  "type": "theabyss:magma_fissures",
+  "config": {
+    "branches": 2,
+    "dripstone_chance": 0.04,
+    "dripstone_max": 4,
+    "dripstone_min": 1,
+    "max_size": 44,
+    "min_size": 28,
+    "mode": "crack"
+  }
+}

@@ -3,5 +3,6 @@
   "textures": {
     "flowerbed": "theabyss:block/blaru_starpetals",
     "stem": "theabyss:block/blaru_starpetals_stem"
-  }
+  },
+  "render_type": "minecraft:cutout"
 }

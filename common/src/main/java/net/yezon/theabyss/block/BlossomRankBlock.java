@@ -1,5 +1,6 @@
 package net.yezon.theabyss.block;
 
+import net.minecraft.world.level.LevelAccessor;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.core.BlockPos;
@@ -13,7 +14,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.SugarCaneBlock;
@@ -45,11 +45,11 @@ public class BlossomRankBlock extends SugarCaneBlock {
                 .randomTicks()
                 .sound(SoundType.GRASS)
                 .instabreak()
-                .noCollision()
+                .noCollission()
                 .noOcclusion()
                 .lightLevel(s -> !givesLight ? 0 : s.getValue(SEGMENT) == Segment.END ? 10 : 1)
                 .offsetType(OffsetType.XZ)
-                .pushReaction(PushReaction.POPPED)
+                .pushReaction(PushReaction.DESTROY)
         );
         this.registerDefaultState(this.defaultBlockState().setValue(SEGMENT, Segment.END));
     }
@@ -77,7 +77,7 @@ public class BlossomRankBlock extends SugarCaneBlock {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         if (!level.getBlockState(pos.below()).is(this)) {
-            if (pos.getY() + PLANTED_HEIGHT - 1 > level.getMaxY()) {
+            if (pos.getY() + PLANTED_HEIGHT - 1 >= level.getMaxBuildHeight()) {
                 return null;
             }
             for (int i = 1; i < PLANTED_HEIGHT; i++) {
@@ -100,9 +100,8 @@ public class BlossomRankBlock extends SugarCaneBlock {
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction directionToNeighbour,
-        BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
-        BlockState updated = super.updateShape(state, level, ticks, pos, directionToNeighbour, neighbourPos, neighbourState, random);
+    protected BlockState updateShape(BlockState state, Direction directionToNeighbour, BlockState neighbourState, LevelAccessor level, BlockPos pos, BlockPos neighbourPos) {
+        BlockState updated = super.updateShape(state, directionToNeighbour, neighbourState, level, pos, neighbourPos);
         return updated.is(this) ? withSegment(updated, level, pos) : updated;
     }
 

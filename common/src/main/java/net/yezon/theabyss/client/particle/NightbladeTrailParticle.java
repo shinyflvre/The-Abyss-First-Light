@@ -1,30 +1,15 @@
 package net.yezon.theabyss.client.particle;
 
-import com.mojang.renderpearl.api.pipeline.BlendFunction;
-import com.mojang.renderpearl.api.pipeline.ColorTargetState;
-import com.mojang.renderpearl.api.pipeline.CompareOp;
-import com.mojang.renderpearl.api.pipeline.DepthStencilState;
-import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.RandomSource;
 
-public class NightbladeTrailParticle extends SingleQuadParticle {
-    public static final RenderPipeline PIPELINE = RenderPipeline.builder(net.yezon.theabyss.mixin.accessor.client.RenderPipelinesAccessor.theabyss$particleSnippet())
-        .withLocation(Identifier.fromNamespaceAndPath("theabyss", "pipeline/nightblade_trail"))
-        .withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING))
-        .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
-        .withCull(false)
-        .build();
-    private static final SingleQuadParticle.Layer LAYER = new SingleQuadParticle.Layer(true, TextureAtlas.LOCATION_PARTICLES, PIPELINE, RenderPipelines.OIT_PARTICLE);
-    public static final SingleQuadParticle.Layer GLOW_LAYER = LAYER;
+public class NightbladeTrailParticle extends TextureSheetParticle {
+    public static final ParticleRenderType GLOW_TYPE = AbyssParticleRenderTypes.GLOW;
 
     private final float startSize;
 
@@ -33,7 +18,8 @@ public class NightbladeTrailParticle extends SingleQuadParticle {
     }
 
     protected NightbladeTrailParticle(ClientLevel level, double x, double y, double z, SpriteSet sprites, boolean red) {
-        super(level, x, y, z, sprites.first());
+        super(level, x, y, z);
+        this.setSprite(sprites.get(0, 1));
         this.lifetime = 9 + this.random.nextInt(4);
         this.gravity = 0.0F;
         this.hasPhysics = false;
@@ -65,13 +51,13 @@ public class NightbladeTrailParticle extends SingleQuadParticle {
     }
 
     @Override
-    public int getLightCoords(float partialTick) {
+    public int getLightColor(float partialTick) {
         return 15728880;
     }
 
     @Override
-    public SingleQuadParticle.Layer getLayer() {
-        return LAYER;
+    public ParticleRenderType getRenderType() {
+        return GLOW_TYPE;
     }
 
     public static class TrailProvider implements ParticleProvider<SimpleParticleType> {
@@ -83,8 +69,7 @@ public class NightbladeTrailParticle extends SingleQuadParticle {
 
         @Override
         public Particle createParticle(
-            SimpleParticleType type, ClientLevel level, double x, double y, double z, double vx, double vy, double vz, RandomSource random
-        ) {
+            SimpleParticleType type, ClientLevel level, double x, double y, double z, double vx, double vy, double vz) {
             return new NightbladeTrailParticle(level, x, y, z, this.spriteSet, vx > 0.5);
         }
     }

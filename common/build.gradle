@@ -12,9 +12,10 @@ neoForge {
 
 dependencies {
     compileOnly "net.fabricmc:sponge-mixin:${mixin_version}"
+    compileOnly "org.jspecify:jspecify:1.0.0"
     compileOnly "io.github.llamalad7:mixinextras-common:${mixinextras_version}"
     compileOnly "fuzs.forgeconfigapiport:forgeconfigapiport-common-neoforgeapi:${forgeconfigapiport_version}"
-    compileOnly "com.geckolib:geckolib-common-${minecraft_version}:${geckolib_version}"
+    compileOnly "software.bernie.geckolib:geckolib-common-${minecraft_version}:${geckolib_version}"
     compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
 }
 

@@ -19,15 +19,15 @@ import net.yezon.theabyss.block.hooks.FlammableBlock;
 public class SlimedCarpetBlock extends FlowerBlock implements FlammableBlock, FireSpreadingBlock {
     public SlimedCarpetBlock(BlockBehaviour.Properties properties) {
         super(
-            MobEffects.SPEED,
+            MobEffects.MOVEMENT_SPEED,
             5.0F,
             properties
                 .mapColor(MapColor.PLANT)
                 .sound(SoundType.SLIME_BLOCK)
                 .instabreak()
-                .noCollision()
+                .noCollission()
                 .offsetType(OffsetType.NONE)
-                .pushReaction(PushReaction.POPPED)
+                .pushReaction(PushReaction.DESTROY)
         );
     }
 

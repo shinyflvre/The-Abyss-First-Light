@@ -21,7 +21,7 @@ public class ApplyRingOfHomeEvents {
         }
         if (entity.level().dimension() != Level.OVERWORLD) {
             if (entity instanceof Player player && !player.level().isClientSide()) {
-                player.sendOverlayMessage(Component.translatable("ring.theabyss.overworld"));
+                player.displayClientMessage(Component.translatable("ring.theabyss.overworld"), true);
             }
             return;
         }
@@ -36,9 +36,9 @@ public class ApplyRingOfHomeEvents {
             RingVisuals.teleportDepart(level, entity.position(), entity.getBbHeight());
             RingFxHome.depart(level, entity.position());
         }
-        entity.teleportTo(vars.HomeX, vars.HomeY, vars.HomeZ);
+        net.yezon.theabyss.util.AbyssTeleport.to(entity, vars.HomeX, vars.HomeY, vars.HomeZ);
         if (entity instanceof ServerPlayer player) {
-            player.connection.teleport(vars.HomeX, vars.HomeY, vars.HomeZ, entity.getYRot(), entity.getXRot());
+            net.yezon.theabyss.util.AbyssTeleport.connection(player, vars.HomeX, vars.HomeY, vars.HomeZ, entity.getYRot(), entity.getXRot());
         }
         if (level != null) {
             RingVisuals.teleportArrive(level, new Vec3(vars.HomeX, vars.HomeY, vars.HomeZ));

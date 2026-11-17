@@ -1,15 +1,33 @@
 {
   "type": "theabyss:arcane_recipe_type",
   "ingredients": [
-    "theabyss:ring_of_ring",
-    "minecraft:bone",
-    "minecraft:bone",
-    "minecraft:bone",
-    "minecraft:bone",
-    "minecraft:bone",
-    "minecraft:bone",
-    "minecraft:bone",
-    "minecraft:bone"
+    {
+      "item": "theabyss:ring_of_ring"
+    },
+    {
+      "item": "minecraft:bone"
+    },
+    {
+      "item": "minecraft:bone"
+    },
+    {
+      "item": "minecraft:bone"
+    },
+    {
+      "item": "minecraft:bone"
+    },
+    {
+      "item": "minecraft:bone"
+    },
+    {
+      "item": "minecraft:bone"
+    },
+    {
+      "item": "minecraft:bone"
+    },
+    {
+      "item": "minecraft:bone"
+    }
   ],
   "output": {
     "id": "theabyss:ring_of_nature",

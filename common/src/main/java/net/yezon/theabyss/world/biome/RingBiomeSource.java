@@ -14,7 +14,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.BiomeResolver;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
 import net.yezon.theabyss.platform.registries.DeferredHolder;
@@ -83,37 +82,25 @@ public final class RingBiomeSource extends BiomeSource {
     }
 
     @Override
-    public BiomeResolver createResolver(Climate.Sampler sampler) {
-        BiomeResolver point = this.base.createResolver(sampler);
-        return this.compiled.isEmpty() ? point : this.wrap(point, point);
-    }
-
-    @Override
-    public BiomeResolver createResolverForChunk(
-        Climate.Sampler sampler, int minQuartX, int minQuartY, int minQuartZ, int quartSizeX, int quartSizeY, int quartSizeZ
-    ) {
-        BiomeResolver chunk = this.base.createResolverForChunk(sampler, minQuartX, minQuartY, minQuartZ, quartSizeX, quartSizeY, quartSizeZ);
-        return this.compiled.isEmpty() ? chunk : this.wrap(chunk, this.base.createResolver(sampler));
-    }
-
-    private BiomeResolver wrap(BiomeResolver own, BiomeResolver neighbours) {
-        return (quartX, quartY, quartZ) -> {
-            Holder<Biome> biome = own.getNoiseBiome(quartX, quartY, quartZ);
-            Optional<ResourceKey<Biome>> key = biome.unwrapKey();
-            Compiled rule = key.isPresent() ? this.compiled.get(key.get()) : null;
-            if (rule == null) {
-                return biome;
-            }
-            for (int step : new int[]{rule.near(), rule.far()}) {
-                for (int[] d : DIRECTIONS) {
-                    Optional<ResourceKey<Biome>> other = neighbours.getNoiseBiome(quartX + d[0] * step, quartY, quartZ + d[1] * step).unwrapKey();
-                    if (other.isPresent() && !other.get().equals(key.get()) && !other.get().equals(rule.ring()) && !rule.ignore().contains(other.get())) {
-                        return this.ringHolder(rule.ring());
-                    }
+    public Holder<Biome> getNoiseBiome(int quartX, int quartY, int quartZ, Climate.Sampler sampler) {
+        Holder<Biome> biome = this.base.getNoiseBiome(quartX, quartY, quartZ, sampler);
+        if (this.compiled.isEmpty()) {
+            return biome;
+        }
+        Optional<ResourceKey<Biome>> key = biome.unwrapKey();
+        Compiled rule = key.isPresent() ? this.compiled.get(key.get()) : null;
+        if (rule == null) {
+            return biome;
+        }
+        for (int step : new int[]{rule.near(), rule.far()}) {
+            for (int[] d : DIRECTIONS) {
+                Optional<ResourceKey<Biome>> other = this.base.getNoiseBiome(quartX + d[0] * step, quartY, quartZ + d[1] * step, sampler).unwrapKey();
+                if (other.isPresent() && !other.get().equals(key.get()) && !other.get().equals(rule.ring()) && !rule.ignore().contains(other.get())) {
+                    return this.ringHolder(rule.ring());
                 }
             }
-            return biome;
-        };
+        }
+        return biome;
     }
 
     private Holder<Biome> ringHolder(ResourceKey<Biome> key) {

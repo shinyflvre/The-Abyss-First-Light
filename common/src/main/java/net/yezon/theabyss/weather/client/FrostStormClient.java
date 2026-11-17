@@ -3,19 +3,18 @@ package net.yezon.theabyss.weather.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.fog.environment.AtmosphericFogEnvironment;
+import net.minecraft.client.ParticleStatus;
+import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ParticleStatus;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.ARGB;
+import net.yezon.theabyss.compat.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -33,14 +32,15 @@ import net.yezon.theabyss.platform.client.event.RenderFrameEvent;
 import net.yezon.theabyss.platform.client.event.ViewportEvent;
 import net.yezon.theabyss.platform.client.gui.VanillaGuiLayers;
 import net.yezon.theabyss.TheabyssMod;
+import net.yezon.theabyss.compat.GuiGraphicsCompat;
 import net.yezon.theabyss.client.fx.CameraShake;
 import net.yezon.theabyss.init.TheabyssModParticleTypes;
 import net.yezon.theabyss.ring.fx.GlowParticleOptions;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public final class FrostStormClient {
-    private static final ResourceKey<Level> FROST_WORLD = ResourceKey.create(Registries.DIMENSION, Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "frost_world"));
-    private static final Identifier FROST_OVERLAY = Identifier.withDefaultNamespace("textures/misc/powder_snow_outline.png");
+    private static final ResourceKey<Level> FROST_WORLD = ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "frost_world"));
+    private static final ResourceLocation FROST_OVERLAY = ResourceLocation.withDefaultNamespace("textures/misc/powder_snow_outline.png");
     private static final float FOG_CLEAR = 128.0F;
     private static final float FOG_GUST = 46.0F;
     private static final float FROST_MAX = 0.8F;
@@ -114,7 +114,7 @@ public final class FrostStormClient {
         }
         LocalPlayer player = mc.player;
         ClientLevel level = mc.level;
-        Vec3 eye = mc.gameRenderer.mainCamera().position();
+        Vec3 eye = mc.gameRenderer.getMainCamera().getPosition();
         BlockPos head = BlockPos.containing(eye);
         boolean open = level.canSeeSky(head);
         exposure = Mth.clamp(exposure + (open ? 0.03F : -0.03F), 0.0F, 1.0F);
@@ -202,25 +202,24 @@ public final class FrostStormClient {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onFog(ViewportEvent.RenderFog event) {
         Minecraft mc = Minecraft.getInstance();
-        if (!storming(mc) || !(event.getEnvironment() instanceof AtmosphericFogEnvironment)) {
+        if (!storming(mc) || event.getMode() != FogRenderer.FogMode.FOG_TERRAIN || !event.isAtmospheric()) {
             return;
         }
         float storm = gust * (0.35F + 0.65F * exposure);
         float far = Mth.lerp(storm, FOG_CLEAR, FOG_GUST);
-        event.setFarPlaneDistance(far);
-        event.setNearPlaneDistance(far * 0.08F);
+        net.yezon.theabyss.client.fx.FogRange.linear(event, far * 0.08F, far);
     }
 
     @SubscribeEvent
     public static void registerOverlay(RegisterGuiLayersEvent event) {
-        event.registerBelow(VanillaGuiLayers.CAMERA_OVERLAYS, Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "frost_storm"), (graphics, deltaTracker) -> {
+        event.registerBelow(VanillaGuiLayers.CAMERA_OVERLAYS, ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "frost_storm"), (graphics, deltaTracker) -> {
             Minecraft mc = Minecraft.getInstance();
-            if (frost <= 0.0F || mc.player == null || mc.gui.hud.isHidden()) {
+            if (frost <= 0.0F || mc.player == null || mc.options.hideGui) {
                 return;
             }
             int w = graphics.guiWidth();
             int h = graphics.guiHeight();
-            graphics.blit(RenderPipelines.GUI_TEXTURED, FROST_OVERLAY, 0, 0, 0.0F, 0.0F, w, h, w, h, ARGB.white(frost));
+            GuiGraphicsCompat.blit(graphics, FROST_OVERLAY, 0, 0, 0.0F, 0.0F, w, h, w, h, ARGB.white(frost));
         });
     }
 

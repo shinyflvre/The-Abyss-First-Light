@@ -1,19 +1,19 @@
 package net.yezon.theabyss.client.gui;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 import net.minecraft.world.entity.player.Inventory;
 import net.yezon.theabyss.block.entity.SomniumInfuserBlockEntity;
+import net.yezon.theabyss.compat.GuiGraphicsCompat;
 import net.yezon.theabyss.world.inventory.InfuserMenu;
 
 public class InfuserScreen extends AbstractContainerScreen<InfuserMenu> {
-    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath("theabyss", "textures/screens/infuser.png");
-    private static final Identifier BACKGROUND = Identifier.fromNamespaceAndPath("theabyss", "textures/screens/somnium_infuser_gui.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("theabyss", "textures/screens/infuser.png");
+    private static final ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath("theabyss", "textures/screens/somnium_infuser_gui.png");
     private static final int[][] COIL = {
         {68, 13}, {69, 13}, {70, 14}, {62, 15}, {63, 15}, {64, 15}, {65, 15}, {66, 15}, {67, 15}, {70, 15}, {61, 16}, {68, 16}, {69, 16},
         {60, 17}, {67, 17}, {68, 17}, {70, 17}, {61, 18}, {62, 18}, {63, 18}, {64, 18}, {65, 18}, {66, 18}, {70, 18}, {61, 19}, {68, 19},
@@ -35,15 +35,17 @@ public class InfuserScreen extends AbstractContainerScreen<InfuserMenu> {
     private static final int LIGHT = 0xFFE6FFFB;
 
     public InfuserScreen(InfuserMenu container, Inventory inventory, Component text) {
-        super(container, inventory, text, 176, 166);
+        super(container, inventory, text);
+        this.imageWidth = 176;
+        this.imageHeight = 166;
+        this.inventoryLabelY = this.imageHeight - 94;
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractBackground(graphics, mouseX, mouseY, partialTick);
-        graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos, 0.0F, 0.0F, this.imageWidth, this.imageHeight, this.imageWidth,
+    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
+        GuiGraphicsCompat.blit(graphics, TEXTURE, this.leftPos, this.topPos, 0.0F, 0.0F, this.imageWidth, this.imageHeight, this.imageWidth,
             this.imageHeight);
-        graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, this.leftPos, this.topPos, 0.0F, 0.0F, 256, 256, 256, 256);
+        GuiGraphicsCompat.blit(graphics, BACKGROUND, this.leftPos, this.topPos, 0.0F, 0.0F, 256, 256, 256, 256);
         int x0 = this.leftPos;
         int y0 = this.topPos;
         float time = (Util.getMillis() % 100000L) / 1000.0F;
@@ -56,7 +58,7 @@ public class InfuserScreen extends AbstractContainerScreen<InfuserMenu> {
         }
     }
 
-    private void coil(GuiGraphicsExtractor graphics, int x0, int y0, float energy, boolean brewing, float time) {
+    private void coil(GuiGraphics graphics, int x0, int y0, float energy, boolean brewing, float time) {
         float lit = energy <= 0.0F ? Float.MAX_VALUE : COIL_BOTTOM - energy * (COIL_BOTTOM - COIL_TOP + 1);
         float wave = brewing ? 0.5F + 0.5F * Mth.sin(time * 6.0F) : 0.0F;
         int core = mix(SOMNIUM, LIGHT, 0.4F + 0.6F * wave);
@@ -72,7 +74,7 @@ public class InfuserScreen extends AbstractContainerScreen<InfuserMenu> {
         }
     }
 
-    private void feeds(GuiGraphicsExtractor graphics, int x0, int y0, float t) {
+    private void feeds(GuiGraphics graphics, int x0, int y0, float t) {
         for (int[][] side : new int[][][] {FEED_LEFT, FEED_RIGHT}) {
             int total = 0;
             for (int[] seg : side) {
@@ -96,7 +98,7 @@ public class InfuserScreen extends AbstractContainerScreen<InfuserMenu> {
         }
     }
 
-    private void tubes(GuiGraphicsExtractor graphics, int x0, int y0, float progress, float time) {
+    private void tubes(GuiGraphics graphics, int x0, int y0, float progress, float time) {
         int height = TUBE_BOTTOM - TUBE_TOP + 1;
         int filled = Math.round(progress * height);
         if (filled <= 0) {
@@ -126,9 +128,9 @@ public class InfuserScreen extends AbstractContainerScreen<InfuserMenu> {
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-        graphics.text(this.font, Component.translatable("gui.theabyss.infuser.label_infuser"), 123, 7, -6684724, false);
-        graphics.text(this.font, Component.translatable("gui.theabyss.infuser.label_inventory"), 8, 72, -6684724, false);
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        GuiGraphicsCompat.text(graphics, this.font, Component.translatable("gui.theabyss.infuser.label_infuser"), 123, 7, -6684724, false);
+        GuiGraphicsCompat.text(graphics, this.font, Component.translatable("gui.theabyss.infuser.label_inventory"), 8, 72, -6684724, false);
         String key = switch (this.menu.state()) {
             case SomniumInfuserBlockEntity.NO_ENERGY -> "gui.theabyss.station.no_energy";
             case SomniumInfuserBlockEntity.OUTPUT_FULL -> "gui.theabyss.station.output_full";
@@ -136,17 +138,19 @@ public class InfuserScreen extends AbstractContainerScreen<InfuserMenu> {
         };
         if (key != null) {
             Component hint = Component.translatable(key);
-            graphics.text(this.font, hint, 168 - this.font.width(hint), 72, 0xFFFF8A8A, false);
+            GuiGraphicsCompat.text(graphics, this.font, hint, 168 - this.font.width(hint), 72, 0xFFFF8A8A, false);
         }
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
+        this.renderTooltip(graphics, mouseX, mouseY);
+        boolean itemTooltip = this.menu.getCarried().isEmpty() && this.hoveredSlot != null && this.hoveredSlot.hasItem();
         int x = mouseX - this.leftPos;
         int y = mouseY - this.topPos;
-        if (x >= 58 && x <= 73 && y >= COIL_TOP && y <= COIL_BOTTOM) {
-            graphics.setTooltipForNextFrame(Component.translatable("gui.theabyss.station.uses", this.menu.usesLeft()), mouseX, mouseY);
+        if (!itemTooltip && x >= 58 && x <= 73 && y >= COIL_TOP && y <= COIL_BOTTOM) {
+            graphics.renderTooltip(this.font, Component.translatable("gui.theabyss.station.uses", this.menu.usesLeft()), mouseX, mouseY);
         }
     }
 }

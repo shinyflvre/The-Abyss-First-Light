@@ -1,5 +1,7 @@
 package net.yezon.theabyss.block.entity;
 
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import io.netty.buffer.Unpooled;
 import java.util.HashSet;
 import java.util.Set;
@@ -7,7 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -16,8 +18,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.yezon.theabyss.compat.ValueInput;
+import net.yezon.theabyss.compat.ValueOutput;
 import net.yezon.theabyss.init.TheabyssModBlockEntities;
 import net.yezon.theabyss.jei_recipes.CrystalCutterRecipeTypeRecipe;
 import net.yezon.theabyss.network.TheabyssModVariables;
@@ -78,7 +80,7 @@ public class CrystalCutterBlockEntity extends StationMachineBlockEntity {
 
     @Override
     protected void onFinished(ServerLevel level) {
-        SoundEvent sound = BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:crystal_break"));
+        SoundEvent sound = BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:crystal_break"));
         if (sound != null) {
             BlockPos p = this.worldPosition;
             level.playSound(null, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5, sound, SoundSource.BLOCKS, 0.8F, 1.0F);
@@ -86,8 +88,9 @@ public class CrystalCutterBlockEntity extends StationMachineBlockEntity {
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        ValueInput input = ValueInput.of(tag, registries);
         this.researched.clear();
         for (String id : input.getStringOr("researched", "").split(",")) {
             if (!id.isEmpty()) {
@@ -97,8 +100,9 @@ public class CrystalCutterBlockEntity extends StationMachineBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        ValueOutput output = ValueOutput.of(tag, registries);
         output.putString("researched", String.join(",", this.researched));
     }
 

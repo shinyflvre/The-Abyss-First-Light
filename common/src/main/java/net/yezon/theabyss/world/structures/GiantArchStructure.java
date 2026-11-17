@@ -7,7 +7,6 @@ import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.util.valueproviders.IntProvider;
-import net.minecraft.util.valueproviders.IntProviders;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -25,8 +24,8 @@ import net.yezon.theabyss.TheabyssMod;
 public class GiantArchStructure extends Structure {
     public static final MapCodec<GiantArchStructure> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             settingsCodec(i),
-            IntProviders.codec(40, 190).fieldOf("span").forGetter(s -> s.span),
-            IntProviders.codec(20, 150).fieldOf("height").forGetter(s -> s.height),
+            IntProvider.codec(40, 190).fieldOf("span").forGetter(s -> s.span),
+            IntProvider.codec(20, 150).fieldOf("height").forGetter(s -> s.height),
             Codec.floatRange(0.3F, 2.0F).optionalFieldOf("thickness", 1.0F).forGetter(s -> s.thickness),
             GiantArchMaterials.CODEC.fieldOf("materials").forGetter(s -> s.materials))
         .apply(i, GiantArchStructure::new));
@@ -95,13 +94,13 @@ public class GiantArchStructure extends Structure {
             int bz = (int)Math.round(cz + Math.sin(angle) * half);
             int ga = generator.getBaseHeight(ax, az, Heightmap.Types.WORLD_SURFACE_WG, heights, state);
             int gb = generator.getBaseHeight(bx, bz, Heightmap.Types.WORLD_SURFACE_WG, heights, state);
-            if (Math.min(ga, gb) <= heights.getMinY() + 10 || Math.abs(ga - gb) > height * 0.6) {
+            if (Math.min(ga, gb) <= heights.getMinBuildHeight() + 10 || Math.abs(ga - gb) > height * 0.6) {
                 continue;
             }
             float rise = height + Math.abs(ga - gb) / 2.0F;
             GiantArchShape shape = new GiantArchShape(seed, ax, ga - 2, az, bx, gb - 2, bz, rise, rTop, rLeg, widthRatio, bow, gamma, power, legA, legB,
                 twist, period);
-            if (shape.curveY(0.5) + rTop + 16 >= heights.getMaxY() - 4) {
+            if (shape.curveY(0.5) + rTop + 16 >= heights.getMaxBuildHeight() - 5) {
                 continue;
             }
             double lowest = Double.MAX_VALUE;
@@ -119,7 +118,7 @@ public class GiantArchStructure extends Structure {
             if (lowest < 10.0 || clearance < rise * 0.4 || clearance <= bestClearance) {
                 continue;
             }
-            BoundingBox box = shape.bounds(heights.getMinY());
+            BoundingBox box = shape.bounds(heights.getMinBuildHeight());
             if (box.minX() < minX || box.maxX() > maxX || box.minZ() < minZ || box.maxZ() > maxZ) {
                 continue;
             }

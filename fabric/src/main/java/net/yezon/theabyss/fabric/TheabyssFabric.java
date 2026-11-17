@@ -1,6 +1,6 @@
 package net.yezon.theabyss.fabric;
 
-import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
+import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeConfigRegistry;
 import java.util.List;
 import net.fabricmc.api.ModInitializer;
 import net.neoforged.fml.config.ModConfig;
@@ -39,6 +39,6 @@ public final class TheabyssFabric implements ModInitializer {
         FabricEventBridge.register();
         FabricFluids.install();
         FabricLoaderHooks.install();
-        ConfigRegistry.INSTANCE.register(TheabyssMod.MODID, ModConfig.Type.COMMON, ConfigConfiguration.SPEC, "ta_theotherside.toml");
+        NeoForgeConfigRegistry.INSTANCE.register(TheabyssMod.MODID, ModConfig.Type.COMMON, ConfigConfiguration.SPEC, "ta_theotherside.toml");
     }
 }

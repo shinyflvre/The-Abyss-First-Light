@@ -3,11 +3,8 @@
   "biomes": "theabyss:blue_mountain",
   "spawners": {
     "type": "theabyss:scorpion",
-    "weight": 4,
-    "count": {
-      "type": "minecraft:uniform",
-      "max_inclusive": 3,
-      "min_inclusive": 2
-    }
+    "maxCount": 3,
+    "minCount": 2,
+    "weight": 4
   }
 }

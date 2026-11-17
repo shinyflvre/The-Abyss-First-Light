@@ -1,12 +1,10 @@
 package net.yezon.theabyss.client.gravity;
 
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.gravity.Gravity;
 import net.yezon.theabyss.gravity.GravityEntity;
@@ -17,14 +15,13 @@ public final class GravityViewBlocking {
     private GravityViewBlocking() {
     }
 
-    public static boolean applies(LocalPlayer player) {
+    public static boolean applies(Player player) {
         return ((GravityEntity)player).theabyss$gravityId() != 0 && !player.noPhysics;
     }
 
-    public static @Nullable Pair<BlockState, BlockPos> find(LocalPlayer player, Frustum frustum) {
+    public static @Nullable Pair<BlockState, BlockPos> find(Player player) {
         Direction gravity = Gravity.of(player);
         Vec3 eye = player.getEyePosition();
-        AABB nearPlane = frustum.getNearPlaneBounds().move(eye);
         double wide = player.getBbWidth() * 0.8;
         double thin = 0.1 * player.getScale();
         BlockPos.MutableBlockPos test = new BlockPos.MutableBlockPos();
@@ -37,7 +34,7 @@ public final class GravityViewBlocking {
             double dz = gravity.getAxis() == Direction.Axis.Z ? b * thin : c * wide;
             test.set(eye.x + dx, eye.y + dy, eye.z + dz);
             BlockState state = player.level().getBlockState(test);
-            if (state.getRenderShape() != RenderShape.INVISIBLE && state.isViewBlocking(player.level(), test, nearPlane)) {
+            if (state.getRenderShape() != RenderShape.INVISIBLE && state.isViewBlocking(player.level(), test)) {
                 return Pair.of(state, test.immutable());
             }
         }

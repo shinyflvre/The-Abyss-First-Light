@@ -1,7 +1,8 @@
 package net.yezon.theabyss.entity;
 
+import net.minecraft.world.Difficulty;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
@@ -52,16 +53,19 @@ public class MagicianEntity extends Monster {
 
     @Override
     public SoundEvent getHurtSound(DamageSource ds) {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.generic.hurt"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.generic.hurt"));
     }
 
     @Override
     public SoundEvent getDeathSound() {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.generic.death"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.generic.death"));
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource damagesource, float amount) {
+    public boolean hurt(DamageSource damagesource, float amount) {
+        if (!(this.level() instanceof ServerLevel level)) {
+            return false;
+        }
         if (damagesource.is(DamageTypes.IN_FIRE)
             || damagesource.is(DamageTypes.CAMPFIRE)
             || damagesource.is(DamageTypes.FALL)
@@ -71,7 +75,7 @@ public class MagicianEntity extends Monster {
             || damagesource.is(DamageTypes.WITHER_SKULL)) {
             return false;
         }
-        return super.hurtServer(level, damagesource, amount);
+        return super.hurt(damagesource, amount);
     }
 
     @Override
@@ -90,7 +94,7 @@ public class MagicianEntity extends Monster {
             TheabyssModEntities.MAGICIAN.get(),
             SpawnPlacementTypes.ON_GROUND,
             Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-            (entityType, world, reason, pos, random) -> MagicianSpawnEvents.execute(world),
+            (entityType, world, reason, pos, random) -> world.getDifficulty() != Difficulty.PEACEFUL && MagicianSpawnEvents.execute(world),
             RegisterSpawnPlacementsEvent.Operation.REPLACE
         );
     }

@@ -13,10 +13,10 @@ import net.yezon.theabyss.platform.registries.DeferredHolder;
 import net.yezon.theabyss.platform.registries.DeferredRegister;
 import net.yezon.theabyss.TheabyssMod;
 
-public record HangingPlantFeature(HangingPlants hanging) implements Feature {
+public record HangingPlantFeature(HangingPlants hanging) implements AbyssFeature.Config {
     public static final MapCodec<HangingPlantFeature> CODEC = HangingPlants.CODEC.fieldOf("hanging").xmap(HangingPlantFeature::new, HangingPlantFeature::hanging);
-    public static final DeferredRegister<MapCodec<? extends Feature>> REGISTRY = DeferredRegister.create(Registries.FEATURE_TYPE, TheabyssMod.MODID);
-    public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<HangingPlantFeature>> HANGING_PLANT = REGISTRY.register("hanging_plant", () -> CODEC);
+    public static final DeferredRegister<Feature<?>> REGISTRY = DeferredRegister.create(Registries.FEATURE, TheabyssMod.MODID);
+    public static final DeferredHolder<Feature<?>, AbyssFeature<HangingPlantFeature>> HANGING_PLANT = REGISTRY.register("hanging_plant", () -> new AbyssFeature<>(CODEC));
 
     @Override
     public MapCodec<HangingPlantFeature> codec() {

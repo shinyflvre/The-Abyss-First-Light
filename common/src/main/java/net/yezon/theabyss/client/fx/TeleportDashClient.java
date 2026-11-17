@@ -1,10 +1,9 @@
 package net.yezon.theabyss.client.fx;
 
-import java.lang.reflect.Method;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.Dist;
@@ -13,6 +12,7 @@ import net.yezon.theabyss.platform.event.SubscribeEvent;
 import net.yezon.theabyss.platform.event.EventBusSubscriber;
 import net.yezon.theabyss.platform.client.event.ViewportEvent;
 import net.yezon.theabyss.TheabyssMod;
+import net.yezon.theabyss.mixin.client.CameraPositionInvoker;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public final class TeleportDashClient {
@@ -29,15 +29,12 @@ public final class TeleportDashClient {
     private static boolean worldFovPending;
     private static long startNanos;
 
-    private static Method setPosition;
-    private static boolean reflectionFailed;
-
     private TeleportDashClient() {
     }
 
     public static void start(Vec3 fromEye, float yaw, float pitch) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.level == null || mc.player == null || mc.getCameraEntity() != mc.player || reflectionFailed) {
+        if (mc.level == null || mc.player == null || mc.getCameraEntity() != mc.player) {
             return;
         }
         level = mc.level;
@@ -110,28 +107,14 @@ public final class TeleportDashClient {
             Camera camera = event.getCamera();
             Vec3 eye = mc.player.getEyePosition(event.getPartialTick());
             Vec3 back = from.subtract(eye).scale(1.0F - rush(t));
-            moveCamera(camera, camera.position().add(back));
+            moveCamera(camera, camera.getPosition().add(back));
         }
         float stretch = Mth.sin(Math.min(t * 3.0F, 1.0F) * Mth.HALF_PI) * (1.0F - t);
         event.setFOV(event.getFOV() * (1.0F + FOV_STRETCH * stretch));
     }
 
     public static boolean moveCamera(Camera camera, Vec3 position) {
-        if (reflectionFailed) {
-            return false;
-        }
-        try {
-            if (setPosition == null) {
-                setPosition = Camera.class.getDeclaredMethod("setPosition", Vec3.class);
-                setPosition.setAccessible(true);
-            }
-            setPosition.invoke(camera, position);
-            return true;
-        } catch (ReflectiveOperationException | RuntimeException e) {
-            reflectionFailed = true;
-            active = false;
-            TheabyssMod.LOGGER.warn("Teleport rush: camera position not settable, rush disabled", e);
-            return false;
-        }
+        ((CameraPositionInvoker)camera).theabyss$setPosition(position);
+        return true;
     }
 }

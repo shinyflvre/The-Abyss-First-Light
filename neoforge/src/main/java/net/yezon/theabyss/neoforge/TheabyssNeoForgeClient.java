@@ -6,6 +6,7 @@ import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.yezon.theabyss.neoforge.client.NeoForgeClientPlatformHooks;
 import net.yezon.theabyss.neoforge.client.NeoForgeClientRegistrations;
+import net.yezon.theabyss.neoforge.client.NeoForgeGuiRegistrations;
 import net.yezon.theabyss.neoforge.fluids.NeoForgeFluidsClient;
 import net.yezon.theabyss.platform.services.ClientPlatformHooks;
 
@@ -15,12 +16,14 @@ final class TheabyssNeoForgeClient {
 
     static void installHooks() {
         ClientPlatformHooks.install(new NeoForgeClientPlatformHooks());
+        NeoForgeGuiRegistrations.installHooks();
         NeoForgeLoaderHooks.installClient();
     }
 
     static void init(IEventBus bus, ModContainer container) {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
         NeoForgeClientRegistrations.register(bus);
+        NeoForgeGuiRegistrations.register(bus);
         NeoForgeFluidsClient.register(bus);
         NeoForgeLoaderHooks.registerClientEvents(bus);
     }

@@ -21,14 +21,14 @@ final class FrostAutotest {
     static void addSteps(PossessionAutotest.StepAdder add, Consumer<String> command, Consumer<String> shot) {
         add.add("frost go", () -> {
             command.accept("gamemode survival @s");
-            command.accept("gamerule spawn_mobs false");
+            command.accept("gamerule doMobSpawning false");
             command.accept("effect give @s minecraft:resistance 9999 4 true");
             command.accept("effect give @s minecraft:fire_resistance 9999 0 true");
             command.accept("execute in theabyss:frost_world run forceload add -32 -32 32 32");
             command.accept("execute in theabyss:frost_world run tp @s 0.5 250 0.5 0 10");
         }, 200);
         add.add("frost ground", () -> onServer(sp -> {
-            groundY = sp.level().getHeight(Heightmap.Types.MOTION_BLOCKING, sp.getBlockX(), sp.getBlockZ());
+            groundY = sp.serverLevel().getHeight(Heightmap.Types.MOTION_BLOCKING, sp.getBlockX(), sp.getBlockZ());
             command.accept("execute in theabyss:frost_world run tp @s 0.5 " + groundY + " 0.5 0 5");
         }), 200);
         add.add("frost check storm", () -> {

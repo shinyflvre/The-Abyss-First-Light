@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "#c:rods/wooden",
-    "b": "theabyss:slimed_planks"
+    "a": {
+      "tag": "c:rods/wooden"
+    },
+    "b": {
+      "item": "theabyss:slimed_planks"
+    }
   },
   "pattern": [
     "aba",

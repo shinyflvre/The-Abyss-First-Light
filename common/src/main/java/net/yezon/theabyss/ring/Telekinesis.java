@@ -14,7 +14,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
@@ -117,7 +116,7 @@ public final class Telekinesis {
         int age = cast.age;
         boolean busy = false;
         if (age == 1 && cast.caster.isAlive()) {
-            cast.caster.swing(RingMagic.swingHand(cast.caster), SwingAnimation.DEFAULT, true);
+            cast.caster.swing(RingMagic.swingHand(cast.caster), true);
         }
         if (age == cast.slamTick - HANG) {
             sound(level, cast.caster.position(), SoundEvents.WARDEN_SONIC_CHARGE, 1.6F, 1.25F);
@@ -125,7 +124,7 @@ public final class Telekinesis {
         if (age == cast.slamTick) {
             sound(level, cast.caster.position(), SoundEvents.WARDEN_SONIC_BOOM, 1.4F, 0.75F);
             if (cast.caster.isAlive()) {
-                cast.caster.swing(RingMagic.swingHand(cast.caster), SwingAnimation.DEFAULT, true);
+                cast.caster.swing(RingMagic.swingHand(cast.caster), true);
             }
         }
         for (Bound b : cast.bound) {
@@ -214,8 +213,8 @@ public final class Telekinesis {
         t.setDeltaMovement(0.0, 0.0, 0.0);
         t.resetFallDistance();
         sync(t);
-        t.damageCooldownTime = 0;
-        t.hurtServer(level, level.damageSources().indirectMagic(cast.caster, cast.caster), cast.damage);
+        t.invulnerableTime = 0;
+        t.hurt(level.damageSources().indirectMagic(cast.caster, cast.caster), cast.damage);
         if (!cast.blowLanded) {
             cast.blowLanded = true;
             if (level.getRandom().nextBoolean()) {
@@ -239,8 +238,8 @@ public final class Telekinesis {
     }
 
     private static void sync(LivingEntity t) {
-        t.needsSync = true;
-        t.syncVelocity = true;
+        t.hasImpulse = true;
+        t.hurtMarked = true;
     }
 
     private static void sound(ServerLevel level, Vec3 at, SoundEvent sound, float volume, float pitch) {

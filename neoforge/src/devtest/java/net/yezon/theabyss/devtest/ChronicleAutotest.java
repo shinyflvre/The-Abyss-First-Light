@@ -7,12 +7,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -25,7 +24,7 @@ import net.yezon.theabyss.lore.Chronicles;
 import net.yezon.theabyss.network.TheabyssModVariables;
 
 final class ChronicleAutotest {
-    private static final ResourceKey<Level> ABYSS = ResourceKey.create(Registries.DIMENSION, Identifier.parse("theabyss:the_abyss"));
+    private static final ResourceKey<Level> ABYSS = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse("theabyss:the_abyss"));
     private static final List<String> failures = new ArrayList<>();
     private static int checks;
 
@@ -55,7 +54,7 @@ final class ChronicleAutotest {
         }, 2);
         add.add("chr codex locked", () -> CodexScreen.openCategory("chronicles"), 20);
         add.add("chr shot locked", () -> shot.accept("115_chronicles_0_locked"), 4);
-        add.add("chr close", () -> mc.gui.setScreen(null), 4);
+        add.add("chr close", () -> mc.setScreen(null), 4);
         add.add("chr enter abyss", () -> command.accept("execute in theabyss:the_abyss run tp @s 0 120 0"), 80);
         add.add("chr check crossing", () -> page("crossing on entering the Abyss", Chronicles.CROSSING), 2);
         add.add("chr subtitle wait", () -> {
@@ -88,13 +87,13 @@ final class ChronicleAutotest {
         add.add("chr check eye", () -> page("last entry when holding the eye", Chronicles.LAST_ENTRY), 2);
         add.add("chr die", () -> onServer(sp -> {
             sp.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
-            sp.hurtServer((ServerLevel)sp.level(), sp.damageSources().fellOutOfWorld(), 1000.0F);
+            sp.hurt(sp.damageSources().fellOutOfWorld(), 1000.0F);
         }), 30);
         add.add("chr respawn", () -> {
             if (mc.player != null) {
                 mc.player.respawn();
             }
-            mc.gui.setScreen(null);
+            mc.setScreen(null);
         }, 60);
         add.add("chr check death", () -> page("black ink after dying in the Abyss", Chronicles.DEATH), 2);
         add.add("chr to overworld", () -> command.accept("execute in minecraft:overworld run tp @s 0 200 0"), 40);
@@ -133,25 +132,25 @@ final class ChronicleAutotest {
         add.add("chr shot black", () -> shot.accept("115_chronicles_3_black_ink"), 4);
         add.add("chr codex end", () -> CodexScreen.openEntry("chronicle_20", 0), 20);
         add.add("chr shot end", () -> shot.accept("115_chronicles_4_end"), 4);
-        add.add("chr close 2", () -> mc.gui.setScreen(null), 4);
+        add.add("chr close 2", () -> mc.setScreen(null), 4);
         add.add("chr result", () -> TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] RESULT chronicles {} ({} checks{})", failures.isEmpty() ? "PASS" : "FAIL",
             checks, failures.isEmpty() ? "" : ", failed: " + failures), 2);
     }
 
     private static void kill(EntityType<? extends LivingEntity> type) {
         onServer(sp -> {
-            ServerLevel level = (ServerLevel)sp.level();
-            LivingEntity e = type.create(level, EntitySpawnReason.COMMAND);
+            ServerLevel level = (ServerLevel)sp.serverLevel();
+            LivingEntity e = type.create(level);
             if (e == null) {
                 check("spawn " + type, false);
                 return;
             }
             BlockPos at = sp.blockPosition().offset(3, 0, 0);
-            e.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, 0.0F, 0.0F);
+            e.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, 0.0F, 0.0F);
             level.addFreshEntity(e);
-            e.hurtServer(level, sp.damageSources().playerAttack(sp), 100000.0F);
+            e.hurt(sp.damageSources().playerAttack(sp), 100000.0F);
             if (e.isAlive()) {
-                e.kill(level);
+                e.kill();
             }
         });
     }

@@ -1,16 +1,14 @@
 package net.yezon.theabyss.fabric.mixin.event.entity;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalFloatRef;
 import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
@@ -18,17 +16,14 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.yezon.theabyss.fabric.event.FabricDamageFrame;
 import net.yezon.theabyss.fabric.event.FabricDamageState;
 import net.yezon.theabyss.fabric.event.LivingFabricEvents;
-import net.yezon.theabyss.platform.event.AbyssEventBus;
-import net.yezon.theabyss.platform.event.entity.living.MobEffectEvent;
 import org.jspecify.annotations.Nullable;
-import org.spongepowered.asm.mixin.Final;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -41,8 +36,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityEventsMixin implements FabricDamageState {
     @Shadow
-    @Final
-    private Map<Holder<MobEffect>, MobEffectInstance> activeEffects;
+    protected @Nullable Player lastHurtByPlayer;
 
     @Unique
     private final ArrayDeque<FabricDamageFrame> theabyss$frames = new ArrayDeque<>();
@@ -50,15 +44,17 @@ public abstract class LivingEntityEventsMixin implements FabricDamageState {
     @Unique
     private boolean theabyss$keptEffect;
 
-    @Shadow
-    protected abstract void onEffectsRemoved(Collection<MobEffectInstance> effects);
-
-    @Shadow
-    public abstract @Nullable Player getLastHurtByPlayer();
+    @Unique
+    private boolean theabyss$keptRemoval;
 
     @Override
     public ArrayDeque<FabricDamageFrame> theabyss$damageFrames() {
         return this.theabyss$frames;
+    }
+
+    @Override
+    public @Nullable Player theabyss$lastHurtByPlayer() {
+        return this.lastHurtByPlayer;
     }
 
     @Unique
@@ -91,21 +87,23 @@ public abstract class LivingEntityEventsMixin implements FabricDamageState {
         }
     }
 
-    @Inject(method = "removeAllEffects", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Maps;newHashMap(Ljava/util/Map;)Ljava/util/HashMap;"),
-        cancellable = true)
-    private void theabyss$effectRemoveAll(CallbackInfoReturnable<Boolean> cir) {
-        if (!AbyssEventBus.hasListeners(MobEffectEvent.Remove.class)) {
+    @WrapOperation(method = "removeAllEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;onEffectRemoved(Lnet/minecraft/world/effect/MobEffectInstance;)V"))
+    private void theabyss$effectRemoveAll(LivingEntity entity, MobEffectInstance effect, Operation<Void> original) {
+        if (LivingFabricEvents.effectRemove(entity)) {
+            this.theabyss$keptRemoval = true;
             return;
         }
-        Map<Holder<MobEffect>, MobEffectInstance> removed = new HashMap<>(this.activeEffects.size());
-        for (Map.Entry<Holder<MobEffect>, MobEffectInstance> entry : this.activeEffects.entrySet()) {
-            if (!LivingFabricEvents.effectRemove(this.theabyss$self())) {
-                removed.put(entry.getKey(), entry.getValue());
-            }
+        this.theabyss$keptRemoval = false;
+        original.call(entity, effect);
+    }
+
+    @WrapOperation(method = "removeAllEffects", at = @At(value = "INVOKE", target = "Ljava/util/Iterator;remove()V"))
+    private void theabyss$effectRemoveAllKeep(Iterator<?> iterator, Operation<Void> original) {
+        if (this.theabyss$keptRemoval) {
+            this.theabyss$keptRemoval = false;
+            return;
         }
-        removed.keySet().forEach(this.activeEffects::remove);
-        this.onEffectsRemoved(removed.values());
-        cir.setReturnValue(true);
+        original.call(iterator);
     }
 
     @WrapOperation(method = "tickEffects", at = @At(value = "INVOKE", target = "Ljava/util/Iterator;remove()V"))
@@ -118,31 +116,28 @@ public abstract class LivingEntityEventsMixin implements FabricDamageState {
         original.call(iterator);
     }
 
-    @WrapOperation(method = "tickEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;onEffectsRemoved(Ljava/util/Collection;)V"))
-    private void theabyss$effectExpiredRemoved(LivingEntity entity, Collection<MobEffectInstance> effects, Operation<Void> original) {
+    @WrapOperation(method = "tickEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;onEffectRemoved(Lnet/minecraft/world/effect/MobEffectInstance;)V"))
+    private void theabyss$effectExpiredRemoved(LivingEntity entity, MobEffectInstance effect, Operation<Void> original) {
         if (this.theabyss$keptEffect) {
             this.theabyss$keptEffect = false;
             return;
         }
-        original.call(entity, effects);
+        original.call(entity, effect);
     }
 
-    @WrapMethod(method = "hurtServer")
-    private boolean theabyss$damageFrame(ServerLevel level, DamageSource source, float damage, Operation<Boolean> original) {
+    @WrapMethod(method = "hurt")
+    private boolean theabyss$damageFrame(DamageSource source, float damage, Operation<Boolean> original) {
         LivingEntity self = this.theabyss$self();
         FabricDamageFrame frame = LivingFabricEvents.pushDamage(self, damage);
         try {
-            boolean result = original.call(level, source, damage);
-            LivingFabricEvents.damagePost(self, source, frame);
-            return result;
+            return original.call(source, damage);
         } finally {
             LivingFabricEvents.popDamage(self, frame);
         }
     }
 
-    @Inject(method = "hurtServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isSleeping()Z", ordinal = 0), cancellable = true)
-    private void theabyss$incomingDamage(ServerLevel level, DamageSource source, float damage, CallbackInfoReturnable<Boolean> cir,
-        @Local(argsOnly = true) LocalFloatRef amount) {
+    @Inject(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isSleeping()Z", ordinal = 0), cancellable = true)
+    private void theabyss$incomingDamage(DamageSource source, float damage, CallbackInfoReturnable<Boolean> cir, @Local(argsOnly = true) LocalFloatRef amount) {
         Float result = LivingFabricEvents.incomingDamage(this.theabyss$self(), source, amount.get());
         if (result == null) {
             cir.setReturnValue(false);
@@ -151,17 +146,10 @@ public abstract class LivingEntityEventsMixin implements FabricDamageState {
         amount.set(result);
     }
 
-    @ModifyExpressionValue(method = "hurtServer", at = @At(value = "INVOKE",
-        target = "Lnet/minecraft/world/entity/LivingEntity;applyItemBlocking(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)F"))
+    @ModifyArg(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hurtCurrentlyUsedShield(F)V"))
     private float theabyss$damageBlocked(float blocked) {
         LivingFabricEvents.damageBlocked(this.theabyss$self(), blocked);
         return blocked;
-    }
-
-    @Inject(method = "hurtServer", at = @At(value = "INVOKE",
-        target = "Lnet/minecraft/world/entity/LivingEntity;resolveMobResponsibleForDamage(Lnet/minecraft/world/damagesource/DamageSource;)V"))
-    private void theabyss$damageReachedEnd(ServerLevel level, DamageSource source, float damage, CallbackInfoReturnable<Boolean> cir) {
-        LivingFabricEvents.damageReachedEnd(this.theabyss$self());
     }
 
     @ModifyExpressionValue(method = "actuallyHurt", at = @At(value = "INVOKE",
@@ -170,8 +158,12 @@ public abstract class LivingEntityEventsMixin implements FabricDamageState {
         return LivingFabricEvents.damagePre(this.theabyss$self(), source, damage);
     }
 
-    @Inject(method = "die", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/damagesource/DamageSource;getEntity()Lnet/minecraft/world/entity/Entity;", ordinal = 0),
-        cancellable = true)
+    @Inject(method = "actuallyHurt", at = @At("RETURN"))
+    private void theabyss$damagePost(DamageSource source, float damage, CallbackInfo ci) {
+        LivingFabricEvents.damagePost(this.theabyss$self(), source);
+    }
+
+    @Inject(method = "die", at = @At("HEAD"), cancellable = true)
     private void theabyss$death(DamageSource source, CallbackInfo ci) {
         if (LivingFabricEvents.death(this.theabyss$self(), source)) {
             ci.cancel();
@@ -189,23 +181,14 @@ public abstract class LivingEntityEventsMixin implements FabricDamageState {
         LivingFabricEvents.finishCapturingDrops(self);
     }
 
-    @WrapOperation(method = "drop", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private boolean theabyss$captureDrop(Level level, Entity drop, Operation<Boolean> original) {
-        if (drop instanceof ItemEntity item && LivingFabricEvents.captureDrop(this.theabyss$self(), item)) {
-            return true;
-        }
-        return original.call(level, drop);
-    }
-
     @ModifyArg(method = "dropExperience", at = @At(value = "INVOKE",
         target = "Lnet/minecraft/world/entity/ExperienceOrb;award(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;I)V"), index = 2)
     private int theabyss$experienceDrop(int experience) {
-        return LivingFabricEvents.experience(this.theabyss$self(), this.getLastHurtByPlayer(), experience);
+        return LivingFabricEvents.experience(this.theabyss$self(), this.lastHurtByPlayer, experience);
     }
 
-    @Inject(method = "causeFallDamage", at = @At(value = "INVOKE",
-        target = "Lnet/minecraft/world/entity/Entity;causeFallDamage(DFLnet/minecraft/world/damagesource/DamageSource;)Z"), cancellable = true)
-    private void theabyss$fall(double fallDistance, float damageModifier, DamageSource source, CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method = "causeFallDamage", at = @At("HEAD"), cancellable = true)
+    private void theabyss$fall(float fallDistance, float damageModifier, DamageSource source, CallbackInfoReturnable<Boolean> cir) {
         if (LivingFabricEvents.fall(this.theabyss$self())) {
             cir.setReturnValue(false);
         }
@@ -224,13 +207,13 @@ public abstract class LivingEntityEventsMixin implements FabricDamageState {
         amount.set(result);
     }
 
-    @ModifyArg(method = "getVisibilityPercent", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Mth;clamp(DDD)D"), index = 0)
+    @ModifyReturnValue(method = "getVisibilityPercent", at = @At("RETURN"))
     private double theabyss$visibility(double visibility) {
         return LivingFabricEvents.visibility(this.theabyss$self(), visibility);
     }
 
-    @Inject(method = "startUsingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getUseDuration(Lnet/minecraft/world/entity/LivingEntity;)I"),
-        cancellable = true)
+    @Inject(method = "startUsingItem", at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/LivingEntity;useItem:Lnet/minecraft/world/item/ItemStack;",
+        opcode = Opcodes.PUTFIELD, ordinal = 0), cancellable = true)
     private void theabyss$useItemStart(CallbackInfo ci) {
         if (LivingFabricEvents.useItemStart(this.theabyss$self())) {
             ci.cancel();

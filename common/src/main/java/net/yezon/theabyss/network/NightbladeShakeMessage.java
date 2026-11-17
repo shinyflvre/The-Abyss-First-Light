@@ -4,7 +4,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
@@ -14,7 +14,7 @@ import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.platform.services.ServerHooks;
 
 public record NightbladeShakeMessage(float strength, float seconds) implements CustomPacketPayload {
-    public static final Type<NightbladeShakeMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "nightblade_shake"));
+    public static final Type<NightbladeShakeMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "nightblade_shake"));
     public static final StreamCodec<RegistryFriendlyByteBuf, NightbladeShakeMessage> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.FLOAT, NightbladeShakeMessage::strength, ByteBufCodecs.FLOAT, NightbladeShakeMessage::seconds, NightbladeShakeMessage::new);
 

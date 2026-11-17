@@ -10,12 +10,13 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.yezon.theabyss.TheabyssMod;
+import net.yezon.theabyss.compat.GuiGraphicsCompat;
 import net.yezon.theabyss.lore.Chronicles;
 
 public final class ChronicleSubtitles {
@@ -48,9 +49,9 @@ public final class ChronicleSubtitles {
     private static List<Cue> load(String key) {
         List<Cue> out = new ArrayList<>();
         String lang = Minecraft.getInstance().getLanguageManager().getSelected();
-        Identifier file = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "chronicle/" + lang + "/subtitles.json");
+        ResourceLocation file = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "chronicle/" + lang + "/subtitles.json");
         if (Minecraft.getInstance().getResourceManager().getResource(file).isEmpty()) {
-            file = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "chronicle/" + FALLBACK + "/subtitles.json");
+            file = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "chronicle/" + FALLBACK + "/subtitles.json");
         }
         try (Reader reader = Minecraft.getInstance().getResourceManager().openAsReader(file)) {
             JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
@@ -66,7 +67,7 @@ public final class ChronicleSubtitles {
         return out;
     }
 
-    public static void render(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
+    public static void render(GuiGraphics graphics, DeltaTracker deltaTracker) {
         if (cues.isEmpty()) {
             return;
         }
@@ -107,7 +108,8 @@ public final class ChronicleSubtitles {
         graphics.fill(cx - width / 2 - 4, top - 3, cx + width / 2 + 4, top + lines.size() * lineHeight + 1, (alpha * 150 / 255) << 24);
         int colour = (alpha << 24) | (blackInk ? BLACK_INK : JOURNAL);
         for (int i = 0; i < lines.size(); i++) {
-            graphics.centeredText(font, lines.get(i), cx, top + i * lineHeight, colour);
+            FormattedCharSequence line = lines.get(i);
+            GuiGraphicsCompat.text(graphics, font, line, cx - font.width(line) / 2, top + i * lineHeight, colour, true);
         }
     }
 }

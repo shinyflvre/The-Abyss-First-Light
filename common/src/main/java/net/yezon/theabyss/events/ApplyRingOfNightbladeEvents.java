@@ -48,11 +48,11 @@ public class ApplyRingOfNightbladeEvents {
             Vec3 from = target.position();
             teleport(target, target.getX(), y + 10.0, target.getZ());
             target.setNoGravity(true);
-            target.hurtServer(level, magic, damage);
+            target.hurt(magic, damage);
             RingVisuals.nightbladeLift(level, target, from, HOLD);
             TheabyssMod.queueServerWork(HOLD, () -> {
                 teleport(target, target.getX(), target.getY(), target.getZ());
-                target.hurtServer(level, generic, damage);
+                target.hurt(generic, damage);
                 target.setNoGravity(false);
             });
         }
@@ -89,9 +89,9 @@ public class ApplyRingOfNightbladeEvents {
     }
 
     private static void teleport(Entity entity, double x, double y, double z) {
-        entity.teleportTo(x, y, z);
+        net.yezon.theabyss.util.AbyssTeleport.to(entity, x, y, z);
         if (entity instanceof ServerPlayer player) {
-            player.connection.teleport(x, y, z, entity.getYRot(), entity.getXRot());
+            net.yezon.theabyss.util.AbyssTeleport.connection(player, x, y, z, entity.getYRot(), entity.getXRot());
         }
     }
 }

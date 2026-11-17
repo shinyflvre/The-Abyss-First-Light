@@ -65,7 +65,7 @@ public final class LurkerPuddles {
             for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, box, e -> e.isAlive() && !(e instanceof JungleLurkerEntity)
                 && !(e instanceof Player pl && (pl.isCreative() || pl.isSpectator())) && e.onGround())) {
                 if (e.position().subtract(p.at()).horizontalDistance() <= p.radius()) {
-                    e.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 30, 2, false, true), p.owner());
+                    e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30, 2, false, true), p.owner());
                     STUCK.put(e, level.getGameTime() + 30);
                 }
             }

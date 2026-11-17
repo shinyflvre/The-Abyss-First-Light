@@ -1,15 +1,33 @@
 {
   "type": "theabyss:arcane_recipe_type",
   "ingredients": [
-    "theabyss:ring_of_ring",
-    "theabyss:ender_crystal_shard",
-    "minecraft:white_bed",
-    "theabyss:ender_crystal_shard",
-    "minecraft:white_bed",
-    "theabyss:ender_crystal_shard",
-    "minecraft:white_bed",
-    "theabyss:ender_crystal_shard",
-    "minecraft:white_bed"
+    {
+      "item": "theabyss:ring_of_ring"
+    },
+    {
+      "item": "theabyss:ender_crystal_shard"
+    },
+    {
+      "item": "minecraft:white_bed"
+    },
+    {
+      "item": "theabyss:ender_crystal_shard"
+    },
+    {
+      "item": "minecraft:white_bed"
+    },
+    {
+      "item": "theabyss:ender_crystal_shard"
+    },
+    {
+      "item": "minecraft:white_bed"
+    },
+    {
+      "item": "theabyss:ender_crystal_shard"
+    },
+    {
+      "item": "minecraft:white_bed"
+    }
   ],
   "output": {
     "id": "theabyss:ring_of_home",

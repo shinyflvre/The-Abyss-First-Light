@@ -2,12 +2,12 @@ package net.yezon.theabyss.init;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 @JeiPlugin
 public class TheabyssModBrewingRecipes implements IModPlugin {
     @Override
-    public Identifier getPluginUid() {
-        return Identifier.fromNamespaceAndPath("theabyss", "brewing_recipes");
+    public ResourceLocation getPluginUid() {
+        return ResourceLocation.fromNamespaceAndPath("theabyss", "brewing_recipes");
     }
 }

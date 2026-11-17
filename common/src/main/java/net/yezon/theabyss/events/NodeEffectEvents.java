@@ -9,11 +9,11 @@ public class NodeEffectEvents {
     public static void execute(Entity entity) {
         if (entity != null) {
             if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
-                _entity.addEffect(new MobEffectInstance(MobEffects.SPEED, 200, 4));
+                _entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 200, 4));
             }
 
             if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
-                _entity.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, 200, 1));
+                _entity.addEffect(new MobEffectInstance(MobEffects.JUMP, 200, 1));
             }
         }
     }

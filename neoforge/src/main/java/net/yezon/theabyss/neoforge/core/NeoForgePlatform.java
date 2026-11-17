@@ -11,7 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLPaths;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -29,7 +28,7 @@ public final class NeoForgePlatform implements Platform {
 
     @Override
     public Dist dist() {
-        return FMLEnvironment.getDist().isClient() ? Dist.CLIENT : Dist.DEDICATED_SERVER;
+        return FMLEnvironment.dist.isClient() ? Dist.CLIENT : Dist.DEDICATED_SERVER;
     }
 
     @Override
@@ -74,7 +73,7 @@ public final class NeoForgePlatform implements Platform {
 
     @Override
     public void sendToServer(CustomPacketPayload payload) {
-        ClientPacketDistributor.sendToServer(payload);
+        PacketDistributor.sendToServer(payload);
     }
 
     @Override

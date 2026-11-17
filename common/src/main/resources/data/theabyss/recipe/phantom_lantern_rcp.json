@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "minecraft:iron_nugget",
-    "b": "theabyss:phantom_soul_item"
+    "a": {
+      "item": "minecraft:iron_nugget"
+    },
+    "b": {
+      "item": "theabyss:phantom_soul_item"
+    }
   },
   "pattern": [
     "aaa",

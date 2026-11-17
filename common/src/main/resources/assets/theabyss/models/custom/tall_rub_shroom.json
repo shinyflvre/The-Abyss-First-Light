@@ -12,7 +12,6 @@
         16,
         18.25
       ],
-      "shade": false,
       "rotation": {
         "angle": -45,
         "axis": "y",
@@ -54,7 +53,6 @@
         16,
         18.375
       ],
-      "shade": false,
       "rotation": {
         "angle": 45,
         "axis": "y",
@@ -372,7 +370,6 @@
         28,
         18.25
       ],
-      "shade": false,
       "rotation": {
         "angle": -45,
         "axis": "y",
@@ -414,7 +411,6 @@
         28,
         18.375
       ],
-      "shade": false,
       "rotation": {
         "angle": 45,
         "axis": "y",

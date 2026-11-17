@@ -9,11 +9,12 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.yezon.theabyss.events.CaveMossGenEvents;
 
-public record AurelCrystalOreFeatureFeature(int tries, int xzSpread, int ySpread, Holder<PlacedFeature> feature) implements Feature {
+public record AurelCrystalOreFeatureFeature(int tries, int xzSpread, int ySpread, Holder<PlacedFeature> feature) implements AbyssFeature.Config {
     public static final MapCodec<AurelCrystalOreFeatureFeature> CODEC = RecordCodecBuilder.mapCodec(
         i -> i.group(
                 ExtraCodecs.POSITIVE_INT.optionalFieldOf("tries", CaveCrystalPatch.DEFAULT_TRIES).forGetter(AurelCrystalOreFeatureFeature::tries),
@@ -30,7 +31,7 @@ public record AurelCrystalOreFeatureFeature(int tries, int xzSpread, int ySpread
     }
 
     @Override
-    public Stream<Holder<Feature>> getSubFeatures() {
+    public Stream<ConfiguredFeature<?, ?>> getFeatures() {
         return this.feature.value().getFeatures();
     }
 

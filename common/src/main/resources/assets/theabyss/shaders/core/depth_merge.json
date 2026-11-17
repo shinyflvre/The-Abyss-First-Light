@@ -1,0 +1,8 @@
+{
+    "vertex": "theabyss:depth_merge",
+    "fragment": "theabyss:depth_merge",
+    "samplers": [
+        { "name": "Sampler0" }
+    ],
+    "uniforms": []
+}

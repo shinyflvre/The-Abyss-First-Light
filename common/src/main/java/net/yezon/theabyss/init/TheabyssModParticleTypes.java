@@ -1,7 +1,11 @@
 package net.yezon.theabyss.init;
 
+import com.mojang.serialization.MapCodec;
+import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.yezon.theabyss.platform.registries.DeferredHolder;
 import net.yezon.theabyss.platform.registries.DeferredRegister;
@@ -70,9 +74,27 @@ public class TheabyssModParticleTypes {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> DRIPPING_INFUSED_LAVA = REGISTRY.register("dripping_infused_lava", () -> simple(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FALLING_INFUSED_LAVA = REGISTRY.register("falling_infused_lava", () -> simple(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> LANDING_INFUSED_LAVA = REGISTRY.register("landing_infused_lava", () -> simple(false));
+    public static final DeferredHolder<ParticleType<?>, ParticleType<ColorParticleOption>> TINTED_LEAVES = REGISTRY.register("tinted_leaves", () -> colored(false));
 
     private static SimpleParticleType simple(boolean alwaysShow) {
         return new SimpleParticleType(alwaysShow) {
+        };
+    }
+
+    private static ParticleType<ColorParticleOption> colored(boolean alwaysShow) {
+        return new ParticleType<ColorParticleOption>(alwaysShow) {
+            private final MapCodec<ColorParticleOption> codec = ColorParticleOption.codec(this);
+            private final StreamCodec<? super RegistryFriendlyByteBuf, ColorParticleOption> streamCodec = ColorParticleOption.streamCodec(this);
+
+            @Override
+            public MapCodec<ColorParticleOption> codec() {
+                return this.codec;
+            }
+
+            @Override
+            public StreamCodec<? super RegistryFriendlyByteBuf, ColorParticleOption> streamCodec() {
+                return this.streamCodec;
+            }
         };
     }
 }

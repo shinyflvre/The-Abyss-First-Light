@@ -2,24 +2,25 @@ package net.yezon.theabyss.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.EyesLayer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
+import net.minecraft.resources.ResourceLocation;
+import net.yezon.theabyss.compat.ARGB;
 import net.minecraft.util.Mth;
 import net.yezon.theabyss.client.model.ModelPhantom;
 import net.yezon.theabyss.entity.InfectedPhantomEntity;
 
-public class InfectedPhantomRenderer extends MobRenderer<InfectedPhantomEntity, InfectedPhantomRenderState, ModelPhantom<InfectedPhantomRenderState>> {
-    private static final Identifier TEXTURE = Identifier.parse("theabyss:textures/entity/phantom.png");
-    private static final RenderType GLOW = RenderTypes.eyes(Identifier.parse("theabyss:textures/entity/phantom_glow.png"));
+public class InfectedPhantomRenderer extends MobRenderer<InfectedPhantomEntity, ModelPhantom<InfectedPhantomEntity>> {
+    private static final ResourceLocation TEXTURE = ResourceLocation.parse("theabyss:textures/entity/phantom.png");
+    private static final RenderType GLOW = AbyssRenderTypes.eyes(ResourceLocation.parse("theabyss:textures/entity/phantom_glow.png"));
+    private final InfectedPhantomRenderState state = new InfectedPhantomRenderState();
 
     public InfectedPhantomRenderer(Context context) {
         super(context, new ModelPhantom<>(context.bakeLayer(ModelPhantom.LAYER_LOCATION)), 0.5F);
+        this.model.phantom = this.state;
         this.addLayer(new EyesLayer<>(this) {
             @Override
             public RenderType renderType() {
@@ -27,26 +28,27 @@ public class InfectedPhantomRenderer extends MobRenderer<InfectedPhantomEntity, 
             }
 
             @Override
-            public void submit(PoseStack poseStack, SubmitNodeCollector collector, int light, InfectedPhantomRenderState state, float yRot, float xRot) {
-                if (state.fade > 0.6F) {
-                    super.submit(poseStack, collector, light, state, yRot, xRot);
+            public void render(PoseStack poseStack, MultiBufferSource buffers, int light, InfectedPhantomEntity entity, float limbSwing, float limbSwingAmount,
+                               float partialTick, float ageInTicks, float netHeadYaw, float headPitch) {
+                if (InfectedPhantomRenderer.this.state.fade > 0.6F) {
+                    super.render(poseStack, buffers, light, entity, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch);
                 }
             }
         });
     }
 
-    @Override
-    public InfectedPhantomRenderState createRenderState() {
-        return new InfectedPhantomRenderState();
-    }
-
-    @Override
-    public void extractRenderState(InfectedPhantomEntity entity, InfectedPhantomRenderState state, float partialTicks) {
-        super.extractRenderState(entity, state, partialTicks);
+    private static void extract(InfectedPhantomEntity entity, InfectedPhantomRenderState state, float partialTicks) {
         state.attack = entity.attack();
         state.attackAge = state.attack == InfectedPhantomEntity.NONE ? 0.0F : entity.attackAge(partialTicks);
         state.fade = fade(state.attack, state.attackAge);
         state.lean = lean(state.attack, state.attackAge);
+    }
+
+    @Override
+    public void render(InfectedPhantomEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int light) {
+        extract(entity, this.state, partialTicks);
+        MultiBufferSource target = this.state.fade < 0.999F ? TintedBuffers.of(buffers, RenderType.entityTranslucent(TEXTURE), ARGB.white(this.state.fade)) : buffers;
+        super.render(entity, entityYaw, partialTicks, poseStack, target, light);
     }
 
     private static float smooth(float t) {
@@ -85,39 +87,36 @@ public class InfectedPhantomRenderer extends MobRenderer<InfectedPhantomEntity, 
     }
 
     @Override
-    protected void setupRotations(InfectedPhantomRenderState state, PoseStack poseStack, float bodyRot, float scale) {
-        super.setupRotations(state, poseStack, bodyRot, scale);
-        poseStack.translate(0.0F, Mth.sin(state.ageInTicks * 0.09F) * 0.06F, 0.0F);
-        if (state.lean != 0.0F) {
+    protected void setupRotations(InfectedPhantomEntity entity, PoseStack poseStack, float bob, float yBodyRot, float partialTick, float scale) {
+        super.setupRotations(entity, poseStack, bob, yBodyRot, partialTick, scale);
+        poseStack.translate(0.0F, Mth.sin(bob * 0.09F) * 0.06F, 0.0F);
+        if (this.state.lean != 0.0F) {
             poseStack.translate(0.0F, 1.0F, 0.0F);
-            poseStack.rotateDegrees(Axis.XP, -state.lean * Mth.RAD_TO_DEG);
+            poseStack.mulPose(Axis.XP.rotationDegrees(-this.state.lean * Mth.RAD_TO_DEG));
             poseStack.translate(0.0F, -1.0F, 0.0F);
         }
     }
 
     @Override
-    protected RenderType getRenderType(InfectedPhantomRenderState state, boolean isBodyVisible, boolean forceTransparent, boolean appearGlowing) {
-        if (state.fade < 0.02F) {
+    protected RenderType getRenderType(InfectedPhantomEntity entity, boolean bodyVisible, boolean translucent, boolean glowing) {
+        if (this.state.fade < 0.02F) {
             return null;
         }
-        if (state.fade < 0.999F && isBodyVisible) {
-            return RenderTypes.entityTranslucent(TEXTURE);
+        if (this.state.fade < 0.999F && bodyVisible) {
+            return RenderType.entityTranslucent(TEXTURE);
         }
-        return super.getRenderType(state, isBodyVisible, forceTransparent, appearGlowing);
+        return super.getRenderType(entity, bodyVisible, translucent, glowing);
     }
 
     @Override
-    protected int getModelTint(InfectedPhantomRenderState state) {
-        return state.fade < 0.999F ? ARGB.white(state.fade) : -1;
+    protected float getShadowRadius(InfectedPhantomEntity entity) {
+        byte attack = entity.attack();
+        float fade = attack == InfectedPhantomEntity.NONE ? 1.0F : fade(attack, entity.attackAge(RenderTicks.partialTick(entity)));
+        return super.getShadowRadius(entity) * fade;
     }
 
     @Override
-    protected float getShadowRadius(InfectedPhantomRenderState state) {
-        return super.getShadowRadius(state) * state.fade;
-    }
-
-    @Override
-    public Identifier getTextureLocation(InfectedPhantomRenderState state) {
+    public ResourceLocation getTextureLocation(InfectedPhantomEntity entity) {
         return TEXTURE;
     }
 }

@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:icora_nugget",
-    "b": "#minecraft:stone_tool_materials"
+    "a": {
+      "item": "theabyss:icora_nugget"
+    },
+    "b": {
+      "tag": "minecraft:stone_tool_materials"
+    }
   },
   "pattern": [
     "aaa",

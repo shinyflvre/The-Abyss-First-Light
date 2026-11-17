@@ -3,7 +3,9 @@
   "category": "misc",
   "group": "abyss_chest",
   "key": {
-    "a": "theabyss:vigilant_planks"
+    "a": {
+      "item": "theabyss:vigilant_planks"
+    }
   },
   "pattern": [
     "aaa",

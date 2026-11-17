@@ -1,5 +1,7 @@
 package net.yezon.theabyss.item;
 
+import net.minecraft.world.InteractionResultHolder;
+import java.util.List;
 import java.util.function.Consumer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -9,7 +11,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.yezon.theabyss.events.ApplyRingOfCrystalsEvents;
 import net.yezon.theabyss.util.AbyssTooltip;
@@ -20,7 +21,8 @@ public class RingOfCrystalsItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, List<Component> tooltipLines, TooltipFlag flag) {
+        Consumer<Component> tooltip = tooltipLines::add;
         AbyssTooltip.ring(tooltip, "tooltip.theabyss.ring_of_crystals.ability", "tooltip.theabyss.ring_of_crystals.text",
             "tooltip.theabyss.ring_of_crystals.action", ApplyRingOfCrystalsEvents.SLASH_COST);
         tooltip.accept(AbyssTooltip.damage(ApplyRingOfCrystalsEvents.slashDamage(AbyssTooltip.damageUpgrade()), ApplyRingOfCrystalsEvents.slashDamage(0), ""));
@@ -35,8 +37,8 @@ public class RingOfCrystalsItem extends Item {
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ApplyRingOfCrystalsEvents.slash(level, player, player.getItemInHand(hand));
-        return InteractionResult.SUCCESS;
+        return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
     }
 }

@@ -10,7 +10,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -52,7 +52,7 @@ public final class RiftStory {
     private static final long WHISPER_COOLDOWN = 12000L;
     private static final int SIGHT_INTERVAL = 40;
     private static final double SIGHT_RANGE = 16.0;
-    private static final ResourceKey<Level> ABYSS = ResourceKey.create(Registries.DIMENSION, Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "the_abyss"));
+    private static final ResourceKey<Level> ABYSS = ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "the_abyss"));
     private static final String[] WHISPERS = {"whisper.1", "whisper.2", "whisper.3", "whisper.4", "whisper.5", "whisper.6", "whisper.7", "whisper.8",
         "whisper.9", "whisper.10"};
     private static final Map<String, java.util.function.Predicate<ServerPlayer>> VARIANTS = Map.of(
@@ -86,15 +86,15 @@ public final class RiftStory {
         if (!root.contains(DATA)) {
             root.put(DATA, new CompoundTag());
         }
-        return root.getCompoundOrEmpty(DATA);
+        return net.yezon.theabyss.compat.NbtCompat.getCompoundOrEmpty(root, DATA);
     }
 
     public static boolean called(ServerPlayer player) {
-        return data(player).getBooleanOr("called", false);
+        return net.yezon.theabyss.compat.NbtCompat.getBooleanOr(data(player), "called", false);
     }
 
     static boolean deed(ServerPlayer player, int page) {
-        return (data(player).getIntOr("deeds", 0) & 1 << page) != 0 || ChronicleData.of(player).has(page);
+        return (net.yezon.theabyss.compat.NbtCompat.getIntOr(data(player), "deeds", 0) & 1 << page) != 0 || ChronicleData.of(player).has(page);
     }
 
     public static boolean bossDefeated(ServerPlayer player) {
@@ -116,7 +116,7 @@ public final class RiftStory {
     }
 
     private static int stage(ServerPlayer player) {
-        return data(player).getIntOr("stage", STAGE_NONE);
+        return net.yezon.theabyss.compat.NbtCompat.getIntOr(data(player), "stage", STAGE_NONE);
     }
 
     private static void setStage(ServerPlayer player, int stage) {
@@ -128,13 +128,13 @@ public final class RiftStory {
             return;
         }
         CompoundTag data = data(player);
-        if (data.getBooleanOr("called", false)) {
+        if (net.yezon.theabyss.compat.NbtCompat.getBooleanOr(data, "called", false)) {
             return;
         }
-        if (data.getIntOr("need", 0) <= 0) {
+        if (net.yezon.theabyss.compat.NbtCompat.getIntOr(data, "need", 0) <= 0) {
             data.putInt("need", MIN_USES + player.getRandom().nextInt(MAX_USES - MIN_USES + 1));
         }
-        data.putInt("uses", data.getIntOr("uses", 0) + 1);
+        data.putInt("uses", net.yezon.theabyss.compat.NbtCompat.getIntOr(data, "uses", 0) + 1);
     }
 
     static List<String> lines(String... names) {
@@ -205,7 +205,7 @@ public final class RiftStory {
 
     private static void switchInfo(ServerPlayer player) {
         CompoundTag data = data(player);
-        if (stage(player) >= STAGE_DONE && !data.getBooleanOr("toldSwitch", false)) {
+        if (stage(player) >= STAGE_DONE && !net.yezon.theabyss.compat.NbtCompat.getBooleanOr(data, "toldSwitch", false)) {
             data.putBoolean("toldSwitch", true);
             DialogueMessage.send(player, new DialogueMessage(IDS.incrementAndGet(), INFO, List.of(LINE + "info.switch"), List.of(), false));
         }
@@ -237,11 +237,11 @@ public final class RiftStory {
 
     private static void tickWhisper(ServerPlayer player) {
         CompoundTag data = data(player);
-        if (!data.getBooleanOr("whisperPending", false) || busy(player)) {
+        if (!net.yezon.theabyss.compat.NbtCompat.getBooleanOr(data, "whisperPending", false) || busy(player)) {
             return;
         }
         long now = player.level().getServer().overworld().getGameTime();
-        if (now < data.getLongOr("lastWhisper", Long.MIN_VALUE / 2) + WHISPER_COOLDOWN) {
+        if (now < net.yezon.theabyss.compat.NbtCompat.getLongOr(data, "lastWhisper", Long.MIN_VALUE / 2) + WHISPER_COOLDOWN) {
             return;
         }
         data.remove("whisperPending");
@@ -251,7 +251,7 @@ public final class RiftStory {
     }
 
     public static void onDeed(ServerPlayer player, int page) {
-        data(player).putInt("deeds", data(player).getIntOr("deeds", 0) | 1 << page);
+        data(player).putInt("deeds", net.yezon.theabyss.compat.NbtCompat.getIntOr(data(player), "deeds", 0) | 1 << page);
         if (!silent(player)) {
             RiftTopics.onDeed(player, page);
         }
@@ -271,7 +271,7 @@ public final class RiftStory {
         if (player.level().dimension() == ABYSS) {
             RiftTopics.onAbyssTick(player);
         }
-        if (player.tickCount % SIGHT_INTERVAL == 0 && !data(player).getBooleanOr("sawLizard", false)) {
+        if (player.tickCount % SIGHT_INTERVAL == 0 && !net.yezon.theabyss.compat.NbtCompat.getBooleanOr(data(player), "sawLizard", false)) {
             for (LizardEntity lizard : player.level().getEntitiesOfClass(LizardEntity.class, player.getBoundingBox().inflate(SIGHT_RANGE))) {
                 if (player.hasLineOfSight(lizard)) {
                     data(player).putBoolean("sawLizard", true);
@@ -332,7 +332,7 @@ public final class RiftStory {
     }
 
     private static List<String> remaining(ServerPlayer player, String key, String[] questions, String prefix) {
-        int asked = data(player).getIntOr(key, 0);
+        int asked = net.yezon.theabyss.compat.NbtCompat.getIntOr(data(player), key, 0);
         List<String> actions = new ArrayList<>();
         for (int i = 0; i < questions.length; i++) {
             if ((asked & 1 << i) == 0) {
@@ -344,7 +344,7 @@ public final class RiftStory {
 
     private static List<String> questionsB(ServerPlayer player) {
         List<String> actions = remaining(player, "askedB", QUESTIONS_B, "b");
-        if (data(player).getIntOr("askedB", 0) != 0) {
+        if (net.yezon.theabyss.compat.NbtCompat.getIntOr(data(player), "askedB", 0) != 0) {
             actions.add("b:understand");
         }
         return actions;
@@ -355,14 +355,14 @@ public final class RiftStory {
         for (String blessing : BLESSINGS) {
             actions.add("c:" + blessing);
         }
-        actions.add(data(player).getBooleanOr("toldMore", false) ? "c:time" : "c:more");
+        actions.add(net.yezon.theabyss.compat.NbtCompat.getBooleanOr(data(player), "toldMore", false) ? "c:time" : "c:more");
         return actions;
     }
 
     private static void mark(ServerPlayer player, String key, String[] questions, String question) {
         for (int i = 0; i < questions.length; i++) {
             if (questions[i].equals(question)) {
-                data(player).putInt(key, data(player).getIntOr(key, 0) | 1 << i);
+                data(player).putInt(key, net.yezon.theabyss.compat.NbtCompat.getIntOr(data(player), key, 0) | 1 << i);
             }
         }
     }
@@ -428,7 +428,7 @@ public final class RiftStory {
                 }
             }
             case "yes" -> {
-                boolean changed = !data(player).getStringOr("blessing", "").isEmpty();
+                boolean changed = !net.yezon.theabyss.compat.NbtCompat.getStringOr(data(player), "blessing", "").isEmpty();
                 data(player).putString("blessing", name);
                 setStage(player, STAGE_DONE);
                 int id = IDS.incrementAndGet();
@@ -442,7 +442,7 @@ public final class RiftStory {
                     net.yezon.theabyss.skill.Skills.open(player);
                 } else if (name.equals("change")) {
                     List<String> actions = new ArrayList<>();
-                    String current = data(player).getStringOr("blessing", "");
+                    String current = net.yezon.theabyss.compat.NbtCompat.getStringOr(data(player), "blessing", "");
                     for (String blessing : BLESSINGS) {
                         if (!blessing.equals(current)) {
                             actions.add("c:" + blessing);
@@ -489,7 +489,7 @@ public final class RiftStory {
         if (!RiftOfSins.isRift(player.level())) {
             tickWhisper(player);
             CompoundTag data = data(player);
-            if (!data.getBooleanOr("called", false) && data.getIntOr("need", 0) > 0 && data.getIntOr("uses", 0) >= data.getIntOr("need", 0)
+            if (!net.yezon.theabyss.compat.NbtCompat.getBooleanOr(data, "called", false) && net.yezon.theabyss.compat.NbtCompat.getIntOr(data, "need", 0) > 0 && net.yezon.theabyss.compat.NbtCompat.getIntOr(data, "uses", 0) >= net.yezon.theabyss.compat.NbtCompat.getIntOr(data, "need", 0)
                 && player.isAlive() && player.onGround() && !busy(player)) {
                 startCall(player);
             }

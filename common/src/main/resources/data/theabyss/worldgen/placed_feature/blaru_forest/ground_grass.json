@@ -3,7 +3,11 @@
   "placement": [
     {
       "type": "minecraft:count",
-      "count": 290
+      "count": 2
+    },
+    {
+      "type": "minecraft:count",
+      "count": 145
     },
     {
       "type": "minecraft:in_square"
@@ -27,7 +31,7 @@
           {
             "type": "minecraft:would_survive",
             "state": {
-              "id": "theabyss:blaru_grass"
+              "Name": "theabyss:blaru_grass"
             }
           }
         ]

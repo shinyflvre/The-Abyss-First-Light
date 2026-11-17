@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/template_sign_rot_3",
-  "textures": {
-    "all": "theabyss:block/vigilant_sign",
-    "particle": "theabyss:block/planks_vigilant"
-  }
-}

@@ -1,16 +1,16 @@
 package net.yezon.theabyss.entity;
 
-import com.geckolib.animatable.GeoEntity;
-import com.geckolib.animatable.instance.AnimatableInstanceCache;
-import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.animation.AnimationController;
-import com.geckolib.animation.RawAnimation;
-import com.geckolib.animation.object.PlayState;
-import com.geckolib.animation.state.AnimationTest;
-import com.geckolib.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.PlayState;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.Difficulty;
@@ -18,7 +18,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.AreaEffectCloud;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -31,8 +31,8 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
-import net.minecraft.world.entity.projectile.throwableitemprojectile.AbstractThrownPotion;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -86,8 +86,8 @@ public class TheRokaEntity extends Monster implements GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<TheRokaEntity>("base", 5, this::baseAnimation));
-        AnimationController<TheRokaEntity> action = new AnimationController<>("action", 2, test -> PlayState.STOP);
+        controllers.add(new AnimationController<TheRokaEntity>(this, "base", 5, this::baseAnimation));
+        AnimationController<TheRokaEntity> action = new AnimationController<>(this, "action", 2, test -> PlayState.STOP);
         for (String name : ACTIONS) {
             action.triggerableAnim(name, RawAnimation.begin().thenPlay(ANIM + name));
         }
@@ -97,17 +97,17 @@ public class TheRokaEntity extends Monster implements GeoEntity {
         controllers.add(action);
     }
 
-    private PlayState baseAnimation(AnimationTest<TheRokaEntity> test) {
+    private PlayState baseAnimation(AnimationState<TheRokaEntity> test) {
         if (test.isMoving()) {
             float speed = this.walkAnimation.speed();
             if (speed > 0.75F) {
-                test.controller().setAnimationSpeed(1.0);
+                test.getController().setAnimationSpeed(1.0);
                 return test.setAndContinue(RUN);
             }
-            test.controller().setAnimationSpeed(Mth.clamp(speed * 1.6F, 0.6F, 1.4F));
+            test.getController().setAnimationSpeed(Mth.clamp(speed * 1.6F, 0.6F, 1.4F));
             return test.setAndContinue(WALK);
         }
-        test.controller().setAnimationSpeed(1.0);
+        test.getController().setAnimationSpeed(1.0);
         return test.setAndContinue(IDLE);
     }
 
@@ -140,47 +140,50 @@ public class TheRokaEntity extends Monster implements GeoEntity {
     @Override
     protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(level, source, recentlyHitIn);
-        this.spawnAtLocation(level, new ItemStack(TheabyssModItems.ROKA_HORN.get()));
+        this.spawnAtLocation(new ItemStack(TheabyssModItems.ROKA_HORN.get()));
     }
 
     @Override
     public SoundEvent getAmbientSound() {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.zoglin.ambient"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.zoglin.ambient"));
     }
 
     @Override
     public void playStepSound(BlockPos pos, BlockState blockIn) {
-        this.playSound(BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.zoglin.step")), 0.15F, 1.0F);
+        this.playSound(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.zoglin.step")), 0.15F, 1.0F);
     }
 
     @Override
     public SoundEvent getHurtSound(DamageSource ds) {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.zoglin.hurt"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.zoglin.hurt"));
     }
 
     @Override
     public SoundEvent getDeathSound() {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.zoglin.death"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.zoglin.death"));
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource damagesource, float amount) {
+    public boolean hurt(DamageSource damagesource, float amount) {
+        if (!(this.level() instanceof ServerLevel level)) {
+            return false;
+        }
         if (damagesource.is(DamageTypes.IN_FIRE)
             || damagesource.is(DamageTypes.CAMPFIRE)
             || damagesource.getDirectEntity() instanceof AbstractArrow
-            || damagesource.getDirectEntity() instanceof AbstractThrownPotion
+            || damagesource.getDirectEntity() instanceof ThrownPotion
             || damagesource.getDirectEntity() instanceof AreaEffectCloud
             || damagesource.is(DamageTypes.FALL)
             || damagesource.is(DamageTypes.CACTUS)
             || damagesource.is(DamageTypes.DROWN)) {
             return false;
         }
-        return super.hurtServer(level, damagesource, amount);
+        return super.hurt(damagesource, amount);
     }
 
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(
-        ServerLevelAccessor world, DifficultyInstance difficulty, EntitySpawnReason reason, @Nullable SpawnGroupData livingdata
+        ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData livingdata
     ) {
         SpawnGroupData retval = super.finalizeSpawn(world, difficulty, reason, livingdata);
         SetMiniBossEvents.execute(world, this.getX(), this.getY(), this.getZ());

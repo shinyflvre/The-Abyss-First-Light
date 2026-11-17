@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -98,16 +98,16 @@ public class ApplyRingOfTeleportEvents {
         if (caster instanceof ServerPlayer player) {
             PacketDistributor.sendToPlayer(player, new TeleportDashMessage(fromEye.x, fromEye.y, fromEye.z, fromYaw, fromPitch));
         }
-        caster.teleportTo(dest.x, dest.y, dest.z);
+        net.yezon.theabyss.util.AbyssTeleport.to(caster, dest.x, dest.y, dest.z);
         caster.setYRot(yaw);
         caster.setXRot(pitch);
         caster.setYHeadRot(yaw);
         if (caster instanceof ServerPlayer player) {
-            player.connection.teleport(dest.x, dest.y, dest.z, yaw, pitch);
+            net.yezon.theabyss.util.AbyssTeleport.connection(player, dest.x, dest.y, dest.z, yaw, pitch);
         }
         caster.resetFallDistance();
         NO_FALL_UNTIL.put(caster.getUUID(), level.getGameTime() + NO_FALL_TICKS);
-        var sound = BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:spell_of_teleport"));
+        var sound = BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:spell_of_teleport"));
         if (sound != null) {
             level.playSound(null, dest.x, dest.y, dest.z, sound, SoundSource.NEUTRAL, 1.0F, 1.0F);
         }

@@ -1,23 +1,22 @@
 package net.yezon.theabyss.astral.client;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.renderpearl.api.textures.GpuTexture;
+import com.mojang.blaze3d.platform.GlStateManager;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.block.BlockTintSource;
+import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.util.ARGB;
+import net.yezon.theabyss.compat.ARGB;
 import net.minecraft.util.Mth;
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.Property;
 import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.EventPriority;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
@@ -27,6 +26,7 @@ import net.yezon.theabyss.platform.client.event.RegisterColorHandlersEvent;
 import net.yezon.theabyss.platform.client.event.TextureAtlasStitchedEvent;
 import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.astral.AstralData;
+import org.jspecify.annotations.Nullable;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public final class PearlWorld {
@@ -40,42 +40,23 @@ public final class PearlWorld {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onRegisterTints(RegisterColorHandlersEvent.BlockTintSources event) {
+    public static void onRegisterTints(RegisterColorHandlersEvent.Block event) {
         int wrapped = 0;
         for (Block block : BuiltInRegistries.BLOCK) {
-            List<BlockTintSource> sources = event.getBlockColors().getTintSources(block.defaultBlockState());
-            if (sources.isEmpty() || sources.get(0) instanceof PearlTint) {
+            BlockColor original = event.getColor(block);
+            if (original == null || original instanceof PearlTint) {
                 continue;
             }
-            List<BlockTintSource> pearlSources = new ArrayList<>(sources.size());
-            for (BlockTintSource source : sources) {
-                pearlSources.add(source == null ? null : new PearlTint(source));
-            }
-            event.register(pearlSources, block);
+            event.register(new PearlTint(original), block);
             wrapped++;
         }
         TheabyssMod.LOGGER.debug("Astral pearl world: wrapped tint sources of {} blocks", wrapped);
     }
 
-    private record PearlTint(BlockTintSource original) implements BlockTintSource {
+    private record PearlTint(BlockColor original) implements BlockColor {
         @Override
-        public int color(BlockState state) {
-            return pearl ? WHITE : this.original.color(state);
-        }
-
-        @Override
-        public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
-            return pearl ? WHITE : this.original.colorInWorld(state, level, pos);
-        }
-
-        @Override
-        public int colorAsTerrainParticle(BlockState state, BlockAndTintGetter level, BlockPos pos) {
-            return pearl ? WHITE : this.original.colorAsTerrainParticle(state, level, pos);
-        }
-
-        @Override
-        public java.util.Set<Property<?>> relevantProperties() {
-            return this.original.relevantProperties();
+        public int getColor(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int tintIndex) {
+            return pearl ? WHITE : this.original.getColor(state, level, pos, tintIndex);
         }
     }
 
@@ -111,8 +92,7 @@ public final class PearlWorld {
             write(atlas, sprite, true);
         }
         applied = true;
-        mc.levelExtractor.allChanged();
-        invalidateGuiItemIcons(mc);
+        mc.levelRenderer.allChanged();
     }
 
     private static void restore(Minecraft mc) {
@@ -125,29 +105,9 @@ public final class PearlWorld {
             }
         }
         if (mc.level != null) {
-            mc.levelExtractor.allChanged();
-        }
-        invalidateGuiItemIcons(mc);
-    }
-
-    private static void invalidateGuiItemIcons(Minecraft mc) {
-        try {
-            if (guiScaleField == null) {
-                java.lang.reflect.Field rendererField = net.minecraft.client.renderer.GameRenderer.class.getDeclaredField("guiRenderer");
-                rendererField.setAccessible(true);
-                guiRendererField = rendererField;
-                java.lang.reflect.Field scaleField = net.minecraft.client.gui.render.GuiRenderer.class.getDeclaredField("cachedGuiScale");
-                scaleField.setAccessible(true);
-                guiScaleField = scaleField;
-            }
-            guiScaleField.setInt(guiRendererField.get(mc.gameRenderer), -1);
-        } catch (ReflectiveOperationException | RuntimeException e) {
-            TheabyssMod.LOGGER.warn("[PearlWorld] could not refresh the GUI item icons", e);
+            mc.levelRenderer.allChanged();
         }
     }
-
-    private static java.lang.reflect.Field guiRendererField;
-    private static java.lang.reflect.Field guiScaleField;
 
     private static TextureAtlas blockAtlas(Minecraft mc) {
         AbstractTexture texture = mc.getTextureManager().getTexture(TextureAtlas.LOCATION_BLOCKS);
@@ -157,7 +117,7 @@ public final class PearlWorld {
     private static void collectSprites(TextureAtlas atlas) {
         List<TextureAtlasSprite> list = new ArrayList<>();
         for (TextureAtlasSprite sprite : ((net.yezon.theabyss.mixin.accessor.client.TextureAtlasAccessor)atlas).theabyss$texturesByName().values()) {
-            if (!sprite.isAnimated()) {
+            if (sprite.contents().getUniqueFrames().count() <= 1) {
                 list.add(sprite);
             }
         }
@@ -165,27 +125,23 @@ public final class PearlWorld {
     }
 
     private static void write(TextureAtlas atlas, TextureAtlasSprite sprite, boolean asPearl) {
-        GpuTexture texture = atlas.getTexture();
-        int atlasWidth = texture.getWidth(0);
-        int padding = Math.max(0, Math.round(sprite.getU0() * atlasWidth) - sprite.getX());
         NativeImage[] levels = ((net.yezon.theabyss.mixin.accessor.client.SpriteContentsAccessor)sprite.contents()).theabyss$byMipLevel();
         int width = sprite.contents().width();
         int height = sprite.contents().height();
-        int mipLevels = Math.min(levels.length, texture.getMipLevels());
-        for (int level = 0; level < mipLevels; level++) {
+        GlStateManager._bindTexture(atlas.getId());
+        for (int level = 0; level < levels.length; level++) {
             NativeImage source = levels[level];
             if (source == null) {
                 continue;
             }
-            int paddedWidth = width + padding * 2 >> level;
-            int paddedHeight = height + padding * 2 >> level;
-            int offset = padding >> level;
-            if (paddedWidth <= 0 || paddedHeight <= 0) {
+            int levelWidth = width >> level;
+            int levelHeight = height >> level;
+            if (levelWidth <= 0 || levelHeight <= 0) {
                 continue;
             }
-            try (NativeImage out = new NativeImage(paddedWidth, paddedHeight, false)) {
-                fill(out, source, offset, asPearl);
-                RenderSystem.getDevice().createCommandEncoder().writeToTexture(texture, out, level, 0, sprite.getX() >> level, sprite.getY() >> level);
+            try (NativeImage out = new NativeImage(levelWidth, levelHeight, false)) {
+                fill(out, source, 0, asPearl);
+                out.upload(level, sprite.getX() >> level, sprite.getY() >> level, 0, 0, levelWidth, levelHeight, levels.length > 1, false);
             }
         }
     }
@@ -198,7 +154,7 @@ public final class PearlWorld {
             int opaque = 0;
             for (int y = 0; y < sh; y++) {
                 for (int x = 0; x < sw; x++) {
-                    int argb = source.getPixel(x, y);
+                    int argb = argbOf(source.getPixelRGBA(x, y));
                     if (ARGB.alpha(argb) > 0) {
                         mean += luminance(argb);
                         opaque++;
@@ -211,10 +167,14 @@ public final class PearlWorld {
             int sy = Mth.clamp(y - offset, 0, sh - 1);
             for (int x = 0; x < out.getWidth(); x++) {
                 int sx = Mth.clamp(x - offset, 0, sw - 1);
-                int argb = source.getPixel(sx, sy);
-                out.setPixel(x, y, asPearl ? pearl(argb, mean) : argb);
+                int argb = argbOf(source.getPixelRGBA(sx, sy));
+                out.setPixelRGBA(x, y, FastColor.ABGR32.fromArgb32(asPearl ? pearl(argb, mean) : argb));
             }
         }
+    }
+
+    private static int argbOf(int abgr) {
+        return ARGB.color(FastColor.ABGR32.alpha(abgr), FastColor.ABGR32.red(abgr), FastColor.ABGR32.green(abgr), FastColor.ABGR32.blue(abgr));
     }
 
     private static int pearl(int argb, float mean) {

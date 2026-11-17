@@ -1,6 +1,6 @@
 package net.yezon.theabyss.client.model;
 
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -9,12 +9,12 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 
-public class Modelabyss_lurker<S extends LivingEntityRenderState> extends EntityModel<S> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath("theabyss", "modelabyss_lurker"), "main");
+public class Modelabyss_lurker<T extends Entity> extends HierarchicalModel<T> {
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("theabyss", "modelabyss_lurker"), "main");
     public final ModelPart right_arm;
     public final ModelPart left_arm;
     public final ModelPart right_leg;
@@ -23,8 +23,10 @@ public class Modelabyss_lurker<S extends LivingEntityRenderState> extends Entity
     public final ModelPart mob_tail;
     public final ModelPart body;
 
+    private final ModelPart root;
+
     public Modelabyss_lurker(ModelPart root) {
-        super(root);
+        this.root = root;
         this.right_arm = root.getChild("right_arm");
         this.left_arm = root.getChild("left_arm");
         this.right_leg = root.getChild("right_leg");
@@ -333,12 +335,8 @@ public class Modelabyss_lurker<S extends LivingEntityRenderState> extends Entity
     }
 
     @Override
-    public void setupAnim(S state) {
-        super.setupAnim(state);
-        float limbSwing = state.walkAnimationPos;
-        float limbSwingAmount = state.walkAnimationSpeed;
-        float netHeadYaw = state.yRot;
-        float headPitch = state.xRot;
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.root.getAllParts().forEach(ModelPart::resetPose);
         this.mob_tail.yRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
         this.right_arm.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * limbSwingAmount;
         this.left_leg.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
@@ -346,5 +344,10 @@ public class Modelabyss_lurker<S extends LivingEntityRenderState> extends Entity
         this.right_leg.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
         this.mob_head.yRot = netHeadYaw / (180.0F / (float)Math.PI);
         this.mob_head.xRot = headPitch / (180.0F / (float)Math.PI);
+    }
+
+    @Override
+    public ModelPart root() {
+        return this.root;
     }
 }

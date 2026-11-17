@@ -1,26 +1,32 @@
 package net.yezon.theabyss.entity;
 
-import com.geckolib.animatable.GeoEntity;
-import com.geckolib.animatable.instance.AnimatableInstanceCache;
-import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.animation.AnimationController;
-import com.geckolib.animation.RawAnimation;
-import com.geckolib.animation.object.PlayState;
-import com.geckolib.animation.state.AnimationTest;
-import com.geckolib.util.GeckoLibUtil;
+
+import net.minecraft.nbt.CompoundTag;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.PlayState;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.Set;
 import java.util.List;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.util.Util;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.Util;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -40,21 +46,26 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.level.pathfinder.PathType;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.yezon.theabyss.compat.ValueInput;
+import net.yezon.theabyss.compat.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.event.entity.RegisterSpawnPlacementsEvent;
+import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.init.TheabyssModBlocks;
 import org.jspecify.annotations.Nullable;
 
 public class HummingbirdEntity extends Monster implements GeoEntity {
+    private static final TagKey<Block> BEE_ATTRACTIVE = TagKey.create(Registries.BLOCK,
+        ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "bee_attractive"));
     public static final EntityDataAccessor<Boolean> SHOOT = SynchedEntityData.defineId(HummingbirdEntity.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<String> ANIMATION = SynchedEntityData.defineId(HummingbirdEntity.class, EntityDataSerializers.STRING);
     public static final EntityDataAccessor<String> TEXTURE = SynchedEntityData.defineId(HummingbirdEntity.class, EntityDataSerializers.STRING);
     private static final RawAnimation IDLE = RawAnimation.begin().thenLoop("animation.hummingbird.idle");
     private static final int FLOWER_RANGE = 8;
     private static final int FLOWER_HEIGHT = 4;
+    private static final float REQUIRED_PATH_LENGTH = 48.0F;
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     public String animationEvents = "empty";
     private int feedCooldown;
@@ -63,13 +74,13 @@ public class HummingbirdEntity extends Monster implements GeoEntity {
     public HummingbirdEntity(EntityType<? extends HummingbirdEntity> type, Level world) {
         super(type, world);
         this.xpReward = 0;
-        this.moveControl = new FlyingMoveControl<>(this, 20, true);
-        this.setPathfindingMalus(PathType.FIRE, -1.0F);
+        this.moveControl = new FlyingMoveControl(this, 20, true);
+        this.setPathfindingMalus(PathType.DAMAGE_FIRE, -1.0F);
         this.setPathfindingMalus(PathType.LAVA, -1.0F);
         this.setPathfindingMalus(PathType.WATER, -1.0F);
         this.setPathfindingMalus(PathType.WATER_BORDER, 16.0F);
         this.setPathfindingMalus(PathType.FENCE, -1.0F);
-        this.setPathfindingMalus(PathType.DAMAGING, -1.0F);
+        this.setPathfindingMalus(PathType.DAMAGE_OTHER, -1.0F);
         this.setNoGravity(true);
         this.feedCooldown = 40 + world.getRandom().nextInt(80);
     }
@@ -94,13 +105,23 @@ public class HummingbirdEntity extends Monster implements GeoEntity {
     protected PathNavigation createNavigation(Level world) {
         FlyingPathNavigation navigation = new FlyingPathNavigation(this, world) {
             @Override
+            protected PathFinder createPathFinder(int maxVisitedNodes) {
+                return super.createPathFinder(Math.max(maxVisitedNodes, Mth.floor(REQUIRED_PATH_LENGTH * 16.0F)));
+            }
+
+            @Override
+            protected @Nullable Path createPath(Set<BlockPos> targets, int radiusOffset, boolean above, int reachRange) {
+                return this.createPath(targets, radiusOffset, above, reachRange,
+                    Math.max((float)this.mob.getAttributeValue(Attributes.FOLLOW_RANGE), REQUIRED_PATH_LENGTH));
+            }
+
+            @Override
             public boolean isStableDestination(BlockPos pos) {
                 return !this.level.getBlockState(pos.below()).isAir();
             }
         };
         navigation.setCanOpenDoors(false);
         navigation.setCanFloat(false);
-        navigation.setRequiredPathLength(48.0F);
         return navigation;
     }
 
@@ -121,30 +142,32 @@ public class HummingbirdEntity extends Monster implements GeoEntity {
 
     @Override
     public SoundEvent getHurtSound(DamageSource ds) {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.generic.hurt"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.generic.hurt"));
     }
 
     @Override
     public SoundEvent getDeathSound() {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.generic.death"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.generic.death"));
     }
 
     @Override
-    public boolean causeFallDamage(double fallDistance, float damageModifier, DamageSource damageSource) {
+    public boolean causeFallDamage(float fallDistance, float damageModifier, DamageSource damageSource) {
         return false;
     }
 
     @Override
-    protected void addAdditionalSaveData(ValueOutput output) {
-        super.addAdditionalSaveData(output);
+    public void addAdditionalSaveData(CompoundTag outputTag) {
+        ValueOutput output = ValueOutput.of(outputTag, this.registryAccess());
+        super.addAdditionalSaveData(output.tag());
         output.putString("Texture", this.getTexture());
         output.putBoolean("SpawnFix", true);
         output.putBoolean("LegacyPersistent", this.legacyPersistent);
     }
 
     @Override
-    protected void readAdditionalSaveData(ValueInput input) {
-        super.readAdditionalSaveData(input);
+    public void readAdditionalSaveData(CompoundTag inputTag) {
+        ValueInput input = ValueInput.of(inputTag, this.registryAccess());
+        super.readAdditionalSaveData(input.tag());
         input.getString("Texture").ifPresent(this::setTexture);
         this.legacyPersistent = input.getBooleanOr("LegacyPersistent", !input.getBooleanOr("SpawnFix", false));
     }
@@ -183,19 +206,19 @@ public class HummingbirdEntity extends Monster implements GeoEntity {
         this.entityData.set(ANIMATION, animation);
     }
 
-    private PlayState movementPredicate(AnimationTest<HummingbirdEntity> state) {
+    private PlayState movementPredicate(AnimationState<HummingbirdEntity> state) {
         return this.animationEvents.equals("empty") ? state.setAndContinue(IDLE) : PlayState.STOP;
     }
 
-    private PlayState eventsPredicate(AnimationTest<HummingbirdEntity> state) {
+    private PlayState eventsPredicate(AnimationState<HummingbirdEntity> state) {
         if (this.animationEvents.equals("empty")) {
             return PlayState.STOP;
         }
 
-        AnimationController<HummingbirdEntity> controller = state.controller();
+        AnimationController<HummingbirdEntity> controller = state.getController();
         if (controller.hasAnimationFinished()) {
             this.animationEvents = "empty";
-            controller.reset();
+            controller.forceAnimationReset();
             return PlayState.STOP;
         }
 
@@ -205,8 +228,8 @@ public class HummingbirdEntity extends Monster implements GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<HummingbirdEntity>("movement", 4, this::movementPredicate));
-        controllers.add(new AnimationController<HummingbirdEntity>("Events", 4, this::eventsPredicate));
+        controllers.add(new AnimationController<HummingbirdEntity>(this, "movement", 4, this::movementPredicate));
+        controllers.add(new AnimationController<HummingbirdEntity>(this, "Events", 4, this::eventsPredicate));
     }
 
     @Override
@@ -228,7 +251,7 @@ public class HummingbirdEntity extends Monster implements GeoEntity {
     }
 
     private boolean isFood(BlockState state) {
-        return state.is(BlockTags.BEE_ATTRACTIVE) || state.is(TheabyssModBlocks.VIGILANT_HANGING_FRUIT.get());
+        return state.is(BEE_ATTRACTIVE) || state.is(TheabyssModBlocks.VIGILANT_HANGING_FRUIT.get());
     }
 
     private boolean fits(Vec3 pos) {

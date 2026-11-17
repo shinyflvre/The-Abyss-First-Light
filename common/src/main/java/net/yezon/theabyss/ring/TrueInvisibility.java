@@ -43,7 +43,7 @@ public final class TrueInvisibility {
     public static void start(ServerPlayer player, int ticks, float radius) {
         BREAKS_ON_ATTACK.remove(player.getUUID());
         begin(player, ticks, radius);
-        shatter(player.level(), player);
+        shatter(player.serverLevel(), player);
     }
 
     public static void startStep(ServerPlayer player, int ticks) {
@@ -52,7 +52,7 @@ public final class TrueInvisibility {
     }
 
     private static void begin(ServerPlayer player, int ticks, float radius) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         ACTIVE.put(player.getUUID(), new State(level.getGameTime() + ticks, radius));
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new TrueInvisibilityMessage(player.getId(), ticks, radius));
         loseHunters(player, radius);
@@ -85,7 +85,7 @@ public final class TrueInvisibility {
             ItemStack stack = player.getItemBySlot(slots[i]);
             double y = player.getY() + heights[i];
             if (!stack.isEmpty()) {
-                level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, stack.getItem()), player.getX(), y, player.getZ(), 14, 0.25, 0.12, 0.25, 0.08);
+                level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(stack.getItem())), player.getX(), y, player.getZ(), 14, 0.25, 0.12, 0.25, 0.08);
             }
         }
         level.sendParticles(ParticleTypes.CLOUD, player.getX(), player.getY() + 1.0, player.getZ(), 10, 0.3, 0.5, 0.3, 0.02);

@@ -1,83 +1,40 @@
 package net.yezon.theabyss.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.UUID;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.multiplayer.PlayerInfo;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.entity.ArmorModelSet;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
-import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
+import net.minecraft.resources.ResourceLocation;
+import net.yezon.theabyss.compat.ARGB;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.player.PlayerModelType;
-import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 import net.yezon.theabyss.entity.SilentEchoEntity;
-import org.jspecify.annotations.Nullable;
 
-public class SilentEchoRenderer extends HumanoidMobRenderer<SilentEchoEntity, SilentEchoRenderer.EchoState, HumanoidModel<SilentEchoRenderer.EchoState>> {
+public class SilentEchoRenderer extends HumanoidMobRenderer<SilentEchoEntity, SilentEchoRenderer.EchoModel> {
     private static final int TINT = ARGB.color(240, 238, 236, 255);
     private static final int VESSEL_TINT = ARGB.color(215, 176, 170, 196);
     private static final float VESSEL_BOW = 32.0F;
-    private final HumanoidModel<EchoState> wide;
-    private final HumanoidModel<EchoState> slim;
-
-    public static class EchoState extends HumanoidRenderState {
-        Identifier skin = DefaultPlayerSkin.getDefaultTexture();
-        boolean slimArms;
-        boolean vessel;
-    }
+    private final EchoModel wide;
+    private final EchoModel slim;
 
     public SilentEchoRenderer(EntityRendererProvider.Context context) {
-        super(context, new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER)), 0.5F);
+        super(context, new EchoModel(context.bakeLayer(ModelLayers.PLAYER), false), 0.5F);
         this.wide = this.model;
-        this.slim = new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM));
-        this.addLayer(new HumanoidArmorLayer<>(this,
-            ArmorModelSet.bake(ModelLayers.PLAYER_ARMOR, context.getModelSet(), part -> new HumanoidModel<EchoState>(part)),
-            context.getEquipmentRenderer()));
+        this.slim = new EchoModel(context.bakeLayer(ModelLayers.PLAYER_SLIM), true);
+        this.addLayer(new HumanoidArmorLayer<>(this, new HumanoidModel<SilentEchoEntity>(context.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)),
+            new HumanoidModel<SilentEchoEntity>(context.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR)), context.getModelManager()));
     }
 
-    @Override
-    public EchoState createRenderState() {
-        return new EchoState();
-    }
-
-    @Override
-    public void extractRenderState(SilentEchoEntity entity, EchoState state, float partialTick) {
-        super.extractRenderState(entity, state, partialTick);
-        PlayerSkin skin = skinOf(entity.ownerId());
-        state.skin = skin.body().texturePath();
-        state.slimArms = skin.model() == PlayerModelType.SLIM;
-        state.vessel = entity.isVessel();
-        if (state.vessel) {
-            state.xRot = VESSEL_BOW;
-        }
-    }
-
-    private static PlayerSkin skinOf(@Nullable UUID owner) {
-        if (owner == null) {
-            return DefaultPlayerSkin.getDefaultSkin();
-        }
-        var connection = Minecraft.getInstance().getConnection();
-        PlayerInfo info = connection != null ? connection.getPlayerInfo(owner) : null;
-        return info != null ? info.getSkin() : DefaultPlayerSkin.get(owner);
-    }
-
-    @Override
-    protected HumanoidModel.ArmPose getArmPose(SilentEchoEntity mob, HumanoidArm arm) {
-        ItemStack held = mob.getItemHeldByArm(arm);
+    private static HumanoidModel.ArmPose getArmPose(SilentEchoEntity mob, HumanoidArm arm) {
+        ItemStack held = arm == mob.getMainArm() ? mob.getMainHandItem() : mob.getOffhandItem();
         if (held.isEmpty()) {
             return HumanoidModel.ArmPose.EMPTY;
         }
@@ -91,23 +48,38 @@ public class SilentEchoRenderer extends HumanoidMobRenderer<SilentEchoEntity, Si
     }
 
     @Override
-    public void submit(EchoState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
-        this.model = state.slimArms ? this.slim : this.wide;
-        super.submit(state, poseStack, collector, camera);
+    public void render(SilentEchoEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int light) {
+        EchoSkins skin = EchoSkins.of(entity.ownerId());
+        this.model = skin.slim() ? this.slim : this.wide;
+        int tint = entity.isVessel() ? VESSEL_TINT : TINT;
+        super.render(entity, entityYaw, partialTicks, poseStack, TintedBuffers.of(buffers, RenderType.entityTranslucent(skin.texture()), tint), light);
     }
 
     @Override
-    public Identifier getTextureLocation(EchoState state) {
-        return state.skin;
+    public ResourceLocation getTextureLocation(SilentEchoEntity entity) {
+        return EchoSkins.of(entity.ownerId()).texture();
     }
 
     @Override
-    protected @Nullable RenderType getRenderType(EchoState state, boolean isBodyVisible, boolean forceTransparent, boolean appearGlowing) {
-        return RenderTypes.entityTranslucent(state.skin);
+    protected RenderType getRenderType(SilentEchoEntity entity, boolean bodyVisible, boolean translucent, boolean glowing) {
+        return RenderType.entityTranslucent(this.getTextureLocation(entity));
     }
 
-    @Override
-    protected int getModelTint(EchoState state) {
-        return state.vessel ? VESSEL_TINT : TINT;
+    public static class EchoModel extends PlayerModel<SilentEchoEntity> {
+        public EchoModel(ModelPart root, boolean slim) {
+            super(root, slim);
+        }
+
+        @Override
+        public void prepareMobModel(SilentEchoEntity entity, float limbSwing, float limbSwingAmount, float partialTick) {
+            this.leftArmPose = getArmPose(entity, HumanoidArm.LEFT);
+            this.rightArmPose = getArmPose(entity, HumanoidArm.RIGHT);
+            super.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTick);
+        }
+
+        @Override
+        public void setupAnim(SilentEchoEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+            super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, entity.isVessel() ? VESSEL_BOW : headPitch);
+        }
     }
 }

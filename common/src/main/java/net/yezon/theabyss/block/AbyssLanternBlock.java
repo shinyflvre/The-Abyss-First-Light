@@ -18,7 +18,7 @@ public class AbyssLanternBlock extends LanternBlock {
 
     public AbyssLanternBlock(BlockBehaviour.Properties properties, Supplier<Block> dropAs, boolean hangingByDefault) {
         super(properties.mapColor(MapColor.METAL).forceSolidOn().strength(3.5F).sound(SoundType.LANTERN).lightLevel(s -> 15).noOcclusion()
-            .pushReaction(PushReaction.POPPED));
+            .pushReaction(PushReaction.DESTROY));
         this.dropAs = dropAs;
         if (hangingByDefault) {
             this.registerDefaultState(this.defaultBlockState().setValue(HANGING, true));

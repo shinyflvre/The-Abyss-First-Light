@@ -3,7 +3,9 @@
   "category": "misc",
   "cookingtime": 100,
   "experience": 1,
-  "ingredient": "theabyss:gold_variant",
+  "ingredient": {
+    "item": "theabyss:gold_variant"
+  },
   "result": {
     "id": "minecraft:gold_ingot"
   }

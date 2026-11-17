@@ -1,8 +1,12 @@
 {
   "type": "theabyss:crystal_cutter_recipe_type",
   "ingredients": [
-    "theabyss:frost_crystal_ore",
-    "theabyss:loran_energy"
+    {
+      "item": "theabyss:frost_crystal_ore"
+    },
+    {
+      "item": "theabyss:loran_energy"
+    }
   ],
   "output": {
     "id": "theabyss:frost_crystal_shard",

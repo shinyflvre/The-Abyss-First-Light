@@ -3,7 +3,6 @@ package net.yezon.theabyss.client.fx;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.world.entity.Entity;
 import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
@@ -17,6 +16,7 @@ public final class TrueInvisibilityClient {
     }
 
     private static final Map<Integer, State> ACTIVE = new HashMap<>();
+    private static Entity revealed;
 
     private TrueInvisibilityClient() {
     }
@@ -39,30 +39,33 @@ public final class TrueInvisibilityClient {
         return state != null && mc.level.getGameTime() <= state.until ? state.radius : 0.0F;
     }
 
+    public static boolean revealed(Entity entity) {
+        return revealed == entity;
+    }
+
     @SubscribeEvent
     public static void onRenderPlayer(RenderPlayerEvent.Pre event) {
+        revealed = null;
         Minecraft mc = Minecraft.getInstance();
         if (ACTIVE.isEmpty() || mc.level == null || mc.player == null) {
             return;
         }
-        AvatarRenderState state = event.getRenderState();
-        State invisible = ACTIVE.get(state.id);
+        Entity other = event.getEntity();
+        int id = other.getId();
+        State invisible = ACTIVE.get(id);
         if (invisible == null) {
             return;
         }
         if (mc.level.getGameTime() > invisible.until) {
-            ACTIVE.remove(state.id);
+            ACTIVE.remove(id);
             return;
         }
-        Entity other = mc.level.getEntity(state.id);
-        boolean noticed = other != null && other != mc.player && other.distanceTo(mc.player) <= invisible.radius;
+        boolean noticed = other != mc.player && other.distanceTo(mc.player) <= invisible.radius;
         if (noticed) {
-            state.isInvisible = false;
-            state.isInvisibleToPlayer = false;
+            revealed = other;
             return;
         }
         event.setCanceled(true);
-        state.shadowPieces.clear();
-        state.displayFireAnimation = false;
+        event.hideShadowAndFire();
     }
 }

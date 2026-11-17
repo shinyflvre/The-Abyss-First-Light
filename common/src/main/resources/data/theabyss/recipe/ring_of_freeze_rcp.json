@@ -1,15 +1,33 @@
 {
   "type": "theabyss:arcane_recipe_type",
   "ingredients": [
-    "theabyss:ring_of_ring",
-    "theabyss:frost_powder",
-    "theabyss:caverna_powder",
-    "theabyss:frost_powder",
-    "theabyss:caverna_powder",
-    "theabyss:frost_powder",
-    "theabyss:caverna_powder",
-    "theabyss:frost_powder",
-    "theabyss:caverna_powder"
+    {
+      "item": "theabyss:ring_of_ring"
+    },
+    {
+      "item": "theabyss:frost_powder"
+    },
+    {
+      "item": "theabyss:caverna_powder"
+    },
+    {
+      "item": "theabyss:frost_powder"
+    },
+    {
+      "item": "theabyss:caverna_powder"
+    },
+    {
+      "item": "theabyss:frost_powder"
+    },
+    {
+      "item": "theabyss:caverna_powder"
+    },
+    {
+      "item": "theabyss:frost_powder"
+    },
+    {
+      "item": "theabyss:caverna_powder"
+    }
   ],
   "output": {
     "id": "theabyss:ring_of_freeze",

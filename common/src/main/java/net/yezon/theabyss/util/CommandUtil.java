@@ -5,8 +5,6 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.permissions.LevelBasedPermissionSet;
-import net.minecraft.server.permissions.PermissionLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
@@ -27,11 +25,10 @@ public final class CommandUtil {
         MinecraftServer server,
         @Nullable Entity entity
     ) {
-        LevelBasedPermissionSet permissions = LevelBasedPermissionSet.forLevel(PermissionLevel.byId(permissionLevel));
         if (entity != null) {
-            return new CommandSourceStack(source, position, rotation, level, permissions, server, entity);
+            return new CommandSourceStack(source, position, rotation, level, permissionLevel, entity.getName().getString(), entity.getDisplayName(), server, entity);
         }
-        return new CommandSourceStack(source, position, rotation, level, permissions, displayName, server);
+        return new CommandSourceStack(source, position, rotation, level, permissionLevel, displayName.getString(), displayName, server, null);
     }
 
     public static void run(ServerLevel level, Vec3 position, String command) {

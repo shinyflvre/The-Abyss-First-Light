@@ -1,0 +1,23 @@
+{
+  "parent": "theabyss:item/abyss_book_tool",
+  "overrides": [
+    {
+      "predicate": {
+        "theabyss:abyss_book_kind": 1
+      },
+      "model": "theabyss:item/abyss_book_armor"
+    },
+    {
+      "predicate": {
+        "theabyss:abyss_book_kind": 2
+      },
+      "model": "theabyss:item/abyss_book_weapon"
+    },
+    {
+      "predicate": {
+        "theabyss:abyss_book_kind": 3
+      },
+      "model": "theabyss:item/abyss_book_bow"
+    }
+  ]
+}

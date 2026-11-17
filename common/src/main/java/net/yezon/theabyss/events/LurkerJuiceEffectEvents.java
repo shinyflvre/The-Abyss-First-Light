@@ -9,11 +9,11 @@ public class LurkerJuiceEffectEvents {
     public static void execute(Entity entity) {
         if (entity != null) {
             if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
-                _entity.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, 360, 1));
+                _entity.addEffect(new MobEffectInstance(MobEffects.JUMP, 360, 1));
             }
 
             if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
-                _entity.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 360, 1));
+                _entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 360, 1));
             }
         }
     }

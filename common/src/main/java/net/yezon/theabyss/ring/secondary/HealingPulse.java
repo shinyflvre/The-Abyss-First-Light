@@ -9,7 +9,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
-import net.minecraft.world.entity.animal.equine.AbstractHorse;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
@@ -32,11 +32,11 @@ public final class HealingPulse {
     }
 
     static boolean cast(ServerPlayer player, ItemStack ring, TheabyssModVariables.PlayerVariables vars) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         List<LivingEntity> friends = level.getEntitiesOfClass(LivingEntity.class, new AABB(player.position(), player.position()).inflate(RADIUS),
             e -> e != player && e.isAlive() && !e.isSpectator() && e.distanceToSqr(player) <= RADIUS * RADIUS && friend(player, e));
         if (friends.isEmpty()) {
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.reg.nobody"));
+            player.displayClientMessage(Component.translatable("ring.theabyss.reg.nobody"), true);
             return false;
         }
         List<Integer> ids = new ArrayList<>();
@@ -65,7 +65,7 @@ public final class HealingPulse {
         if (e instanceof Player) {
             return true;
         }
-        if (e instanceof OwnableEntity owned && owned.getOwnerReference() != null) {
+        if (e instanceof OwnableEntity owned && owned.getOwnerUUID() != null) {
             return true;
         }
         return e instanceof AbstractHorse horse && horse.isTamed();

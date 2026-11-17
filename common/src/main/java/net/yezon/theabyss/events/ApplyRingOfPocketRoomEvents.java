@@ -3,7 +3,7 @@ package net.yezon.theabyss.events;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -13,7 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.portal.TeleportTransition;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.init.TheabyssModItems;
@@ -35,16 +35,16 @@ public class ApplyRingOfPocketRoomEvents {
 
         TheabyssModVariables.PlayerVariables vars = TheabyssModVariables.getPlayerVariables(entity);
         if (vars.Mana < 50.0 * SomniumUpgrades.costFactor(vars)) {
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.low_energy"));
+            player.displayClientMessage(Component.translatable("ring.theabyss.low_energy"), true);
             return false;
         }
         if (itemstack.getItem() != TheabyssModItems.RING_OF_POCKET_BOX.get()) {
             return false;
         }
-        player.getCooldowns().addCooldown(itemstack, (int)(500.0 * vars.ManaCooldown));
+        player.getCooldowns().addCooldown(itemstack.getItem(), (int)(500.0 * vars.ManaCooldown));
         net.yezon.theabyss.ring.RingWear.wear(itemstack, level, entity, 1);
 
-        SoundEvent sound = BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:spell_of_teleport"));
+        SoundEvent sound = BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:spell_of_teleport"));
         if (sound != null) {
             level.playSound((Player)null, BlockPos.containing(x, y, z), sound, SoundSource.NEUTRAL, 1.0F, 1.0F);
         }
@@ -62,12 +62,12 @@ public class ApplyRingOfPocketRoomEvents {
             TheabyssMod.queueServerWork(TRAVEL_TICKS, () -> {
                 if (!player.isRemoved() && player.level() == level) {
                     FallGuard.protect(player, 60);
-                    player.teleport(new TeleportTransition(home, back, Vec3.ZERO, player.getYRot(), player.getXRot(), TeleportTransition.DO_NOTHING));
+                    net.yezon.theabyss.util.AbyssTeleport.transition(player, new DimensionTransition(home, back, Vec3.ZERO, player.getYRot(), player.getXRot(), DimensionTransition.DO_NOTHING));
                 }
             });
             return true;
         }
-        net.yezon.theabyss.platform.PersistentData.get(player).putString(RETURN_KEY, level.dimension().identifier().toString());
+        net.yezon.theabyss.platform.PersistentData.get(player).putString(RETURN_KEY, level.dimension().location().toString());
 
         double mana = vars.Mana - 50.0 * SomniumUpgrades.costFactor(vars);
         double saveX = Math.round(entity.getX());
@@ -94,8 +94,8 @@ public class ApplyRingOfPocketRoomEvents {
     }
 
     private static ServerLevel returnLevel(ServerPlayer player) {
-        String saved = net.yezon.theabyss.platform.PersistentData.get(player).getStringOr(RETURN_KEY, "");
-        Identifier id = saved.isEmpty() ? null : Identifier.tryParse(saved);
+        String saved = net.yezon.theabyss.compat.NbtCompat.getStringOr(net.yezon.theabyss.platform.PersistentData.get(player), RETURN_KEY, "");
+        ResourceLocation id = saved.isEmpty() ? null : ResourceLocation.tryParse(saved);
         if (id != null) {
             ServerLevel level = player.level().getServer().getLevel(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DIMENSION, id));
             if (level != null && level.dimension() != PocketCells.DIMENSION) {

@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.FlowerBlock;
@@ -27,13 +26,13 @@ public class RycilianMushroomBlock extends FlowerBlock implements FlammableBlock
                 .mapColor(MapColor.PLANT)
                 .sound(SoundType.GRASS)
                 .instabreak()
-                .postProcess((bs, br, bp) -> bp)
-                .emissiveRendering(bs -> true)
+                .hasPostProcess((bs, br, bp) -> true)
+                .emissiveRendering((bs, br, bp) -> true)
                 .lightLevel(s -> 10)
-                .noCollision()
+                .noCollission()
                 .replaceable()
                 .offsetType(OffsetType.XZ)
-                .pushReaction(PushReaction.POPPED)
+                .pushReaction(PushReaction.DESTROY)
         );
     }
 
@@ -48,8 +47,8 @@ public class RycilianMushroomBlock extends FlowerBlock implements FlammableBlock
     }
 
     @Override
-    protected void entityInside(BlockState blockstate, Level world, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
-        super.entityInside(blockstate, world, pos, entity, effectApplier, isPrecise);
+    protected void entityInside(BlockState blockstate, Level world, BlockPos pos, Entity entity) {
+        super.entityInside(blockstate, world, pos, entity);
         RycilianMushroomBoostEvents.execute(world, pos.getX(), pos.getY(), pos.getZ(), entity);
     }
 }

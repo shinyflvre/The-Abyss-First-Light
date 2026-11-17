@@ -1,271 +1,212 @@
 package net.yezon.theabyss.fabric.mixin.event.client;
 
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.Hud;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.gui.components.spectator.SpectatorGui;
-import net.minecraft.client.gui.contextualbar.ContextualBar;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PlayerRideableJumping;
 import net.minecraft.world.entity.player.Player;
-import net.yezon.theabyss.fabric.event.ClientFabricEvents;
+import net.yezon.theabyss.fabric.client.FabricHudHeights;
 import net.yezon.theabyss.fabric.event.FabricHudLayers;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(Hud.class)
+@Mixin(Gui.class)
 public abstract class HudEventsMixin {
     @Shadow
-    private boolean isHidden;
+    @Final
+    private Minecraft minecraft;
 
-    @Inject(method = "extractRenderState", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/state/gui/GuiRenderState;isHudHidden:Z", opcode = 181,
-        shift = At.Shift.AFTER), cancellable = true)
-    private void theabyss$renderGuiPre(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
-        if (ClientFabricEvents.guiActive() && ClientFabricEvents.renderGuiPre()) {
-            ci.cancel();
+    @Unique
+    private boolean theabyss$airShown;
+    @Unique
+    private boolean theabyss$airCanceled;
+
+    @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDraw;render(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"))
+    private void theabyss$renderGui(LayeredDraw layers, GuiGraphics graphics, DeltaTracker delta, Operation<Void> original) {
+        if (FabricHudLayers.guiPre(graphics, delta)) {
+            return;
+        }
+        original.call(layers, graphics, delta);
+        FabricHudLayers.guiPost(graphics, delta);
+    }
+
+    @WrapMethod(method = "renderCameraOverlays")
+    private void theabyss$cameraOverlays(GuiGraphics graphics, DeltaTracker delta, Operation<Void> original) {
+        FabricHudLayers.vanilla(FabricHudLayers.CAMERA_OVERLAYS, graphics, delta, () -> original.call(graphics, delta));
+    }
+
+    @WrapMethod(method = "renderCrosshair")
+    private void theabyss$crosshair(GuiGraphics graphics, DeltaTracker delta, Operation<Void> original) {
+        FabricHudLayers.vanilla(FabricHudLayers.CROSSHAIR, graphics, delta, () -> original.call(graphics, delta));
+    }
+
+    @WrapMethod(method = "renderExperienceLevel")
+    private void theabyss$experienceLevel(GuiGraphics graphics, DeltaTracker delta, Operation<Void> original) {
+        FabricHudLayers.vanilla(FabricHudLayers.EXPERIENCE_LEVEL, graphics, delta, () -> original.call(graphics, delta));
+    }
+
+    @WrapMethod(method = "renderEffects")
+    private void theabyss$effects(GuiGraphics graphics, DeltaTracker delta, Operation<Void> original) {
+        FabricHudLayers.vanilla(FabricHudLayers.EFFECTS, graphics, delta, () -> original.call(graphics, delta));
+    }
+
+    @WrapMethod(method = "renderSleepOverlay")
+    private void theabyss$sleepOverlay(GuiGraphics graphics, DeltaTracker delta, Operation<Void> original) {
+        boolean hidden = this.minecraft.options.hideGui;
+        if (hidden) {
+            FabricHudLayers.hiddenFirstBlock(graphics, delta);
+        }
+        FabricHudLayers.vanilla(FabricHudLayers.SLEEP_OVERLAY, graphics, delta, () -> original.call(graphics, delta));
+        if (hidden) {
+            FabricHudLayers.hiddenSecondBlock(graphics, delta);
         }
     }
 
-    @Inject(method = "extractRenderState", at = @At("TAIL"))
-    private void theabyss$renderGuiPost(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
-        if (ClientFabricEvents.guiActive()) {
-            ClientFabricEvents.renderGuiPost();
-        }
+    @WrapMethod(method = "renderDemoOverlay")
+    private void theabyss$demoOverlay(GuiGraphics graphics, DeltaTracker delta, Operation<Void> original) {
+        FabricHudLayers.vanilla(FabricHudLayers.DEMO_OVERLAY, graphics, delta, () -> original.call(graphics, delta));
     }
 
-    @Inject(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;extractSleepOverlay(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
-    private void theabyss$hiddenFirstBlock(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
-        if (this.isHidden) {
-            FabricHudLayers.hiddenFirstBlock(graphics, deltaTracker);
-        }
+    @WrapMethod(method = "renderScoreboardSidebar")
+    private void theabyss$scoreboard(GuiGraphics graphics, DeltaTracker delta, Operation<Void> original) {
+        FabricHudLayers.vanilla(FabricHudLayers.SCOREBOARD_SIDEBAR, graphics, delta, () -> original.call(graphics, delta));
     }
 
-    @Inject(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;extractSleepOverlay(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V",
-        shift = At.Shift.AFTER))
-    private void theabyss$hiddenSecondBlock(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
-        if (this.isHidden) {
-            FabricHudLayers.hiddenSecondBlock(graphics);
-        }
+    @WrapMethod(method = "renderOverlayMessage")
+    private void theabyss$overlayMessage(GuiGraphics graphics, DeltaTracker delta, Operation<Void> original) {
+        FabricHudLayers.vanilla(FabricHudLayers.OVERLAY_MESSAGE, graphics, delta, () -> original.call(graphics, delta));
     }
 
-    private static boolean theabyss$pre(GuiGraphicsExtractor graphics, Identifier layer) {
-        return ClientFabricEvents.guiLayerPre(graphics, layer);
+    @WrapMethod(method = "renderTitle")
+    private void theabyss$title(GuiGraphics graphics, DeltaTracker delta, Operation<Void> original) {
+        FabricHudLayers.vanilla(FabricHudLayers.TITLE, graphics, delta, () -> original.call(graphics, delta));
     }
 
-    @WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;extractCameraOverlays(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
-    private void theabyss$cameraOverlays(Hud hud, GuiGraphicsExtractor graphics, DeltaTracker delta, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.CAMERA_OVERLAYS)) {
-            original.call(hud, graphics, delta);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.CAMERA_OVERLAYS);
-        }
+    @WrapMethod(method = "renderChat")
+    private void theabyss$chat(GuiGraphics graphics, DeltaTracker delta, Operation<Void> original) {
+        FabricHudLayers.vanilla(FabricHudLayers.CHAT, graphics, delta, () -> original.call(graphics, delta));
     }
 
-    @WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;extractCrosshair(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
-    private void theabyss$crosshair(Hud hud, GuiGraphicsExtractor graphics, DeltaTracker delta, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.CROSSHAIR)) {
-            original.call(hud, graphics, delta);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.CROSSHAIR);
-        }
+    @WrapMethod(method = "renderTabList")
+    private void theabyss$tabList(GuiGraphics graphics, DeltaTracker delta, Operation<Void> original) {
+        FabricHudLayers.vanilla(FabricHudLayers.TAB_LIST, graphics, delta, () -> original.call(graphics, delta));
     }
 
-    @WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;nextStratum()V", ordinal = 0))
-    private void theabyss$afterCameraDecorations(GuiGraphicsExtractor graphics, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.AFTER_CAMERA_DECORATIONS)) {
-            original.call(graphics);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.AFTER_CAMERA_DECORATIONS);
-        }
+    @WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/spectator/SpectatorGui;renderHotbar(Lnet/minecraft/client/gui/GuiGraphics;)V"))
+    private void theabyss$spectatorHotbar(SpectatorGui gui, GuiGraphics graphics, Operation<Void> original, @Local(argsOnly = true) DeltaTracker delta) {
+        FabricHudLayers.vanilla(FabricHudLayers.HOTBAR, graphics, delta, () -> original.call(gui, graphics));
     }
 
-    @WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;extractEffects(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
-    private void theabyss$effects(Hud hud, GuiGraphicsExtractor graphics, DeltaTracker delta, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.EFFECTS)) {
-            original.call(hud, graphics, delta);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.EFFECTS);
-        }
+    @WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderItemHotbar(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"))
+    private void theabyss$itemHotbar(Gui gui, GuiGraphics graphics, DeltaTracker delta, Operation<Void> original) {
+        FabricHudLayers.vanilla(FabricHudLayers.HOTBAR, graphics, delta, () -> original.call(gui, graphics, delta));
     }
 
-    @WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;extractBossOverlay(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
-    private void theabyss$bossOverlay(Hud hud, GuiGraphicsExtractor graphics, DeltaTracker delta, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.BOSS_OVERLAY)) {
-            original.call(hud, graphics, delta);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.BOSS_OVERLAY);
-        }
+    @WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderJumpMeter(Lnet/minecraft/world/entity/PlayerRideableJumping;Lnet/minecraft/client/gui/GuiGraphics;I)V"))
+    private void theabyss$jumpMeter(Gui gui, PlayerRideableJumping jumping, GuiGraphics graphics, int x, Operation<Void> original,
+        @Local(argsOnly = true) DeltaTracker delta) {
+        FabricHudLayers.vanilla(FabricHudLayers.JUMP_METER, graphics, delta, () -> original.call(gui, jumping, graphics, x));
     }
 
-    @WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;extractSleepOverlay(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
-    private void theabyss$sleepOverlay(Hud hud, GuiGraphicsExtractor graphics, DeltaTracker delta, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.SLEEP_OVERLAY)) {
-            original.call(hud, graphics, delta);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.SLEEP_OVERLAY);
-        }
+    @WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderExperienceBar(Lnet/minecraft/client/gui/GuiGraphics;I)V"))
+    private void theabyss$experienceBar(Gui gui, GuiGraphics graphics, int x, Operation<Void> original, @Local(argsOnly = true) DeltaTracker delta) {
+        FabricHudLayers.vanilla(FabricHudLayers.EXPERIENCE_BAR, graphics, delta, () -> original.call(gui, graphics, x));
     }
 
-    @WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;extractDemoOverlay(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
-    private void theabyss$demoOverlay(Hud hud, GuiGraphicsExtractor graphics, DeltaTracker delta, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.DEMO_OVERLAY)) {
-            original.call(hud, graphics, delta);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.DEMO_OVERLAY);
-        }
-    }
-
-    @WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;extractScoreboardSidebar(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
-    private void theabyss$scoreboard(Hud hud, GuiGraphicsExtractor graphics, DeltaTracker delta, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.SCOREBOARD_SIDEBAR)) {
-            original.call(hud, graphics, delta);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.SCOREBOARD_SIDEBAR);
-        }
-    }
-
-    @WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;extractOverlayMessage(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
-    private void theabyss$overlayMessage(Hud hud, GuiGraphicsExtractor graphics, DeltaTracker delta, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.OVERLAY_MESSAGE)) {
-            original.call(hud, graphics, delta);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.OVERLAY_MESSAGE);
-        }
-    }
-
-    @WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;extractTitle(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
-    private void theabyss$title(Hud hud, GuiGraphicsExtractor graphics, DeltaTracker delta, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.TITLE)) {
-            original.call(hud, graphics, delta);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.TITLE);
-        }
-    }
-
-    @WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;extractChat(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
-    private void theabyss$chat(Hud hud, GuiGraphicsExtractor graphics, DeltaTracker delta, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.CHAT)) {
-            original.call(hud, graphics, delta);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.CHAT);
-        }
-    }
-
-    @WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;extractTabList(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
-    private void theabyss$tabList(Hud hud, GuiGraphicsExtractor graphics, DeltaTracker delta, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.TAB_LIST)) {
-            original.call(hud, graphics, delta);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.TAB_LIST);
-        }
-    }
-
-    @WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;extractSubtitleOverlay(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Z)V"))
-    private void theabyss$subtitles(Hud hud, GuiGraphicsExtractor graphics, boolean deferRendering, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.SUBTITLE_OVERLAY)) {
-            original.call(hud, graphics, deferRendering);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.SUBTITLE_OVERLAY);
-        }
-    }
-
-    @WrapOperation(method = "extractHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/spectator/SpectatorGui;extractHotbar(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V"))
-    private void theabyss$spectatorHotbar(SpectatorGui gui, GuiGraphicsExtractor graphics, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.HOTBAR)) {
-            original.call(gui, graphics);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.HOTBAR);
-        }
-    }
-
-    @WrapOperation(method = "extractHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;extractItemHotbar(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
-    private void theabyss$itemHotbar(Hud hud, GuiGraphicsExtractor graphics, DeltaTracker delta, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.HOTBAR)) {
-            original.call(hud, graphics, delta);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.HOTBAR);
-        }
-    }
-
-    @WrapOperation(method = "extractHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;canHurtPlayer()Z"))
-    private boolean theabyss$survivalLayers(MultiPlayerGameMode gameMode, Operation<Boolean> original, @Local(argsOnly = true) GuiGraphicsExtractor graphics) {
+    @WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;canHurtPlayer()Z"))
+    private boolean theabyss$survivalLayers(MultiPlayerGameMode gameMode, Operation<Boolean> original, @Local(argsOnly = true) GuiGraphics graphics,
+        @Local(argsOnly = true) DeltaTracker delta) {
         boolean survival = original.call(gameMode);
         if (!survival) {
-            ClientFabricEvents.guiLayerSkipped(graphics, FabricHudLayers.PLAYER_HEALTH, FabricHudLayers.ARMOR_LEVEL, FabricHudLayers.FOOD_LEVEL, FabricHudLayers.AIR_LEVEL);
+            FabricHudLayers.skipped(FabricHudLayers.PLAYER_HEALTH, graphics, delta);
+            FabricHudLayers.skipped(FabricHudLayers.ARMOR_LEVEL, graphics, delta);
+            FabricHudLayers.skipped(FabricHudLayers.FOOD_LEVEL, graphics, delta);
+            FabricHudLayers.events(FabricHudLayers.AIR_LEVEL, graphics, delta);
         }
         return survival;
     }
 
-    @WrapOperation(method = "extractHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;extractVehicleHealth(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V"))
-    private void theabyss$vehicleHealth(Hud hud, GuiGraphicsExtractor graphics, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.VEHICLE_HEALTH)) {
-            original.call(hud, graphics);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.VEHICLE_HEALTH);
-        }
+    @WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderVehicleHealth(Lnet/minecraft/client/gui/GuiGraphics;)V"))
+    private void theabyss$vehicleHealth(Gui gui, GuiGraphics graphics, Operation<Void> original, @Local(argsOnly = true) DeltaTracker delta) {
+        FabricHudLayers.vanilla(FabricHudLayers.VEHICLE_HEALTH, graphics, delta, () -> original.call(gui, graphics));
+        FabricHudLayers.before(FabricHudLayers.AIR_LEVEL, graphics, delta);
+        FabricHudLayers.after(FabricHudLayers.AIR_LEVEL, graphics, delta);
     }
 
-    @WrapOperation(method = "extractHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/contextualbar/ContextualBar;extractBackground(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
-    private void theabyss$contextualBackground(ContextualBar bar, GuiGraphicsExtractor graphics, DeltaTracker delta, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.CONTEXTUAL_INFO_BAR_BACKGROUND)) {
-            original.call(bar, graphics, delta);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.CONTEXTUAL_INFO_BAR_BACKGROUND);
-        }
+    @WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderSelectedItemName(Lnet/minecraft/client/gui/GuiGraphics;)V"))
+    private void theabyss$selectedItemName(Gui gui, GuiGraphics graphics, Operation<Void> original, @Local(argsOnly = true) DeltaTracker delta) {
+        FabricHudLayers.vanilla(FabricHudLayers.SELECTED_ITEM_NAME, graphics, delta, () -> original.call(gui, graphics));
     }
 
-    @WrapOperation(method = "extractHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/contextualbar/ContextualBar;extractExperienceLevel(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/gui/Font;I)V"))
-    private void theabyss$experienceLevel(GuiGraphicsExtractor graphics, Font font, int level, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.EXPERIENCE_LEVEL)) {
-            original.call(graphics, font, level);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.EXPERIENCE_LEVEL);
-        }
+    @WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/spectator/SpectatorGui;renderTooltip(Lnet/minecraft/client/gui/GuiGraphics;)V"))
+    private void theabyss$spectatorTooltip(SpectatorGui gui, GuiGraphics graphics, Operation<Void> original, @Local(argsOnly = true) DeltaTracker delta) {
+        FabricHudLayers.vanilla(FabricHudLayers.SPECTATOR_TOOLTIP, graphics, delta, () -> original.call(gui, graphics));
     }
 
-    @WrapOperation(method = "extractHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/contextualbar/ContextualBar;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
-    private void theabyss$contextualBar(ContextualBar bar, GuiGraphicsExtractor graphics, DeltaTracker delta, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.CONTEXTUAL_INFO_BAR)) {
-            original.call(bar, graphics, delta);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.CONTEXTUAL_INFO_BAR);
-        }
+    @WrapOperation(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderArmor(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/entity/player/Player;IIII)V"))
+    private void theabyss$armorLevel(GuiGraphics graphics, Player player, int yLineBase, int rows, int rowHeight, int xLeft, Operation<Void> original) {
+        FabricHudLayers.vanilla(FabricHudLayers.ARMOR_LEVEL, graphics, FabricHudLayers.delta(), () -> original.call(graphics, player, yLineBase, rows, rowHeight, xLeft));
     }
 
-    @WrapOperation(method = "extractHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;extractSelectedItemName(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V"))
-    private void theabyss$selectedItemName(Hud hud, GuiGraphicsExtractor graphics, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.SELECTED_ITEM_NAME)) {
-            original.call(hud, graphics);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.SELECTED_ITEM_NAME);
-        }
-    }
-
-    @WrapOperation(method = "extractHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/spectator/SpectatorGui;extractAction(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V"))
-    private void theabyss$spectatorTooltip(SpectatorGui gui, GuiGraphicsExtractor graphics, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.SPECTATOR_TOOLTIP)) {
-            original.call(gui, graphics);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.SPECTATOR_TOOLTIP);
-        }
-    }
-
-    @WrapOperation(method = "extractPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;extractArmor(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;IIII)V"))
-    private void theabyss$armorLevel(GuiGraphicsExtractor graphics, Player player, int yLineBase, int rows, int rowHeight, int xLeft, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.ARMOR_LEVEL)) {
-            original.call(graphics, player, yLineBase, rows, rowHeight, xLeft);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.ARMOR_LEVEL);
-        }
-    }
-
-    @WrapOperation(method = "extractPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;extractHearts(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;IIIIFIIIZ)V"))
-    private void theabyss$playerHealth(Hud hud, GuiGraphicsExtractor graphics, Player player, int xLeft, int yLineBase, int healthRowHeight, int heartOffsetIndex,
+    @WrapOperation(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderHearts(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/entity/player/Player;IIIIFIIIZ)V"))
+    private void theabyss$playerHealth(Gui gui, GuiGraphics graphics, Player player, int xLeft, int yLineBase, int healthRowHeight, int heartOffsetIndex,
         float maxHealth, int currentHealth, int oldHealth, int absorption, boolean blink, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.PLAYER_HEALTH)) {
-            original.call(hud, graphics, player, xLeft, yLineBase, healthRowHeight, heartOffsetIndex, maxHealth, currentHealth, oldHealth, absorption, blink);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.PLAYER_HEALTH);
+        FabricHudHeights.hearts(graphics.guiHeight(), yLineBase);
+        FabricHudLayers.vanilla(FabricHudLayers.PLAYER_HEALTH, graphics, FabricHudLayers.delta(),
+            () -> original.call(gui, graphics, player, xLeft, yLineBase, healthRowHeight, heartOffsetIndex, maxHealth, currentHealth, oldHealth, absorption, blink));
+    }
+
+    @WrapOperation(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;getVehicleMaxHearts(Lnet/minecraft/world/entity/LivingEntity;)I"))
+    private int theabyss$foodSkipped(Gui gui, LivingEntity vehicle, Operation<Integer> original, @Local(argsOnly = true) GuiGraphics graphics) {
+        int hearts = original.call(gui, vehicle);
+        if (hearts != 0) {
+            FabricHudLayers.skipped(FabricHudLayers.FOOD_LEVEL, graphics, FabricHudLayers.delta());
+        }
+        return hearts;
+    }
+
+    @WrapOperation(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderFood(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/entity/player/Player;II)V"))
+    private void theabyss$foodLevel(Gui gui, GuiGraphics graphics, Player player, int yLineBase, int xRight, Operation<Void> original) {
+        FabricHudLayers.vanilla(FabricHudLayers.FOOD_LEVEL, graphics, FabricHudLayers.delta(), () -> original.call(gui, graphics, player, yLineBase, xRight));
+    }
+
+    @WrapOperation(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V"))
+    private void theabyss$airPre(ProfilerFiller profiler, String section, Operation<Void> original, @Local(argsOnly = true) GuiGraphics graphics) {
+        original.call(profiler, section);
+        if ("air".equals(section)) {
+            this.theabyss$airCanceled = FabricHudLayers.layerPre(graphics, FabricHudLayers.delta(), FabricHudLayers.AIR_LEVEL);
+            this.theabyss$airShown = !this.theabyss$airCanceled;
         }
     }
 
-    @WrapOperation(method = "extractPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;extractFood(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;II)V"))
-    private void theabyss$foodLevel(Hud hud, GuiGraphicsExtractor graphics, Player player, int yLineBase, int xRight, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.FOOD_LEVEL)) {
-            original.call(hud, graphics, player, yLineBase, xRight);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.FOOD_LEVEL);
+    @WrapOperation(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/ResourceLocation;IIII)V"))
+    private void theabyss$airBubble(GuiGraphics graphics, ResourceLocation sprite, int x, int y, int width, int height, Operation<Void> original) {
+        if (!this.theabyss$airCanceled) {
+            original.call(graphics, sprite, x, y, width, height);
         }
     }
 
-    @WrapOperation(method = "extractPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;extractAirBubbles(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;III)V"))
-    private void theabyss$airLevel(Hud hud, GuiGraphicsExtractor graphics, Player player, int vehicleHearts, int yLineAir, int xRight, Operation<Void> original) {
-        if (!theabyss$pre(graphics, FabricHudLayers.AIR_LEVEL)) {
-            original.call(hud, graphics, player, vehicleHearts, yLineAir, xRight);
-            ClientFabricEvents.guiLayerPost(graphics, FabricHudLayers.AIR_LEVEL);
+    @WrapOperation(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiling/ProfilerFiller;pop()V"))
+    private void theabyss$airPost(ProfilerFiller profiler, Operation<Void> original, @Local(argsOnly = true) GuiGraphics graphics) {
+        if (this.theabyss$airShown) {
+            FabricHudLayers.layerPost(graphics, FabricHudLayers.delta(), FabricHudLayers.AIR_LEVEL);
         }
+        this.theabyss$airShown = false;
+        this.theabyss$airCanceled = false;
+        original.call(profiler);
     }
 }

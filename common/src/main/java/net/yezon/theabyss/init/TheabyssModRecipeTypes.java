@@ -1,7 +1,7 @@
 package net.yezon.theabyss.init;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -36,7 +36,7 @@ public class TheabyssModRecipeTypes {
     );
 
     private static <T extends Recipe<?>> DeferredHolder<RecipeType<?>, RecipeType<T>> type(String name) {
-        String id = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, name).toString();
+        String id = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, name).toString();
         return TYPES.register(name, () -> new RecipeType<T>() {
             @Override
             public String toString() {

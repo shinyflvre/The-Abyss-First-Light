@@ -18,7 +18,7 @@ public class ArtifactOfPhantomsAbilityEvents {
         }
 
         if (entity instanceof Player _player) {
-            _player.getCooldowns().addCooldown(new ItemStack(TheabyssModItems.ARTIFACT_OF_PHANTOMS.get()), 30);
+            _player.getCooldowns().addCooldown(TheabyssModItems.ARTIFACT_OF_PHANTOMS.get(), 30);
         }
 
         if (world instanceof ServerLevel _level) {
@@ -28,7 +28,7 @@ public class ArtifactOfPhantomsAbilityEvents {
 
         if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
             if (Math.random() < 0.2) {
-                _entity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 100, 1, false, false));
+                _entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 1, false, false));
             }
 
             if (Math.random() < 0.1) {

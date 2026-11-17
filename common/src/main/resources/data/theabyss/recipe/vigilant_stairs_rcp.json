@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:vigilant_planks"
+    "a": {
+      "item": "theabyss:vigilant_planks"
+    }
   },
   "pattern": [
     "a  ",

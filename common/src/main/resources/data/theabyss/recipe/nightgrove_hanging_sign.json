@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "group": "wooden_hanging_sign",
   "key": {
-    "#": "theabyss:stripped_nightgrove_log",
-    "X": "minecraft:iron_chain"
+    "#": {
+      "item": "theabyss:stripped_nightgrove_log"
+    },
+    "X": {
+      "item": "minecraft:chain"
+    }
   },
   "pattern": [
     "X X",

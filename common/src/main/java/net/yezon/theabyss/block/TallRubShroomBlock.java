@@ -29,18 +29,18 @@ public class TallRubShroomBlock extends FlowerBlock {
                 .mapColor(MapColor.PLANT)
                 .sound(SoundType.GRASS)
                 .instabreak()
-                .postProcess((bs, br, bp) -> bp)
-                .emissiveRendering(bs -> true)
+                .hasPostProcess((bs, br, bp) -> true)
+                .emissiveRendering((bs, br, bp) -> true)
                 .lightLevel(s -> 10)
-                .noCollision()
+                .noCollission()
                 .offsetType(OffsetType.XZ)
-                .pushReaction(PushReaction.POPPED)
+                .pushReaction(PushReaction.DESTROY)
         );
     }
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        Vec3 offset = state.getOffset(pos);
+        Vec3 offset = state.getOffset(world, pos);
         return box(0.0, 0.0, 0.0, 16.0, 32.0, 16.0).move(offset.x, offset.y, offset.z);
     }
 

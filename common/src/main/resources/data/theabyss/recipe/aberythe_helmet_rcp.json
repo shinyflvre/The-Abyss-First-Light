@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:aberythe_gem"
+    "a": {
+      "item": "theabyss:aberythe_gem"
+    }
   },
   "pattern": [
     "aaa",

@@ -1,17 +1,13 @@
 package net.yezon.theabyss.entity;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -19,11 +15,10 @@ import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
-import net.minecraft.world.entity.animal.squid.Squid;
+import net.minecraft.world.entity.animal.Squid;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.pathfinder.PathType;
@@ -31,14 +26,13 @@ import net.yezon.theabyss.platform.common.NeoForgeMod;
 import net.yezon.theabyss.platform.event.entity.RegisterSpawnPlacementsEvent;
 import net.yezon.theabyss.init.TheabyssModEntities;
 import net.yezon.theabyss.init.TheabyssModItems;
-import org.jspecify.annotations.Nullable;
 
 public class LaroFishEntity extends Squid {
     public LaroFishEntity(EntityType<LaroFishEntity> type, Level world) {
         super(type, world);
         this.xpReward = 0;
         this.setPathfindingMalus(PathType.WATER, 0.0F);
-        this.moveControl = new MoveControl<>(this) {
+        this.moveControl = new MoveControl(this) {
             @Override
             public void tick() {
                 LaroFishEntity fish = LaroFishEntity.this;
@@ -89,17 +83,17 @@ public class LaroFishEntity extends Squid {
     @Override
     protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(level, source, recentlyHitIn);
-        this.spawnAtLocation(level, new ItemStack(TheabyssModItems.FISH.get()));
+        this.spawnAtLocation(new ItemStack(TheabyssModItems.FISH.get()));
     }
 
     @Override
     public SoundEvent getHurtSound(DamageSource ds) {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.generic.hurt"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.generic.hurt"));
     }
 
     @Override
     public SoundEvent getDeathSound() {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.generic.death"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.generic.death"));
     }
 
     @Override
@@ -107,22 +101,6 @@ public class LaroFishEntity extends Squid {
         return world.isUnobstructed(this);
     }
 
-    @Override
-    public boolean canBreatheUnderwater() {
-        return true;
-    }
-
-    @Override
-    public @Nullable SpawnGroupData finalizeSpawn(
-        ServerLevelAccessor world, DifficultyInstance difficulty, EntitySpawnReason reason, @Nullable SpawnGroupData livingdata
-    ) {
-        return super.finalizeSpawn(world, difficulty, reason, livingdata != null ? livingdata : new AgeableMob.AgeableMobGroupData(false));
-    }
-
-    @Override
-    public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-        return null;
-    }
 
     @Override
     public boolean canBeLeashed() {

@@ -1,6 +1,5 @@
 package net.yezon.theabyss.client.fx.spell;
 
-import java.lang.reflect.Method;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
@@ -27,7 +26,6 @@ public final class RewindCamera {
     private static Level level;
     private static boolean active;
     private static boolean worldFovPending;
-    private static Method setPosition;
     private static boolean reflectionFailed;
 
     private RewindCamera() {
@@ -97,17 +95,17 @@ public final class RewindCamera {
             Camera camera = event.getCamera();
             Vec3 eye = mc.player.getEyePosition(event.getPartialTick());
             Vec3 offset = along(ease(t)).subtract(eye).scale(1.0F - ease(Mth.clamp((t - 0.85F) / 0.15F, 0.0F, 1.0F)));
-            move(camera, camera.position().add(offset));
+            move(camera, camera.getPosition().add(offset));
         }
         float squeeze = Mth.sin(t * Mth.PI);
         event.setFOV(event.getFOV() * (1.0F - FOV_SQUEEZE * squeeze));
     }
 
-    private static final net.minecraft.resources.Identifier RING = net.minecraft.resources.Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "textures/gui/parry_ring.png");
+    private static final net.minecraft.resources.ResourceLocation RING = net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "textures/gui/parry_ring.png");
 
-    public static void renderTunnel(net.minecraft.client.gui.GuiGraphicsExtractor g, net.minecraft.client.DeltaTracker delta) {
+    public static void renderTunnel(net.minecraft.client.gui.GuiGraphics g, net.minecraft.client.DeltaTracker delta) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null || mc.gui.hud.isHidden()) {
+        if (mc.player == null || mc.options.hideGui) {
             return;
         }
         if (active) {
@@ -118,36 +116,32 @@ public final class RewindCamera {
         }
     }
 
-    private static void drawTunnel(net.minecraft.client.gui.GuiGraphicsExtractor g, float t, float strength) {
+    private static void drawTunnel(net.minecraft.client.gui.GuiGraphics g, float t, float strength) {
         int w = g.guiWidth();
         int h = g.guiHeight();
         int cx = w / 2;
         int cy = h / 2;
-        g.fill(0, 0, w, h, net.minecraft.util.ARGB.color(Math.round(70 * strength), 40, 150, 170));
+        g.fill(0, 0, w, h, net.yezon.theabyss.compat.ARGB.color(Math.round(70 * strength), 40, 150, 170));
         float diagonal = (float)Math.sqrt(w * w + h * h);
         for (int k = 0; k < 4; k++) {
             float phase = (t * 3.0F + k * 0.25F) % 1.0F;
             int size = Math.round(12 + diagonal * 1.3F * phase * phase);
             int alpha = Math.round(200 * strength * (1.0F - phase));
-            int colour = k % 2 == 0 ? net.minecraft.util.ARGB.color(alpha, 127, 232, 255) : net.minecraft.util.ARGB.color(alpha, 255, 211, 106);
-            g.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, RING, cx - size / 2, cy - size / 2, 0.0F, 0.0F, size, size, size, size, colour);
+            int colour = k % 2 == 0 ? net.yezon.theabyss.compat.ARGB.color(alpha, 127, 232, 255) : net.yezon.theabyss.compat.ARGB.color(alpha, 255, 211, 106);
+            net.yezon.theabyss.compat.GuiGraphicsCompat.blit(g, RING, cx - size / 2, cy - size / 2, 0.0F, 0.0F, size, size, size, size, colour);
         }
         float angle = -t * Mth.TWO_PI * 2.0F;
-        g.pose().pushMatrix();
-        g.pose().translate(cx, cy);
-        g.pose().rotate(angle);
-        g.fill(-1, -34, 1, -6, net.minecraft.util.ARGB.color(Math.round(220 * strength), 255, 255, 255));
-        g.pose().popMatrix();
+        g.pose().pushPose();
+        g.pose().translate(cx, cy, 0.0F);
+        g.pose().mulPose(com.mojang.math.Axis.ZP.rotation(angle));
+        g.fill(-1, -34, 1, -6, net.yezon.theabyss.compat.ARGB.color(Math.round(220 * strength), 255, 255, 255));
+        g.pose().popPose();
     }
 
     private static void move(Camera camera, Vec3 position) {
         try {
-            if (setPosition == null) {
-                setPosition = Camera.class.getDeclaredMethod("setPosition", Vec3.class);
-                setPosition.setAccessible(true);
-            }
-            setPosition.invoke(camera, position);
-        } catch (ReflectiveOperationException | RuntimeException e) {
+            ((net.yezon.theabyss.mixin.client.CameraPositionInvoker)camera).theabyss$setPosition(position);
+        } catch (RuntimeException e) {
             reflectionFailed = true;
             active = false;
             TheabyssMod.LOGGER.warn("Rewind: camera position not settable, rewind flight disabled", e);

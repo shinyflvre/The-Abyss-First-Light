@@ -5,7 +5,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
@@ -19,7 +19,7 @@ public record TelekinesisMessage(int kind, int casterId, List<Integer> targets) 
     public static final int IMPACT = 1;
     public static final int PULL = 2;
     public static final int PULL_PARRY = 3;
-    public static final Type<TelekinesisMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "telekinesis"));
+    public static final Type<TelekinesisMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "telekinesis"));
     public static final StreamCodec<RegistryFriendlyByteBuf, TelekinesisMessage> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.VAR_INT, TelekinesisMessage::kind,
         ByteBufCodecs.VAR_INT, TelekinesisMessage::casterId,

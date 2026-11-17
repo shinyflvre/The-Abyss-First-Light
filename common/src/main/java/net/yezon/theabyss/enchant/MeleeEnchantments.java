@@ -1,5 +1,6 @@
 package net.yezon.theabyss.enchant;
 
+import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -91,8 +92,8 @@ public final class MeleeEnchantments {
         level.playSound(null, at.x, at.y, at.z, SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 0.35F, 1.7F);
         ECHOING.add(target.getUUID());
         try {
-            target.setInvulnerableTime(0);
-            target.hurtServer(level, level.damageSources().indirectMagic(player, player), amount);
+            target.invulnerableTime = 0;
+            target.hurt(level.damageSources().indirectMagic(player, player), amount);
         } finally {
             ECHOING.remove(target.getUUID());
         }
@@ -112,7 +113,7 @@ public final class MeleeEnchantments {
         Vec3 at = dead.position().add(0.0, dead.getBbHeight() * 0.5, 0.0);
         double radius = 2.0 + power;
         float damage = 2.0F + 2.0F * power;
-        level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, TheabyssModItems.ABYSS_CRYSTAL_SHARD.get()), at.x, at.y, at.z, 16, 0.25, 0.25, 0.25, 0.3);
+        level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(TheabyssModItems.ABYSS_CRYSTAL_SHARD.get())), at.x, at.y, at.z, 16, 0.25, 0.25, 0.25, 0.3);
         SpellFxMessage.around(level, at, SpellFxMessage.ENCHANT_SHATTER, List.of(), List.of(at.x, at.y, at.z, radius), 0);
         RingFx.wave(level, at, (float)radius + 1.0F, 12, SHATTER_GLOW);
         level.playSound(null, at.x, at.y, at.z, SoundEvents.GLASS_BREAK, SoundSource.PLAYERS, 1.0F, 0.55F);
@@ -135,7 +136,7 @@ public final class MeleeEnchantments {
             }
         }
         for (LivingEntity e : hits) {
-            e.hurtServer(level, level.damageSources().indirectMagic(player, player), damage);
+            e.hurt(level.damageSources().indirectMagic(player, player), damage);
         }
     }
 }

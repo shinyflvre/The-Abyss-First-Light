@@ -1,15 +1,16 @@
 package net.yezon.theabyss.client.codex;
 
 import java.util.List;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.resources.Identifier;
+import net.minecraft.client.gui.GuiGraphics;
+import net.yezon.theabyss.compat.GuiGraphicsCompat;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 final class CodexPages {
     private CodexPages() {
     }
 
-    static void draw(CodexScreen s, GuiGraphicsExtractor g, CodexBook.Entry entry, CodexBook.Page page, int pageNum, int px, int py, int mx, int my) {
+    static void draw(CodexScreen s, GuiGraphics g, CodexBook.Entry entry, CodexBook.Page page, int pageNum, int px, int py, int mx, int my) {
         int color = entry.chronicle() <= 0 ? s.book().textColor
             : net.yezon.theabyss.lore.Chronicles.blackInk(entry.chronicle()) ? 0xFF0B0B0D : 0xFF23395A;
         switch (page.type()) {
@@ -37,8 +38,8 @@ final class CodexPages {
                 if (Boolean.TRUE.equals(page.json().has("border") && page.json().get("border").getAsBoolean())) {
                     s.blit(g, s.book().texture, px + CodexScreen.PAD + 5, py + 7, 405, 149, 106, 106, 512, 256);
                 }
-                Identifier image = Identifier.parse(page.string("image"));
-                g.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, image, screenX(s, px + CodexScreen.PAD + 8), screenY(s, py + 10), 0, 0, 100, 100, 200, 200, 256, 256);
+                ResourceLocation image = ResourceLocation.parse(page.string("image"));
+                GuiGraphicsCompat.blit(g, image, screenX(s, px + CodexScreen.PAD + 8), screenY(s, py + 10), 0, 0, 100, 100, 200, 200, 256, 256);
                 if (page.string("title") != null) {
                     s.header(g, page.string("title"), px + CodexScreen.CX, py - 3);
                 }
@@ -56,7 +57,7 @@ final class CodexPages {
                 }
                 s.itemAt(g, result, px + CodexScreen.PAD + 88, py + 26, false, mx, my);
                 if (result.getCount() > 1) {
-                    g.itemDecorations(s.font(), result, screenX(s, px + CodexScreen.PAD + 88), screenY(s, py + 26));
+                    g.renderItemDecorations(s.font(), result, screenX(s, px + CodexScreen.PAD + 88), screenY(s, py + 26));
                 }
                 String title = page.string("title") != null ? page.string("title") : result.getHoverName().getString();
                 s.header(g, title, px + CodexScreen.CX, py - 6);
@@ -74,7 +75,7 @@ final class CodexPages {
                 s.blit(g, s.book().texture, px + CodexScreen.PAD + 5, py + 7, 405, 149, 106, 106, 512, 256);
                 int x0 = screenX(s, px + CodexScreen.PAD + 8);
                 int y0 = screenY(s, py + 10);
-                CodexMultiblock.submit(g, CodexMultiblock.structure(page), x0, y0, x0 + 100, y0 + 100);
+                CodexMultiblock.render(g, CodexMultiblock.structure(page), x0, y0, x0 + 100, y0 + 100);
                 if (page.string("title") != null) {
                     s.header(g, page.string("title"), px + CodexScreen.CX, py);
                 }
@@ -93,7 +94,7 @@ final class CodexPages {
                 notes(s, g, page, px, py, color);
             }
             case "infuser" -> {
-                s.blit(g, Identifier.fromNamespaceAndPath("theabyss", "textures/guide/infuser/infuser_overlay.png"), px + CodexScreen.PAD + 5, py + 72, 0, 0, 101, 26, 256, 256);
+                s.blit(g, ResourceLocation.fromNamespaceAndPath("theabyss", "textures/guide/infuser/infuser_overlay.png"), px + CodexScreen.PAD + 5, py + 72, 0, 0, 101, 26, 256, 256);
                 s.itemAt(g, s.stack(page.string("somnium")), px + CodexScreen.PAD + 10, py + 17, true, mx, my);
                 s.itemAt(g, s.stack(page.string("energy")), px + CodexScreen.PAD + 60, py + 17, true, mx, my);
                 List<String> inputs = page.strings("inputs");
@@ -109,7 +110,7 @@ final class CodexPages {
         }
     }
 
-    private static void notes(CodexScreen s, GuiGraphicsExtractor g, CodexBook.Page page, int px, int py, int color) {
+    private static void notes(CodexScreen s, GuiGraphics g, CodexBook.Page page, int px, int py, int color) {
         List<String> notes = page.strings("notes");
         if (!notes.isEmpty()) {
             s.textBlock(g, notes.get(0), px + 1, py + 40, CodexScreen.PAGE_W - 1, color);

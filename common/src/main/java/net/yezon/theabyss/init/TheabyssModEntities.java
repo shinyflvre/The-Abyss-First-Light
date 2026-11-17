@@ -64,6 +64,7 @@ import net.yezon.theabyss.entity.SummonedSeekerEntity;
 import net.yezon.theabyss.entity.TheRokaEntity;
 import net.yezon.theabyss.entity.VigilantHummingbirdEntity;
 import net.yezon.theabyss.entity.VersaWhaleEntity;
+import net.yezon.theabyss.possession.PossessionBodyEntity;
 
 @EventBusSubscriber
 public class TheabyssModEntities {
@@ -77,7 +78,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(1.0F, 2.7F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<IceSkeletonEntity>> ICE_SKELETON = REGISTRY.registerEntityType(
         "ice_skeleton",
@@ -88,7 +88,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(0.6F, 1.8F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<IceKnightEntity>> ICE_KNIGHT = REGISTRY.registerEntityType(
         "ice_knight",
@@ -100,7 +99,6 @@ public class TheabyssModEntities {
             .fireImmune()
             .sized(0.8F, 1.8F)
             .ridingOffset(-0.6F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<NightbladeBossEntity>> NIGHTBLADE_BOSS = REGISTRY.registerEntityType(
         "nightblade_boss",
@@ -112,7 +110,6 @@ public class TheabyssModEntities {
             .fireImmune()
             .sized(0.8F, 1.8F)
             .ridingOffset(-0.6F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<net.yezon.theabyss.entity.AbyssEchoEntity>> ABYSS_ECHO = REGISTRY.registerEntityType(
         "abyss_echo",
@@ -178,7 +175,6 @@ public class TheabyssModEntities {
             .fireImmune()
             .sized(0.8F, 1.8F)
             .ridingOffset(-0.6F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<DeerEntity>> DEER = REGISTRY.registerEntityType(
         "deer",
@@ -189,7 +185,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(0.9F, 1.4F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<LaroFishEntity>> LARO_FISH = REGISTRY.registerEntityType(
         "laro_fish",
@@ -227,7 +222,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(0.8F, 0.8F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<CrystalGolemEntity>> CRYSTAL_GOLEM = REGISTRY.registerEntityType(
         "crystal_golem",
@@ -238,7 +232,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(0.8F, 3.2F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<AbyssaurEntity>> ABYSSAUR = REGISTRY.registerEntityType(
         "abyssaur",
@@ -249,7 +242,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(2.2F, 2.5F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<MagicianEntity>> MAGICIAN = REGISTRY.registerEntityType(
         "magician",
@@ -260,7 +252,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(0.6F, 2.8F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<SoulGuardEntity>> SOUL_GUARD = REGISTRY.registerEntityType(
         "soul_guard",
@@ -272,7 +263,6 @@ public class TheabyssModEntities {
             .fireImmune()
             .sized(0.8F, 1.8F)
             .ridingOffset(-0.6F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<InfectedSpiderEntity>> INFECTED_SPIDER = REGISTRY.registerEntityType(
         "infected_spider",
@@ -283,7 +273,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(1.4F, 1.2F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<InfectedCreeperEntity>> INFECTED_CREEPER = REGISTRY.registerEntityType(
         "infected_creeper",
@@ -294,7 +283,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(0.6F, 1.7F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<GuardEntity>> GUARD = REGISTRY.registerEntityType(
         "guard",
@@ -306,7 +294,6 @@ public class TheabyssModEntities {
             .fireImmune()
             .sized(0.8F, 1.8F)
             .ridingOffset(-0.6F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<MudZombieEntity>> MUD_ZOMBIE = REGISTRY.registerEntityType(
         "mud_zombie",
@@ -318,7 +305,6 @@ public class TheabyssModEntities {
             .fireImmune()
             .sized(0.6F, 1.8F)
             .ridingOffset(-0.6F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<InfectedZombieEntity>> INFECTED_ZOMBIE = REGISTRY.registerEntityType(
         "infected_zombie",
@@ -329,7 +315,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(0.6F, 1.7F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<RaptorEntity>> RAPTOR = REGISTRY.registerEntityType(
         "raptor",
@@ -339,7 +324,6 @@ public class TheabyssModEntities {
             .clientTrackingRange(64)
             .updateInterval(3)
             .sized(1.5F, 1.2F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<EndSpiderEntity>> END_SPIDER = REGISTRY.registerEntityType(
         "end_spider",
@@ -350,7 +334,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(0.8F, 1.2F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<LizardEntity>> LIZARD = REGISTRY.registerEntityType(
         "lizard",
@@ -371,7 +354,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(0.8F, 2.5F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<JungleLurkerEntity>> JUNGLE_LURKER = REGISTRY.registerEntityType(
         "jungle_lurker",
@@ -382,7 +364,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(0.6F, 1.8F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<SlimeSpiderEntity>> SLIME_SPIDER = REGISTRY.registerEntityType(
         "slime_spider",
@@ -393,7 +374,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(1.4F, 1.2F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<ScorpionEntity>> SCORPION = REGISTRY.registerEntityType(
         "scorpion",
@@ -404,7 +384,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(1.4F, 1.0F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<SeekerEntity>> SEEKER = REGISTRY.registerEntityType(
         "seeker",
@@ -416,7 +395,6 @@ public class TheabyssModEntities {
             .fireImmune()
             .sized(0.8F, 2.0F)
             .ridingOffset(-0.6F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<PlayerBodyEntity>> PLAYER_BODY = REGISTRY.registerEntityType(
         "player_body",
@@ -426,6 +404,17 @@ public class TheabyssModEntities {
             .clientTrackingRange(64)
             .updateInterval(3)
             .sized(0.5F, 0.5F)
+    );
+    public static final DeferredHolder<EntityType<?>, EntityType<PossessionBodyEntity>> POSSESSION_BODY = REGISTRY.registerEntityType(
+        "possession_body",
+        PossessionBodyEntity::new,
+        MobCategory.MISC,
+        b -> b
+            .sized(0.6F, 1.8F)
+            .eyeHeight(1.62F)
+            .vehicleAttachment(PossessionBodyEntity.DEFAULT_VEHICLE_ATTACHMENT)
+            .clientTrackingRange(32)
+            .updateInterval(2)
     );
     public static final DeferredHolder<EntityType<?>, EntityType<RiftNightbladeEntity>> RIFT_NIGHTBLADE = REGISTRY.registerEntityType(
         "rift_nightblade",
@@ -446,7 +435,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(0.6F, 1.9F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<ShatteredZombieEntity>> SHATTERED_ZOMBIE = REGISTRY.registerEntityType(
         "shattered_zombie",
@@ -457,7 +445,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(0.6F, 1.7F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<SummonedSeekerEntity>> SUMMONED_SEEKER = REGISTRY.registerEntityType(
         "summoned_seeker",
@@ -479,7 +466,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(0.8F, 1.2F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<InfectedPhantomEntity>> INFECTED_PHANTOM = REGISTRY.registerEntityType(
         "infected_phantom",
@@ -490,7 +476,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(0.8F, 2.0F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<PoweredWolfEntity>> POWERED_WOLF = REGISTRY.registerEntityType(
         "powered_wolf",
@@ -501,7 +486,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(0.8F, 1.2F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<VersaWhaleEntity>> VERSA_WHALE = REGISTRY.registerEntityType(
         "versa_whale",
@@ -511,7 +495,6 @@ public class TheabyssModEntities {
             .clientTrackingRange(64)
             .updateInterval(3)
             .sized(1.8F, 2.0F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<FrostSpiderEntity>> FROST_SPIDER = REGISTRY.registerEntityType(
         "frost_spider",
@@ -522,7 +505,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(1.4F, 1.2F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<GlowPugEntity>> GLOW_PUG = REGISTRY.registerEntityType(
         "glow_pug",
@@ -532,7 +514,6 @@ public class TheabyssModEntities {
             .clientTrackingRange(64)
             .updateInterval(3)
             .sized(0.8F, 0.8F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<AbyssalLionEntity>> ABYSSAL_LION = REGISTRY.registerEntityType(
         "abyssal_lion",
@@ -543,7 +524,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(0.8F, 1.5F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<InfcetedCowEntity>> INFCETED_COW = REGISTRY.registerEntityType(
         "infceted_cow",
@@ -553,7 +533,6 @@ public class TheabyssModEntities {
             .clientTrackingRange(30)
             .updateInterval(3)
             .sized(0.8F, 1.4F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<AbylagerEntity>> ABYLAGER = REGISTRY.registerEntityType(
         "abylager",
@@ -585,7 +564,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(0.6F, 0.5F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<InfectedDragonflyEntity>> INFECTED_DRAGONFLY = REGISTRY.registerEntityType(
         "infected_dragonfly",
@@ -595,7 +573,6 @@ public class TheabyssModEntities {
             .clientTrackingRange(64)
             .updateInterval(3)
             .sized(0.6F, 0.6F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<HummingbirdEntity>> HUMMINGBIRD = REGISTRY.registerEntityType(
         "hummingbird",
@@ -605,7 +582,6 @@ public class TheabyssModEntities {
             .clientTrackingRange(64)
             .updateInterval(3)
             .sized(0.6F, 0.8F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<VigilantHummingbirdEntity>> VIGILANT_HUMMINGBIRD = REGISTRY.registerEntityType(
         "vigilant_hummingbird",
@@ -625,7 +601,6 @@ public class TheabyssModEntities {
             .updateInterval(3)
             .fireImmune()
             .sized(0.8F, 2.0F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<MagicEntity>> MAGIC = REGISTRY.registerEntityType(
         "magic",
@@ -635,7 +610,6 @@ public class TheabyssModEntities {
             .clientTrackingRange(64)
             .updateInterval(3)
             .sized(0.6F, 0.6F)
-            .notInPeaceful()
     );
     public static final DeferredHolder<EntityType<?>, EntityType<PhantomAttackProjectileEntity>> PHANTOM_ATTACK_PROJECTILE = REGISTRY.registerEntityType(
         "projectile_phantom_attack_projectile",
@@ -786,6 +760,7 @@ public class TheabyssModEntities {
         event.put(SCORPION.get(), ScorpionEntity.createAttributes().build());
         event.put(SEEKER.get(), SeekerEntity.createAttributes().build());
         event.put(PLAYER_BODY.get(), PlayerBodyEntity.createAttributes().build());
+        event.put(POSSESSION_BODY.get(), PossessionBodyEntity.createAttributes().build());
         event.put(RIFT_NIGHTBLADE.get(), RiftNightbladeEntity.createAttributes().build());
         event.put(HAUNTED_SKELETON.get(), HauntedSkeletonEntity.createAttributes().build());
         event.put(SHATTERED_ZOMBIE.get(), ShatteredZombieEntity.createAttributes().build());

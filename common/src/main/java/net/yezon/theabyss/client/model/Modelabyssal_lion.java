@@ -1,6 +1,6 @@
 package net.yezon.theabyss.client.model;
 
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -9,12 +9,12 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 
-public class Modelabyssal_lion<S extends LivingEntityRenderState> extends EntityModel<S> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath("theabyss", "modelabyssal_lion"), "main");
+public class Modelabyssal_lion<T extends Entity> extends HierarchicalModel<T> {
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("theabyss", "modelabyssal_lion"), "main");
     public final ModelPart Head;
     public final ModelPart LeftLeg;
     public final ModelPart RightLeg;
@@ -23,8 +23,10 @@ public class Modelabyssal_lion<S extends LivingEntityRenderState> extends Entity
     public final ModelPart RightLeg2;
     public final ModelPart bb_main;
 
+    private final ModelPart root;
+
     public Modelabyssal_lion(ModelPart root) {
-        super(root);
+        this.root = root;
         this.Head = root.getChild("Head");
         this.LeftLeg = root.getChild("LeftLeg");
         this.RightLeg = root.getChild("RightLeg");
@@ -142,12 +144,8 @@ public class Modelabyssal_lion<S extends LivingEntityRenderState> extends Entity
     }
 
     @Override
-    public void setupAnim(S state) {
-        super.setupAnim(state);
-        float limbSwing = state.walkAnimationPos;
-        float limbSwingAmount = state.walkAnimationSpeed;
-        float netHeadYaw = state.yRot;
-        float headPitch = state.xRot;
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.root.getAllParts().forEach(ModelPart::resetPose);
         this.LeftLeg.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
         this.Head.yRot = netHeadYaw / (180.0F / (float)Math.PI);
         this.Head.xRot = headPitch / (180.0F / (float)Math.PI);
@@ -155,5 +153,10 @@ public class Modelabyssal_lion<S extends LivingEntityRenderState> extends Entity
         this.RightLeg2.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
         this.LeftLeg2.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
         this.Tail1.yRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
+    }
+
+    @Override
+    public ModelPart root() {
+        return this.root;
     }
 }

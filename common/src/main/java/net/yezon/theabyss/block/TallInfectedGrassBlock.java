@@ -14,10 +14,10 @@ public class TallInfectedGrassBlock extends DoublePlantBlock {
                 .mapColor(MapColor.PLANT)
                 .sound(SoundType.GRASS)
                 .instabreak()
-                .noCollision()
+                .noCollission()
                 .replaceable()
                 .offsetType(OffsetType.XZ)
-                .pushReaction(PushReaction.POPPED)
+                .pushReaction(PushReaction.DESTROY)
         );
     }
 }

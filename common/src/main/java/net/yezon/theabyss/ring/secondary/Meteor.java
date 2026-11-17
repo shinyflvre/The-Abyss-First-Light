@@ -37,7 +37,7 @@ public final class Meteor {
     }
 
     static boolean cast(ServerPlayer player, ItemStack ring, TheabyssModVariables.PlayerVariables vars) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         Vec3 spot = Aim.spot(level, player, RANGE);
         Vec3 ahead = player.getLookAngle().multiply(1.0, 0.0, 1.0);
         ahead = ahead.lengthSqr() < 1.0E-4 ? new Vec3(0.0, 0.0, 1.0) : ahead.normalize();
@@ -64,14 +64,14 @@ public final class Meteor {
                 continue;
             }
             float hit = Math.max(1.0F, Math.round(damage * (1.0 - 0.5 * d / RADIUS)));
-            victim.damageCooldownTime = 0;
-            victim.hurtServer(level, level.damageSources().indirectMagic(caster, caster), hit);
+            victim.invulnerableTime = 0;
+            victim.hurt(level.damageSources().indirectMagic(caster, caster), hit);
             victim.igniteForSeconds(5.0F);
             Vec3 out = victim.position().subtract(at).multiply(1.0, 0.0, 1.0);
             out = out.lengthSqr() < 1.0E-4 ? new Vec3(0.0, 0.0, 0.0) : out.normalize().scale(1.1 * (1.0 - d / RADIUS) + 0.3);
             victim.setDeltaMovement(out.x, 0.75, out.z);
-            victim.needsSync = true;
-            victim.syncVelocity = true;
+            victim.hasImpulse = true;
+            victim.hurtMarked = true;
             FallGuard.protect(victim, 60);
         }
         RingFx.wave(level, at.add(0.0, 0.1, 0.0), 11.0F, 22, RingVisuals.FIRE);

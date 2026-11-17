@@ -2,33 +2,19 @@ package net.yezon.theabyss.world.dimension;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
-import net.minecraft.world.level.levelgen.material.MaterialRuleContext;
-import net.minecraft.world.level.levelgen.material.MaterialRules;
-import net.minecraft.world.level.levelgen.material.rule.MaterialRule;
-import net.minecraft.world.level.levelgen.material.rule.RuleEvaluator;
+import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.world.level.levelgen.DensityFunctions;
+import net.minecraft.world.level.levelgen.SurfaceRules;
 
-public record SolidTerrainRule(DensityFunction density, MaterialRule rule) implements MaterialRule {
-    public static final MapCodec<SolidTerrainRule> CODEC = RecordCodecBuilder.mapCodec(
+public record SolidTerrainRule(DensityFunction density, SurfaceRules.RuleSource rule) {
+    private static final MapCodec<SolidTerrainRule> RECORD_CODEC = RecordCodecBuilder.mapCodec(
         i -> i.group(
-                DensityFunction.CODEC.fieldOf("density").forGetter(SolidTerrainRule::density),
-                MaterialRule.CODEC.fieldOf("rule").forGetter(SolidTerrainRule::rule)
+                DensityFunction.HOLDER_HELPER_CODEC.fieldOf("density").forGetter(SolidTerrainRule::density),
+                SurfaceRules.RuleSource.CODEC.fieldOf("rule").forGetter(SolidTerrainRule::rule)
             )
             .apply(i, SolidTerrainRule::new)
     );
-
-    @Override
-    public MapCodec<SolidTerrainRule> codec() {
-        return CODEC;
-    }
-
-    @Override
-    public RuleEvaluator compile(MaterialRuleContext context) {
-        RuleEvaluator inner = this.rule.compile(context);
-        MaterialRules.DensityGetter density = context.getDensitiesInChunk(this.density, false);
-        return (blockX, blockY, blockZ) -> {
-            var state = inner.tryApply(blockX, blockY, blockZ);
-            return state != null && density.get() > 0.0F ? state : null;
-        };
-    }
+    public static final MapCodec<SurfaceRules.RuleSource> CODEC = RECORD_CODEC.xmap(
+        SolidTerrainRule::rule, rule -> new SolidTerrainRule(DensityFunctions.zero(), rule)
+    );
 }

@@ -7,7 +7,7 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.client.sounds.WeighedSoundEvents;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -29,8 +29,8 @@ public final class ChronicleVoice {
         return playing != null || !QUEUE.isEmpty();
     }
 
-    public static Identifier sound(int page) {
-        return Identifier.fromNamespaceAndPath(TheabyssMod.MODID, String.format("chronicle.page_%02d", page));
+    public static ResourceLocation sound(int page) {
+        return ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, String.format("chronicle.page_%02d", page));
     }
 
     public static void noted(int page) {
@@ -39,7 +39,7 @@ public final class ChronicleVoice {
         QUEUE.addLast(page);
     }
 
-    private static boolean recorded(SoundManager sounds, Identifier id) {
+    private static boolean recorded(SoundManager sounds, ResourceLocation id) {
         WeighedSoundEvents event = sounds.getSoundEvent(id);
         return event != null && event.getSound(RandomSource.create()) != SoundManager.EMPTY_SOUND;
     }
@@ -63,7 +63,7 @@ public final class ChronicleVoice {
         playing = null;
         while (!QUEUE.isEmpty()) {
             int page = QUEUE.pollFirst();
-            Identifier id = sound(page);
+            ResourceLocation id = sound(page);
             if (recorded(sounds, id)) {
                 playing = new SimpleSoundInstance(id, SoundSource.VOICE, 1.0F, 1.0F, RandomSource.create(), false, 0,
                     SoundInstance.Attenuation.NONE, 0.0, 0.0, 0.0, true) {

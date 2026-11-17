@@ -9,7 +9,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -105,8 +105,8 @@ public final class BowEnchantments {
             return;
         }
         CompoundTag data = net.yezon.theabyss.platform.PersistentData.get(arrow);
-        boolean seeker = data.getBooleanOr(SEEKER, false);
-        float draw = data.getFloatOr(DRAW, 0.0F);
+        boolean seeker = net.yezon.theabyss.compat.NbtCompat.getBooleanOr(data, SEEKER, false);
+        float draw = net.yezon.theabyss.compat.NbtCompat.getFloatOr(data, DRAW, 0.0F);
         if (!seeker && draw <= 0.0F) {
             return;
         }
@@ -147,7 +147,7 @@ public final class BowEnchantments {
         if (best == null) {
             return;
         }
-        if (net.yezon.theabyss.platform.PersistentData.get(arrow).getIntOr(LOCK, -1) != best.getId()) {
+        if (net.yezon.theabyss.compat.NbtCompat.getIntOr(net.yezon.theabyss.platform.PersistentData.get(arrow), LOCK, -1) != best.getId()) {
             net.yezon.theabyss.platform.PersistentData.get(arrow).putInt(LOCK, best.getId());
             Vec3 c = best.getBoundingBox().getCenter();
             SpellFxMessage.around(level, c, SpellFxMessage.ENCHANT_LOCK, List.of(best.getId()), SpellFxMessage.points(c), 0);
@@ -156,7 +156,7 @@ public final class BowEnchantments {
         Vec3 want = best.getBoundingBox().getCenter().subtract(from).normalize();
         Vec3 turned = dir.scale(1.0 - SEEK_TURN).add(want.scale(SEEK_TURN)).normalize().scale(velocity.length());
         arrow.setDeltaMovement(turned);
-        arrow.needsSync = true;
+        arrow.hasImpulse = true;
     }
 
     @SubscribeEvent
@@ -165,10 +165,10 @@ public final class BowEnchantments {
             return;
         }
         CompoundTag data = net.yezon.theabyss.platform.PersistentData.get(arrow);
-        float draw = data.getFloatOr(DRAW, 0.0F);
+        float draw = net.yezon.theabyss.compat.NbtCompat.getFloatOr(data, DRAW, 0.0F);
         Vec3 at = event.getEntity().position().add(0.0, event.getEntity().getBbHeight() * 0.5, 0.0);
         Vec3 dir = arrow.getDeltaMovement();
-        if (data.getBooleanOr(LIGHT, false)) {
+        if (net.yezon.theabyss.compat.NbtCompat.getBooleanOr(data, LIGHT, false)) {
             SpellFxMessage.around(level, at, SpellFxMessage.ENCHANT_BEAM, List.of(), SpellFxMessage.points(at, dir), 0);
         }
         if (draw <= 0.0F) {

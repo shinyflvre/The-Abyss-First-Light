@@ -27,7 +27,7 @@ public final class ScatterShot {
     }
 
     static boolean cast(ServerPlayer player, ItemStack ring, TheabyssModVariables.PlayerVariables vars) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         Vec3 look = player.getLookAngle();
         Vec3 eye = player.getEyePosition().subtract(0.0, 0.1, 0.0);
         double base = damage(vars.ManaDamage) / SPEED - 0.01;

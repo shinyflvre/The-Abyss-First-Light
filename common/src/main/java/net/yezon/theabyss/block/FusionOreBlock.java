@@ -27,7 +27,8 @@ public class FusionOreBlock extends Block implements HoverTextBlock, PlayerDestr
     }
 
     @Override
-    public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, Consumer<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, List<Component> tooltipLines, TooltipFlag flag) {
+        Consumer<Component> tooltip = tooltipLines::add;
         tooltip.accept(Component.translatable("tooltip.theabyss.craft_armor_1"));
         tooltip.accept(Component.translatable("tooltip.theabyss.craft_armor_2"));
     }
@@ -39,7 +40,7 @@ public class FusionOreBlock extends Block implements HoverTextBlock, PlayerDestr
     }
 
     @Override
-    public void afterDestroyedByPlayer(BlockState blockstate, Level world, BlockPos pos, Player entity, ItemStack toolStack, boolean willHarvest, FluidState fluid) {
+    public void afterDestroyedByPlayer(BlockState blockstate, Level world, BlockPos pos, Player entity, boolean willHarvest, FluidState fluid) {
         GetFusionOreAdvEvents.execute(entity);
     }
 }

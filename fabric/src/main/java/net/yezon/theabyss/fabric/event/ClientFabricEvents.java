@@ -1,59 +1,55 @@
 package net.yezon.theabyss.fabric.event;
 
 import com.mojang.blaze3d.audio.Channel;
+import com.mojang.blaze3d.shaders.FogShape;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.renderpearl.api.commands.RenderPass;
 import java.util.List;
+import java.util.Map;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.LerpingBossEvent;
-import net.minecraft.client.gui.screens.LevelLoadingScreen;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.player.ClientInput;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.Input;
+import net.minecraft.client.renderer.FogRenderer;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.fog.FogData;
-import net.minecraft.client.renderer.fog.environment.FogEnvironment;
-import net.minecraft.client.renderer.state.OptionsRenderState;
-import net.minecraft.client.renderer.state.level.LevelRenderState;
-import net.minecraft.client.renderer.state.level.PlayerRenderState;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.Music;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.FogType;
 import net.yezon.theabyss.platform.client.event.AddSectionGeometryEvent;
 import net.yezon.theabyss.platform.client.event.ClientPlayerNetworkEvent;
 import net.yezon.theabyss.platform.client.event.ClientTickEvent;
 import net.yezon.theabyss.platform.client.event.ComputeFovModifierEvent;
 import net.yezon.theabyss.platform.client.event.CustomizeGuiOverlayEvent;
-import net.yezon.theabyss.platform.client.event.ExtractLevelRenderStateEvent;
 import net.yezon.theabyss.platform.client.event.InputEvent;
 import net.yezon.theabyss.platform.client.event.ModelEvent;
 import net.yezon.theabyss.platform.client.event.MovementInputUpdateEvent;
 import net.yezon.theabyss.platform.client.event.RenderArmEvent;
 import net.yezon.theabyss.platform.client.event.RenderFrameEvent;
-import net.yezon.theabyss.platform.client.event.RenderGuiEvent;
-import net.yezon.theabyss.platform.client.event.RenderGuiLayerEvent;
 import net.yezon.theabyss.platform.client.event.RenderHandEvent;
 import net.yezon.theabyss.platform.client.event.RenderLevelStageEvent;
 import net.yezon.theabyss.platform.client.event.RenderLivingEvent;
 import net.yezon.theabyss.platform.client.event.RenderPlayerEvent;
-import net.yezon.theabyss.platform.client.event.ScreenEvent;
 import net.yezon.theabyss.platform.client.event.SelectMusicEvent;
-import net.yezon.theabyss.platform.client.event.SubmitCustomGeometryEvent;
 import net.yezon.theabyss.platform.client.event.TextureAtlasStitchedEvent;
 import net.yezon.theabyss.platform.client.event.ViewportEvent;
 import net.yezon.theabyss.platform.client.event.sound.PlaySoundEvent;
@@ -63,8 +59,8 @@ import net.yezon.theabyss.platform.client.event.sound.SoundEngineLoadEvent;
 import net.yezon.theabyss.platform.event.AbyssEventBus;
 import net.yezon.theabyss.platform.event.entity.player.ItemTooltipEvent;
 import net.yezon.theabyss.platform.fml.event.lifecycle.FMLClientSetupEvent;
-import org.joml.Matrix4fc;
-import org.joml.Vector4f;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
 public final class ClientFabricEvents {
@@ -119,9 +115,9 @@ public final class ClientFabricEvents {
             && AbyssEventBus.post(new InputEvent.MouseScrollingEvent(scrollDeltaY)).isCanceled();
     }
 
-    public static void movementInput(ClientInput input) {
+    public static void movementInput(Player player, Input input) {
         if (AbyssEventBus.hasListeners(MovementInputUpdateEvent.class)) {
-            AbyssEventBus.post(new MovementInputUpdateEvent(input));
+            AbyssEventBus.post(new MovementInputUpdateEvent(player, input));
         }
     }
 
@@ -132,45 +128,58 @@ public final class ClientFabricEvents {
         return AbyssEventBus.post(new ComputeFovModifierEvent(modifier, player)).getNewFovModifier();
     }
 
-    public static float fov(Camera camera, float partialTick, float fov) {
+    public static double fov(Camera camera, float partialTick, double fov, boolean usedConfiguredFov) {
         if (!AbyssEventBus.hasListeners(ViewportEvent.ComputeFov.class)) {
             return fov;
         }
-        return AbyssEventBus.post(new ViewportEvent.ComputeFov(camera, fov, partialTick)).getFOV();
+        float value = (float)fov;
+        float result = AbyssEventBus.post(new ViewportEvent.ComputeFov(camera, partialTick, value, usedConfiguredFov)).getFOV();
+        return result != value ? result : fov;
     }
 
-    public static ViewportEvent.@Nullable ComputeCameraAngles cameraAngles(float partialTick, float yaw, float pitch) {
+    public static ViewportEvent.@Nullable ComputeCameraAngles cameraAngles(Camera camera, float partialTick, float yaw, float pitch) {
         if (!AbyssEventBus.hasListeners(ViewportEvent.ComputeCameraAngles.class)) {
             return null;
         }
-        return AbyssEventBus.post(new ViewportEvent.ComputeCameraAngles(partialTick, pitch, 0.0F, yaw));
+        return AbyssEventBus.post(new ViewportEvent.ComputeCameraAngles(camera, partialTick, yaw, pitch, 0.0F));
     }
 
-    public static void fogColor(Vector4f color) {
-        if (AbyssEventBus.hasListeners(ViewportEvent.ComputeFogColor.class)) {
-            ViewportEvent.ComputeFogColor event = AbyssEventBus.post(new ViewportEvent.ComputeFogColor(color.z, color.y, color.x));
-            color.x = event.getRed();
-            color.y = event.getGreen();
-            color.z = event.getBlue();
+    public static boolean listensToFogColor() {
+        return AbyssEventBus.hasListeners(ViewportEvent.ComputeFogColor.class);
+    }
+
+    public static Vector3f fogColor(Camera camera, float partialTick, float red, float green, float blue) {
+        ViewportEvent.ComputeFogColor event = AbyssEventBus.post(new ViewportEvent.ComputeFogColor(camera, partialTick, red, green, blue));
+        return new Vector3f(event.getRed(), event.getGreen(), event.getBlue());
+    }
+
+    public static void renderFog(FogRenderer.FogMode mode, Camera camera, float partialTick) {
+        if (!AbyssEventBus.hasListeners(ViewportEvent.RenderFog.class)) {
+            return;
+        }
+        FogType type = camera.getFluidInCamera();
+        ViewportEvent.RenderFog event = AbyssEventBus.post(new ViewportEvent.RenderFog(mode, type, camera, partialTick, RenderSystem.getShaderFogStart(),
+            RenderSystem.getShaderFogEnd(), RenderSystem.getShaderFogShape()));
+        if (event.isChanged()) {
+            RenderSystem.setShaderFogStart(event.getNearPlaneDistance());
+            RenderSystem.setShaderFogEnd(event.getFarPlaneDistance());
+            FogShape shape = event.getFogShape();
+            RenderSystem.setShaderFogShape(shape);
         }
     }
 
-    public static boolean listensToRenderFog() {
-        return AbyssEventBus.hasListeners(ViewportEvent.RenderFog.class);
+    public static boolean listensToLevelStages() {
+        return AbyssEventBus.hasListeners(RenderLevelStageEvent.class);
     }
 
-    public static void renderFog(@Nullable FogEnvironment environment, FogData fog) {
-        if (AbyssEventBus.hasListeners(ViewportEvent.RenderFog.class)) {
-            ViewportEvent.RenderFog event = AbyssEventBus.post(new ViewportEvent.RenderFog(environment, fog.environmentalEnd, fog.environmentalStart));
-            fog.environmentalEnd = event.getFarPlaneDistance();
-            fog.environmentalStart = event.getNearPlaneDistance();
-        }
-    }
-
-    public static void extractLevel(Camera camera, DeltaTracker deltaTracker, Frustum frustum, ClientLevel level, OptionsRenderState options,
-        LevelRenderState renderState) {
-        if (AbyssEventBus.hasListeners(ExtractLevelRenderStateEvent.class)) {
-            AbyssEventBus.post(new ExtractLevelRenderStateEvent(camera, deltaTracker, frustum, level, options, renderState));
+    public static void levelStage(RenderLevelStageEvent.Stage stage, LevelRenderer levelRenderer, @Nullable PoseStack poseStack, Matrix4f modelViewMatrix,
+        Matrix4f projectionMatrix, int renderTick, Camera camera, Frustum frustum) {
+        if (AbyssEventBus.hasListeners(RenderLevelStageEvent.class)) {
+            Minecraft mc = Minecraft.getInstance();
+            mc.getProfiler().push(stage.toString());
+            AbyssEventBus.post(new RenderLevelStageEvent(stage, levelRenderer, poseStack, modelViewMatrix, projectionMatrix, renderTick, mc.getTimer(), camera,
+                frustum));
+            mc.getProfiler().pop();
         }
     }
 
@@ -180,88 +189,49 @@ public final class ClientFabricEvents {
         }
     }
 
-    public static void submitCustomGeometry(LevelRenderState renderState, PoseStack poseStack, SubmitNodeCollector collector) {
-        if (AbyssEventBus.hasListeners(SubmitCustomGeometryEvent.class)) {
-            AbyssEventBus.post(new SubmitCustomGeometryEvent(renderState, poseStack, collector));
+    public static CustomizeGuiOverlayEvent.@Nullable BossEventProgress bossEventProgress(GuiGraphics graphics, LerpingBossEvent bossEvent, int x, int y,
+        int increment) {
+        if (!AbyssEventBus.hasListeners(CustomizeGuiOverlayEvent.BossEventProgress.class)) {
+            return null;
         }
+        return AbyssEventBus.post(new CustomizeGuiOverlayEvent.BossEventProgress(graphics, Minecraft.getInstance().getTimer(), bossEvent, x, y, increment));
     }
 
-    public static void afterOpaqueBlocks(LevelRenderState renderState, Matrix4fc modelViewMatrix, RenderPass renderPass) {
-        if (AbyssEventBus.hasListeners(RenderLevelStageEvent.AfterOpaqueBlocks.class)) {
-            AbyssEventBus.post(new RenderLevelStageEvent.AfterOpaqueBlocks(renderState, modelViewMatrix, renderPass));
-        }
+    public static boolean renderHand(InteractionHand hand, PoseStack poseStack, MultiBufferSource buffers, int packedLight, float partialTick,
+        float interpolatedPitch, float swingProgress, float equipProgress, ItemStack stack) {
+        return AbyssEventBus.hasListeners(RenderHandEvent.class) && AbyssEventBus.post(new RenderHandEvent(hand, poseStack, buffers, packedLight, partialTick,
+            interpolatedPitch, swingProgress, equipProgress, stack)).isCanceled();
     }
 
-    public static void screenRenderPost(GuiGraphicsExtractor graphics, Screen screen) {
-        if (AbyssEventBus.hasListeners(ScreenEvent.Render.Post.class)) {
-            AbyssEventBus.post(new ScreenEvent.Render.Post(graphics, screen));
-        }
-    }
-
-    public static boolean guiActive() {
-        return !(Minecraft.getInstance().gui.screen() instanceof LevelLoadingScreen);
-    }
-
-    public static boolean renderGuiPre() {
-        return AbyssEventBus.hasListeners(RenderGuiEvent.Pre.class) && AbyssEventBus.post(new RenderGuiEvent.Pre()).isCanceled();
-    }
-
-    public static void renderGuiPost() {
-        if (AbyssEventBus.hasListeners(RenderGuiEvent.Post.class)) {
-            AbyssEventBus.post(new RenderGuiEvent.Post());
-        }
-    }
-
-    public static boolean guiLayerPre(GuiGraphicsExtractor graphics, Identifier layer) {
-        return AbyssEventBus.hasListeners(RenderGuiLayerEvent.Pre.class) && AbyssEventBus.post(new RenderGuiLayerEvent.Pre(graphics, layer)).isCanceled();
-    }
-
-    public static void guiLayerPost(GuiGraphicsExtractor graphics, Identifier layer) {
-        if (AbyssEventBus.hasListeners(RenderGuiLayerEvent.Post.class)) {
-            AbyssEventBus.post(new RenderGuiLayerEvent.Post(graphics, layer));
-        }
-    }
-
-    public static void guiLayerSkipped(GuiGraphicsExtractor graphics, Identifier... layers) {
-        for (Identifier layer : layers) {
-            if (!guiLayerPre(graphics, layer)) {
-                guiLayerPost(graphics, layer);
-            }
-        }
-    }
-
-    public static boolean bossEventProgress(LerpingBossEvent bossEvent, GuiGraphicsExtractor graphics, int x, int y) {
-        return AbyssEventBus.hasListeners(CustomizeGuiOverlayEvent.BossEventProgress.class)
-            && AbyssEventBus.post(new CustomizeGuiOverlayEvent.BossEventProgress(bossEvent, graphics, x, y)).isCanceled();
-    }
-
-    public static boolean renderHand(float equipProgress, InteractionHand hand, ItemStack stack, PlayerRenderState playerState, PoseStack poseStack,
-        SubmitNodeCollector collector, float swingProgress) {
-        if (!AbyssEventBus.hasListeners(RenderHandEvent.class)) {
-            return false;
-        }
-        int light = playerState.avatarRenderState.lightCoords;
-        return AbyssEventBus.post(new RenderHandEvent(equipProgress, hand, stack, light, playerState, poseStack, collector, swingProgress)).isCanceled();
-    }
-
-    public static boolean renderArm(HumanoidArm arm, int lightCoords, PlayerRenderState playerState, PoseStack poseStack, Identifier skinTexture,
-        SubmitNodeCollector collector, boolean hasSleeve) {
+    public static boolean renderArm(PoseStack poseStack, MultiBufferSource buffers, int packedLight, AbstractClientPlayer player, HumanoidArm arm) {
         return AbyssEventBus.hasListeners(RenderArmEvent.class)
-            && AbyssEventBus.post(new RenderArmEvent(arm, lightCoords, playerState, poseStack, skinTexture, collector, hasSleeve)).isCanceled();
+            && AbyssEventBus.post(new RenderArmEvent(poseStack, buffers, packedLight, player, arm)).isCanceled();
     }
 
-    public static boolean renderPlayerPre(PoseStack poseStack, LivingEntityRenderState state) {
-        return AbyssEventBus.hasListeners(RenderPlayerEvent.Pre.class) && AbyssEventBus.post(new RenderPlayerEvent.Pre(poseStack, state)).isCanceled();
+    public static boolean renderPlayerPre(Player player, PlayerRenderer renderer, float partialTick, PoseStack poseStack, MultiBufferSource buffers,
+        int packedLight) {
+        return AbyssEventBus.hasListeners(RenderPlayerEvent.Pre.class)
+            && AbyssEventBus.post(new RenderPlayerEvent.Pre(player, renderer, partialTick, poseStack, buffers, packedLight)).isCanceled();
     }
 
-    public static void renderPlayerPost(PoseStack poseStack, LivingEntityRenderState state) {
+    public static void renderPlayerPost(Player player, PlayerRenderer renderer, float partialTick, PoseStack poseStack, MultiBufferSource buffers,
+        int packedLight) {
         if (AbyssEventBus.hasListeners(RenderPlayerEvent.Post.class)) {
-            AbyssEventBus.post(new RenderPlayerEvent.Post(poseStack, state));
+            AbyssEventBus.post(new RenderPlayerEvent.Post(player, renderer, partialTick, poseStack, buffers, packedLight));
         }
     }
 
-    public static boolean renderLivingPre(PoseStack poseStack, LivingEntityRenderState state) {
-        return AbyssEventBus.hasListeners(RenderLivingEvent.Pre.class) && AbyssEventBus.post(new RenderLivingEvent.Pre(poseStack, state)).isCanceled();
+    public static boolean renderLivingPre(LivingEntity entity, LivingEntityRenderer<?, ?> renderer, float partialTick, PoseStack poseStack,
+        MultiBufferSource buffers, int packedLight) {
+        return AbyssEventBus.hasListeners(RenderLivingEvent.Pre.class)
+            && AbyssEventBus.post(new RenderLivingEvent.Pre(entity, renderer, partialTick, poseStack, buffers, packedLight)).isCanceled();
+    }
+
+    public static void renderLivingPost(LivingEntity entity, LivingEntityRenderer<?, ?> renderer, float partialTick, PoseStack poseStack,
+        MultiBufferSource buffers, int packedLight) {
+        if (AbyssEventBus.hasListeners(RenderLivingEvent.Post.class)) {
+            AbyssEventBus.post(new RenderLivingEvent.Post(entity, renderer, partialTick, poseStack, buffers, packedLight));
+        }
     }
 
     public static @Nullable SoundInstance playSound(SoundInstance sound) {
@@ -317,9 +287,9 @@ public final class ClientFabricEvents {
         }
     }
 
-    public static void modifyBakingResult(ModelBakery.BakingResult result) {
+    public static void modifyBakingResult(Map<ModelResourceLocation, BakedModel> models, ModelBakery bakery) {
         if (AbyssEventBus.hasListeners(ModelEvent.ModifyBakingResult.class)) {
-            AbyssEventBus.post(new ModelEvent.ModifyBakingResult(result));
+            AbyssEventBus.post(new ModelEvent.ModifyBakingResult(models, bakery));
         }
     }
 }

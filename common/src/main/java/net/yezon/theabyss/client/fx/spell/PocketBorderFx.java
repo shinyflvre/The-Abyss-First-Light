@@ -4,9 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.Dist;
@@ -20,7 +20,7 @@ import net.yezon.theabyss.pocket.PocketCells;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public final class PocketBorderFx extends Effect {
-    private static final RenderType FIELD = LightTrail.type(Identifier.fromNamespaceAndPath("theabyss", "textures/entity/pocket_field.png"));
+    private static final RenderType FIELD = LightTrail.type(ResourceLocation.fromNamespaceAndPath("theabyss", "textures/entity/pocket_field.png"));
     private static final int COLOUR = 0x3AB4FF;
     private static final double SHOW = 4.5;
     private static final double PATCH = 5.0;

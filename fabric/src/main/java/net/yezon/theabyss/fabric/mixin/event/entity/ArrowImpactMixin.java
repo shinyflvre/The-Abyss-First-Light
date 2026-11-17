@@ -1,32 +1,34 @@
 package net.yezon.theabyss.fabric.mixin.event.entity;
 
-import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.EntityHitResult;
+import com.llamalad7.mixinextras.injector.WrapWithCondition;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.ProjectileDeflection;
+import net.minecraft.world.phys.HitResult;
 import net.yezon.theabyss.fabric.event.EntityFabricEvents;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(AbstractArrow.class)
 public abstract class ArrowImpactMixin {
-    @Inject(method = "stepMoveAndHit", at = @At(value = "INVOKE",
-        target = "Lnet/minecraft/world/entity/projectile/arrow/AbstractArrow;hitTargetOrDeflectSelf(Lnet/minecraft/world/phys/HitResult;)Lnet/minecraft/world/entity/projectile/ProjectileDeflection;"),
-        cancellable = true)
-    private void theabyss$blockImpact(BlockHitResult blockHitResult, CallbackInfo ci) {
-        if (EntityFabricEvents.projectileImpact((AbstractArrow)(Object)this, blockHitResult)) {
-            ci.cancel();
+    @WrapOperation(method = "tick", at = @At(value = "INVOKE",
+        target = "Lnet/minecraft/world/entity/projectile/AbstractArrow;hitTargetOrDeflectSelf(Lnet/minecraft/world/phys/HitResult;)Lnet/minecraft/world/entity/projectile/ProjectileDeflection;"))
+    private ProjectileDeflection theabyss$impact(AbstractArrow arrow, HitResult hit, Operation<ProjectileDeflection> original,
+        @Share("theabyssImpactCancelled") LocalBooleanRef cancelled) {
+        if (EntityFabricEvents.projectileImpact(arrow, hit)) {
+            cancelled.set(true);
+            return ProjectileDeflection.REVERSE;
         }
+        cancelled.set(false);
+        return original.call(arrow, hit);
     }
 
-    @Inject(method = "stepMoveAndHit", at = @At(value = "INVOKE",
-        target = "Lnet/minecraft/world/entity/projectile/arrow/AbstractArrow;hitTargetsOrDeflectSelf(Ljava/util/Collection;)Lnet/minecraft/world/entity/projectile/ProjectileDeflection;"),
-        cancellable = true)
-    private void theabyss$entityImpact(BlockHitResult blockHitResult, CallbackInfo ci, @Local(name = "firstEntityHit") EntityHitResult firstEntityHit) {
-        if (EntityFabricEvents.projectileImpact((AbstractArrow)(Object)this, firstEntityHit)) {
-            ci.cancel();
-        }
+    @WrapWithCondition(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/projectile/AbstractArrow;hasImpulse:Z", opcode = Opcodes.PUTFIELD))
+    private boolean theabyss$impulseAfterImpact(AbstractArrow arrow, boolean value, @Share("theabyssImpactCancelled") LocalBooleanRef cancelled) {
+        return !cancelled.get();
     }
 }

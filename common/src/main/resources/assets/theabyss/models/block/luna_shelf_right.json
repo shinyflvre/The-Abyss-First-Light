@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:block/template_shelf_right",
+  "parent": "theabyss:block/template_shelf_right",
   "textures": {
     "all": "theabyss:block/luna_shelf",
     "particle": "theabyss:block/stripped_luna_log"

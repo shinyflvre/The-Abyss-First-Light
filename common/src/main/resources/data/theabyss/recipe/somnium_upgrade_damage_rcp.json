@@ -1,12 +1,24 @@
 {
   "type": "theabyss:infuser_recipe_type",
   "ingredients": [
-    "theabyss:roka_horn",
-    "theabyss:elder_eye",
-    "theabyss:crystal_hand",
-    "theabyss:creeper_dust",
-    "theabyss:somnium",
-    "theabyss:loran_energy"
+    {
+      "item": "theabyss:roka_horn"
+    },
+    {
+      "item": "theabyss:elder_eye"
+    },
+    {
+      "item": "theabyss:crystal_hand"
+    },
+    {
+      "item": "theabyss:creeper_dust"
+    },
+    {
+      "item": "theabyss:somnium"
+    },
+    {
+      "item": "theabyss:loran_energy"
+    }
   ],
   "output": {
     "id": "theabyss:somnium_damage_upragde",

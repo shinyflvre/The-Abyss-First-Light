@@ -3,9 +3,8 @@ package net.yezon.theabyss.client.fx;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.SectionPos;
-import net.minecraft.server.level.ParticleStatus;
+import net.minecraft.client.ParticleStatus;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
@@ -34,22 +33,13 @@ public final class AmbientSmoke {
     }
 
     @SubscribeEvent
-    public static void registerPipeline(net.yezon.theabyss.platform.client.event.RegisterRenderPipelinesEvent event) {
-        event.registerPipeline(AmbientSmokeParticle.PIPELINE);
-        event.registerPipeline(net.yezon.theabyss.client.particle.NightbladeTrailParticle.PIPELINE);
-        event.registerPipeline(net.yezon.theabyss.client.renderer.LightTrail.PIPELINE);
-        event.registerPipeline(net.yezon.theabyss.client.fx.SpellWheelClient.PIPELINE);
-        event.registerPipeline(net.yezon.theabyss.client.gui.SkillTreeScreen.PIPELINE);
-    }
-
-    @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
         ClientLevel level = mc.level;
         if (level == null || mc.player == null || mc.isPaused() || !enabled()) {
             return;
         }
-        String dimension = level.dimension().identifier().toString();
+        String dimension = level.dimension().location().toString();
         if (!dimension.equals("theabyss:the_abyss") && !dimension.equals("theabyss:frost_world")) {
             return;
         }
@@ -59,7 +49,7 @@ public final class AmbientSmoke {
         }
         int target = particles == ParticleStatus.DECREASED ? TARGET / 2 : TARGET;
         RandomSource random = level.getRandom();
-        Vec3 camera = mc.gameRenderer.mainCamera().position();
+        Vec3 camera = mc.gameRenderer.getMainCamera().getPosition();
         Vec3 motion = mc.player.getDeltaMovement();
         Vec3 ahead = new Vec3(motion.x, 0.0, motion.z).scale(30.0);
         if (ahead.length() > RADIUS * 0.6) {
@@ -77,7 +67,7 @@ public final class AmbientSmoke {
             if (!level.hasChunk(SectionPos.blockToSectionCoord(blockX), SectionPos.blockToSectionCoord(blockZ))) {
                 continue;
             }
-            int ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, blockX, blockZ);
+            int ground = ClientGroundHeight.noLeaves(level, blockX, blockZ);
             if (camera.y < ground - 12.0) {
                 continue;
             }
@@ -85,7 +75,7 @@ public final class AmbientSmoke {
             double vx = 0.006 + (random.nextDouble() - 0.5) * 0.006;
             double vz = 0.003 + (random.nextDouble() - 0.5) * 0.006;
             double vy = (random.nextDouble() - 0.5) * 0.002;
-            level.addParticle(TheabyssModParticleTypes.AMBIENT_SMOKE.get(), true, true, x, y, z, vx, vy, vz);
+            level.addAlwaysVisibleParticle(TheabyssModParticleTypes.AMBIENT_SMOKE.get(), true, x, y, z, vx, vy, vz);
         }
     }
 }

@@ -11,7 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -57,23 +57,23 @@ public final class SilentEchoes {
         SilentEchoEntity existing = echoOf(player);
         if (existing != null) {
             dissolve(existing, existing.position());
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.echo.dismissed"));
+            player.displayClientMessage(Component.translatable("ring.theabyss.echo.dismissed"), true);
             return;
         }
         if (player.isSpectator() || PossessionManager.isPossessing(player) || AstralData.isAstral(player)) {
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.echo.cannot"));
+            player.displayClientMessage(Component.translatable("ring.theabyss.echo.cannot"), true);
             return;
         }
         RingCast cast = RingCast.start(level, player, ring, COST, player.position());
         if (cast == null) {
             return;
         }
-        SilentEchoEntity echo = TheabyssModEntities.SILENT_ECHO.get().create(level, EntitySpawnReason.MOB_SUMMONED);
+        SilentEchoEntity echo = TheabyssModEntities.SILENT_ECHO.get().create(level);
         if (echo == null) {
             return;
         }
         Vec3 at = spot(level, player, echo);
-        echo.snapTo(at.x, at.y, at.z, player.getYRot(), 0.0F);
+        echo.moveTo(at.x, at.y, at.z, player.getYRot(), 0.0F);
         echo.setYHeadRot(player.getYHeadRot());
         echo.setYBodyRot(player.getYRot());
         echo.bind(player);
@@ -86,7 +86,7 @@ public final class SilentEchoes {
         RingFx.implode(level, at.add(0.0, 0.1, 0.0), 3.5F, 16, LILAC);
         RingVisuals.sound(level, at, SoundEvents.ILLUSIONER_PREPARE_MIRROR, 0.9F, 0.85F);
         RingVisuals.sound(level, at, SoundEvents.ILLUSIONER_MIRROR_MOVE, 0.8F, 0.7F);
-        player.sendOverlayMessage(Component.translatable("ring.theabyss.echo.called"));
+        player.displayClientMessage(Component.translatable("ring.theabyss.echo.called"), true);
         cast.durability(ring.getItem(), 1).charge(COST);
     }
 
@@ -95,7 +95,7 @@ public final class SilentEchoes {
         if (id == null) {
             return null;
         }
-        Entity entity = player.level().getEntity(id);
+        Entity entity = player.serverLevel().getEntity(id);
         if (entity instanceof SilentEchoEntity echo && echo.isAlive()) {
             return echo;
         }
@@ -132,7 +132,7 @@ public final class SilentEchoes {
             return;
         }
         double factor = TheabyssModVariables.getPlayerVariables(player).ManaCooldown;
-        player.getCooldowns().addCooldown(new ItemStack(TheabyssModItems.RING_OF_SILENT_ECHOES.get()), (int)(COOLDOWN * factor));
+        player.getCooldowns().addCooldown(TheabyssModItems.RING_OF_SILENT_ECHOES.get(), (int)(COOLDOWN * factor));
         EchoVision.vesselGone(player, echo);
     }
 
@@ -141,7 +141,7 @@ public final class SilentEchoes {
             return;
         }
         Vec3 from = echo.position();
-        echo.teleportTo(to.x, to.y, to.z);
+        net.yezon.theabyss.util.AbyssTeleport.to(echo, to.x, to.y, to.z);
         SpellFxMessage.around(level, from, to, new SpellFxMessage(SpellFxMessage.ECHO_LINK, List.of(),
             List.of(from.x, from.y + 1.0, from.z, to.x, to.y + 1.0, to.z), 10));
         RingVisuals.sound(level, to, SoundEvents.ILLUSIONER_MIRROR_MOVE, 0.4F, 1.3F);

@@ -1,9 +1,10 @@
 package net.yezon.theabyss.entity;
 
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -45,7 +46,7 @@ final class LurkerFx {
     }
 
     static void sound(ServerLevel level, Vec3 at, String id, float volume, float pitch) {
-        SoundEvent sound = BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse(id));
+        SoundEvent sound = BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse(id));
         if (sound != null) {
             level.playSound(null, at.x, at.y, at.z, sound, SoundSource.HOSTILE, volume, pitch);
         }
@@ -87,7 +88,7 @@ final class LurkerFx {
     static void splash(ServerLevel level, Vec3 at, boolean onEntity) {
         sound(level, at, "minecraft:block.slime_block.break", 1.1F, 0.6F);
         sound(level, at, "minecraft:block.honey_block.break", 0.9F, 0.7F);
-        level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, TheabyssModItems.LURKER_SOBBER.get()), at.x, at.y + 0.2, at.z, 18, 0.25, 0.2, 0.25, 0.12);
+        level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(TheabyssModItems.LURKER_SOBBER.get())), at.x, at.y + 0.2, at.z, 18, 0.25, 0.2, 0.25, 0.12);
         RandomSource random = level.getRandom();
         for (int i = 0; i < 16; i++) {
             double a = random.nextDouble() * Math.PI * 2.0;

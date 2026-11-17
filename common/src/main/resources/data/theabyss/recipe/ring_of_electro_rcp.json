@@ -1,15 +1,33 @@
 {
   "type": "theabyss:arcane_recipe_type",
   "ingredients": [
-    "theabyss:ring_of_ring",
-    "theabyss:thunder_stone",
-    "theabyss:ardor_powder",
-    "theabyss:thunder_stone",
-    "theabyss:ardor_powder",
-    "theabyss:thunder_stone",
-    "theabyss:ardor_powder",
-    "theabyss:thunder_stone",
-    "theabyss:ardor_powder"
+    {
+      "item": "theabyss:ring_of_ring"
+    },
+    {
+      "item": "theabyss:thunder_stone"
+    },
+    {
+      "item": "theabyss:ardor_powder"
+    },
+    {
+      "item": "theabyss:thunder_stone"
+    },
+    {
+      "item": "theabyss:ardor_powder"
+    },
+    {
+      "item": "theabyss:thunder_stone"
+    },
+    {
+      "item": "theabyss:ardor_powder"
+    },
+    {
+      "item": "theabyss:thunder_stone"
+    },
+    {
+      "item": "theabyss:ardor_powder"
+    }
   ],
   "output": {
     "id": "theabyss:ring_of_electro",

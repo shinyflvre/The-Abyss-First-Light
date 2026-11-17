@@ -1,6 +1,6 @@
 package net.yezon.theabyss.client.fx;
 
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.EventBusSubscriber;
 import net.yezon.theabyss.TheabyssMod;

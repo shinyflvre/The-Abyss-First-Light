@@ -328,7 +328,7 @@ public class CrystalGolemAttackGoal extends Goal {
         Vec3 fist = this.golem.position().add(this.forward().scale(1.2)).add(this.left().scale(-0.2)).add(0.0, 1.8, 0.0);
         level.playSound(null, fist.x, fist.y, fist.z, SoundEvents.IRON_GOLEM_ATTACK, SoundSource.HOSTILE, 1.0F, 0.75F);
         if (this.inFront(target, 3.0, 0.2)) {
-            this.golem.doHurtTarget(level, target);
+            this.golem.doHurtTarget(target);
             CrystalGolemFx.punchHit(level, fist);
         }
     }
@@ -344,21 +344,21 @@ public class CrystalGolemAttackGoal extends Goal {
             NightbladeImpactMessage.send(player, true);
             CrystalGolemFx.ironParried(level, fist);
             this.golem.setIronFist(false);
-            this.golem.knockback(0.6, this.forward().x, this.forward().z, null, 0.0F);
-            this.golem.needsSync = true;
+            this.golem.knockback(0.6, this.forward().x, this.forward().z);
+            this.golem.hasImpulse = true;
             this.attack = Attack.STAGGER;
             this.attackTick = 0;
             this.golem.triggerAnim("action", Attack.STAGGER.animation);
             return;
         }
         float damage = (float)this.golem.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE);
-        if (target.hurtServer(level, this.golem.damageSources().mobAttack(this.golem), damage)) {
+        if (target.hurt(this.golem.damageSources().mobAttack(this.golem), damage)) {
             Vec3 away = target.position().subtract(this.golem.position());
             Vec3 dir = new Vec3(away.x, 0.0, away.z).lengthSqr() < 1.0E-4 ? this.forward() : new Vec3(away.x, 0.0, away.z).normalize();
             target.setDeltaMovement(dir.x * KNOCKBACK_SPEED, KNOCKBACK_LIFT, dir.z * KNOCKBACK_SPEED);
             target.resetFallDistance();
-            target.needsSync = true;
-            target.syncVelocity = true;
+            target.hasImpulse = true;
+            target.hurtMarked = true;
             NightbladeShakeMessage.around(level, fist, 10.0, 0.9F, 0.35F);
         }
         CrystalGolemFx.ironHit(level, fist, this.forward());
@@ -423,7 +423,7 @@ public class CrystalGolemAttackGoal extends Goal {
             if (spike.time() > now) {
                 return false;
             }
-            NightbladeSpikeEntity entity = TheabyssModEntities.NIGHTBLADE_SPIKE.get().create(level, net.minecraft.world.entity.EntitySpawnReason.MOB_SUMMONED);
+            NightbladeSpikeEntity entity = TheabyssModEntities.NIGHTBLADE_SPIKE.get().create(level);
             if (entity != null) {
                 entity.setPos(spike.at());
                 entity.setupGolem(this.golem, SPIKE_WARMUP, damage, spike.yaw());
@@ -443,7 +443,7 @@ public class CrystalGolemAttackGoal extends Goal {
         int flight = (int)Math.max(12, Math.min(28, Math.round(distance * 1.1)));
         Vec3 aim = target.position().add(0.0, 0.4, 0.0).add(target.getDeltaMovement().multiply(flight * 0.6, 0.0, flight * 0.6));
         Vec3 velocity = aim.subtract(hand).add(0.0, CrystalGolemShardEntity.GRAVITY * flight * (flight + 1) / 2.0, 0.0).scale(1.0 / flight);
-        CrystalGolemShardEntity shard = TheabyssModEntities.CRYSTAL_GOLEM_SHARD.get().create(level, net.minecraft.world.entity.EntitySpawnReason.MOB_SUMMONED);
+        CrystalGolemShardEntity shard = TheabyssModEntities.CRYSTAL_GOLEM_SHARD.get().create(level);
         if (shard == null) {
             return;
         }
@@ -491,15 +491,15 @@ public class CrystalGolemAttackGoal extends Goal {
             if (!this.chargeHit.add(victim.getId())) {
                 continue;
             }
-            if (victim.hurtServer(level, this.golem.damageSources().mobAttack(this.golem), damage)) {
+            if (victim.hurt(this.golem.damageSources().mobAttack(this.golem), damage)) {
                 Vec3 side = new Vec3(-this.chargeDir.z, 0.0, this.chargeDir.x);
                 Vec3 off = victim.position().subtract(this.golem.position());
                 double sign = off.dot(side) >= 0.0 ? 1.0 : -1.0;
                 Vec3 push = this.chargeDir.scale(1.2).add(side.scale(0.7 * sign));
                 victim.setDeltaMovement(push.x, 0.55, push.z);
                 victim.resetFallDistance();
-                victim.needsSync = true;
-                victim.syncVelocity = true;
+                victim.hasImpulse = true;
+                victim.hurtMarked = true;
                 CrystalGolemFx.chargeHit(level, victim);
             }
         }
@@ -531,12 +531,12 @@ public class CrystalGolemAttackGoal extends Goal {
             if (distance > radius || !grounded || !this.waveHit.add(victim.getId())) {
                 continue;
             }
-            if (victim.hurtServer(level, this.golem.damageSources().mobAttack(this.golem), damage)) {
+            if (victim.hurt(this.golem.damageSources().mobAttack(this.golem), damage)) {
                 Vec3 out = distance < 0.01 ? this.forward() : new Vec3(dx / distance, 0.0, dz / distance);
                 victim.setDeltaMovement(out.x * 0.5, 0.5, out.z * 0.5);
                 victim.resetFallDistance();
-                victim.needsSync = true;
-                victim.syncVelocity = true;
+                victim.hasImpulse = true;
+                victim.hurtMarked = true;
                 CrystalGolemFx.waveHit(level, victim);
             }
         }

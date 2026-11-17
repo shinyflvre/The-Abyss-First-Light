@@ -21,7 +21,7 @@ public final class DashEffectActiveEvents {
         DamageSource source = new DamageSource(level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.GENERIC));
         for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, new AABB(dasher.position(), dasher.position()).inflate(RADIUS),
             target -> target != dasher && target.isAlive())) {
-            target.hurtServer(level, source, DAMAGE);
+            target.hurt(source, DAMAGE);
             target.igniteForSeconds(1);
         }
     }

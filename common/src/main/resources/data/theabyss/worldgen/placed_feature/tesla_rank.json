@@ -1,5 +1,35 @@
 {
-  "feature": "theabyss:tesla_rank",
+  "feature": {
+    "type": "minecraft:random_patch",
+    "config": {
+      "feature": {
+        "feature": "theabyss:tesla_rank",
+        "placement": [
+          {
+            "type": "minecraft:block_predicate_filter",
+            "predicate": {
+              "type": "minecraft:all_of",
+              "predicates": [
+                {
+                  "type": "minecraft:matching_blocks",
+                  "blocks": "minecraft:air"
+                },
+                {
+                  "type": "minecraft:would_survive",
+                  "state": {
+                    "Name": "theabyss:tesla_rank"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "tries": 3,
+      "xz_spread": 7,
+      "y_spread": 3
+    }
+  },
   "placement": [
     {
       "type": "minecraft:count",
@@ -18,49 +48,6 @@
     },
     {
       "type": "minecraft:biome"
-    },
-    {
-      "type": "minecraft:count",
-      "count": 3
-    },
-    {
-      "type": "minecraft:offset",
-      "x": {
-        "type": "minecraft:trapezoid",
-        "max": 7,
-        "min": -7,
-        "plateau": 0
-      },
-      "y": {
-        "type": "minecraft:trapezoid",
-        "max": 3,
-        "min": -3,
-        "plateau": 0
-      },
-      "z": {
-        "type": "minecraft:trapezoid",
-        "max": 7,
-        "min": -7,
-        "plateau": 0
-      }
-    },
-    {
-      "type": "minecraft:block_predicate_filter",
-      "predicate": {
-        "type": "minecraft:all_of",
-        "predicates": [
-          {
-            "type": "minecraft:matching_blocks",
-            "blocks": "minecraft:air"
-          },
-          {
-            "type": "minecraft:would_survive",
-            "state": {
-              "id": "theabyss:tesla_rank"
-            }
-          }
-        ]
-      }
     }
   ]
 }

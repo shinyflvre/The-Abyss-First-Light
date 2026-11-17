@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "group": "shelf",
   "key": {
-    "#": "theabyss:stripped_rena_log"
+    "#": {
+      "item": "theabyss:stripped_rena_log"
+    }
   },
   "pattern": [
     "###",

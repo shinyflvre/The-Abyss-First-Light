@@ -4,12 +4,12 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.yezon.theabyss.platform.network.handling.IPayloadContext;
 import net.yezon.theabyss.TheabyssMod;
 
 public record TeleportDashMessage(double x, double y, double z, float yaw, float pitch) implements CustomPacketPayload {
-    public static final Type<TeleportDashMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "teleport_dash"));
+    public static final Type<TeleportDashMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "teleport_dash"));
     public static final StreamCodec<RegistryFriendlyByteBuf, TeleportDashMessage> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.DOUBLE, TeleportDashMessage::x,
         ByteBufCodecs.DOUBLE, TeleportDashMessage::y,

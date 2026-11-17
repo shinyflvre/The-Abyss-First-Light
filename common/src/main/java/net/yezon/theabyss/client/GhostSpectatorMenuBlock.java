@@ -19,7 +19,7 @@ public final class GhostSpectatorMenuBlock {
     public static void onClientTick(ClientTickEvent.Pre event) {
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
-        if (player == null || !player.isSpectator() || !player.hasEffect(TheabyssModMobEffects.GHOST.getDelegate())) {
+        if (!blocks(player)) {
             return;
         }
         Options options = mc.options;
@@ -27,7 +27,9 @@ public final class GhostSpectatorMenuBlock {
             while (key.consumeClick()) {
             }
         }
-        while (options.keySpectatorHotbar.consumeClick()) {
-        }
+    }
+
+    public static boolean blocks(LocalPlayer player) {
+        return player != null && player.isSpectator() && player.hasEffect(TheabyssModMobEffects.GHOST.getDelegate());
     }
 }

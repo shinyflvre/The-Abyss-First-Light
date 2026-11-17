@@ -8,7 +8,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -23,8 +22,8 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(EnchantmentHelper.class)
 public abstract class EnchantmentHelperMixin {
     @ModifyReturnValue(method = "getItemEnchantmentLevel", at = @At("RETURN"))
-    private static int theabyss$gameplayLevel(int original, @Local(argsOnly = true) Holder<Enchantment> enchantment, @Local(argsOnly = true) ItemInstance piece) {
-        if (piece.typeHolder().value() instanceof GameplayEnchantmentsItem item) {
+    private static int theabyss$gameplayLevel(int original, @Local(argsOnly = true) Holder<Enchantment> enchantment, @Local(argsOnly = true) ItemStack piece) {
+        if (piece.getItem() instanceof GameplayEnchantmentsItem item) {
             return item.getEnchantmentLevel(piece, enchantment);
         }
         return original;

@@ -3,7 +3,7 @@ package net.yezon.theabyss.entity;
 import java.util.EnumSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.DifficultyInstance;
@@ -11,7 +11,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -27,7 +27,7 @@ import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.RangedAttackMob;
-import net.minecraft.world.entity.projectile.throwableitemprojectile.AbstractThrownPotion;
+import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -42,7 +42,7 @@ public class SummonedHollowSeekerEntity extends PathfinderMob implements RangedA
     public SummonedHollowSeekerEntity(EntityType<SummonedHollowSeekerEntity> type, Level world) {
         super(type, world);
         this.xpReward = 0;
-        this.moveControl = new FlyingMoveControl<>(this, 10, true);
+        this.moveControl = new FlyingMoveControl(this, 10, true);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class SummonedHollowSeekerEntity extends PathfinderMob implements RangedA
                 SummonedHollowSeekerEntity seeker = SummonedHollowSeekerEntity.this;
                 LivingEntity target = seeker.getTarget();
                 if (seeker.getBoundingBox().intersects(target.getBoundingBox())) {
-                    seeker.doHurtTarget(getServerLevel(seeker), target);
+                    seeker.doHurtTarget(target);
                 } else if (seeker.distanceToSqr(target) < 400.0) {
                     Vec3 eyes = target.getEyePosition(1.0F);
                     seeker.moveControl.setWantedPosition(eyes.x, eyes.y, eyes.z, 1.0);
@@ -100,41 +100,44 @@ public class SummonedHollowSeekerEntity extends PathfinderMob implements RangedA
 
     @Override
     public SoundEvent getAmbientSound() {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:seeker_ambient"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:seeker_ambient"));
     }
 
     @Override
     public SoundEvent getHurtSound(DamageSource ds) {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.blaze.hurt"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.blaze.hurt"));
     }
 
     @Override
     public SoundEvent getDeathSound() {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:seeker_ambient"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:seeker_ambient"));
     }
 
     @Override
-    public boolean causeFallDamage(double fallDistance, float damageModifier, DamageSource damageSource) {
+    public boolean causeFallDamage(float fallDistance, float damageModifier, DamageSource damageSource) {
         return false;
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource damagesource, float amount) {
+    public boolean hurt(DamageSource damagesource, float amount) {
+        if (!(this.level() instanceof ServerLevel level)) {
+            return false;
+        }
         if (damagesource.is(DamageTypes.IN_FIRE)
             || damagesource.is(DamageTypes.CAMPFIRE)
-            || damagesource.getDirectEntity() instanceof AbstractThrownPotion
+            || damagesource.getDirectEntity() instanceof ThrownPotion
             || damagesource.getDirectEntity() instanceof AreaEffectCloud
             || damagesource.is(DamageTypes.FALL)
             || damagesource.is(DamageTypes.DROWN)
             || damagesource.is(DamageTypes.FALLING_ANVIL)) {
             return false;
         }
-        return super.hurtServer(level, damagesource, amount);
+        return super.hurt(damagesource, amount);
     }
 
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(
-        ServerLevelAccessor world, DifficultyInstance difficulty, EntitySpawnReason reason, @Nullable SpawnGroupData livingdata
+        ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData livingdata
     ) {
         SpawnGroupData retval = super.finalizeSpawn(world, difficulty, reason, livingdata);
         SummonedSeekerOnEntityTickUpdateEvents.execute(world, this.getX(), this.getY(), this.getZ(), this);
@@ -142,8 +145,8 @@ public class SummonedHollowSeekerEntity extends PathfinderMob implements RangedA
     }
 
     @Override
-    public void awardKillScore(Entity entity, DamageSource damageSource) {
-        super.awardKillScore(entity, damageSource);
+    public void awardKillScore(Entity entity, int score, DamageSource damageSource) {
+        super.awardKillScore(entity, score, damageSource);
         SummonedSeekerOnEntityTickUpdateEvents.execute(this.level(), this.getX(), this.getY(), this.getZ(), entity);
     }
 
@@ -157,10 +160,6 @@ public class SummonedHollowSeekerEntity extends PathfinderMob implements RangedA
         return world.isUnobstructed(this);
     }
 
-    @Override
-    public boolean canBreatheUnderwater() {
-        return true;
-    }
 
     @Override
     protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {

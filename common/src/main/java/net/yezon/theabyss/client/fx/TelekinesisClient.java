@@ -7,15 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
+import net.minecraft.resources.ResourceLocation;
+import net.yezon.theabyss.compat.ARGB;
 import net.minecraft.util.Mth;
-import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -23,9 +20,8 @@ import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
 import net.yezon.theabyss.platform.event.EventBusSubscriber;
-import net.yezon.theabyss.platform.client.event.ExtractLevelRenderStateEvent;
-import net.yezon.theabyss.platform.client.event.SubmitCustomGeometryEvent;
-import net.yezon.theabyss.platform.client.renderstate.RegisterRenderStateModifiersEvent;
+import net.yezon.theabyss.platform.client.EntityOutlines;
+import net.yezon.theabyss.platform.client.event.RenderLevelStageEvent;
 import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.client.renderer.LightTrail;
 import net.yezon.theabyss.ring.ComeHere;
@@ -33,8 +29,7 @@ import net.yezon.theabyss.ring.Telekinesis;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public final class TelekinesisClient {
-    private static final RenderType CHAIN = RenderTypes.entityCutout(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "textures/entity/telekinetic_chain.png"));
-    private static final ContextKey<List<Chain>> CHAINS = new ContextKey<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "telekinesis_chains"));
+    private static final RenderType CHAIN = RenderType.entityCutout(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "textures/entity/telekinetic_chain.png"));
     private static final int OUTLINE = ARGB.opaque(0xA448FF);
     private static final int GLOW = 0x8A2EE0;
     private static final float DARKNESS = 0.82F;
@@ -80,6 +75,10 @@ public final class TelekinesisClient {
 
     private static final List<Cast> CASTS = new ArrayList<>();
     private static Level level;
+
+    static {
+        EntityOutlines.register(entity -> !CASTS.isEmpty() && outlined(entity.getId()) ? OUTLINE : 0);
+    }
 
     private TelekinesisClient() {
     }
@@ -184,26 +183,16 @@ public final class TelekinesisClient {
     }
 
     @SubscribeEvent
-    @SuppressWarnings("unchecked")
-    public static void registerModifiers(RegisterRenderStateModifiersEvent event) {
-        event.registerEntityModifier((Class<EntityRenderer<Entity, EntityRenderState>>)(Class<?>)EntityRenderer.class, (entity, state) -> {
-            if (!CASTS.isEmpty() && outlined(entity.getId())) {
-                state.outlineColor = OUTLINE;
-            }
-        });
-    }
-
-    @SubscribeEvent
-    public static void onExtract(ExtractLevelRenderStateEvent event) {
-        if (!active()) {
+    public static void onRender(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES || !active()) {
             return;
         }
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) {
             return;
         }
-        float pt = event.getDeltaTracker().getGameTimeDeltaPartialTick(false);
-        Vec3 camera = event.getCamera().position();
+        float pt = event.getPartialTickTime();
+        Vec3 camera = event.getCamera().getPosition();
         List<Chain> chains = new ArrayList<>();
         for (Cast cast : CASTS) {
             Entity caster = mc.level.getEntity(cast.casterId);
@@ -223,7 +212,30 @@ public final class TelekinesisClient {
                 }
             }
         }
-        net.yezon.theabyss.platform.client.renderstate.RenderData.set(event.getRenderState(), CHAINS, chains);
+        if (chains.isEmpty()) {
+            return;
+        }
+        PoseStack.Pose pose = event.getPoseStack().last();
+        MultiBufferSource.BufferSource buffers = event.getBufferSource();
+        VertexConsumer streak = buffers.getBuffer(LightTrail.STREAK);
+        for (Chain chain : chains) {
+            int n = chain.points.length;
+            float[] width = new float[n];
+            float[] light = new float[n];
+            for (int k = 0; k < n; k++) {
+                float near = Mth.clamp(((float)chain.points[k].length() - 1.0F) / 3.0F, 0.0F, 1.0F);
+                width[k] = taper(chain, k) * 0.55F;
+                light[k] = chain.glow * 0.55F * (0.25F + 0.75F * near);
+            }
+            LightTrail.ribbon(pose, streak, chain.points, width, light, GLOW, Vec3.ZERO);
+            spiral(pose, streak, chain, 0.0);
+            spiral(pose, streak, chain, Math.PI);
+            hoops(pose, streak, chain);
+        }
+        VertexConsumer links = buffers.getBuffer(CHAIN);
+        for (Chain chain : chains) {
+            links(pose, links, chain);
+        }
     }
 
     private static Vec3 hand(Minecraft mc, Entity caster, float pt) {
@@ -235,7 +247,7 @@ public final class TelekinesisClient {
             Vec3 down = right.cross(look).normalize();
             return caster.getEyePosition(pt).add(look.scale(1.4)).add(right.scale(0.85)).subtract(down.scale(0.85));
         }
-        float yaw = (caster instanceof LivingEntity living ? living.getPreciseBodyRotation(pt) : caster.getYRot(pt)) * Mth.DEG_TO_RAD;
+        float yaw = (caster instanceof LivingEntity living ? living.getPreciseBodyRotation(pt) : (pt == 1.0F ? caster.getYRot() : Mth.rotLerp(pt, caster.yRotO, caster.getYRot()))) * Mth.DEG_TO_RAD;
         Vec3 forward = new Vec3(-Mth.sin(yaw), 0.0, Mth.cos(yaw));
         Vec3 right = new Vec3(-Mth.cos(yaw), 0.0, -Mth.sin(yaw));
         return caster.getPosition(pt).add(0.0, caster.getBbHeight() * 0.62, 0.0).add(right.scale(0.38)).add(forward.scale(0.2));
@@ -302,37 +314,6 @@ public final class TelekinesisClient {
             points[k] = hand.add(span.scale(s)).add(side.scale(amplitude * bell * wave)).add(lift.scale(amplitude * 0.6 * bell * wave2));
         }
         return new Chain(points, (float)length, age * 0.18F + i, glow, own, age + i * 3.0F);
-    }
-
-    @SubscribeEvent
-    public static void onSubmit(SubmitCustomGeometryEvent event) {
-        List<Chain> chains = net.yezon.theabyss.platform.client.renderstate.RenderData.get(event.getLevelRenderState(), CHAINS);
-        if (chains == null || chains.isEmpty()) {
-            return;
-        }
-        PoseStack poseStack = event.getPoseStack();
-        var collector = event.getSubmitNodeCollector();
-        collector.submitCustomGeometry(poseStack, LightTrail.STREAK, (pose, buffer) -> {
-            for (Chain chain : chains) {
-                int n = chain.points.length;
-                float[] width = new float[n];
-                float[] light = new float[n];
-                for (int k = 0; k < n; k++) {
-                    float near = Mth.clamp(((float)chain.points[k].length() - 1.0F) / 3.0F, 0.0F, 1.0F);
-                    width[k] = taper(chain, k) * 0.55F;
-                    light[k] = chain.glow * 0.55F * (0.25F + 0.75F * near);
-                }
-                LightTrail.ribbon(pose, buffer, chain.points, width, light, GLOW, Vec3.ZERO);
-                spiral(pose, buffer, chain, 0.0);
-                spiral(pose, buffer, chain, Math.PI);
-                hoops(pose, buffer, chain);
-            }
-        });
-        collector.submitCustomGeometry(poseStack, CHAIN, (pose, buffer) -> {
-            for (Chain chain : chains) {
-                links(pose, buffer, chain);
-            }
-        });
     }
 
     private static Vec3 along(Chain chain, int k) {

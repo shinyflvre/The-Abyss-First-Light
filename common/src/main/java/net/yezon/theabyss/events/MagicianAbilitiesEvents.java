@@ -2,7 +2,7 @@ package net.yezon.theabyss.events;
 
 import java.util.Comparator;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -37,7 +37,7 @@ public class MagicianAbilitiesEvents {
                         _level.playSound(
                             (Player)null,
                             BlockPos.containing(x, y, z),
-                            BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:spell_of_fire")),
+                            BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:spell_of_fire")),
                             SoundSource.NEUTRAL,
                             0.8F,
                             1.0F
@@ -47,7 +47,7 @@ public class MagicianAbilitiesEvents {
                             x,
                             y,
                             z,
-                            BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:spell_of_fire")),
+                            BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:spell_of_fire")),
                             SoundSource.NEUTRAL,
                             0.8F,
                             1.0F,
@@ -68,7 +68,7 @@ public class MagicianAbilitiesEvents {
                         && entityiterator instanceof Player
                         && entityiterator instanceof LivingEntity _entity
                         && !_entity.level().isClientSide()) {
-                        _entity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 140, 5, false, false));
+                        _entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 140, 5, false, false));
                     }
                 }
 
@@ -77,7 +77,7 @@ public class MagicianAbilitiesEvents {
                         _level.playSound(
                             (Player)null,
                             BlockPos.containing(x, y, z),
-                            BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:spell_of_freeze")),
+                            BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:spell_of_freeze")),
                             SoundSource.NEUTRAL,
                             0.8F,
                             1.0F
@@ -87,7 +87,7 @@ public class MagicianAbilitiesEvents {
                             x,
                             y,
                             z,
-                            BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:spell_of_freeze")),
+                            BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:spell_of_freeze")),
                             SoundSource.NEUTRAL,
                             0.8F,
                             1.0F,
@@ -121,7 +121,7 @@ public class MagicianAbilitiesEvents {
                         _level.playSound(
                             (Player)null,
                             BlockPos.containing(x, y, z),
-                            BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:spell_of_invisibility")),
+                            BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:spell_of_invisibility")),
                             SoundSource.NEUTRAL,
                             0.8F,
                             1.0F
@@ -131,7 +131,7 @@ public class MagicianAbilitiesEvents {
                             x,
                             y,
                             z,
-                            BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:spell_of_invisibility")),
+                            BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:spell_of_invisibility")),
                             SoundSource.NEUTRAL,
                             0.8F,
                             1.0F,
@@ -161,7 +161,7 @@ public class MagicianAbilitiesEvents {
                         _level.playSound(
                             (Player)null,
                             BlockPos.containing(x, y, z),
-                            BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:spell_of_ghost")),
+                            BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:spell_of_ghost")),
                             SoundSource.NEUTRAL,
                             0.8F,
                             1.0F
@@ -171,7 +171,7 @@ public class MagicianAbilitiesEvents {
                             x,
                             y,
                             z,
-                            BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:spell_of_ghost")),
+                            BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:spell_of_ghost")),
                             SoundSource.NEUTRAL,
                             0.8F,
                             1.0F,
@@ -190,9 +190,9 @@ public class MagicianAbilitiesEvents {
                     .toList()) {
                     if (entityiterator != entity && entityiterator instanceof Player) {
                         Entity _ent = entityiterator;
-                        _ent.teleportTo(entity.getX(), entity.getY(), entity.getZ());
+                        net.yezon.theabyss.util.AbyssTeleport.to(_ent, entity.getX(), entity.getY(), entity.getZ());
                         if (_ent instanceof ServerPlayer _serverPlayer) {
-                            _serverPlayer.connection.teleport(entity.getX(), entity.getY(), entity.getZ(), _ent.getYRot(), _ent.getXRot());
+                            net.yezon.theabyss.util.AbyssTeleport.connection(_serverPlayer, entity.getX(), entity.getY(), entity.getZ(), _ent.getYRot(), _ent.getXRot());
                         }
                     }
                 }
@@ -202,7 +202,7 @@ public class MagicianAbilitiesEvents {
                         _level.playSound(
                             (Player)null,
                             BlockPos.containing(x, y, z),
-                            BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:spell_of_teleport")),
+                            BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:spell_of_teleport")),
                             SoundSource.NEUTRAL,
                             0.2F,
                             1.0F
@@ -212,7 +212,7 @@ public class MagicianAbilitiesEvents {
                             x,
                             y,
                             z,
-                            BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:spell_of_teleport")),
+                            BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:spell_of_teleport")),
                             SoundSource.NEUTRAL,
                             0.2F,
                             1.0F,

@@ -4,7 +4,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.yezon.theabyss.platform.network.handling.IPayloadContext;
@@ -12,7 +12,7 @@ import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.events.ApplyGhostFireAttackEvents;
 
 public record GhostFireAttackMessage(int eventType, int pressedms) implements CustomPacketPayload {
-    public static final Type<GhostFireAttackMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "key_ghost_fire_attack"));
+    public static final Type<GhostFireAttackMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "key_ghost_fire_attack"));
     public static final StreamCodec<RegistryFriendlyByteBuf, GhostFireAttackMessage> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.INT, GhostFireAttackMessage::eventType,
         ByteBufCodecs.INT, GhostFireAttackMessage::pressedms,

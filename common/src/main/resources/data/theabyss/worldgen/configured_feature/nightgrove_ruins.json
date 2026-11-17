@@ -1,0 +1,67 @@
+{
+  "type": "minecraft:simple_random_selector",
+  "config": {
+    "features": [
+      {
+        "feature": {
+          "type": "theabyss:structure_feature",
+          "config": {
+            "ignored_blocks": "minecraft:structure_block",
+            "random_mirror": true,
+            "random_rotation": true,
+            "structure": "theabyss:nightgrove_ruin_1"
+          }
+        },
+        "placement": []
+      },
+      {
+        "feature": {
+          "type": "theabyss:structure_feature",
+          "config": {
+            "ignored_blocks": "minecraft:structure_block",
+            "random_mirror": true,
+            "random_rotation": true,
+            "structure": "theabyss:nightgrove_ruin_2"
+          }
+        },
+        "placement": []
+      },
+      {
+        "feature": {
+          "type": "theabyss:structure_feature",
+          "config": {
+            "ignored_blocks": "minecraft:structure_block",
+            "random_mirror": true,
+            "random_rotation": true,
+            "structure": "theabyss:nightgrove_ruin_3"
+          }
+        },
+        "placement": []
+      },
+      {
+        "feature": {
+          "type": "theabyss:structure_feature",
+          "config": {
+            "ignored_blocks": "minecraft:structure_block",
+            "random_mirror": true,
+            "random_rotation": true,
+            "structure": "theabyss:nightgrove_ruin_4"
+          }
+        },
+        "placement": []
+      },
+      {
+        "feature": {
+          "type": "theabyss:structure_feature",
+          "config": {
+            "ignored_blocks": "minecraft:structure_block",
+            "random_mirror": true,
+            "random_rotation": true,
+            "structure": "theabyss:nightgrove_ruin_5"
+          }
+        },
+        "placement": []
+      }
+    ]
+  }
+}

@@ -1,7 +1,7 @@
 package net.yezon.theabyss.fabric.mixin.blocks;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.TriState;
+import net.yezon.theabyss.compat.TriState;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.CactusBlock;
 import net.minecraft.world.level.block.state.BlockState;

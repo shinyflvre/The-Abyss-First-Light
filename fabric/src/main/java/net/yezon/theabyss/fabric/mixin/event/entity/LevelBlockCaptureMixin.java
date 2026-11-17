@@ -63,7 +63,7 @@ public abstract class LevelBlockCaptureMixin implements FabricBlockCaptureState 
     }
 
     @ModifyArg(method = "setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;II)Z", at = @At(value = "INVOKE",
-        target = "Lnet/minecraft/world/level/chunk/LevelChunk;setBlockState(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Lnet/minecraft/world/level/block/state/BlockState;"),
+        target = "Lnet/minecraft/world/level/chunk/LevelChunk;setBlockState(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Z)Lnet/minecraft/world/level/block/state/BlockState;"),
         index = 0)
     private BlockPos theabyss$snapshotBlock(BlockPos pos, @Local(argsOnly = true, ordinal = 0) int flags) {
         if (this.theabyss$capture) {
@@ -74,7 +74,7 @@ public abstract class LevelBlockCaptureMixin implements FabricBlockCaptureState 
     }
 
     @ModifyExpressionValue(method = "setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;II)Z", at = @At(value = "INVOKE",
-        target = "Lnet/minecraft/world/level/chunk/LevelChunk;setBlockState(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Lnet/minecraft/world/level/block/state/BlockState;"))
+        target = "Lnet/minecraft/world/level/chunk/LevelChunk;setBlockState(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Z)Lnet/minecraft/world/level/block/state/BlockState;"))
     private @Nullable BlockState theabyss$capturedBlock(@Nullable BlockState old) {
         if (!this.theabyss$capture || this.theabyss$pending.isEmpty()) {
             return old;

@@ -11,29 +11,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.BlockModelRenderState;
-import net.minecraft.client.renderer.block.model.BlockDisplayContext;
-import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
-import net.yezon.theabyss.platform.Dist;
-import net.yezon.theabyss.platform.event.SubscribeEvent;
-import net.yezon.theabyss.platform.event.EventBusSubscriber;
-import net.yezon.theabyss.platform.client.event.RegisterPictureInPictureRenderersEvent;
-import net.yezon.theabyss.TheabyssMod;
-import org.jspecify.annotations.Nullable;
+import net.yezon.theabyss.client.gui.GuiPicture;
+import org.joml.Matrix4f;
 
-@EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public final class CodexMultiblock {
-    private static final BlockDisplayContext CONTEXT = BlockDisplayContext.create();
     private static final Map<CodexBook.Page, Structure> CACHE = new WeakHashMap<>();
     private static final int FULL_BRIGHT = 15728880;
+    private static final GuiPicture PICTURE = new GuiPicture();
 
     private CodexMultiblock() {
     }
@@ -42,14 +36,6 @@ public final class CodexMultiblock {
     }
 
     record Structure(List<Placed> blocks, int sizeX, int sizeY, int sizeZ) {
-    }
-
-    public record State(Structure structure, float yaw, float pixelsPerBlock, int x0, int y0, int x1, int y1, @Nullable ScreenRectangle scissorArea,
-                        @Nullable ScreenRectangle bounds) implements PictureInPictureRenderState {
-        @Override
-        public float scale() {
-            return this.pixelsPerBlock;
-        }
     }
 
     static Structure structure(CodexBook.Page page) {
@@ -75,7 +61,7 @@ public final class CodexMultiblock {
                     if (id == null) {
                         continue;
                     }
-                    BlockState state = BuiltInRegistries.BLOCK.getValue(Identifier.parse(id.getAsString())).defaultBlockState();
+                    BlockState state = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(id.getAsString())).defaultBlockState();
                     if (!state.isAir()) {
                         blocks.add(new Placed(new BlockPos(x, y, z), state));
                     }
@@ -85,52 +71,46 @@ public final class CodexMultiblock {
         return new Structure(blocks, sizeX, Math.max(1, layers.size()), sizeZ);
     }
 
-    static void submit(net.minecraft.client.gui.GuiGraphicsExtractor g, Structure structure, int x0, int y0, int x1, int y1) {
+    static void render(GuiGraphics g, Structure structure, int x0, int y0, int x1, int y1) {
         int size = Math.min(x1 - x0, y1 - y0);
         double diagonal = Math.sqrt(structure.sizeX() * structure.sizeX() + structure.sizeZ() * structure.sizeZ());
         float pixels = (float)Math.min(size * 0.9 / diagonal, size * 0.9 / (structure.sizeY() + diagonal * 0.5));
         float yaw = (float)((System.nanoTime() / 1.0E9 * 18.0) % 360.0) + 45.0F;
-        ((net.yezon.theabyss.mixin.accessor.client.GuiGraphicsExtractorAccessor)g).theabyss$guiRenderState().addPicturesInPictureState(new State(structure, yaw, pixels, x0, y0, x1, y1, null,
-            PictureInPictureRenderState.getBounds(x0, y0, x1, y1, null)));
-    }
-
-    @SubscribeEvent
-    public static void register(RegisterPictureInPictureRenderersEvent event) {
-        event.register(State.class, Renderer::new);
-    }
-
-    private static final class Renderer extends PictureInPictureRenderer<State> {
-        @Override
-        public Class<State> getRenderStateClass() {
-            return State.class;
-        }
-
-        @Override
-        protected void renderToTexture(State state, PoseStack poseStack, SubmitNodeCollector collector) {
-            Minecraft mc = Minecraft.getInstance();
-            mc.gameRenderer.lighting().setupFor(Lighting.Entry.ITEMS_3D);
-            Structure s = state.structure();
-            float height = (state.y1() - state.y0()) / state.scale();
+        Minecraft mc = Minecraft.getInstance();
+        BlockRenderDispatcher blocks = mc.getBlockRenderer();
+        int guiScale = GuiPicture.guiScale();
+        int width = (x1 - x0) * guiScale;
+        int height = (y1 - y0) * guiScale;
+        MultiBufferSource.BufferSource buffers = PICTURE.begin(g, width, height);
+        MultiBufferSource blockBuffers = type -> buffers.getBuffer(itemSheet(type));
+        Lighting.setupFor3DItems();
+        PoseStack poseStack = new PoseStack();
+        poseStack.translate(width / 2.0F, height, 0.0F);
+        float scale = guiScale * pixels;
+        poseStack.scale(scale, scale, -scale);
+        float blocksHigh = (y1 - y0) / pixels;
+        poseStack.translate(0.0F, -blocksHigh / 2.0F, 0.0F);
+        poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
+        poseStack.mulPose(Axis.XP.rotationDegrees(-30.0F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(yaw));
+        poseStack.translate(-structure.sizeX() / 2.0F, -structure.sizeY() / 2.0F, -structure.sizeZ() / 2.0F);
+        for (Placed placed : structure.blocks()) {
             poseStack.pushPose();
-            poseStack.translate(0.0F, -height / 2.0F, 0.0F);
-            poseStack.rotateDegrees(Axis.ZP, 180.0F);
-            poseStack.rotateDegrees(Axis.XP, -30.0F);
-            poseStack.rotateDegrees(Axis.YP, state.yaw());
-            poseStack.translate(-s.sizeX() / 2.0F, -s.sizeY() / 2.0F, -s.sizeZ() / 2.0F);
-            for (Placed placed : s.blocks()) {
-                BlockModelRenderState model = new BlockModelRenderState();
-                net.yezon.theabyss.platform.services.ClientPlatformHooks.get().blockModelResolver(mc).update(model, placed.state(), CONTEXT);
-                poseStack.pushPose();
-                poseStack.translate(placed.pos().getX(), placed.pos().getY(), placed.pos().getZ());
-                model.submit(poseStack, collector, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
-                poseStack.popPose();
-            }
+            poseStack.translate(placed.pos().getX(), placed.pos().getY(), placed.pos().getZ());
+            blocks.renderSingleBlock(placed.state(), poseStack, blockBuffers, FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
             poseStack.popPose();
         }
+        PICTURE.end();
+        PICTURE.blit(new Matrix4f(), x0, y0, x1, y1);
+    }
 
-        @Override
-        protected String getTextureLabel() {
-            return "theabyss codex multiblock";
+    private static RenderType itemSheet(RenderType type) {
+        if (type == Sheets.translucentItemSheet()) {
+            return Sheets.translucentCullBlockSheet();
         }
+        if (type == Sheets.solidBlockSheet()) {
+            return Sheets.cutoutBlockSheet();
+        }
+        return type;
     }
 }

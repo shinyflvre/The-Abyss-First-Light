@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import org.jspecify.annotations.Nullable;
@@ -19,7 +19,7 @@ public class DeferredHolder<R, T extends R> implements Supplier<T> {
         this.key = key;
     }
 
-    public static <R, T extends R> DeferredHolder<R, T> create(ResourceKey<? extends Registry<R>> registryKey, Identifier valueName) {
+    public static <R, T extends R> DeferredHolder<R, T> create(ResourceKey<? extends Registry<R>> registryKey, ResourceLocation valueName) {
         return new DeferredHolder<>(ResourceKey.create(registryKey, valueName));
     }
 
@@ -33,9 +33,9 @@ public class DeferredHolder<R, T extends R> implements Supplier<T> {
         if (bound != null) {
             return bound;
         }
-        Registry<R> registry = (Registry<R>)BuiltInRegistries.REGISTRY.getValue(this.key.registry());
+        Registry<R> registry = (Registry<R>)BuiltInRegistries.REGISTRY.get(this.key.registry());
         if (registry != null) {
-            bound = registry.get(this.key).orElse(null);
+            bound = registry.getHolder(this.key).orElse(null);
         }
         if (bound == null) {
             if (required) {
@@ -61,8 +61,8 @@ public class DeferredHolder<R, T extends R> implements Supplier<T> {
         return this.isBound() ? Optional.of(this.value()) : Optional.empty();
     }
 
-    public Identifier getId() {
-        return this.key.identifier();
+    public ResourceLocation getId() {
+        return this.key.location();
     }
 
     public ResourceKey<R> getKey() {
@@ -74,7 +74,7 @@ public class DeferredHolder<R, T extends R> implements Supplier<T> {
     }
 
     public String getRegisteredName() {
-        return this.key.identifier().toString();
+        return this.key.location().toString();
     }
 
     public boolean isBound() {
@@ -86,12 +86,16 @@ public class DeferredHolder<R, T extends R> implements Supplier<T> {
         return this.bind(true);
     }
 
+    public Holder<R> asHolder() {
+        return new LazyHolder<>(this);
+    }
+
     public boolean is(TagKey<R> tag) {
         return this.getDelegate().is(tag);
     }
 
-    public boolean is(Identifier id) {
-        return this.key.identifier().equals(id);
+    public boolean is(ResourceLocation id) {
+        return this.key.location().equals(id);
     }
 
     public boolean is(ResourceKey<R> key) {

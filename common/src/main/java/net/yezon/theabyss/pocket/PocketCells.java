@@ -5,20 +5,24 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.TheabyssMod;
 
 public final class PocketCells extends SavedData {
-    public static final ResourceKey<Level> DIMENSION = ResourceKey.create(Registries.DIMENSION, Identifier.parse("theabyss:pocket_dimension"));
+    public static final ResourceKey<Level> DIMENSION = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse("theabyss:pocket_dimension"));
     public static final int BOX = 32;
     public static final int RING = 16;
     public static final int CELL = RING + BOX + RING;
@@ -34,9 +38,8 @@ public final class PocketCells extends SavedData {
         Codec.INT.optionalFieldOf("next", 0).forGetter(v -> v.next),
         Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.INT).optionalFieldOf("owners", Map.of()).forGetter(v -> v.owners)
     ).apply(i, PocketCells::new));
-    public static final SavedDataType<PocketCells> TYPE = new SavedDataType<>(
-        Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "pocket_cells"), PocketCells::new, CODEC, null
-    );
+    private static final String ID = TheabyssMod.MODID + "_pocket_cells";
+    public static final SavedData.Factory<PocketCells> TYPE = new SavedData.Factory<>(PocketCells::new, PocketCells::load, null);
 
     private int next;
     private final Map<UUID, Integer> owners;
@@ -51,7 +54,20 @@ public final class PocketCells extends SavedData {
     }
 
     public static PocketCells get(MinecraftServer server) {
-        return server.getDataStorage().computeIfAbsent(TYPE);
+        return net.yezon.theabyss.util.AbyssSavedData.server(server, "pocket_cells", TYPE, ID);
+    }
+
+    private static PocketCells load(CompoundTag tag, HolderLookup.Provider registries) {
+        RegistryOps<Tag> ops = registries.createSerializationContext(NbtOps.INSTANCE);
+        return CODEC.parse(ops, tag)
+            .resultOrPartial(error -> TheabyssMod.LOGGER.error("Failed to parse saved data for '{}': {}", ID, error))
+            .orElse(null);
+    }
+
+    @Override
+    public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+        RegistryOps<Tag> ops = registries.createSerializationContext(NbtOps.INSTANCE);
+        return (CompoundTag)CODEC.encodeStart(ops, this).getOrThrow();
     }
 
     public int find(UUID player) {

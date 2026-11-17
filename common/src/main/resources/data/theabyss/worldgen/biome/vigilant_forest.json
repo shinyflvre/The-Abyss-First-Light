@@ -1,53 +1,56 @@
 {
-  "attributes": {
-    "minecraft:audio/ambient_sounds": {
-      "loop": "theabyss:abyss_ambience",
-      "mood": {
-        "block_search_extent": 2,
-        "offset": 8,
-        "sound": "theabyss:random_fx",
-        "tick_delay": 300
-      }
-    },
-    "minecraft:audio/background_music": {
-      "default": {
-        "max_delay": 24000,
-        "min_delay": 12000,
-        "sound": "theabyss:theabyss_dimension_music",
-        "replace_current_music": true
-      }
-    },
-    "minecraft:visual/ambient_particles": {
-      "argument": [
-        {
-          "particle": {
-            "type": "theabyss:spurs_fx"
-          },
-          "probability": 0.005
-        }
-      ],
-      "modifier": "append"
-    },
-    "minecraft:visual/fog_color": "#131427",
-    "minecraft:visual/water_fog_color": "#92a7c9"
+  "carvers": {
+    "air": [
+      "minecraft:cave",
+      "minecraft:cave_extra_underground",
+      "minecraft:canyon"
+    ]
   },
-  "carvers": [
-    "minecraft:cave",
-    "minecraft:cave_extra_underground",
-    "minecraft:canyon"
-  ],
   "downfall": 0.1,
   "effects": {
-    "foliage_color": "#aadbff",
-    "grass_color": "#aadeff",
-    "water_color": "#9ba5ff"
+    "fog_color": 1250343,
+    "sky_color": 0,
+    "water_color": 10200575,
+    "water_fog_color": 9611209,
+    "foliage_color": 11197439,
+    "grass_color": 11198207,
+    "particle": {
+      "options": {
+        "type": "theabyss:spurs_fx"
+      },
+      "probability": 0.005
+    },
+    "ambient_sound": "theabyss:abyss_ambience",
+    "mood_sound": {
+      "block_search_extent": 2,
+      "offset": 8,
+      "sound": "theabyss:random_fx",
+      "tick_delay": 300
+    },
+    "music": {
+      "max_delay": 24000,
+      "min_delay": 12000,
+      "replace_current_music": true,
+      "sound": "theabyss:theabyss_dimension_music"
+    }
   },
   "features": [
     [],
     [
-      "minecraft:lake_lava_underground"
-    ]
+      "theabyss:lake_lava_underground"
+    ],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
   ],
   "has_precipitation": false,
+  "spawn_costs": {},
+  "spawners": {},
   "temperature": 0.4
 }

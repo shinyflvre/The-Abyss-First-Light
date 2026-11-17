@@ -2,13 +2,22 @@ package net.yezon.theabyss.platform.services;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.TriState;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.yezon.theabyss.compat.TriState;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import java.util.function.BiFunction;
 import org.jspecify.annotations.Nullable;
 
 public interface BlockItemHooks {
@@ -31,6 +40,16 @@ public interface BlockItemHooks {
     TriState canSustainPlant(BlockState soil, BlockGetter level, BlockPos soilPosition, Direction facing, BlockState plant);
 
     CreativeModeTab.Builder creativeTabBuilder(boolean searchBar, TabContents contents);
+
+    <T extends BlockEntity> BlockEntityType<T> blockEntityType(BiFunction<BlockPos, BlockState, ? extends T> factory, Block... blocks);
+
+    boolean trampleFarmland(ServerLevel level, BlockPos pos, BlockState state, float fallDistance, Entity entity);
+
+    boolean farmlandNearWater(LevelReader level, BlockPos pos);
+
+    float dripstoneDripChance(Fluid fluid);
+
+    @Nullable ParticleOptions dripstoneDripParticle(Fluid fluid);
 
     @FunctionalInterface
     interface TabContents {

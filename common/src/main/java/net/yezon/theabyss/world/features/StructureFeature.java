@@ -23,11 +23,11 @@ import net.yezon.theabyss.platform.registries.DeferredRegister;
 import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.world.features.configurations.StructureFeatureConfiguration;
 
-public record StructureFeature(StructureFeatureConfiguration config) implements Feature {
+public record StructureFeature(StructureFeatureConfiguration config) implements AbyssFeature.Config {
     public static final MapCodec<StructureFeature> CODEC = StructureFeatureConfiguration.CODEC.xmap(StructureFeature::new, StructureFeature::config);
-    public static final DeferredRegister<MapCodec<? extends Feature>> REGISTRY = DeferredRegister.create(Registries.FEATURE_TYPE, TheabyssMod.MODID);
-    public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<StructureFeature>> STRUCTURE_FEATURE = REGISTRY.register(
-        "structure_feature", () -> CODEC
+    public static final DeferredRegister<Feature<?>> REGISTRY = DeferredRegister.create(Registries.FEATURE, TheabyssMod.MODID);
+    public static final DeferredHolder<Feature<?>, AbyssFeature<StructureFeature>> STRUCTURE_FEATURE = REGISTRY.register(
+        "structure_feature", () -> new AbyssFeature<>(CODEC)
     );
 
     @Override
@@ -40,7 +40,7 @@ public record StructureFeature(StructureFeatureConfiguration config) implements 
         Rotation rotation = this.config.randomRotation() ? Rotation.getRandom(random) : Rotation.NONE;
         Mirror mirror = this.config.randomMirror() ? Mirror.values()[random.nextInt(2)] : Mirror.NONE;
         BlockPos placePos = origin.offset(this.config.offset());
-        StructureTemplateManager structureManager = level.getLevel().getServer().getStructureTemplateManager();
+        StructureTemplateManager structureManager = level.getLevel().getServer().getStructureManager();
         StructureTemplate template = structureManager.getOrCreate(this.config.structure());
         StructurePlaceSettings placeSettings = new StructurePlaceSettings()
             .setRotation(rotation)

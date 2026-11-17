@@ -1,37 +1,23 @@
 {
-  "feature": "theabyss:village/abyss_flowers",
-  "placement": [
-    {
-      "type": "minecraft:count",
-      "count": 64
-    },
-    {
-      "type": "minecraft:offset",
-      "x": {
-        "type": "minecraft:trapezoid",
-        "max": 6,
-        "min": -6,
-        "plateau": 0
+  "feature": {
+    "type": "minecraft:random_patch",
+    "config": {
+      "feature": {
+        "feature": "theabyss:village/abyss_flowers",
+        "placement": [
+          {
+            "type": "minecraft:block_predicate_filter",
+            "predicate": {
+              "type": "minecraft:matching_block_tag",
+              "tag": "minecraft:air"
+            }
+          }
+        ]
       },
-      "y": {
-        "type": "minecraft:trapezoid",
-        "max": 2,
-        "min": -2,
-        "plateau": 0
-      },
-      "z": {
-        "type": "minecraft:trapezoid",
-        "max": 6,
-        "min": -6,
-        "plateau": 0
-      }
-    },
-    {
-      "type": "minecraft:block_predicate_filter",
-      "predicate": {
-        "type": "minecraft:matching_block_tag",
-        "tag": "minecraft:air"
-      }
+      "tries": 64,
+      "xz_spread": 6,
+      "y_spread": 2
     }
-  ]
+  },
+  "placement": []
 }

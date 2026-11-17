@@ -5,19 +5,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.ChatFormatting;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.ARGB;
+import net.yezon.theabyss.compat.ARGB;
+import net.yezon.theabyss.compat.GuiGraphicsCompat;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -27,6 +35,7 @@ import net.yezon.theabyss.platform.event.SubscribeEvent;
 import net.yezon.theabyss.platform.event.EventBusSubscriber;
 import net.yezon.theabyss.platform.client.event.ClientTickEvent;
 import net.yezon.theabyss.platform.client.event.InputEvent;
+import net.yezon.theabyss.platform.client.event.RegisterShadersEvent;
 import net.yezon.theabyss.platform.client.network.ClientPacketDistributor;
 import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.init.TheabyssModKeyMappings;
@@ -35,22 +44,21 @@ import net.yezon.theabyss.network.TheabyssModVariables;
 import net.yezon.theabyss.ring.Gauntlet;
 import net.yezon.theabyss.ring.SomniumUpgrades;
 import net.yezon.theabyss.util.AbyssTooltip;
+import org.joml.Matrix4f;
+import org.jspecify.annotations.Nullable;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public final class SpellWheelClient {
-    public static final com.mojang.renderpearl.api.pipeline.RenderPipeline PIPELINE = com.mojang.renderpearl.api.pipeline.RenderPipeline
-        .builder(net.yezon.theabyss.mixin.accessor.client.RenderPipelinesAccessor.theabyss$guiTexturedSnippet())
-        .withLocation(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "pipeline/spell_wheel"))
-        .withFragmentShader(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "core/spell_wheel"))
-        .build();
-    private static final Identifier FRAMES = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "textures/gui/spell_wheel_frames.png");
+    public static final ResourceLocation SHADER = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "spell_wheel");
+    private static @Nullable ShaderInstance shader;
+    private static final ResourceLocation FRAMES = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "textures/gui/spell_wheel_frames.png");
     private static final int RADIUS = 56;
     private static final float ICON_SCALE = 1.14F;
     private static final double DEAD_ZONE = 20.0;
     private static final float OPEN_SECONDS = 0.20F;
     private static final float CLOSE_SECONDS = 0.20F;
     private static final float VOLUME = 0.15F;
-    private static final Map<Identifier, Boolean> ICONS = new HashMap<>();
+    private static final Map<ResourceLocation, Boolean> ICONS = new HashMap<>();
 
     private static boolean open;
     private static boolean closing;
@@ -66,6 +74,28 @@ public final class SpellWheelClient {
     private SpellWheelClient() {
     }
 
+    @SubscribeEvent
+    public static void registerShader(RegisterShadersEvent event) {
+        event.registerShader(SHADER, DefaultVertexFormat.POSITION_TEX_COLOR, loaded -> shader = loaded);
+    }
+
+    private static void wheel(GuiGraphics g, int x, int y, int width, int height, int color) {
+        ShaderInstance program = shader;
+        if (program == null) {
+            return;
+        }
+        RenderSystem.setShader(() -> program);
+        net.yezon.theabyss.compat.GuiGraphicsCompat.beginTranslucent();
+        Matrix4f matrix = g.pose().last().pose();
+        BufferBuilder buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        buffer.addVertex(matrix, x, y, 0.0F).setUv(0.0F, 0.0F).setColor(color);
+        buffer.addVertex(matrix, x, y + height, 0.0F).setUv(0.0F, 1.0F).setColor(color);
+        buffer.addVertex(matrix, x + width, y + height, 0.0F).setUv(1.0F, 1.0F).setColor(color);
+        buffer.addVertex(matrix, x + width, y, 0.0F).setUv(1.0F, 0.0F).setColor(color);
+        BufferUploader.drawWithShader(buffer.buildOrThrow());
+        net.yezon.theabyss.compat.GuiGraphicsCompat.endTranslucent();
+    }
+
     public static boolean isOpen() {
         return open;
     }
@@ -79,11 +109,11 @@ public final class SpellWheelClient {
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         boolean holding = player != null && !player.isSpectator() && Gauntlet.hand(player) != null;
-        if (open && (mc.gui.screen() != null || !holding)) {
+        if (open && (mc.screen != null || !holding)) {
             close(false);
             return;
         }
-        boolean wanted = holding && mc.gui.screen() == null && TheabyssModKeyMappings.SPELL_WHEEL.isDown() && !mc.hasAltDown();
+        boolean wanted = holding && mc.screen == null && TheabyssModKeyMappings.SPELL_WHEEL.isDown() && !Screen.hasAltDown();
         if (!open && wanted) {
             openWheel();
         } else if (open && !wanted) {
@@ -126,7 +156,7 @@ public final class SpellWheelClient {
             }
         }
         hovered = -1;
-        if (mc.gui.screen() == null) {
+        if (mc.screen == null) {
             mc.mouseHandler.grabMouse();
         }
     }
@@ -170,10 +200,10 @@ public final class SpellWheelClient {
         }
     }
 
-    public static void render(GuiGraphicsExtractor g, DeltaTracker deltaTracker) {
+    public static void render(GuiGraphics g, DeltaTracker deltaTracker) {
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
-        if (player == null || mc.gui.hud.isHidden()) {
+        if (player == null || mc.options.hideGui) {
             return;
         }
         ItemStack gauntlet = Gauntlet.held(player);
@@ -202,8 +232,8 @@ public final class SpellWheelClient {
         float fit = Math.min(1.0F, Math.min((g.guiHeight() / 2.0F - 50.0F) / 96.0F, (g.guiHeight() / 2.0F - 4.0F) / 136.0F));
         int lit = hovered;
         if (open) {
-            double mx = testAim != null ? testAim[0] : mc.mouseHandler.getScaledXPos(mc.getWindow()) - cx;
-            double my = testAim != null ? testAim[1] : mc.mouseHandler.getScaledYPos(mc.getWindow()) - cy;
+            double mx = testAim != null ? testAim[0] : mc.mouseHandler.xpos() * mc.getWindow().getGuiScaledWidth() / mc.getWindow().getScreenWidth() - cx;
+            double my = testAim != null ? testAim[1] : mc.mouseHandler.ypos() * mc.getWindow().getGuiScaledHeight() / mc.getWindow().getScreenHeight() - cy;
             aimX = mx / fit;
             aimY = my / fit;
             double dist = Math.sqrt(aimX * aimX + aimY * aimY);
@@ -232,23 +262,23 @@ public final class SpellWheelClient {
         float spread = open ? 0.55F + 0.45F * ease : 1.35F - 0.35F * ease;
         int alpha = Math.round(255 * (float)Math.pow(progress, 1.5));
         int fade = Math.round(255 * progress);
-        g.blit(PIPELINE, FRAMES, 0, 0, 0.0F, 0.0F, g.guiWidth(), g.guiHeight(), 64, 32, 64, 32, ARGB.color(0, 0, 0, fade));
-        g.pose().pushMatrix();
-        g.pose().translate(cx, cy);
-        g.pose().scale(fit, fit);
+        wheel(g, 0, 0, g.guiWidth(), g.guiHeight(), ARGB.color(0, 0, 0, fade));
+        g.pose().pushPose();
+        g.pose().translate(cx, cy, 0.0F);
+        g.pose().scale(fit, fit, 1.0F);
         int params = ARGB.color(open ? 255 : 180, Math.round((lit + 1) * 255 / 8.0F), Math.round(selected * 255 / 8.0F), fade);
-        g.blit(PIPELINE, FRAMES, -120, -120, 0.0F, 0.0F, 240, 240, 64, 32, 64, 32, params);
+        wheel(g, -120, -120, 240, 240, params);
         for (int k = 0; k < Gauntlet.SLOTS; k++) {
             double a = Math.toRadians(72.0 * k);
             int sx = (int)Math.round(Math.sin(a) * RADIUS * spread);
             int sy = (int)Math.round(-Math.cos(a) * RADIUS * spread);
             ItemStack ring = rings.get(k);
-            g.pose().pushMatrix();
-            g.pose().translate(sx, sy);
-            g.pose().scale(ICON_SCALE, ICON_SCALE);
+            g.pose().pushPose();
+            g.pose().translate(sx, sy, 0.0F);
+            g.pose().scale(ICON_SCALE, ICON_SCALE, 1.0F);
             if (!ring.isEmpty()) {
                 icon(g, ring, -8, -8, alpha);
-                float cd = player.getCooldowns().getCooldownPercent(ring, pt);
+                float cd = player.getCooldowns().getCooldownPercent(ring.getItem(), pt);
                 if (cd > 0.0F) {
                     int h = (int)(16 * cd + 1);
                     g.fill(-8, 8 - h, 8, 8, ARGB.color(Math.min(alpha, 128), 255, 255, 255));
@@ -256,24 +286,24 @@ public final class SpellWheelClient {
             }
             boolean gold = k == selected && !ring.isEmpty();
             int frameAlpha = ring.isEmpty() ? alpha / 3 : alpha;
-            g.blit(RenderPipelines.GUI_TEXTURED, FRAMES, -16, -16, gold ? 32.0F : 0.0F, 0.0F, 32, 32, 64, 32, ARGB.color(frameAlpha, 255, 255, 255));
-            g.pose().popMatrix();
+            GuiGraphicsCompat.blit(g, FRAMES, -16, -16, gold ? 32.0F : 0.0F, 0.0F, 32, 32, 64, 32, ARGB.color(frameAlpha, 255, 255, 255));
+            g.pose().popPose();
         }
         Stat[] stats = stats(player);
-        g.pose().pushMatrix();
-        g.pose().scale(spread, spread);
+        g.pose().pushPose();
+        g.pose().scale(spread, spread, 1.0F);
         for (int k = 0; k < stats.length; k++) {
             Stat stat = stats[k];
             int gaugeParams = ARGB.color(Math.round((0.25F + 0.35F * progress) * 255), Math.round(k * 255 / 8.0F),
                 Math.round(stat.level() * 255 / 8.0F), Math.round(stat.left() * 255));
-            g.blit(PIPELINE, FRAMES, -120, -120, 0.0F, 0.0F, 240, 240, 64, 32, 64, 32, gaugeParams);
+            wheel(g, -120, -120, 240, 240, gaugeParams);
         }
-        g.pose().popMatrix();
+        g.pose().popPose();
         if (open && gaugeHovered >= 0) {
             info(g, mc, stats[gaugeHovered], (int)aimX, (int)aimY, alpha, g.guiHeight() / 2.0F / fit);
         }
         text(g, mc, player, lit >= 0 ? rings.get(lit) : ItemStack.EMPTY, 0, 0, alpha, pt);
-        g.pose().popMatrix();
+        g.pose().popPose();
     }
 
     private record Stat(String key, int colour, int level, float left, int potions, int needed) {
@@ -292,7 +322,7 @@ public final class SpellWheelClient {
         }
         return out;
     }
-    private static void info(GuiGraphicsExtractor g, Minecraft mc, Stat stat, int x, int y, int alpha, float halfHeight) {
+    private static void info(GuiGraphics g, Minecraft mc, Stat stat, int x, int y, int alpha, float halfHeight) {
         List<net.minecraft.util.FormattedCharSequence> lines = new ArrayList<>();
         lines.add(Component.translatable(stat.key()).withStyle(style -> style.withColor(stat.colour())).getVisualOrderText());
         Component level = stat.level() >= SomniumUpgrades.MAX
@@ -308,15 +338,15 @@ public final class SpellWheelClient {
         int bx = x >= 0 ? x + 10 : x - 10 - w - 8;
         int by = Mth.clamp(y - h / 2, (int)-halfHeight + 2, (int)halfHeight - h - 2);
         g.fill(bx, by, bx + w + 8, by + h, ARGB.color(Math.round(alpha * 0.85F), 6, 14, 20));
-        g.outline(bx, by, w + 8, h, ARGB.color(alpha / 2, stat.colour()));
+        g.renderOutline(bx, by, w + 8, h, ARGB.color(alpha / 2, stat.colour()));
         int ty = by + 4;
         for (var line : lines) {
-            g.text(mc.font, line, bx + 4, ty, ARGB.color(alpha, 255, 255, 255), true);
+            GuiGraphicsCompat.text(g, mc.font, line, bx + 4, ty, ARGB.color(alpha, 255, 255, 255), true);
             ty += 10;
         }
     }
 
-    private static void text(GuiGraphicsExtractor g, Minecraft mc, LocalPlayer player, ItemStack ring, int cx, int cy, int alpha, float pt) {
+    private static void text(GuiGraphics g, Minecraft mc, LocalPlayer player, ItemStack ring, int cx, int cy, int alpha, float pt) {
         if (ring.isEmpty() || mc.level == null) {
             return;
         }
@@ -349,16 +379,16 @@ public final class SpellWheelClient {
         }
         boolean oneLine = joined != null && mc.font.width(joined) <= 300;
         List<Component> rows = oneLine ? List.of(joined) : parts;
-        float cd = player.getCooldowns().getCooldownPercent(ring, pt);
+        float cd = player.getCooldowns().getCooldownPercent(ring.getItem(), pt);
         int top = cy - 112 - rows.size() * 10 - (cd > 0.0F ? 10 : 0);
-        g.centeredText(mc.font, ring.getHoverName(), cx, top, ARGB.color(alpha, 255, 255, 255));
+        GuiGraphicsCompat.centeredText(g, mc.font, ring.getHoverName(), cx, top, ARGB.color(alpha, 255, 255, 255));
         int y = top + 12;
         for (Component row : rows) {
-            g.centeredText(mc.font, row, cx, y, ARGB.color(alpha, 255, 255, 255));
+            GuiGraphicsCompat.centeredText(g, mc.font, row, cx, y, ARGB.color(alpha, 255, 255, 255));
             y += 10;
         }
         if (cd > 0.0F) {
-            g.centeredText(mc.font, Component.translatable("gauntlet.theabyss.cooldown"), cx, y, ARGB.color(alpha, 255, 255, 85));
+            GuiGraphicsCompat.centeredText(g, mc.font, Component.translatable("gauntlet.theabyss.cooldown"), cx, y, ARGB.color(alpha, 255, 255, 85));
         }
     }
 
@@ -372,14 +402,14 @@ public final class SpellWheelClient {
         return glyph.startsWith("[") ? Component.literal(glyph).withStyle(ChatFormatting.WHITE) : AbyssTooltip.icon(glyph);
     }
 
-    private static void icon(GuiGraphicsExtractor g, ItemStack ring, int x, int y, int alpha) {
-        Identifier id = BuiltInRegistries.ITEM.getKey(ring.getItem());
-        Identifier tex = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "textures/gui/spell_icons/" + id.getPath() + ".png");
+    private static void icon(GuiGraphics g, ItemStack ring, int x, int y, int alpha) {
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(ring.getItem());
+        ResourceLocation tex = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "textures/gui/spell_icons/" + id.getPath() + ".png");
         boolean has = ICONS.computeIfAbsent(tex, t -> Minecraft.getInstance().getResourceManager().getResource(t).isPresent());
         if (has) {
-            g.blit(RenderPipelines.GUI_TEXTURED, tex, x, y, 0.0F, 0.0F, 16, 16, 16, 16, ARGB.color(alpha, 255, 255, 255));
+            GuiGraphicsCompat.blit(g, tex, x, y, 0.0F, 0.0F, 16, 16, 16, 16, ARGB.color(alpha, 255, 255, 255));
         } else {
-            g.item(ring, x, y);
+            g.renderItem(ring, x, y);
         }
     }
 }

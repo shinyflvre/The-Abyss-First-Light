@@ -9,7 +9,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -262,7 +262,7 @@ public final class RingVisuals {
                     double r = victim.getBbWidth() * 0.5 + 0.35;
                     for (int k = 0; k < 3; k++) {
                         double a = k * Math.PI * 2.0 / 3.0 + victim.getRandom().nextDouble();
-                        var crystal = TheabyssModEntities.NIGHTBLADE_SPIKE.get().create(level, EntitySpawnReason.TRIGGERED);
+                        var crystal = TheabyssModEntities.NIGHTBLADE_SPIKE.get().create(level);
                         if (crystal != null) {
                             crystal.setPos(victim.getX() + Math.cos(a) * r, victim.getY(), victim.getZ() + Math.sin(a) * r);
                             crystal.setupFrost(caster, 0, Math.max(20, 140 - delay), (float)Math.toDegrees(a));

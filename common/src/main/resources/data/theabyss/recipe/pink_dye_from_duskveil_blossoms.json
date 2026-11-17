@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "group": "pink_dye",
   "ingredients": [
-    "theabyss:duskveil_blossoms"
+    {
+      "item": "theabyss:duskveil_blossoms"
+    }
   ],
   "result": {
     "id": "minecraft:pink_dye"

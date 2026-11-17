@@ -1,15 +1,33 @@
 {
   "type": "theabyss:arcane_recipe_type",
   "ingredients": [
-    "theabyss:ring_of_telekinetic",
-    "theabyss:hollow_crystal_shard",
-    "theabyss:ender_powder",
-    "theabyss:hollow_crystal_shard",
-    "theabyss:ender_powder",
-    "theabyss:hollow_crystal_shard",
-    "theabyss:ender_powder",
-    "theabyss:hollow_crystal_shard",
-    "theabyss:ender_powder"
+    {
+      "item": "theabyss:ring_of_telekinetic"
+    },
+    {
+      "item": "theabyss:hollow_crystal_shard"
+    },
+    {
+      "item": "theabyss:ender_powder"
+    },
+    {
+      "item": "theabyss:hollow_crystal_shard"
+    },
+    {
+      "item": "theabyss:ender_powder"
+    },
+    {
+      "item": "theabyss:hollow_crystal_shard"
+    },
+    {
+      "item": "theabyss:ender_powder"
+    },
+    {
+      "item": "theabyss:hollow_crystal_shard"
+    },
+    {
+      "item": "theabyss:ender_powder"
+    }
   ],
   "output": {
     "id": "theabyss:ring_of_blackstrike",

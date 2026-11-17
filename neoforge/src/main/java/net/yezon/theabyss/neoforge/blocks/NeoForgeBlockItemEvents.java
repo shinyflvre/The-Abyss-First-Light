@@ -1,43 +1,26 @@
 package net.yezon.theabyss.neoforge.blocks;
 
+import net.minecraft.world.Container;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChestBlock;
-import net.minecraft.world.level.block.DoubleBlockCombiner;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.transfer.CombinedResourceHandler;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.VanillaContainerWrapper;
-import net.neoforged.neoforge.transfer.item.WorldlyContainerWrapper;
+import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.furnace.FurnaceFuelBurnTimeEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.items.wrapper.InvWrapper;
+import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
+import net.yezon.theabyss.init.TheabyssModBlocks;
+import net.yezon.theabyss.item.AbyssFuels;
 import net.yezon.theabyss.platform.capabilities.RegisterCapabilitiesEvent;
-import net.yezon.theabyss.platform.common.tooltip.TooltipAppender;
-import net.yezon.theabyss.platform.common.tooltip.TooltipLocation;
 import net.yezon.theabyss.platform.event.AbyssEventBus;
-import net.yezon.theabyss.platform.event.RegisterTooltipAppendersEvent;
 
 public final class NeoForgeBlockItemEvents {
-    private static final DoubleBlockCombiner.Combiner<ChestBlockEntity, ResourceHandler<ItemResource>> CHEST_HANDLER = new DoubleBlockCombiner.Combiner<>() {
-        @Override
-        public ResourceHandler<ItemResource> acceptDouble(ChestBlockEntity first, ChestBlockEntity second) {
-            return new CombinedResourceHandler<>(VanillaContainerWrapper.of(first), VanillaContainerWrapper.of(second));
-        }
-
-        @Override
-        public ResourceHandler<ItemResource> acceptSingle(ChestBlockEntity single) {
-            return VanillaContainerWrapper.of(single);
-        }
-
-        @Override
-        public ResourceHandler<ItemResource> acceptNone() {
-            return null;
-        }
-    };
-
     private NeoForgeBlockItemEvents() {
     }
 
@@ -45,8 +28,22 @@ public final class NeoForgeBlockItemEvents {
         if (AbyssEventBus.hasListeners(RegisterCapabilitiesEvent.class)) {
             bus.addListener(NeoForgeBlockItemEvents::onRegisterCapabilities);
         }
-        if (AbyssEventBus.hasListeners(RegisterTooltipAppendersEvent.class)) {
-            bus.addListener(NeoForgeBlockItemEvents::onRegisterTooltipAppenders);
+        NeoForge.EVENT_BUS.addListener(NeoForgeBlockItemEvents::onFurnaceFuelBurnTime);
+        NeoForge.EVENT_BUS.addListener(NeoForgeBlockItemEvents::onToolModification);
+    }
+
+    private static void onToolModification(BlockEvent.BlockToolModificationEvent event) {
+        if (event.getItemAbility() == ItemAbilities.SHOVEL_FLATTEN && event.getState().is(TheabyssModBlocks.LUSH_ROOTED_DIRT.get())) {
+            event.setFinalState(Blocks.DIRT_PATH.defaultBlockState());
+        }
+    }
+
+    private static void onFurnaceFuelBurnTime(FurnaceFuelBurnTimeEvent event) {
+        int burnTime = AbyssFuels.burnTime(event.getItemStack());
+        if (burnTime >= 0) {
+            event.setBurnTime(burnTime);
+        } else if (AbyssFuels.isModItem(event.getItemStack().getItem())) {
+            event.setBurnTime(0);
         }
     }
 
@@ -54,22 +51,20 @@ public final class NeoForgeBlockItemEvents {
         AbyssEventBus.post(new RegisterCapabilitiesEvent() {
             @Override
             public <BE extends BlockEntity & WorldlyContainer> void registerSidedItemContainer(BlockEntityType<BE> type) {
-                event.registerBlockEntity(Capabilities.Item.BLOCK, type, WorldlyContainerWrapper::new);
+                event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, type, SidedInvWrapper::new);
+            }
+
+            @Override
+            public <BE extends BlockEntity & Container> void registerItemContainer(BlockEntityType<BE> type) {
+                event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, type, (entity, side) -> new InvWrapper(entity));
             }
 
             @Override
             public void registerChestItemContainer(Block... blocks) {
-                event.registerBlock(Capabilities.Item.BLOCK, (level, pos, state, entity, side) ->
-                    ((ChestBlock)state.getBlock()).combine(state, level, pos, true).apply(CHEST_HANDLER), blocks);
-            }
-        });
-    }
-
-    private static void onRegisterTooltipAppenders(net.neoforged.neoforge.event.RegisterTooltipAppendersEvent event) {
-        AbyssEventBus.post(new RegisterTooltipAppendersEvent() {
-            @Override
-            public void registerAppender(TooltipLocation location, TooltipAppender appender) {
-                event.registerAppender(net.neoforged.neoforge.common.tooltip.TooltipLocation.valueOf(location.name()), appender::append);
+                event.registerBlock(Capabilities.ItemHandler.BLOCK, (level, pos, state, entity, side) -> {
+                    Container container = ChestBlock.getContainer((ChestBlock)state.getBlock(), state, level, pos, true);
+                    return container == null ? null : new InvWrapper(container);
+                }, blocks);
             }
         });
     }

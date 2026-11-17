@@ -5,14 +5,16 @@
       "rules": [
         {
           "input_predicate": {
-            "block": "theabyss:cobble_stone",
             "predicate_type": "minecraft:random_block_match",
+            "block": "theabyss:cobble_stone",
             "probability": 0.8
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": "theabyss:cobble_stone"
+          "output_state": {
+            "Name": "theabyss:cobble_stone"
+          }
         },
         {
           "input_predicate": {
@@ -22,136 +24,158 @@
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": "minecraft:air"
+          "output_state": {
+            "Name": "minecraft:air"
+          }
         },
         {
           "input_predicate": {
-            "block": "theabyss:phantom_lantern",
-            "predicate_type": "minecraft:block_match"
+            "predicate_type": "minecraft:block_match",
+            "block": "theabyss:phantom_lantern"
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": "minecraft:air"
+          "output_state": {
+            "Name": "minecraft:air"
+          }
         },
         {
           "input_predicate": {
-            "block": "theabyss:phantom_lantern",
-            "predicate_type": "minecraft:block_match"
+            "predicate_type": "minecraft:block_match",
+            "block": "theabyss:phantom_lantern"
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": "minecraft:air"
+          "output_state": {
+            "Name": "minecraft:air"
+          }
         },
         {
           "input_predicate": {
-            "block": "theabyss:cobble_stone",
             "predicate_type": "minecraft:random_block_match",
+            "block": "theabyss:cobble_stone",
             "probability": 0.07
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": "minecraft:air"
+          "output_state": {
+            "Name": "minecraft:air"
+          }
         },
         {
           "input_predicate": {
-            "block": "theabyss:cobble_stone",
             "predicate_type": "minecraft:random_block_match",
+            "block": "theabyss:cobble_stone",
             "probability": 0.07
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": "minecraft:air"
+          "output_state": {
+            "Name": "minecraft:air"
+          }
         },
         {
           "input_predicate": {
+            "predicate_type": "minecraft:random_block_match",
             "block": "theabyss:stone_brick",
-            "predicate_type": "minecraft:random_block_match",
             "probability": 0.07
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": "minecraft:air"
+          "output_state": {
+            "Name": "minecraft:air"
+          }
         },
         {
           "input_predicate": {
-            "block": "theabyss:blaru_log",
             "predicate_type": "minecraft:random_block_match",
+            "block": "theabyss:blaru_log",
             "probability": 0.05
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": "minecraft:air"
+          "output_state": {
+            "Name": "minecraft:air"
+          }
         },
         {
           "input_predicate": {
+            "predicate_type": "minecraft:random_block_match",
             "block": "theabyss:blaru_planks",
-            "predicate_type": "minecraft:random_block_match",
             "probability": 0.1
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": "minecraft:air"
+          "output_state": {
+            "Name": "minecraft:air"
+          }
         },
         {
           "input_predicate": {
+            "predicate_type": "minecraft:random_block_match",
             "block": "theabyss:blaru_stairs",
-            "predicate_type": "minecraft:random_block_match",
             "probability": 0.1
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": "minecraft:air"
+          "output_state": {
+            "Name": "minecraft:air"
+          }
         },
         {
           "input_predicate": {
-            "block": "theabyss:stripped_blaru_log",
             "predicate_type": "minecraft:random_block_match",
+            "block": "theabyss:stripped_blaru_log",
             "probability": 0.02
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": "minecraft:air"
+          "output_state": {
+            "Name": "minecraft:air"
+          }
         },
         {
           "input_predicate": {
-            "block": "theabyss:blaru_fence",
             "predicate_type": "minecraft:random_block_match",
+            "block": "theabyss:blaru_fence",
             "probability": 0.5
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": "minecraft:air"
+          "output_state": {
+            "Name": "minecraft:air"
+          }
         },
         {
           "input_predicate": {
+            "predicate_type": "minecraft:blockstate_match",
             "block_state": {
-              "id": "theabyss:blaru_fence",
-              "properties": {
+              "Name": "theabyss:blaru_fence",
+              "Properties": {
                 "east": "false",
                 "north": "true",
                 "south": "true",
                 "waterlogged": "false",
                 "west": "false"
               }
-            },
-            "predicate_type": "minecraft:blockstate_match"
+            }
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "id": "theabyss:blaru_fence",
-            "properties": {
+            "Name": "theabyss:blaru_fence",
+            "Properties": {
               "east": "false",
               "north": "true",
               "south": "true",
@@ -162,24 +186,24 @@
         },
         {
           "input_predicate": {
+            "predicate_type": "minecraft:blockstate_match",
             "block_state": {
-              "id": "theabyss:blaru_fence",
-              "properties": {
+              "Name": "theabyss:blaru_fence",
+              "Properties": {
                 "east": "true",
                 "north": "false",
                 "south": "false",
                 "waterlogged": "false",
                 "west": "true"
               }
-            },
-            "predicate_type": "minecraft:blockstate_match"
+            }
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "id": "theabyss:blaru_fence",
-            "properties": {
+            "Name": "theabyss:blaru_fence",
+            "Properties": {
               "east": "true",
               "north": "false",
               "south": "false",
@@ -190,36 +214,42 @@
         },
         {
           "input_predicate": {
-            "block": "theabyss:ralom_plant",
             "predicate_type": "minecraft:random_block_match",
+            "block": "theabyss:ralom_plant",
             "probability": 0.3
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": "theabyss:fortis_ultima"
+          "output_state": {
+            "Name": "theabyss:fortis_ultima"
+          }
         },
         {
           "input_predicate": {
-            "block": "theabyss:ralom_plant",
             "predicate_type": "minecraft:random_block_match",
+            "block": "theabyss:ralom_plant",
             "probability": 0.2
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": "theabyss:flos_vitae"
+          "output_state": {
+            "Name": "theabyss:flos_vitae"
+          }
         },
         {
           "input_predicate": {
-            "block": "theabyss:ralom_plant",
             "predicate_type": "minecraft:random_block_match",
+            "block": "theabyss:ralom_plant",
             "probability": 0.1
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": "theabyss:exolius_plant"
+          "output_state": {
+            "Name": "theabyss:exolius_plant"
+          }
         }
       ]
     },

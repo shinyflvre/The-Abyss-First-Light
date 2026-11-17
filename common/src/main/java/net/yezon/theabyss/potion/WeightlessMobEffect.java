@@ -2,7 +2,7 @@ package net.yezon.theabyss.potion;
 
 import java.util.function.BiConsumer;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -14,7 +14,7 @@ import net.yezon.theabyss.TheabyssMod;
 public class WeightlessMobEffect extends MobEffect {
     public WeightlessMobEffect() {
         super(MobEffectCategory.HARMFUL, 0x5CC8FF);
-        this.addAttributeModifier(Attributes.GRAVITY, Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "weightless"), -1.0,
+        this.addAttributeModifier(Attributes.GRAVITY, ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "weightless"), -1.0,
             AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     }
 

@@ -28,10 +28,10 @@ public class ApplyGhostAttackEvents {
         float damage = net.yezon.theabyss.ring.RingDamage.GHOST_CURSE.at(ghost);
         for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, new AABB(centre, centre).inflate(10.0), e -> e != entity)) {
             if (!RingMode.spares(entity, target)) {
-                target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 30, 0, false, false));
+                target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30, 0, false, false));
                 target.addEffect(new MobEffectInstance(MobEffects.GLOWING, 30, 0, false, false));
                 target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 30, 0, false, false));
-                target.hurtServer(level, magic, damage);
+                target.hurt(magic, damage);
                 hit.add(target);
             }
         }

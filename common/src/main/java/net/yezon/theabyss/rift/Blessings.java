@@ -39,7 +39,7 @@ public final class Blessings {
     }
 
     public static boolean has(ServerPlayer player, String blessing) {
-        return ConfigConfiguration.storyEnabled() && blessing.equals(RiftStory.data(player).getStringOr("blessing", ""));
+        return ConfigConfiguration.storyEnabled() && blessing.equals(net.yezon.theabyss.compat.NbtCompat.getStringOr(RiftStory.data(player), "blessing", ""));
     }
 
     private static long now(ServerPlayer player) {
@@ -47,7 +47,7 @@ public final class Blessings {
     }
 
     public static boolean useUndying(ServerPlayer player) {
-        if (!has(player, UNDYING) || now(player) < RiftStory.data(player).getLongOr(UNDYING_READY, 0L)) {
+        if (!has(player, UNDYING) || now(player) < net.yezon.theabyss.compat.NbtCompat.getLongOr(RiftStory.data(player), UNDYING_READY, 0L)) {
             return false;
         }
         RiftStory.data(player).putLong(UNDYING_READY, now(player) + UNDYING_COOLDOWN);

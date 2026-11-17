@@ -51,14 +51,14 @@ public final class EagleBossTracker {
             boss.addEffect(new MobEffectInstance(MobEffects.GLOWING, ticks, 0, false, false));
         }
         if (bosses.isEmpty()) {
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.eagle.no_boss"));
+            player.displayClientMessage(Component.translatable("ring.theabyss.eagle.no_boss"), true);
         }
         send(player, bosses, ticks);
     }
 
     private static List<LivingEntity> find(ServerPlayer player) {
         List<LivingEntity> out = new ArrayList<>();
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         level.getEntities(EntityTypeTest.forClass(LivingEntity.class), e -> e.isAlive() && isBoss(e) && e.distanceToSqr(player) <= MAX_DISTANCE * MAX_DISTANCE, out);
         return out;
     }

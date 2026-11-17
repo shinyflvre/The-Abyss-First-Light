@@ -6,12 +6,11 @@ import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.registries.codec.RegistryCodecs;
+import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
-import net.minecraft.util.valueproviders.IntProviders;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -22,8 +21,8 @@ public record HangingPlants(Block plant, float chance, IntProvider length, Optio
     public static final Codec<HangingPlants> CODEC = RecordCodecBuilder.create(i -> i.group(
         BuiltInRegistries.BLOCK.byNameCodec().fieldOf("plant").forGetter(HangingPlants::plant),
         Codec.floatRange(0.0F, 1.0F).fieldOf("chance").forGetter(HangingPlants::chance),
-        IntProviders.codec(1, 32).fieldOf("length").forGetter(HangingPlants::length),
-        RegistryCodecs.holderSet(Registries.BLOCK).optionalFieldOf("attach_to").forGetter(HangingPlants::attachTo)
+        IntProvider.codec(1, 32).fieldOf("length").forGetter(HangingPlants::length),
+        RegistryCodecs.homogeneousList(Registries.BLOCK).optionalFieldOf("attach_to").forGetter(HangingPlants::attachTo)
     ).apply(i, HangingPlants::new));
 
     public void decorate(WorldGenLevel level, RandomSource random, Iterable<BlockPos> anchors) {
@@ -44,7 +43,7 @@ public record HangingPlants(Block plant, float chance, IntProvider length, Optio
             }
             int wanted = this.length.sample(random);
             int free = 0;
-            while (free < wanted && level.isInsideBuildHeight(pos) && level.getBlockState(pos).isAir()) {
+            while (free < wanted && !level.isOutsideBuildHeight(pos) && level.getBlockState(pos).isAir()) {
                 free++;
                 pos.move(Direction.DOWN);
             }

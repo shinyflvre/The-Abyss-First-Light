@@ -1,74 +1,62 @@
 package net.yezon.theabyss.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
-import java.lang.reflect.Method;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.Model;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.FirstPersonHandsAndItemsRenderer;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.entity.player.AvatarRenderer;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.PlayerRenderState;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.Mth;
-import net.minecraft.util.context.ContextKey;
+import net.minecraft.client.resources.PlayerSkin;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.PlayerModelType;
+import net.minecraft.world.entity.player.PlayerModelPart;
 import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
 import net.yezon.theabyss.platform.event.EventBusSubscriber;
 import net.yezon.theabyss.platform.client.event.EntityRenderersEvent;
 import net.yezon.theabyss.platform.client.event.RenderArmEvent;
 import net.yezon.theabyss.platform.client.event.RenderHandEvent;
-import net.yezon.theabyss.platform.client.renderstate.RegisterRenderStateModifiersEvent;
 import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.init.TheabyssModItems;
+import net.yezon.theabyss.mixin.client.ItemInHandRendererArmInvoker;
 import org.jspecify.annotations.Nullable;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public final class InfectedHand {
-    private static final ContextKey<Boolean> INFECTED = new ContextKey<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "infected_hand"));
     private static final float INFLATE = 0.27F;
     private static final int FULL_BRIGHT = 15728880;
-    private static final Map<PlayerModelType, Model<Void>> ARM_BOX = new EnumMap<>(PlayerModelType.class);
-    private static @Nullable Method renderPlayerArm;
-    private static boolean vanillaArmMissing;
+    private static final Map<PlayerSkin.Model, ModelPart> ARM_BOX = new EnumMap<>(PlayerSkin.Model.class);
 
     private InfectedHand() {
     }
 
-    private static Identifier texture(PlayerModelType type, String suffix) {
-        return Identifier.fromNamespaceAndPath(TheabyssMod.MODID,
-            "textures/entity/infected_hand_" + (type == PlayerModelType.SLIM ? "slim" : "wide") + suffix + ".png");
+    private static ResourceLocation texture(PlayerSkin.Model type, String suffix) {
+        return ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID,
+            "textures/entity/infected_hand_" + (type == PlayerSkin.Model.SLIM ? "slim" : "wide") + suffix + ".png");
     }
 
-    private static Model<Void> armBox(PlayerModelType type) {
+    private static ModelPart armBox(PlayerSkin.Model type) {
         return ARM_BOX.computeIfAbsent(type, t -> {
-            boolean slim = t == PlayerModelType.SLIM;
+            boolean slim = t == PlayerSkin.Model.SLIM;
             MeshDefinition mesh = new MeshDefinition();
             mesh.getRoot().addOrReplaceChild("arm", CubeListBuilder.create().texOffs(0, 0)
                 .addBox(slim ? -2.0F : -3.0F, -2.0F, -2.0F, slim ? 3.0F : 4.0F, 12.0F, 4.0F, new CubeDeformation(INFLATE)), PartPose.ZERO);
-            return new Model<Void>(LayerDefinition.create(mesh, 16, 16).bakeRoot(), RenderTypes::entityTranslucent) {
-            };
+            return LayerDefinition.create(mesh, 16, 16).bakeRoot();
         });
     }
 
@@ -79,108 +67,77 @@ public final class InfectedHand {
 
     @SubscribeEvent
     public static void addLayers(EntityRenderersEvent.AddLayers event) {
-        for (PlayerModelType type : event.getSkins()) {
-            AvatarRenderer<AbstractClientPlayer> renderer = event.getPlayerRenderer(type);
-            if (renderer != null) {
-                ((net.yezon.theabyss.mixin.accessor.client.LivingEntityRendererAccessor)renderer).theabyss$addLayer(new Layer(renderer, type));
+        for (PlayerSkin.Model type : event.getSkins()) {
+            EntityRenderer<? extends Player> renderer = event.getSkin(type);
+            if (renderer instanceof PlayerRenderer player) {
+                ((net.yezon.theabyss.mixin.accessor.client.LivingEntityRendererAccessor)player).theabyss$addLayer(new Layer(player, type));
             }
         }
     }
 
-    @SubscribeEvent
-    @SuppressWarnings("unchecked")
-    public static void registerModifiers(RegisterRenderStateModifiersEvent event) {
-        event.registerEntityModifier((Class<EntityRenderer<Entity, EntityRenderState>>)(Class<?>)EntityRenderer.class, (entity, state) -> {
-            if (state instanceof AvatarRenderState) {
-                net.yezon.theabyss.platform.client.renderstate.RenderData.set(state, INFECTED, entity instanceof Player player && holds(player));
-            }
-        });
-    }
+    private static final class Layer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
+        private final PlayerSkin.Model type;
 
-    private static final class Layer extends RenderLayer<AvatarRenderState, PlayerModel> {
-        private final PlayerModelType type;
-
-        Layer(RenderLayerParent<AvatarRenderState, PlayerModel> renderer, PlayerModelType type) {
+        Layer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> renderer, PlayerSkin.Model type) {
             super(renderer);
             this.type = type;
         }
 
         @Override
-        public void submit(PoseStack poseStack, SubmitNodeCollector collector, int light, AvatarRenderState state, float yRot, float xRot) {
-            Boolean infected = net.yezon.theabyss.platform.client.renderstate.RenderData.get(state, INFECTED);
-            if (infected == null || !infected || state.isInvisible) {
+        public void render(PoseStack poseStack, MultiBufferSource buffers, int light, AbstractClientPlayer player, float limbSwing, float limbSwingAmount,
+                           float partialTick, float ageInTicks, float netHeadYaw, float headPitch) {
+            if (!holds(player) || player.isInvisible()) {
                 return;
             }
-            PlayerModel parent = this.getParentModel();
-            Model<Void> box = armBox(this.type);
+            PlayerModel<AbstractClientPlayer> parent = this.getParentModel();
+            ModelPart box = armBox(this.type);
             poseStack.pushPose();
-            parent.root().translateAndRotate(poseStack);
             parent.rightArm.translateAndRotate(poseStack);
-            collector.order(1).submitModel(box, null, poseStack, RenderTypes.entityTranslucent(texture(this.type, "")), light, OverlayTexture.NO_OVERLAY,
-                state.outlineColor);
-            collector.order(2).submitModel(box, null, poseStack, RenderTypes.eyes(texture(this.type, "_glow")), light, OverlayTexture.NO_OVERLAY,
-                state.outlineColor);
+            box.render(poseStack, buffers.getBuffer(RenderType.entityTranslucent(texture(this.type, ""))), light, OverlayTexture.NO_OVERLAY);
+            box.render(poseStack, buffers.getBuffer(AbyssRenderTypes.eyes(texture(this.type, "_glow"))), light, OverlayTexture.NO_OVERLAY);
             poseStack.popPose();
         }
     }
 
-    private static void infectedHand(AvatarRenderer<?> renderer, PoseStack poseStack, SubmitNodeCollector collector, int light, Identifier skin,
-                                     boolean sleeve, PlayerModelType type) {
-        renderer.renderRightHand(poseStack, collector, light, skin, sleeve);
-        renderer.renderRightHand(poseStack, collector, light, texture(type, "_skin"), sleeve);
-        renderer.renderRightHand(poseStack, collector, FULL_BRIGHT, texture(type, "_skin_glow"), sleeve);
+    private static void renderRightHand(PlayerRenderer renderer, PoseStack poseStack, MultiBufferSource buffers, int light, ResourceLocation skin, boolean sleeve) {
+        PlayerModel<AbstractClientPlayer> model = renderer.getModel();
+        model.rightArm.resetPose();
+        model.rightArm.visible = true;
+        model.leftSleeve.visible = sleeve;
+        model.rightSleeve.visible = sleeve;
+        model.leftArm.zRot = -0.1F;
+        model.rightArm.zRot = 0.1F;
+        model.rightSleeve.copyFrom(model.rightArm);
+        RenderType type = RenderType.entityTranslucent(skin);
+        model.rightArm.render(poseStack, buffers.getBuffer(type), light, OverlayTexture.NO_OVERLAY);
+        model.rightSleeve.render(poseStack, buffers.getBuffer(type), light, OverlayTexture.NO_OVERLAY);
+    }
+
+    private static void infectedHand(PlayerRenderer renderer, PoseStack poseStack, MultiBufferSource buffers, int light, ResourceLocation skin, boolean sleeve,
+                                     PlayerSkin.Model type) {
+        renderRightHand(renderer, poseStack, buffers, light, skin, sleeve);
+        renderRightHand(renderer, poseStack, buffers, light, texture(type, "_skin"), sleeve);
+        renderRightHand(renderer, poseStack, buffers, FULL_BRIGHT, texture(type, "_skin_glow"), sleeve);
+    }
+
+    private static @Nullable PlayerRenderer rendererOf(AbstractClientPlayer player) {
+        return Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(player) instanceof PlayerRenderer renderer ? renderer : null;
     }
 
     @SubscribeEvent
     public static void onRenderArm(RenderArmEvent event) {
-        Player player = Minecraft.getInstance().player;
-        AvatarRenderState avatar = event.getPlayerRenderState().avatarRenderState;
-        if (event.getArm() != HumanoidArm.RIGHT || player == null || avatar == null || !holds(player)) {
+        AbstractClientPlayer player = event.getPlayer();
+        if (event.getArm() != HumanoidArm.RIGHT || player == null || !holds(player)) {
+            return;
+        }
+        PlayerRenderer renderer = rendererOf(player);
+        if (renderer == null) {
             return;
         }
         event.setCanceled(true);
-        AvatarRenderer<?> renderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(avatar);
-        infectedHand(renderer, event.getPoseStack(), event.getSubmitNodeCollector(), event.getLightCoords(), event.getSkinTexture(), event.hasSleeve(),
-            avatar.skin.model());
-    }
-
-    private static boolean vanillaArm(PoseStack poseStack, SubmitNodeCollector collector, int light, float equip, float swing, PlayerRenderState state) {
-        if (vanillaArmMissing) {
-            return false;
-        }
-        try {
-            if (renderPlayerArm == null) {
-                Method method = FirstPersonHandsAndItemsRenderer.class.getDeclaredMethod("renderPlayerArm", PoseStack.class, SubmitNodeCollector.class, int.class,
-                    float.class, float.class, HumanoidArm.class, PlayerRenderState.class);
-                method.setAccessible(true);
-                renderPlayerArm = method;
-            }
-            renderPlayerArm.invoke(Minecraft.getInstance().gameRenderer.firstPersonHandsAndItemsRenderer, poseStack, collector, light, equip, swing,
-                HumanoidArm.RIGHT, state);
-            return true;
-        } catch (ReflectiveOperationException | RuntimeException e) {
-            vanillaArmMissing = true;
-            TheabyssMod.LOGGER.warn("Infected hand: vanilla first person arm not reachable, using the own placement", e);
-            return false;
-        }
-    }
-
-    private static void ownArm(PoseStack poseStack, SubmitNodeCollector collector, int light, float equip, float swing, AvatarRenderState avatar) {
-        float sqrtAttack = Mth.sqrt(swing);
-        float xSwing = -0.3F * Mth.sin(sqrtAttack * (float)Math.PI);
-        float ySwing = 0.4F * Mth.sin(sqrtAttack * (float)(Math.PI * 2));
-        float zSwing = -0.4F * Mth.sin(swing * (float)Math.PI);
-        poseStack.translate(xSwing + 0.64000005F, ySwing - 0.6F + equip * -0.6F, zSwing - 0.71999997F);
-        poseStack.rotateDegrees(Axis.YP, 45.0F);
-        poseStack.rotateDegrees(Axis.YP, Mth.sin(sqrtAttack * (float)Math.PI) * 70.0F);
-        poseStack.rotateDegrees(Axis.ZP, Mth.sin(swing * swing * (float)Math.PI) * -20.0F);
-        poseStack.translate(-1.0F, 3.6F, 3.5F);
-        poseStack.rotateDegrees(Axis.ZP, 120.0F);
-        poseStack.rotateDegrees(Axis.XP, 200.0F);
-        poseStack.rotateDegrees(Axis.YP, -135.0F);
-        poseStack.translate(5.6F, 0.0F, 0.0F);
-        AvatarRenderer<?> renderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(avatar);
-        infectedHand(renderer, poseStack, collector, light, avatar.skin.body().texturePath(), avatar.showRightSleeve, avatar.skin.model());
+        PlayerSkin skin = player.getSkin();
+        infectedHand(renderer, event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), skin.texture(),
+            player.isModelPartShown(PlayerModelPart.RIGHT_SLEEVE), skin.model());
     }
 
     @SubscribeEvent
@@ -188,20 +145,18 @@ public final class InfectedHand {
         if (event.getHand() != InteractionHand.MAIN_HAND || !event.getItemStack().is(TheabyssModItems.INFECTED_GAUNTLET.get())) {
             return;
         }
-        PlayerRenderState playerState = event.getPlayerState();
-        AvatarRenderState avatar = playerState.avatarRenderState;
-        if (avatar == null || avatar.mainArm != HumanoidArm.RIGHT) {
+        AbstractClientPlayer player = Minecraft.getInstance().player;
+        if (player == null || player.getMainArm() != HumanoidArm.RIGHT) {
             return;
         }
         event.setCanceled(true);
-        if (avatar.isInvisible) {
+        if (player.isInvisible()) {
             return;
         }
         PoseStack poseStack = event.getPoseStack();
         poseStack.pushPose();
-        if (!vanillaArm(poseStack, event.getSubmitNodeCollector(), event.getPackedLight(), event.getEquipProgress(), event.getSwingProgress(), playerState)) {
-            ownArm(poseStack, event.getSubmitNodeCollector(), event.getPackedLight(), event.getEquipProgress(), event.getSwingProgress(), avatar);
-        }
+        ((ItemInHandRendererArmInvoker)Minecraft.getInstance().gameRenderer.itemInHandRenderer).theabyss$renderPlayerArm(poseStack,
+            event.getMultiBufferSource(), event.getPackedLight(), event.getEquipProgress(), event.getSwingProgress(), HumanoidArm.RIGHT);
         poseStack.popPose();
     }
 }

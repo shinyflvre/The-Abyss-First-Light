@@ -126,8 +126,8 @@ public final class WraithClient {
             worldFovPending = false;
             Camera camera = event.getCamera();
             double feet = mc.player.getPosition(event.getPartialTick()).y;
-            double drop = Math.min(0.0, feet + SHADOW_EYE - camera.position().y) * k;
-            TeleportDashClient.moveCamera(camera, camera.position().add(0.0, drop, 0.0));
+            double drop = Math.min(0.0, feet + SHADOW_EYE - camera.getPosition().y) * k;
+            TeleportDashClient.moveCamera(camera, camera.getPosition().add(0.0, drop, 0.0));
         }
         event.setFOV(event.getFOV() * (1.0F + FOV_WIDEN * k));
     }

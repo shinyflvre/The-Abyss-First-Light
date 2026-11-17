@@ -3,7 +3,8 @@
   "biomes": "theabyss:slime_forest",
   "spawners": {
     "type": "theabyss:crystal_golem",
-    "weight": 4,
-    "count": 1
+    "maxCount": 1,
+    "minCount": 1,
+    "weight": 4
   }
 }

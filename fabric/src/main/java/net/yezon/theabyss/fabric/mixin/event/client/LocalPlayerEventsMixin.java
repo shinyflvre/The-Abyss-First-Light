@@ -1,6 +1,6 @@
 package net.yezon.theabyss.fabric.mixin.event.client;
 
-import net.minecraft.client.player.ClientInput;
+import net.minecraft.client.player.Input;
 import net.minecraft.client.player.LocalPlayer;
 import net.yezon.theabyss.fabric.event.ClientFabricEvents;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,10 +12,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LocalPlayer.class)
 public abstract class LocalPlayerEventsMixin {
     @Shadow
-    public ClientInput input;
+    public Input input;
 
-    @Inject(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/ClientInput;tick()V", shift = At.Shift.AFTER))
+    @Inject(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/Input;tick(ZF)V", shift = At.Shift.AFTER))
     private void theabyss$movementInput(CallbackInfo ci) {
-        ClientFabricEvents.movementInput(this.input);
+        ClientFabricEvents.movementInput((LocalPlayer)(Object)this, this.input);
     }
 }

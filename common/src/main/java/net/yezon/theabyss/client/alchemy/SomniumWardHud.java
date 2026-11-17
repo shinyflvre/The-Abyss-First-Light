@@ -1,10 +1,9 @@
 package net.yezon.theabyss.client.alchemy;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.Hud;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.Identifier;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffects;
@@ -16,13 +15,14 @@ import net.yezon.theabyss.platform.event.EventBusSubscriber;
 import net.yezon.theabyss.platform.client.event.RenderGuiLayerEvent;
 import net.yezon.theabyss.platform.client.gui.VanillaGuiLayers;
 import net.yezon.theabyss.TheabyssMod;
+import net.yezon.theabyss.compat.GuiGraphicsCompat;
 import net.yezon.theabyss.init.TheabyssModMobEffects;
 import net.yezon.theabyss.network.TheabyssModVariables;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public final class SomniumWardHud {
-    private static final Identifier FULL = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "hud/ward_full");
-    private static final Identifier HALF = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "hud/ward_half");
+    private static final ResourceLocation FULL = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "hud/ward_full");
+    private static final ResourceLocation HALF = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "hud/ward_half");
     private static final int ROW = 10;
     private static int baseY = -1;
 
@@ -49,8 +49,8 @@ public final class SomniumWardHud {
         if (wardHalves <= 0) {
             return;
         }
-        Hud hud = mc.gui.hud;
-        GuiGraphicsExtractor graphics = event.getGuiGraphics();
+        Gui hud = mc.gui;
+        GuiGraphics graphics = event.getGuiGraphics();
         int currentHealth = Mth.ceil(player.getHealth());
         float maxHealth = Math.max((float)player.getAttributeValue(Attributes.MAX_HEALTH), currentHealth);
         int absorption = Mth.ceil(player.getAbsorptionAmount());
@@ -77,7 +77,7 @@ public final class SomniumWardHud {
         int hearts = Math.min(ROW, Math.min(healthContainers, (wardHalves + 1) / 2));
         for (int i = 0; i < hearts; i++) {
             boolean half = i * 2 + 1 == wardHalves;
-            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, half ? HALF : FULL, xLeft + i * 8, rowY[i], 9, 9);
+            GuiGraphicsCompat.blitSprite(graphics, half ? HALF : FULL, xLeft + i * 8, rowY[i], 9, 9);
         }
     }
 }

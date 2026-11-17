@@ -1,9 +1,7 @@
-#version 330
-#extension GL_ARB_separate_shader_objects : require
+#version 150
 
-#include <minecraft:globals.glsl>
-#include <minecraft:fog.glsl>
-#include <minecraft:dynamictransforms.glsl>
+uniform vec4 FogColor;
+uniform float GameTime;
 
 // Rift of Sins sky (always on, no config): no sun, moon, stars or colours. A near-black void filled with smoke that
 // rolls slowly and is torn into ragged shreds: dark rips with slightly paler edges, thin ash filaments between the
@@ -11,9 +9,9 @@
 // Performance (owner 16.10.2026, the sky fills most of the screen in the rift): 8 noise lookups per pixel
 // (first version 22): warp 2, smoke 3, rip 2, shreds 1; the smoke value itself shades the banks.
 
-layout(location = 0) in vec3 direction;
+in vec3 direction;
 
-layout(location = 0) out vec4 fragColor;
+out vec4 fragColor;
 
 float hash(vec3 p) {
     p = fract(p * 0.3183099 + 0.1);

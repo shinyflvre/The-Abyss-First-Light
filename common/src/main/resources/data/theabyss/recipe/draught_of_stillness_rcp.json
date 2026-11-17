@@ -1,12 +1,24 @@
 {
   "type": "theabyss:infuser_recipe_type",
   "ingredients": [
-    "theabyss:frost_crystal_shard",
-    "theabyss:node_shard",
-    "theabyss:frost_crystal_shard",
-    "theabyss:node_shard",
-    "theabyss:somnium",
-    "theabyss:loran_energy"
+    {
+      "item": "theabyss:frost_crystal_shard"
+    },
+    {
+      "item": "theabyss:node_shard"
+    },
+    {
+      "item": "theabyss:frost_crystal_shard"
+    },
+    {
+      "item": "theabyss:node_shard"
+    },
+    {
+      "item": "theabyss:somnium"
+    },
+    {
+      "item": "theabyss:loran_energy"
+    }
   ],
   "output": {
     "id": "theabyss:draught_of_stillness",

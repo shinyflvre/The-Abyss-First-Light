@@ -1,5 +1,24 @@
 {
-  "feature": "theabyss:tall_glow_shroom",
+  "feature": {
+    "type": "minecraft:random_patch",
+    "config": {
+      "feature": {
+        "feature": "theabyss:tall_glow_shroom",
+        "placement": [
+          {
+            "type": "minecraft:block_predicate_filter",
+            "predicate": {
+              "type": "minecraft:matching_blocks",
+              "blocks": "minecraft:air"
+            }
+          }
+        ]
+      },
+      "tries": 5,
+      "xz_spread": 7,
+      "y_spread": 3
+    }
+  },
   "placement": [
     {
       "type": "minecraft:count",
@@ -18,38 +37,6 @@
     },
     {
       "type": "minecraft:biome"
-    },
-    {
-      "type": "minecraft:count",
-      "count": 5
-    },
-    {
-      "type": "minecraft:offset",
-      "x": {
-        "type": "minecraft:trapezoid",
-        "max": 7,
-        "min": -7,
-        "plateau": 0
-      },
-      "y": {
-        "type": "minecraft:trapezoid",
-        "max": 3,
-        "min": -3,
-        "plateau": 0
-      },
-      "z": {
-        "type": "minecraft:trapezoid",
-        "max": 7,
-        "min": -7,
-        "plateau": 0
-      }
-    },
-    {
-      "type": "minecraft:block_predicate_filter",
-      "predicate": {
-        "type": "minecraft:matching_blocks",
-        "blocks": "minecraft:air"
-      }
     }
   ]
 }

@@ -75,7 +75,7 @@ public final class FabricPlatform implements Platform {
 
     @Override
     public void sendToPlayersInDimension(ServerLevel level, CustomPacketPayload payload) {
-        for (ServerPlayer player : PlayerLookup.level(level)) {
+        for (ServerPlayer player : PlayerLookup.world(level)) {
             ServerPlayNetworking.send(player, payload);
         }
     }

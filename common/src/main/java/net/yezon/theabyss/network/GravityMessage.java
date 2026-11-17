@@ -5,7 +5,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.network.PacketDistributor;
@@ -15,10 +15,10 @@ import net.yezon.theabyss.gravity.Gravity;
 import net.yezon.theabyss.platform.services.ServerHooks;
 
 public record GravityMessage(int gravity, Vec3 feet) implements CustomPacketPayload {
-    public static final Type<GravityMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "gravity"));
+    public static final Type<GravityMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "gravity"));
     public static final StreamCodec<RegistryFriendlyByteBuf, GravityMessage> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.VAR_INT, GravityMessage::gravity,
-        Vec3.STREAM_CODEC, GravityMessage::feet,
+        AbyssStreamCodecs.VEC3, GravityMessage::feet,
         GravityMessage::new
     );
 

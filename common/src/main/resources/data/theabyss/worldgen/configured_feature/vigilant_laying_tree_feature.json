@@ -1,0 +1,14 @@
+{
+  "type": "theabyss:structure_feature",
+  "config": {
+    "ignored_blocks": "minecraft:structure_block",
+    "offset": [
+      -2,
+      0,
+      -2
+    ],
+    "random_mirror": true,
+    "random_rotation": true,
+    "structure": "theabyss:vigilant_laying_tree"
+  }
+}

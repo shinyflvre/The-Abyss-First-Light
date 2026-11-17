@@ -7,16 +7,16 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.AbstractRecipeCategory;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.yezon.theabyss.init.TheabyssModItems;
 import net.yezon.theabyss.init.TheabyssModJeiPlugin;
 
 public class CrystalCutterRecipeTypeRecipeCategory extends AbstractRecipeCategory<RecipeHolder<CrystalCutterRecipeTypeRecipe>> {
-    public static final Identifier UID = Identifier.fromNamespaceAndPath("theabyss", "crystal_cutter_recipe_type");
-    public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath("theabyss", "textures/screens/jei_crystalcutter_gui.png");
+    public static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath("theabyss", "crystal_cutter_recipe_type");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("theabyss", "textures/screens/jei_crystalcutter_gui.png");
     private final IDrawable background;
 
     public CrystalCutterRecipeTypeRecipeCategory(IGuiHelper helper) {
@@ -31,15 +31,15 @@ public class CrystalCutterRecipeTypeRecipeCategory extends AbstractRecipeCategor
     }
 
     @Override
-    public void draw(RecipeHolder<CrystalCutterRecipeTypeRecipe> recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
+    public void draw(RecipeHolder<CrystalCutterRecipeTypeRecipe> recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         this.background.draw(guiGraphics);
     }
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<CrystalCutterRecipeTypeRecipe> holder, IFocusGroup focuses) {
         CrystalCutterRecipeTypeRecipe recipe = holder.value();
-        builder.addSlot(RecipeIngredientRole.INPUT, 26, 53).add(recipe.getIngredients().get(0));
-        builder.addSlot(RecipeIngredientRole.INPUT, 80, 26).add(recipe.getIngredients().get(1));
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 134, 53).add(recipe.output());
+        builder.addSlot(RecipeIngredientRole.INPUT, 26, 53).addIngredients(recipe.getIngredients().get(0));
+        builder.addSlot(RecipeIngredientRole.INPUT, 80, 26).addIngredients(recipe.getIngredients().get(1));
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 134, 53).addItemStack(recipe.output());
     }
 }

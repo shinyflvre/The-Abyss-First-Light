@@ -4,11 +4,9 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.WorldGenRegion;
@@ -16,7 +14,6 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.StructureManager;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.block.Blocks;
@@ -27,15 +24,14 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
+import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
-import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.yezon.theabyss.platform.registries.DeferredHolder;
 import net.yezon.theabyss.platform.registries.DeferredRegister;
 import net.yezon.theabyss.TheabyssMod;
-import org.jspecify.annotations.Nullable;
 
 public class PocketChunkGenerator extends ChunkGenerator {
     public static final MapCodec<PocketChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(
@@ -82,22 +78,30 @@ public class PocketChunkGenerator extends ChunkGenerator {
 
     @Override
     public ChunkGeneratorStructureState createState(HolderLookup<StructureSet> structureSets, RandomState randomState, long levelSeed) {
-        return ChunkGeneratorStructureState.createForFlat(randomState, levelSeed, this.getOrigin(randomState), this.biomeSource, Stream.empty());
+        return ChunkGeneratorStructureState.createForFlat(randomState, levelSeed, this.biomeSource, Stream.empty());
     }
 
     @Override
-    public CompletableFuture<ChunkAccess> buildTerrain(
-        ChunkAccess chunk,
-        Blender blender,
+    public void applyCarvers(
+        WorldGenRegion region,
+        long seed,
         RandomState randomState,
-        StructureManager structureManager,
         BiomeManager biomeManager,
-        @Nullable WorldGenRegion carverBiomeRegion,
-        Set<Holder<Biome>> possibleBiomes
+        StructureManager structureManager,
+        ChunkAccess chunk,
+        GenerationStep.Carving step
     ) {
+    }
+
+    @Override
+    public void buildSurface(WorldGenRegion region, StructureManager structureManager, RandomState randomState, ChunkAccess chunk) {
+    }
+
+    @Override
+    public CompletableFuture<ChunkAccess> fillFromNoise(Blender blender, RandomState randomState, StructureManager structureManager, ChunkAccess chunk) {
         ChunkPos pos = chunk.getPos();
-        int minX = pos.x() * 16;
-        int minZ = pos.z() * 16;
+        int minX = pos.x * 16;
+        int minZ = pos.z * 16;
         int cell = PocketCells.at(minX, minZ);
         if (cell >= 0) {
             new Writer(chunk, new Land(cell), minX, minZ).write();
@@ -109,7 +113,7 @@ public class PocketChunkGenerator extends ChunkGenerator {
     public int getBaseHeight(int x, int z, Heightmap.Types type, LevelHeightAccessor heightAccessor, RandomState randomState) {
         int cell = PocketCells.at(x, z);
         if (cell < 0) {
-            return heightAccessor.getMinY();
+            return heightAccessor.getMinBuildHeight();
         }
         Land land = new Land(cell);
         int u = x - PocketCells.originX(cell);
@@ -120,7 +124,7 @@ public class PocketChunkGenerator extends ChunkGenerator {
 
     @Override
     public NoiseColumn getBaseColumn(int x, int z, LevelHeightAccessor heightAccessor, RandomState randomState) {
-        int minY = heightAccessor.getMinY();
+        int minY = heightAccessor.getMinBuildHeight();
         int cell = PocketCells.at(x, z);
         if (cell < 0) {
             return new NoiseColumn(minY, new BlockState[0]);
@@ -139,7 +143,7 @@ public class PocketChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public void addDebugScreenInfo(List<String> result, RandomState randomState, BlockPos feetPos, SamplerContext samplerContext) {
+    public void addDebugScreenInfo(List<String> result, RandomState randomState, BlockPos feetPos) {
     }
 
     @Override
@@ -387,7 +391,7 @@ public class PocketChunkGenerator extends ChunkGenerator {
         }
 
         private void set(int x, int y, int z, BlockState state) {
-            this.chunk.setBlockState(this.pos.set(x, y, z), state);
+            this.chunk.setBlockState(this.pos.set(x, y, z), state, false);
             this.oceanFloor.update(x, y, z, state);
             this.worldSurface.update(x, y, z, state);
         }

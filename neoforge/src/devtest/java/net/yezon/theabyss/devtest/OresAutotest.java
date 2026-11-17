@@ -38,7 +38,7 @@ final class OresAutotest {
                     var accessor = f.getClass().getRecordComponents()[0].getAccessor();
                     accessor.setAccessible(true);
                     var pos = (net.minecraft.core.BlockPos)accessor.invoke(f);
-                    nearest = Math.min(nearest, Math.sqrt(pos.distToCenterSqr(Minecraft.getInstance().gameRenderer.mainCamera().position())));
+                    nearest = Math.min(nearest, Math.sqrt(pos.distToCenterSqr(Minecraft.getInstance().gameRenderer.getMainCamera().getPosition())));
                 } catch (ReflectiveOperationException e) {
                     break;
                 }

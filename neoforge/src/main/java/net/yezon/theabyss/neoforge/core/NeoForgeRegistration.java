@@ -2,7 +2,7 @@ package net.yezon.theabyss.neoforge.core;
 
 import java.util.List;
 import java.util.function.Function;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.yezon.theabyss.platform.attachment.AttachmentType;
 import net.yezon.theabyss.platform.registries.DeferredHolder;
@@ -29,7 +29,7 @@ public final class NeoForgeRegistration {
     private static <T> void registerVanilla(DeferredRegister<T> common, IEventBus bus) {
         net.neoforged.neoforge.registries.DeferredRegister<T> neo =
             net.neoforged.neoforge.registries.DeferredRegister.create(common.getRegistryKey(), common.getNamespace());
-        common.getFactories().forEach((DeferredHolder<T, ? extends T> holder, Function<Identifier, ? extends T> factory) ->
+        common.getFactories().forEach((DeferredHolder<T, ? extends T> holder, Function<ResourceLocation, ? extends T> factory) ->
             neo.register(holder.getId().getPath(), factory));
         common.getAliases().forEach(neo::addAlias);
         common.markRegistered();

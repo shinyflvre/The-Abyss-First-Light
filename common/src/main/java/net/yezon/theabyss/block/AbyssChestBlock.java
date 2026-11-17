@@ -5,7 +5,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.CompoundContainer;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
@@ -16,12 +15,12 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.DoubleBlockCombiner;
-import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.yezon.theabyss.block.entity.AbyssContainerLock;
 import net.yezon.theabyss.block.entity.AbyssChestBlockEntity;
 import net.yezon.theabyss.init.TheabyssModBlockEntities;
 import net.yezon.theabyss.init.TheabyssModMenus;
@@ -44,7 +43,7 @@ public class AbyssChestBlock extends ChestBlock {
                     if (!player.isSpectator()) {
                         Direction connected = ChestBlock.getConnectedDirection(first.getBlockState());
                         Vec3 centre = Vec3.atCenterOf(first.getBlockPos()).add(connected.getStepX() / 2.0, 0.0, connected.getStepZ() / 2.0);
-                        BaseContainerBlockEntity.sendChestLockedNotifications(centre, player, this.getDisplayName());
+                        AbyssContainerLock.sendLockedNotifications(centre, player, this.getDisplayName());
                     }
                     return null;
                 }
@@ -76,7 +75,7 @@ public class AbyssChestBlock extends ChestBlock {
     private final String wood;
 
     public AbyssChestBlock(String wood, BlockBehaviour.Properties properties) {
-        super(() -> TheabyssModBlockEntities.ABYSS_CHEST.get(), SoundEvents.CHEST_OPEN, SoundEvents.CHEST_CLOSE, properties);
+        super(properties, () -> TheabyssModBlockEntities.ABYSS_CHEST.get());
         this.wood = wood;
     }
 
@@ -84,12 +83,10 @@ public class AbyssChestBlock extends ChestBlock {
         return this.wood;
     }
 
-    @Override
     public SoundEvent getOpenChestSound() {
         return TheabyssModSounds.ABYSS_CHEST_OPEN.get();
     }
 
-    @Override
     public SoundEvent getCloseChestSound() {
         return TheabyssModSounds.ABYSS_CHEST_CLOSE.get();
     }

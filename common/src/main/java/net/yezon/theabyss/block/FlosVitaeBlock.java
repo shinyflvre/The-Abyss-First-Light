@@ -6,10 +6,8 @@ import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -35,16 +33,17 @@ public class FlosVitaeBlock extends SugarCaneBlock implements HoverTextBlock {
                 .randomTicks()
                 .sound(SoundType.GRASS)
                 .instabreak()
-                .postProcess((bs, br, bp) -> bp)
-                .emissiveRendering(bs -> true)
-                .noCollision()
+                .hasPostProcess((bs, br, bp) -> true)
+                .emissiveRendering((bs, br, bp) -> true)
+                .noCollission()
                 .offsetType(OffsetType.XZ)
-                .pushReaction(PushReaction.POPPED)
+                .pushReaction(PushReaction.DESTROY)
         );
     }
 
     @Override
-    public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, Consumer<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, List<Component> tooltipLines, TooltipFlag flag) {
+        Consumer<Component> tooltip = tooltipLines::add;
         tooltip.accept(Component.translatable("tooltip.theabyss.plant_cures"));
     }
 
@@ -78,13 +77,13 @@ public class FlosVitaeBlock extends SugarCaneBlock implements HoverTextBlock {
     }
 
     @Override
-    protected void entityInside(BlockState blockstate, Level world, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
-        super.entityInside(blockstate, world, pos, entity, effectApplier, isPrecise);
+    protected void entityInside(BlockState blockstate, Level world, BlockPos pos, Entity entity) {
+        super.entityInside(blockstate, world, pos, entity);
         HealFlowerEffectEvents.execute(entity);
     }
 
     @Override
     protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
-        return super.canSurvive(state, level, pos) || level.getBlockState(pos.below()).is(BlockTags.SUPPORTS_VEGETATION);
+        return super.canSurvive(state, level, pos) || AbyssPlantSupport.supportsVegetation(level.getBlockState(pos.below()));
     }
 }

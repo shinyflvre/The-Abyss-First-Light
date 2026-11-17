@@ -1,17 +1,17 @@
 package net.yezon.theabyss.client.particle;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.util.RandomSource;
 import org.joml.Quaternionf;
 
-public class CrystalGroundParticle extends SingleQuadParticle {
+public class CrystalGroundParticle extends TextureSheetParticle {
     public static Provider provider(SpriteSet sprites) {
         return new Provider(sprites);
     }
@@ -19,7 +19,8 @@ public class CrystalGroundParticle extends SingleQuadParticle {
     private final float yaw;
 
     protected CrystalGroundParticle(ClientLevel level, double x, double y, double z, SpriteSet sprites) {
-        super(level, x, y, z, sprites.first());
+        super(level, x, y, z);
+        this.setSprite(sprites.get(0, 1));
         this.quadSize *= 2.5F;
         this.lifetime = 50 + this.random.nextInt(30);
         this.gravity = 0.0F;
@@ -38,19 +39,19 @@ public class CrystalGroundParticle extends SingleQuadParticle {
     }
 
     @Override
-    public void extract(QuadParticleRenderState state, Camera camera, float partialTick) {
-        this.extractRotatedQuad(state, camera, new Quaternionf().rotationY(this.yaw).rotateX((float)(-Math.PI / 2.0)), partialTick);
-        this.extractRotatedQuad(state, camera, new Quaternionf().rotationY(this.yaw).rotateX((float)(Math.PI / 2.0)), partialTick);
+    public void render(VertexConsumer buffer, Camera camera, float partialTick) {
+        this.renderRotatedQuad(buffer, camera, new Quaternionf().rotationY(this.yaw).rotateX((float)(-Math.PI / 2.0)), partialTick);
+        this.renderRotatedQuad(buffer, camera, new Quaternionf().rotationY(this.yaw).rotateX((float)(Math.PI / 2.0)), partialTick);
     }
 
     @Override
-    public int getLightCoords(float partialTick) {
+    public int getLightColor(float partialTick) {
         return 15728880;
     }
 
     @Override
-    public SingleQuadParticle.Layer getLayer() {
-        return SingleQuadParticle.Layer.TRANSLUCENT;
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     public static class Provider implements ParticleProvider<SimpleParticleType> {
@@ -61,7 +62,7 @@ public class CrystalGroundParticle extends SingleQuadParticle {
         }
 
         @Override
-        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double vx, double vy, double vz, RandomSource random) {
+        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double vx, double vy, double vz) {
             return new CrystalGroundParticle(level, x, y, z, this.sprites);
         }
     }

@@ -21,7 +21,7 @@ public final class TheabyssModChests {
             DeferredBlock<Block> block = TheabyssModBlocks.REGISTRY.registerBlock(wood + "_chest", p -> new AbyssChestBlock(wood,
                 p.mapColor(MapColor.WOOD).instrument(NoteBlockInstrument.BASS).strength(2.5F).sound(SoundType.WOOD).ignitedByLava()));
             BLOCKS.put(wood, block);
-            ITEMS.put(wood, TheabyssModItems.REGISTRY.registerItem(wood + "_chest", p -> new BlockItem(block.get(), p), Item.Properties::useBlockDescriptionPrefix));
+            ITEMS.put(wood, TheabyssModItems.REGISTRY.registerItem(wood + "_chest", p -> new BlockItem(block.get(), p), p -> p));
         }
     }
 

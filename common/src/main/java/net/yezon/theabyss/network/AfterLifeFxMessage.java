@@ -4,7 +4,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.network.PacketDistributor;
@@ -17,10 +17,10 @@ public record AfterLifeFxMessage(int kind, Vec3 body, int ticks) implements Cust
     public static final int START = 0;
     public static final int FOUND = 1;
     public static final int END = 2;
-    public static final Type<AfterLifeFxMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "after_life_fx"));
+    public static final Type<AfterLifeFxMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "after_life_fx"));
     public static final StreamCodec<RegistryFriendlyByteBuf, AfterLifeFxMessage> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.VAR_INT, AfterLifeFxMessage::kind,
-        Vec3.STREAM_CODEC, AfterLifeFxMessage::body,
+        AbyssStreamCodecs.VEC3, AfterLifeFxMessage::body,
         ByteBufCodecs.VAR_INT, AfterLifeFxMessage::ticks,
         AfterLifeFxMessage::new
     );

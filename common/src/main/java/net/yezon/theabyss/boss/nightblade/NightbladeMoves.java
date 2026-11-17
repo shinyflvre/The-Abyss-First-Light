@@ -15,11 +15,10 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -52,7 +51,7 @@ final class NightbladeMoves {
     }
 
     private static void swing(NightbladeCombat c, InteractionHand hand) {
-        c.boss.swing(hand, SwingAnimation.DEFAULT, true);
+        c.boss.swing(hand, true);
     }
 
     private static void dashStep(NightbladeCombat c, Vec3 from, Vec3 to, int step, int steps) {
@@ -62,7 +61,7 @@ final class NightbladeMoves {
             c.boss.setPos(free.x, free.y, free.z);
         }
         c.boss.setDeltaMovement(to.subtract(from).scale(1.0 / steps));
-        c.boss.needsSync = true;
+        c.boss.hasImpulse = true;
     }
 
     private static Vec3 horizontal(Vec3 v) {
@@ -71,8 +70,8 @@ final class NightbladeMoves {
     }
 
     private static void push(NightbladeCombat c, LivingEntity victim, Vec3 direction, double power) {
-        victim.knockback(power, -direction.x, -direction.z, c.meleeDamage(), 0.0F);
-        victim.needsSync = true;
+        victim.knockback(power, -direction.x, -direction.z);
+        victim.hasImpulse = true;
     }
 
     private static final class Blinker {
@@ -191,7 +190,7 @@ final class NightbladeMoves {
                         c.parried(level, player);
                         return true;
                     }
-                    victim.hurtServer(level, c.meleeDamage(), c.scaled(this.damage));
+                    victim.hurt(c.meleeDamage(), c.scaled(this.damage));
                     push(c, victim, direction, 1.2);
                     c.impactFrame(victim);
                     c.sound(NightbladeCombat.nightbladeSound(), 1.5F, 0.8F);
@@ -466,7 +465,7 @@ final class NightbladeMoves {
                 }
                 for (LivingEntity victim : c.enemiesAround(5.0)) {
                     Vec3 away = horizontal(victim.position().subtract(c.boss.position()));
-                    victim.hurtServer(level, c.magicDamage(), c.scaled(3.0F));
+                    victim.hurt(c.magicDamage(), c.scaled(3.0F));
                     push(c, victim, away, 2.2);
                     victim.setDeltaMovement(victim.getDeltaMovement().add(0.0, 0.3, 0.0));
                 }
@@ -660,7 +659,7 @@ final class NightbladeMoves {
                 image.lookAt(EntityAnchorArgument.Anchor.EYES, target.getEyePosition());
                 image.setYHeadRot(image.getYRot());
                 image.setYBodyRot(image.getYRot());
-                image.needsSync = true;
+                image.hasImpulse = true;
             }
         }
 
@@ -764,12 +763,12 @@ final class NightbladeMoves {
                 Vec3 at = this.strikeFrom.lerp(this.strikeTo, (step + 1) / (double)STRIKE_TICKS);
                 image.setPos(at.x, at.y, at.z);
                 image.setDeltaMovement(this.strikeTo.subtract(this.strikeFrom).scale(1.0 / STRIKE_TICKS));
-                image.needsSync = true;
-                image.swing(step % 2 == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND, SwingAnimation.DEFAULT, true);
+                image.hasImpulse = true;
+                image.swing(step % 2 == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND, true);
                 Vec3 direction = this.strikeTo.subtract(this.strikeFrom).normalize();
                 for (LivingEntity victim : c.enemiesIn(image.getBoundingBox().inflate(0.8))) {
                     if (this.hit.add(victim.getId())) {
-                        victim.hurtServer(level, image.damageSources().mobAttack(image), 3.0F);
+                        victim.hurt(image.damageSources().mobAttack(image), 3.0F);
                         push(c, victim, direction, 0.5);
                         c.sound(NightbladeCombat.nightbladeSound(), 1.0F, 1.3F);
                     }
@@ -876,7 +875,7 @@ final class NightbladeMoves {
             c.particles(level, ParticleTypes.EXPLOSION, c.boss.getX(), this.ground + 0.2, c.boss.getZ(), 1, 0.0, 0.0, 0.0, 0.0);
             c.shake(level, 24.0, 2.6F, 0.6F);
             for (LivingEntity victim : c.enemiesAround(2.5)) {
-                victim.hurtServer(level, c.meleeDamage(), c.scaled(8.0F));
+                victim.hurt(c.meleeDamage(), c.scaled(8.0F));
             }
         }
 
@@ -908,7 +907,7 @@ final class NightbladeMoves {
                 double distance = Math.hypot(victim.getX() - this.start.x, victim.getZ() - this.start.z);
                 boolean onWaveGround = victim.getY() - this.ground < 0.6 && victim.onGround();
                 if (Math.abs(distance - radius) < 0.8 && onWaveGround && hit.add(victim.getId())) {
-                    victim.hurtServer(level, c.meleeDamage(), c.scaled(9.0F));
+                    victim.hurt(c.meleeDamage(), c.scaled(9.0F));
                     push(c, victim, horizontal(victim.position().subtract(this.start)), 0.8);
                     victim.setDeltaMovement(victim.getDeltaMovement().add(0.0, 0.4, 0.0));
                 }
@@ -983,7 +982,7 @@ final class NightbladeMoves {
             if (Double.isNaN(y)) {
                 return;
             }
-            var spike = TheabyssModEntities.NIGHTBLADE_SPIKE.get().create(level, EntitySpawnReason.TRIGGERED);
+            var spike = TheabyssModEntities.NIGHTBLADE_SPIKE.get().create(level);
             if (spike != null) {
                 spike.setPos(x, y, z);
                 spike.setup(c.boss, warmup, c.scaled(6.0F), c.phase() == 3, yaw);
@@ -1149,7 +1148,7 @@ final class NightbladeMoves {
                 if (this.endAt < 0) {
                     this.endAt = t + 36;
                     c.animate("stagger", false, 36);
-                    c.sound(SoundEvents.SHIELD_BREAK.value(), 1.0F, 0.7F);
+                    c.sound(SoundEvents.SHIELD_BREAK, 1.0F, 0.7F);
                 }
                 return t >= this.endAt;
             }
@@ -1162,7 +1161,7 @@ final class NightbladeMoves {
                 int step = t - this.counterStart;
                 look(c, this.countered);
                 if (step == 2 && this.countered.isAlive() && this.countered.distanceTo(c.boss) < 6.0F) {
-                    this.countered.hurtServer(level, c.meleeDamage(), c.scaled(COUNTER_DAMAGE));
+                    this.countered.hurt(c.meleeDamage(), c.scaled(COUNTER_DAMAGE));
                     push(c, this.countered, horizontal(this.countered.position().subtract(c.boss.position())), 1.3);
                     c.impactFrame(this.countered);
                     c.shake(level, 16.0, 1.4F, 0.35F);
@@ -1247,7 +1246,7 @@ final class NightbladeMoves {
                 c.animate("blade_throw", false, 16);
             }
             if (t == RELEASE) {
-                var blade = TheabyssModEntities.NIGHTBLADE_BLADE.get().create(level, EntitySpawnReason.TRIGGERED);
+                var blade = TheabyssModEntities.NIGHTBLADE_BLADE.get().create(level);
                 if (blade != null) {
                     Vec3 facing = Vec3.directionFromRotation(0.0F, c.boss.getYRot());
                     Vec3 left = new Vec3(facing.z, 0.0, -facing.x);
@@ -1307,7 +1306,7 @@ final class NightbladeMoves {
             if (t == 3) {
                 swing(c, InteractionHand.MAIN_HAND);
                 if (c.boss.distanceTo(target) < 3.5) {
-                    c.boss.doHurtTarget(level, target);
+                    c.boss.doHurtTarget(target);
                     c.sound(NightbladeCombat.nightbladeSound(), 1.0F, 1.1F);
                 }
             }
@@ -1357,7 +1356,7 @@ final class NightbladeMoves {
                 for (LivingEntity victim : c.enemiesAround(6.5)) {
                     Vec3 to = horizontal(victim.position().subtract(c.boss.position()));
                     if (to.dot(forward) > Math.cos(Math.toRadians(65.0)) && victim.distanceTo(c.boss) <= 6.5) {
-                        victim.hurtServer(level, c.meleeDamage(), c.scaled(11.0F));
+                        victim.hurt(c.meleeDamage(), c.scaled(11.0F));
                         push(c, victim, to, 1.0);
                     }
                 }
@@ -1371,7 +1370,7 @@ final class NightbladeMoves {
                         c.boss.getZ() + Math.sin(angle) * 2.2, 1, 0.0, 0.0, 0.0, 0.0);
                 }
                 for (LivingEntity victim : c.enemiesAround(5.0)) {
-                    victim.hurtServer(level, c.meleeDamage(), c.scaled(8.0F));
+                    victim.hurt(c.meleeDamage(), c.scaled(8.0F));
                     push(c, victim, horizontal(victim.position().subtract(c.boss.position())), 1.2);
                 }
             }
@@ -1407,7 +1406,7 @@ final class NightbladeMoves {
             for (int i = 0; i < count; i++) {
                 double angle = i * Math.PI * 2.0 / count;
                 BlockPos pos = BlockPos.containing(c.boss.getX() + Math.cos(angle) * 2.0, c.boss.getY() + 2.0, c.boss.getZ() + Math.sin(angle) * 2.0);
-                Entity seeker = TheabyssModEntities.SEEKER.get().spawn(level, pos, EntitySpawnReason.MOB_SUMMONED);
+                Entity seeker = TheabyssModEntities.SEEKER.get().spawn(level, pos, MobSpawnType.MOB_SUMMONED);
                 if (seeker instanceof Mob mob) {
                     mob.setTarget(s.target());
                 }

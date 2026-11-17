@@ -1,16 +1,19 @@
-#version 330
-#extension GL_ARB_separate_shader_objects : require
+#version 150
 
-#include <minecraft:fog.glsl>
+#moj_import <fog.glsl>
 
 uniform sampler2D Sampler0;
 
-layout(location = 0) in vec2 texCoord0;
-layout(location = 1) in vec4 vertexColor;
-layout(location = 2) in float sphericalVertexDistance;
-layout(location = 3) in float cylindricalVertexDistance;
+uniform float FogStart;
+uniform float FogEnd;
+uniform vec4 FogColor;
+uniform float Tint;
 
-layout(location = 0) out vec4 fragColor;
+in vec2 texCoord0;
+in vec4 vertexColor;
+in float vertexDistance;
+
+out vec4 fragColor;
 
 vec3 toLinear(vec3 c) {
     return mix(c / 12.92, pow((c + 0.055) / 1.055, vec3(2.4)), step(0.04045, c));
@@ -29,9 +32,8 @@ void main() {
     if (alpha <= 0.0) {
         discard;
     }
-    vec3 emitted = texel.rgb * toLinear(vertexColor.rgb) * float(TINT) * alpha;
+    vec3 emitted = texel.rgb * toLinear(vertexColor.rgb) * Tint * alpha;
     float cover = 1.0 - pow(1.0 - alpha, 1.0 / 2.2);
-    float fog = 1.0 - total_fog_value(sphericalVertexDistance, cylindricalVertexDistance, FogEnvironmentalStart, FogEnvironmentalEnd,
-        FogRenderDistanceStart, FogRenderDistanceEnd) * FogColor.a;
+    float fog = 1.0 - (1.0 - linear_fog_fade(vertexDistance, FogStart, FogEnd)) * FogColor.a;
     fragColor = vec4(toGamma(min(emitted, vec3(1.0))) * fog, cover * fog);
 }

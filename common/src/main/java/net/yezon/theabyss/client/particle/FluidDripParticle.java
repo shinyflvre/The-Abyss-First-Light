@@ -3,8 +3,9 @@ package net.yezon.theabyss.client.particle;
 import java.util.function.Supplier;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -12,7 +13,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import org.jspecify.annotations.Nullable;
 
-public class FluidDripParticle extends SingleQuadParticle {
+public class FluidDripParticle extends TextureSheetParticle {
     private static final int HANG_TICKS = 40;
     private static final float COOL_END = 16.0F / (HANG_TICKS + 16.0F);
 
@@ -28,13 +29,14 @@ public class FluidDripParticle extends SingleQuadParticle {
 
     public static ParticleProvider<SimpleParticleType> provider(SpriteSet sprites, Stage stage, Supplier<? extends Fluid> fluid,
                                                                 @Nullable Supplier<? extends ParticleOptions> next, int hot, int cool) {
-        return (type, level, x, y, z, vx, vy, vz, random) -> new FluidDripParticle(level, x, y, z, sprites, stage, fluid.get(),
+        return (type, level, x, y, z, vx, vy, vz) -> new FluidDripParticle(level, x, y, z, sprites, stage, fluid.get(),
             next == null ? null : next.get(), hot, cool);
     }
 
     protected FluidDripParticle(ClientLevel level, double x, double y, double z, SpriteSet sprites, Stage stage, Fluid fluid,
                                 @Nullable ParticleOptions next, int hot, int cool) {
-        super(level, x, y, z, sprites.first());
+        super(level, x, y, z);
+        this.setSprite(sprites.get(0, 1));
         this.stage = stage;
         this.fluid = fluid;
         this.next = next;
@@ -70,8 +72,8 @@ public class FluidDripParticle extends SingleQuadParticle {
     }
 
     @Override
-    public SingleQuadParticle.Layer getLayer() {
-        return SingleQuadParticle.Layer.OPAQUE;
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     @Override

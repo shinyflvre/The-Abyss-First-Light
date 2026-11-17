@@ -12,14 +12,13 @@ import net.yezon.theabyss.jei_recipes.ArcaneRecipeTypeRecipe;
 import net.yezon.theabyss.jei_recipes.CrystalCutterRecipeTypeRecipe;
 import net.yezon.theabyss.jei_recipes.InfuserRecipeTypeRecipe;
 import net.yezon.theabyss.jei_recipes.MortarRecipeTypeRecipe;
-import net.yezon.theabyss.mixin.accessor.RecipeManagerAccessor;
 
 public final class StationRecipes {
     private StationRecipes() {
     }
 
     private static <T extends AbstractWorkstationRecipe> Iterable<RecipeHolder<T>> all(ServerLevel level, RecipeType<T> type) {
-        return ((RecipeManagerAccessor)level.recipeAccess()).theabyss$recipes().byType(type);
+        return level.getRecipeManager().getAllRecipesFor(type);
     }
 
     public static ArcaneRecipeTypeRecipe arcane(ServerLevel level, ItemStack[] grid) {

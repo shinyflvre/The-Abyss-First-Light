@@ -1,51 +1,43 @@
 {
-  "attributes": {
-    "minecraft:audio/ambient_sounds": {
-      "loop": "theabyss:blue_mountains_ambience",
-      "mood": {
-        "block_search_extent": 2,
-        "offset": 8,
-        "sound": "theabyss:random_fx",
-        "tick_delay": 300
-      }
-    },
-    "minecraft:audio/background_music": {
-      "default": {
-        "max_delay": 24000,
-        "min_delay": 12000,
-        "sound": "theabyss:theabyss_dimension_music",
-        "replace_current_music": true
-      }
-    },
-    "minecraft:visual/ambient_particles": {
-      "argument": [
-        {
-          "particle": {
-            "type": "theabyss:spurs_fx"
-          },
-          "probability": 0.03
-        }
-      ],
-      "modifier": "append"
-    },
-    "minecraft:visual/fog_color": "#0e202e",
-    "minecraft:visual/water_fog_color": "#666666"
+  "carvers": {
+    "air": [
+      "minecraft:cave",
+      "minecraft:cave_extra_underground",
+      "minecraft:canyon"
+    ]
   },
-  "carvers": [
-    "minecraft:cave",
-    "minecraft:cave_extra_underground",
-    "minecraft:canyon"
-  ],
   "downfall": 0.2,
   "effects": {
-    "foliage_color": "#000000",
-    "grass_color": "#003333",
-    "water_color": "#333333"
+    "fog_color": 925742,
+    "sky_color": 0,
+    "water_color": 3355443,
+    "water_fog_color": 6710886,
+    "foliage_color": 0,
+    "grass_color": 13107,
+    "particle": {
+      "options": {
+        "type": "theabyss:spurs_fx"
+      },
+      "probability": 0.03
+    },
+    "ambient_sound": "theabyss:blue_mountains_ambience",
+    "mood_sound": {
+      "block_search_extent": 2,
+      "offset": 8,
+      "sound": "theabyss:random_fx",
+      "tick_delay": 300
+    },
+    "music": {
+      "max_delay": 24000,
+      "min_delay": 12000,
+      "replace_current_music": true,
+      "sound": "theabyss:theabyss_dimension_music"
+    }
   },
   "features": [
     [],
     [
-      "minecraft:lake_lava_underground"
+      "theabyss:lake_lava_underground"
     ],
     [],
     [],
@@ -56,8 +48,11 @@
     [],
     [
       "minecraft:patch_grass_forest"
-    ]
+    ],
+    []
   ],
   "has_precipitation": false,
+  "spawn_costs": {},
+  "spawners": {},
   "temperature": 0.4
 }

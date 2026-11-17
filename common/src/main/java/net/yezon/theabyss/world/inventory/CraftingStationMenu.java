@@ -22,7 +22,7 @@ public abstract class CraftingStationMenu extends AbstractBlockMenu {
         if (inv.player instanceof ServerPlayer player && this.boundBlockEntity != null) {
             ItemStack leftover = this.internal.removeItemNoUpdate(oldResultIndex);
             if (!leftover.isEmpty()) {
-                player.getInventory().placeItemBackInInventory(leftover, net.minecraft.util.Prediction.SERVER_ONLY);
+                player.getInventory().placeItemBackInInventory(leftover);
                 this.internal.setChanged();
             }
         }
@@ -58,7 +58,7 @@ public abstract class CraftingStationMenu extends AbstractBlockMenu {
     }
 
     private void crafted(Player player, ItemStack stack) {
-        stack.onCraftedBy(player, stack.getCount());
+        stack.onCraftedBy(player.level(), player, stack.getCount());
         if (this instanceof ArcaneMenu && player.level() instanceof ServerLevel chronicleLevel
             && net.yezon.theabyss.ring.RingWear.isRing(stack.isEmpty() ? this.computeResult(chronicleLevel) : stack)) {
             net.yezon.theabyss.lore.Chronicles.note(player, net.yezon.theabyss.lore.Chronicles.SOMNIUM);
@@ -81,15 +81,14 @@ public abstract class CraftingStationMenu extends AbstractBlockMenu {
         if (stack.isEmpty()) {
             return;
         }
-        net.minecraft.world.item.ItemStackTemplate template = net.yezon.theabyss.platform.services.ServerHooks.get().getCraftingRemainder(stack);
-        ItemStack remainder = template == null ? ItemStack.EMPTY : template.create();
+        ItemStack remainder = net.yezon.theabyss.platform.services.ServerHooks.get().getCraftingRemainder(stack);
         stack.shrink(1);
         if (stack.isEmpty()) {
             this.internal.setItem(index, remainder);
         } else {
             this.internal.setItem(index, stack);
             if (!remainder.isEmpty()) {
-                this.entity.getInventory().placeItemBackInInventory(remainder, net.minecraft.util.Prediction.SERVER_ONLY);
+                this.entity.getInventory().placeItemBackInInventory(remainder);
             }
         }
     }

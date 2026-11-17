@@ -4,49 +4,37 @@ import net.yezon.theabyss.platform.event.Event;
 import net.yezon.theabyss.platform.event.ICancellableEvent;
 
 public class RenderArmEvent extends Event implements ICancellableEvent {
-    private final net.minecraft.world.entity.HumanoidArm arm;
-    private final int lightCoords;
-    private final net.minecraft.client.renderer.state.level.PlayerRenderState playerRenderState;
     private final com.mojang.blaze3d.vertex.PoseStack poseStack;
-    private final net.minecraft.resources.Identifier skinTexture;
-    private final net.minecraft.client.renderer.SubmitNodeCollector submitNodeCollector;
-    private final boolean hasSleeve;
+    private final net.minecraft.client.renderer.MultiBufferSource multiBufferSource;
+    private final int packedLight;
+    private final net.minecraft.client.player.AbstractClientPlayer player;
+    private final net.minecraft.world.entity.HumanoidArm arm;
 
-    public RenderArmEvent(net.minecraft.world.entity.HumanoidArm arm, int lightCoords, net.minecraft.client.renderer.state.level.PlayerRenderState playerRenderState, com.mojang.blaze3d.vertex.PoseStack poseStack, net.minecraft.resources.Identifier skinTexture, net.minecraft.client.renderer.SubmitNodeCollector submitNodeCollector, boolean hasSleeve) {
-        this.arm = arm;
-        this.lightCoords = lightCoords;
-        this.playerRenderState = playerRenderState;
+    public RenderArmEvent(com.mojang.blaze3d.vertex.PoseStack poseStack, net.minecraft.client.renderer.MultiBufferSource multiBufferSource, int packedLight, net.minecraft.client.player.AbstractClientPlayer player, net.minecraft.world.entity.HumanoidArm arm) {
         this.poseStack = poseStack;
-        this.skinTexture = skinTexture;
-        this.submitNodeCollector = submitNodeCollector;
-        this.hasSleeve = hasSleeve;
+        this.multiBufferSource = multiBufferSource;
+        this.packedLight = packedLight;
+        this.player = player;
+        this.arm = arm;
     }
 
     public net.minecraft.world.entity.HumanoidArm getArm() {
         return this.arm;
     }
 
-    public int getLightCoords() {
-        return this.lightCoords;
-    }
-
-    public net.minecraft.client.renderer.state.level.PlayerRenderState getPlayerRenderState() {
-        return this.playerRenderState;
-    }
-
     public com.mojang.blaze3d.vertex.PoseStack getPoseStack() {
         return this.poseStack;
     }
 
-    public net.minecraft.resources.Identifier getSkinTexture() {
-        return this.skinTexture;
+    public net.minecraft.client.renderer.MultiBufferSource getMultiBufferSource() {
+        return this.multiBufferSource;
     }
 
-    public net.minecraft.client.renderer.SubmitNodeCollector getSubmitNodeCollector() {
-        return this.submitNodeCollector;
+    public int getPackedLight() {
+        return this.packedLight;
     }
 
-    public boolean hasSleeve() {
-        return this.hasSleeve;
+    public net.minecraft.client.player.AbstractClientPlayer getPlayer() {
+        return this.player;
     }
 }

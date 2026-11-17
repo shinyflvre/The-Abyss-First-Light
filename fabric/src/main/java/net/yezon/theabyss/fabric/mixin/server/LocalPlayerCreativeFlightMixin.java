@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(LocalPlayer.class)
 public abstract class LocalPlayerCreativeFlightMixin {
-    @WrapOperation(method = "aiStep", at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/player/Abilities;mayfly:Z", opcode = Opcodes.GETFIELD))
+    @WrapOperation(method = {"aiStep", "hasEnoughFoodToStartSprinting"}, at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/player/Abilities;mayfly:Z", opcode = Opcodes.GETFIELD))
     private boolean theabyss$mayFly(Abilities abilities, Operation<Boolean> original) {
         return original.call(abilities) || FabricAttributes.attributeFlight((LocalPlayer)(Object)this);
     }

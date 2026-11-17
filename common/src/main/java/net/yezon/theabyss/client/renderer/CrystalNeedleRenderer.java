@@ -3,22 +3,20 @@ package net.yezon.theabyss.client.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
+import net.minecraft.resources.ResourceLocation;
+import net.yezon.theabyss.compat.ARGB;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.entity.CrystalNeedleEntity;
 
-public class CrystalNeedleRenderer extends EntityRenderer<CrystalNeedleEntity, CrystalNeedleRenderer.State> {
-    private static final RenderType SPRITE = RenderTypes.entityCutout(Identifier.fromNamespaceAndPath("theabyss", "textures/entity/crystal_needle.png"));
+public class CrystalNeedleRenderer extends EntityRenderer<CrystalNeedleEntity> {
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("theabyss", "textures/entity/crystal_needle.png");
+    private static final RenderType SPRITE = RenderType.entityCutoutNoCull(TEXTURE);
     private static final float SIZE = 2.5F;
     private static final int TINT = ARGB.color(255, 255, 110, 220);
     private static final int GLOW = 0xFF3FBE;
@@ -26,22 +24,8 @@ public class CrystalNeedleRenderer extends EntityRenderer<CrystalNeedleEntity, C
     private static final float STREAK_TICKS = 1.8F;
     private static final int POINTS = 7;
 
-    public static class State extends EntityRenderState {
-        float yaw;
-        float pitch;
-        float spin;
-        float age;
-        float stop = -1.0F;
-        Vec3 dir = new Vec3(0.0, 0.0, 1.0);
-    }
-
     public CrystalNeedleRenderer(EntityRendererProvider.Context context) {
         super(context);
-    }
-
-    @Override
-    public State createRenderState() {
-        return new State();
     }
 
     @Override
@@ -50,24 +34,19 @@ public class CrystalNeedleRenderer extends EntityRenderer<CrystalNeedleEntity, C
     }
 
     @Override
-    public void extractRenderState(CrystalNeedleEntity entity, State state, float partialTick) {
-        super.extractRenderState(entity, state, partialTick);
+    public void render(CrystalNeedleEntity entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffers, int light) {
         Vec3 v = entity.getDeltaMovement();
-        state.yaw = (float)Math.toDegrees(Math.atan2(v.x, v.z));
-        state.pitch = (float)Math.toDegrees(Math.atan2(v.y, v.horizontalDistance()));
-        state.age = entity.tickCount + partialTick;
-        state.spin = entity.roll() + state.age * 40.0F;
-        state.stop = entity.stopTick();
-        state.dir = v.lengthSqr() < 1.0E-8 ? new Vec3(0.0, 0.0, 1.0) : v.normalize();
-    }
-
-    @Override
-    public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
-        Vec3 eye = camera.pos.subtract(state.x, state.y, state.z);
-        boolean stopped = state.stop >= 0.0F;
-        float since = stopped ? state.age - state.stop : 0.0F;
-        float head = stopped ? state.stop : state.age;
-        float tail = Math.max(0.0F, state.age - STREAK_TICKS);
+        float yaw = (float)Math.toDegrees(Math.atan2(v.x, v.z));
+        float pitch = (float)Math.toDegrees(Math.atan2(v.y, v.horizontalDistance()));
+        float age = entity.tickCount + partialTick;
+        float spin = entity.roll() + age * 40.0F;
+        float stop = entity.stopTick();
+        Vec3 dir = v.lengthSqr() < 1.0E-8 ? new Vec3(0.0, 0.0, 1.0) : v.normalize();
+        Vec3 eye = this.entityRenderDispatcher.camera.getPosition().subtract(RenderTicks.position(entity, partialTick));
+        boolean stopped = stop >= 0.0F;
+        float since = stopped ? age - stop : 0.0F;
+        float head = stopped ? stop : age;
+        float tail = Math.max(0.0F, age - STREAK_TICKS);
         if (head > tail) {
             Vec3[] points = new Vec3[POINTS];
             float[] glowWidth = new float[POINTS];
@@ -76,33 +55,37 @@ public class CrystalNeedleRenderer extends EntityRenderer<CrystalNeedleEntity, C
             float[] core = new float[POINTS];
             for (int i = 0; i < POINTS; i++) {
                 float t = head - (head - tail) * i / (POINTS - 1);
-                float fresh = Math.max(0.0F, 1.0F - (state.age - t) / STREAK_TICKS);
-                points[i] = state.dir.scale(-CrystalNeedleEntity.SPEED * (head - t));
+                float fresh = Math.max(0.0F, 1.0F - (age - t) / STREAK_TICKS);
+                points[i] = dir.scale(-CrystalNeedleEntity.SPEED * (head - t));
                 glowWidth[i] = 0.42F * (0.25F + 0.75F * fresh);
                 coreWidth[i] = 0.13F * (0.25F + 0.75F * fresh);
                 glow[i] = fresh * fresh * 0.85F;
                 core[i] = fresh * fresh;
             }
-            collector.submitCustomGeometry(poseStack, LightTrail.STREAK, (pose, buffer) -> {
-                LightTrail.ribbon(pose, buffer, points, glowWidth, glow, GLOW, eye);
-                LightTrail.ribbon(pose, buffer, points, coreWidth, core, CORE, eye);
-            });
+            VertexConsumer streak = buffers.getBuffer(LightTrail.STREAK);
+            LightTrail.ribbon(poseStack.last(), streak, points, glowWidth, glow, GLOW, eye);
+            LightTrail.ribbon(poseStack.last(), streak, points, coreWidth, core, CORE, eye);
         }
         float flash = stopped ? 1.0F - since / CrystalNeedleEntity.FADE : 0.55F;
         float flareSize = stopped ? 0.8F + 1.4F * Math.min(1.0F, since / 2.0F) : 0.9F;
         if (flash > 0.0F) {
-            collector.submitCustomGeometry(poseStack, LightTrail.FLARE, (pose, buffer) -> LightTrail.flare(pose, buffer, Vec3.ZERO, flareSize, GLOW, flash, eye));
+            LightTrail.flare(poseStack.last(), buffers.getBuffer(LightTrail.FLARE), Vec3.ZERO, flareSize, GLOW, flash, eye);
         }
         if (!stopped) {
             poseStack.pushPose();
-            poseStack.rotateDegrees(Axis.YP, state.yaw);
-            poseStack.rotateDegrees(Axis.XP, -state.pitch);
-            poseStack.rotateDegrees(Axis.ZP, state.spin);
-            poseStack.rotateDegrees(Axis.XP, 45.0F);
-            collector.submitCustomGeometry(poseStack, SPRITE, (pose, buffer) -> quad(pose, buffer));
+            poseStack.mulPose(Axis.YP.rotationDegrees(yaw));
+            poseStack.mulPose(Axis.XP.rotationDegrees(-pitch));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(spin));
+            poseStack.mulPose(Axis.XP.rotationDegrees(45.0F));
+            quad(poseStack.last(), buffers.getBuffer(SPRITE));
             poseStack.popPose();
         }
-        super.submit(state, poseStack, collector, camera);
+        super.render(entity, entityYaw, partialTick, poseStack, buffers, light);
+    }
+
+    @Override
+    public ResourceLocation getTextureLocation(CrystalNeedleEntity entity) {
+        return TEXTURE;
     }
 
     private static void quad(PoseStack.Pose pose, VertexConsumer buffer) {

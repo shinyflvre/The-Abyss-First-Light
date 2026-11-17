@@ -1,12 +1,11 @@
 package net.yezon.theabyss.client.fx;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.LerpingBossEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.yezon.theabyss.platform.Dist;
@@ -14,6 +13,7 @@ import net.yezon.theabyss.platform.event.SubscribeEvent;
 import net.yezon.theabyss.platform.event.EventBusSubscriber;
 import net.yezon.theabyss.platform.client.event.CustomizeGuiOverlayEvent;
 import net.yezon.theabyss.TheabyssMod;
+import net.yezon.theabyss.compat.GuiGraphicsCompat;
 import net.yezon.theabyss.init.TheabyssModEntities;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
@@ -32,7 +32,7 @@ public final class NightbladeBossBar {
             return;
         }
         event.setCanceled(true);
-        GuiGraphicsExtractor graphics = event.getGuiGraphics();
+        GuiGraphics graphics = event.getGuiGraphics();
         Minecraft mc = Minecraft.getInstance();
         int x = event.getX();
         int y = event.getY();
@@ -47,16 +47,18 @@ public final class NightbladeBossBar {
             graphics.fill(at + 1, y, at + 2, y + HEIGHT, 0x66FFFFFF);
         }
         Component name = boss.getName();
-        graphics.text(mc.font, name, graphics.guiWidth() / 2 - mc.font.width(name) / 2, y - 9, -1);
+        GuiGraphicsCompat.text(graphics, mc.font, name, graphics.guiWidth() / 2 - mc.font.width(name) / 2, y - 9, -1, true);
     }
 
-    private static void bar(GuiGraphicsExtractor graphics, BossEvent boss, int x, int y, int width, String part) {
-        Identifier sprite = Identifier.withDefaultNamespace("boss_bar/" + boss.getColor().getName() + part);
-        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, WIDTH, HEIGHT, 0, 0, x, y, width, HEIGHT);
+    private static void bar(GuiGraphics graphics, BossEvent boss, int x, int y, int width, String part) {
+        GuiGraphicsCompat.beginTranslucent();
+        ResourceLocation sprite = ResourceLocation.withDefaultNamespace("boss_bar/" + boss.getColor().getName() + part);
+        graphics.blitSprite(sprite, WIDTH, HEIGHT, 0, 0, x, y, width, HEIGHT);
         if (boss.getOverlay() != BossEvent.BossBarOverlay.PROGRESS) {
-            Identifier overlay = Identifier.withDefaultNamespace("boss_bar/notched_" + boss.getOverlay().getName().replace("notched_", "") + part);
-            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, overlay, WIDTH, HEIGHT, 0, 0, x, y, width, HEIGHT);
+            ResourceLocation overlay = ResourceLocation.withDefaultNamespace("boss_bar/notched_" + boss.getOverlay().getName().replace("notched_", "") + part);
+            graphics.blitSprite(overlay, WIDTH, HEIGHT, 0, 0, x, y, width, HEIGHT);
         }
+        GuiGraphicsCompat.endTranslucent();
     }
 
     private static boolean isNightblade(Component name) {

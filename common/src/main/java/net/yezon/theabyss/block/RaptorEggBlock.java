@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -34,15 +33,15 @@ public class RaptorEggBlock extends FlowerBlock implements FlammableBlock, FireS
                 .mapColor(MapColor.PLANT)
                 .sound(SoundType.STONE)
                 .instabreak()
-                .noCollision()
+                .noCollission()
                 .offsetType(OffsetType.XZ)
-                .pushReaction(PushReaction.POPPED)
+                .pushReaction(PushReaction.DESTROY)
         );
     }
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        Vec3 offset = state.getOffset(pos);
+        Vec3 offset = state.getOffset(world, pos);
         return box(0.0, 0.0, 0.0, 16.0, 4.0, 16.0).move(offset.x, offset.y, offset.z);
     }
 
@@ -57,13 +56,13 @@ public class RaptorEggBlock extends FlowerBlock implements FlammableBlock, FireS
     }
 
     @Override
-    protected void entityInside(BlockState blockstate, Level world, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
-        super.entityInside(blockstate, world, pos, entity, effectApplier, isPrecise);
+    protected void entityInside(BlockState blockstate, Level world, BlockPos pos, Entity entity) {
+        super.entityInside(blockstate, world, pos, entity);
         RaptorEggEventEvents.execute(world, pos.getX(), pos.getY(), pos.getZ());
     }
 
     @Override
-    public void afterDestroyedByPlayer(BlockState blockstate, Level world, BlockPos pos, Player entity, ItemStack toolStack, boolean willHarvest, FluidState fluid) {
+    public void afterDestroyedByPlayer(BlockState blockstate, Level world, BlockPos pos, Player entity, boolean willHarvest, FluidState fluid) {
         RaptorEggEventEvents.execute(world, pos.getX(), pos.getY(), pos.getZ());
     }
 }

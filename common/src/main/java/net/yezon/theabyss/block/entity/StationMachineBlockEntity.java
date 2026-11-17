@@ -10,13 +10,16 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.yezon.theabyss.compat.ValueInput;
+import net.yezon.theabyss.compat.ValueOutput;
 import net.yezon.theabyss.station.StationEnergy;
 import org.jspecify.annotations.Nullable;
 
@@ -124,20 +127,22 @@ public abstract class StationMachineBlockEntity extends RandomizableContainerBlo
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
-        if (!this.tryLoadLootTable(input)) {
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        ValueInput input = ValueInput.of(tag, registries);
+        if (!this.tryLoadLootTable(tag)) {
             this.stacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         }
-        ContainerHelper.loadAllItems(input, this.stacks);
+        ContainerHelper.loadAllItems(tag, this.stacks, registries);
         this.progress = input.getIntOr("progress", 0);
     }
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
-        if (!this.trySaveLootTable(output)) {
-            ContainerHelper.saveAllItems(output, this.stacks);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        ValueOutput output = ValueOutput.of(tag, registries);
+        if (!this.trySaveLootTable(tag)) {
+            ContainerHelper.saveAllItems(tag, this.stacks, registries);
         }
         output.putInt("progress", this.progress);
     }
@@ -199,5 +204,15 @@ public abstract class StationMachineBlockEntity extends RandomizableContainerBlo
 
     public int[] allSlots() {
         return IntStream.range(0, this.getContainerSize()).toArray();
+    }
+
+    @Override
+    public boolean canOpen(Player player) {
+        return AbyssContainerLock.canOpen(this, player);
+    }
+
+    @Override
+    public @Nullable AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
+        return AbyssContainerLock.createMenu(this, containerId, inventory, player, this::createMenu);
     }
 }

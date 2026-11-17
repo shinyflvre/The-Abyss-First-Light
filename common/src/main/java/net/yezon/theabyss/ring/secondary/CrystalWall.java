@@ -9,7 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
@@ -55,7 +55,7 @@ public final class CrystalWall {
     }
 
     static boolean cast(ServerPlayer player, ItemStack ring, TheabyssModVariables.PlayerVariables vars) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         Vec3 normal = player.getLookAngle().multiply(1.0, 0.0, 1.0);
         normal = normal.lengthSqr() < 1.0E-4 ? new Vec3(0.0, 0.0, 1.0) : normal.normalize();
         Vec3 along = new Vec3(-normal.z, 0.0, normal.x);
@@ -64,7 +64,7 @@ public final class CrystalWall {
         int mid = SPIKES / 2;
         for (int i = 0; i < SPIKES; i++) {
             Vec3 at = Aim.ground(level, centre.add(along.scale((i - mid) * GAP)).add(0.0, 2.0, 0.0), 6);
-            NightbladeSpikeEntity spike = TheabyssModEntities.NIGHTBLADE_SPIKE.get().create(level, EntitySpawnReason.MOB_SUMMONED);
+            NightbladeSpikeEntity spike = TheabyssModEntities.NIGHTBLADE_SPIKE.get().create(level);
             if (spike == null) {
                 continue;
             }
@@ -115,13 +115,13 @@ public final class CrystalWall {
             }
             double side = depth >= 0.0 ? 1.0 : -1.0;
             e.setDeltaMovement(wall.normal().scale(side * 0.7).add(0.0, 0.25, 0.0));
-            e.needsSync = true;
-            e.syncVelocity = true;
+            e.hasImpulse = true;
+            e.hurtMarked = true;
             Long last = wall.lastHurt().get(e.getId());
             if (last == null || now - last >= HURT_EVERY) {
                 wall.lastHurt().put(e.getId(), now);
-                e.damageCooldownTime = 0;
-                e.hurtServer(level, level.damageSources().indirectMagic(wall.caster(), wall.caster()), wall.damage());
+                e.invulnerableTime = 0;
+                e.hurt(level.damageSources().indirectMagic(wall.caster(), wall.caster()), wall.damage());
                 Vec3 at = e.position().add(0.0, e.getBbHeight() * 0.5, 0.0);
                 RingFx.burst(level, RingVisuals.sparkle(RingVisuals.ICE, 0.14F, 18).gravity(0.04F), at, 10, 0.2, 0.15);
                 RingVisuals.sound(level, at, SoundEvents.AMETHYST_CLUSTER_BREAK, 1.0F, 1.2F);

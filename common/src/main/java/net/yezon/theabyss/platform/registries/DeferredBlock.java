@@ -1,7 +1,7 @@
 package net.yezon.theabyss.platform.registries;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -13,7 +13,7 @@ public class DeferredBlock<T extends Block> extends DeferredHolder<Block, T> imp
         super(key);
     }
 
-    public static <T extends Block> DeferredBlock<T> createBlock(Identifier key) {
+    public static <T extends Block> DeferredBlock<T> createBlock(ResourceLocation key) {
         return createBlock(ResourceKey.create(Registries.BLOCK, key));
     }
 

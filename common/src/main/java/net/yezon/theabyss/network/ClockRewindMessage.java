@@ -5,7 +5,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.network.PacketDistributor;
@@ -17,14 +17,14 @@ import net.yezon.theabyss.platform.services.ServerHooks;
 public record ClockRewindMessage(List<Sample> recent, List<Sample> start) implements CustomPacketPayload {
     public record Sample(Vec3 eye, float yaw, float pitch) {
         public static final StreamCodec<RegistryFriendlyByteBuf, Sample> STREAM_CODEC = StreamCodec.composite(
-            Vec3.STREAM_CODEC, Sample::eye,
+            AbyssStreamCodecs.VEC3, Sample::eye,
             ByteBufCodecs.FLOAT, Sample::yaw,
             ByteBufCodecs.FLOAT, Sample::pitch,
             Sample::new
         );
     }
 
-    public static final Type<ClockRewindMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "clock_rewind"));
+    public static final Type<ClockRewindMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "clock_rewind"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ClockRewindMessage> STREAM_CODEC = StreamCodec.composite(
         Sample.STREAM_CODEC.apply(ByteBufCodecs.list(128)), ClockRewindMessage::recent,
         Sample.STREAM_CODEC.apply(ByteBufCodecs.list(128)), ClockRewindMessage::start,

@@ -1,7 +1,7 @@
 package net.yezon.theabyss.events;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -24,13 +24,13 @@ public class TeleportHandlerEvents {
             living.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 24, 1));
             living.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 30, 1));
         }
-        entity.teleportTo(x, y, z);
+        net.yezon.theabyss.util.AbyssTeleport.to(entity, x, y, z);
         if (entity instanceof ServerPlayer player) {
-            player.connection.teleport(x, y, z, entity.getYRot(), entity.getXRot());
+            net.yezon.theabyss.util.AbyssTeleport.connection(player, x, y, z, entity.getYRot(), entity.getXRot());
         }
         RingVisuals.teleportDepart(level, from, entity.getBbHeight());
         RingVisuals.teleportArrive(level, new Vec3(x, y, z));
-        SoundEvent sound = BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:spell_of_teleport"));
+        SoundEvent sound = BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:spell_of_teleport"));
         if (sound != null) {
             level.playSound(null, x, y, z, sound, SoundSource.NEUTRAL, 1.0F, 1.0F);
         }

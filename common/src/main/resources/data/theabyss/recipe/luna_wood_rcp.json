@@ -3,7 +3,9 @@
   "category": "building",
   "group": "bark",
   "key": {
-    "#": "theabyss:luna_log"
+    "#": {
+      "item": "theabyss:luna_log"
+    }
   },
   "pattern": [
     "##",

@@ -51,9 +51,9 @@ public final class Puppeteer {
     }
 
     static boolean cast(ServerPlayer player, ItemStack ring, TheabyssModVariables.PlayerVariables vars) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         if (!(Aim.creature(level, player, RANGE) instanceof Mob mob)) {
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.secondary.no_target", Component.translatable("tooltip.theabyss.ring_of_possession.secondary.ability")));
+            player.displayClientMessage(Component.translatable("ring.theabyss.secondary.no_target", Component.translatable("tooltip.theabyss.ring_of_possession.secondary.ability")), true);
             return false;
         }
         PUPPETS.removeIf(p -> p.mob == mob);
@@ -104,7 +104,7 @@ public final class Puppeteer {
             long now = p.level.getGameTime();
             if (mob.distanceToSqr(victim) < 2.6 && now - p.lastRam >= 20) {
                 p.lastRam = now;
-                victim.hurtServer(p.level, p.level.damageSources().mobAttack(mob), RAM);
+                victim.hurt(p.level.damageSources().mobAttack(mob), RAM);
                 net.minecraft.world.phys.Vec3 away = victim.position().subtract(mob.position()).multiply(1.0, 0.0, 1.0);
                 away = away.lengthSqr() < 1.0E-4 ? net.minecraft.world.phys.Vec3.ZERO : away.normalize().scale(0.5);
                 victim.push(away.x, 0.25, away.z);

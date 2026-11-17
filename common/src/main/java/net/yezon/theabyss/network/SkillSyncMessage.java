@@ -5,12 +5,12 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.yezon.theabyss.platform.network.handling.IPayloadContext;
 import net.yezon.theabyss.TheabyssMod;
 
 public record SkillSyncMessage(List<String> learned, int spent, boolean open) implements CustomPacketPayload {
-    public static final Type<SkillSyncMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "skill_sync"));
+    public static final Type<SkillSyncMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "skill_sync"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SkillSyncMessage> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), SkillSyncMessage::learned,
         ByteBufCodecs.VAR_INT, SkillSyncMessage::spent,

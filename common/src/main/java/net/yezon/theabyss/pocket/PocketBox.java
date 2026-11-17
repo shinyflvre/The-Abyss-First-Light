@@ -18,7 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.portal.TeleportTransition;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
 import net.yezon.theabyss.platform.event.EventBusSubscriber;
@@ -54,7 +54,7 @@ public final class PocketBox {
         Vec3 at = ground(pocket, PocketCells.arrival(cell));
         player.stopRiding();
         FallGuard.protect(player, 60);
-        player.teleport(new TeleportTransition(pocket, at, Vec3.ZERO, PocketCells.ARRIVAL_YAW, 0.0F, TeleportTransition.DO_NOTHING));
+        net.yezon.theabyss.util.AbyssTeleport.transition(player, new DimensionTransition(pocket, at, Vec3.ZERO, PocketCells.ARRIVAL_YAW, 0.0F, DimensionTransition.DO_NOTHING));
         player.setDeltaMovement(Vec3.ZERO);
         player.resetFallDistance();
         sendView(player);
@@ -191,7 +191,7 @@ public final class PocketBox {
             TheabyssMod.LOGGER.info("Pocket box: {} {} at {}, back to cell {}", player.getName().getString(), fell ? "fell into the void" : "left the box",
                 player.position(), target);
             moveTo(player, pocket, target);
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.pocket.caught"));
+            player.displayClientMessage(Component.translatable("ring.theabyss.pocket.caught"), true);
             RingVisuals.pocketPortal(pocket, player.position());
         }
     }
@@ -203,7 +203,7 @@ public final class PocketBox {
         }
         if (entity.getY() < VOID_Y) {
             Vec3 at = ground(pocket, new Vec3(PocketCells.centreX(cell), 0.0, PocketCells.centreZ(cell)));
-            entity.teleportTo(at.x, at.y, at.z);
+            net.yezon.theabyss.util.AbyssTeleport.to(entity, at.x, at.y, at.z);
             entity.setDeltaMovement(Vec3.ZERO);
             if (entity instanceof LivingEntity living) {
                 FallGuard.protect(living, 60);
@@ -217,7 +217,7 @@ public final class PocketBox {
         double x = Math.clamp(entity.getX(), PocketCells.boxX(cell) + half, PocketCells.boxX(cell) + PocketCells.BOX - half);
         double z = Math.clamp(entity.getZ(), PocketCells.boxZ(cell) + half, PocketCells.boxZ(cell) + PocketCells.BOX - half);
         Vec3 at = ground(pocket, new Vec3(x, 0.0, z));
-        entity.teleportTo(x, Math.max(at.y, entity.getY()), z);
+        net.yezon.theabyss.util.AbyssTeleport.to(entity, x, Math.max(at.y, entity.getY()), z);
         entity.setDeltaMovement(Vec3.ZERO);
     }
 }

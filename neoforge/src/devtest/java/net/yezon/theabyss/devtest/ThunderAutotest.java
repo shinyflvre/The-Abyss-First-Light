@@ -10,8 +10,7 @@ import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.client.sounds.SoundEventListener;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.phys.Vec3;
 
@@ -23,11 +22,11 @@ final class ThunderAutotest {
     private static final List<String> failures = new ArrayList<>();
     private static int checks;
     private static final SoundEventListener LISTENER = (sound, events, range) -> {
-        String id = sound.getIdentifier().toString();
+        String id = sound.getLocation().toString();
         if (id.contains("lightning") || id.contains("thunder")) {
             Minecraft mc = Minecraft.getInstance();
             heard.add(new Heard(id, sound.getSound() != null ? sound.getSound().getLocation().toString() : "?", sound.getVolume(), sound.getPitch(),
-                sound.getAttenuation(), mc.level != null ? mc.level.dimension().identifier().toString() : "?"));
+                sound.getAttenuation(), mc.level != null ? mc.level.dimension().location().toString() : "?"));
         }
     };
 
@@ -87,11 +86,11 @@ final class ThunderAutotest {
                 return;
             }
             double angle = n * 0.9;
-            LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(sp.level(), EntitySpawnReason.EVENT);
+            LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(sp.serverLevel());
             if (bolt != null) {
-                bolt.snapTo(new Vec3(sp.getX() + Math.cos(angle) * 40.0, sp.getY(), sp.getZ() + Math.sin(angle) * 40.0));
+                bolt.moveTo(new Vec3(sp.getX() + Math.cos(angle) * 40.0, sp.getY(), sp.getZ() + Math.sin(angle) * 40.0));
                 bolt.setVisualOnly(true);
-                sp.level().addFreshEntity(bolt);
+                sp.serverLevel().addFreshEntity(bolt);
             }
         });
     }

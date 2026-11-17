@@ -1,12 +1,24 @@
 {
   "type": "theabyss:infuser_recipe_type",
   "ingredients": [
-    "theabyss:lurker_sobber",
-    "theabyss:lurker_sobber",
-    "theabyss:lurker_sobber",
-    "theabyss:lurker_sobber",
-    "theabyss:somnium",
-    "theabyss:loran_energy"
+    {
+      "item": "theabyss:lurker_sobber"
+    },
+    {
+      "item": "theabyss:lurker_sobber"
+    },
+    {
+      "item": "theabyss:lurker_sobber"
+    },
+    {
+      "item": "theabyss:lurker_sobber"
+    },
+    {
+      "item": "theabyss:somnium"
+    },
+    {
+      "item": "theabyss:loran_energy"
+    }
   ],
   "output": {
     "id": "theabyss:lurker_juice",

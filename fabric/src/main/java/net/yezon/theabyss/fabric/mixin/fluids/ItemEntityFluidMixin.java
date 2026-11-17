@@ -13,7 +13,7 @@ public abstract class ItemEntityFluidMixin {
         at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/item/ItemEntity;isInWater()Z", ordinal = 0)
     )
     private boolean theabyss$floatInOwnFluids(boolean original) {
-        return original || FluidContact.highestIfOwn((ItemEntity)(Object)this) > 0.1F;
+        return original || FluidContact.dominates((ItemEntity)(Object)this, 0.1F);
     }
 
     @ModifyExpressionValue(
@@ -21,7 +21,7 @@ public abstract class ItemEntityFluidMixin {
         at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/item/ItemEntity;getFluidHeight(Lnet/minecraft/tags/TagKey;)D", ordinal = 0)
     )
     private double theabyss$ownFluidFloatHeight(double original) {
-        double own = FluidContact.highestIfOwn((ItemEntity)(Object)this);
-        return own > 0.1F ? own : original;
+        ItemEntity self = (ItemEntity)(Object)this;
+        return FluidContact.dominates(self, 0.1F) ? FluidContact.highest(self) : original;
     }
 }

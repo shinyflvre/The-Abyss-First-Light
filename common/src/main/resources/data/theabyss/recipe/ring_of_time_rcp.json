@@ -1,15 +1,33 @@
 {
   "type": "theabyss:arcane_recipe_type",
   "ingredients": [
-    "theabyss:ring_of_freeze",
-    "theabyss:incorythe_gem",
-    "theabyss:hollow_powder",
-    "theabyss:incorythe_gem",
-    "theabyss:hollow_powder",
-    "theabyss:incorythe_gem",
-    "theabyss:hollow_powder",
-    "theabyss:incorythe_gem",
-    "theabyss:hollow_powder"
+    {
+      "item": "theabyss:ring_of_freeze"
+    },
+    {
+      "item": "theabyss:incorythe_gem"
+    },
+    {
+      "item": "theabyss:hollow_powder"
+    },
+    {
+      "item": "theabyss:incorythe_gem"
+    },
+    {
+      "item": "theabyss:hollow_powder"
+    },
+    {
+      "item": "theabyss:incorythe_gem"
+    },
+    {
+      "item": "theabyss:hollow_powder"
+    },
+    {
+      "item": "theabyss:incorythe_gem"
+    },
+    {
+      "item": "theabyss:hollow_powder"
+    }
   ],
   "output": {
     "id": "theabyss:ring_of_time",

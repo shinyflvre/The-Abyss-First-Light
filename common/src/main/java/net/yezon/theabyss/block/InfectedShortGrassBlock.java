@@ -17,10 +17,10 @@ public class InfectedShortGrassBlock extends FlowerBlock {
                 .mapColor(MapColor.PLANT)
                 .sound(SoundType.GRASS)
                 .instabreak()
-                .noCollision()
+                .noCollission()
                 .replaceable()
                 .offsetType(OffsetType.XYZ)
-                .pushReaction(PushReaction.POPPED)
+                .pushReaction(PushReaction.DESTROY)
         );
     }
 }

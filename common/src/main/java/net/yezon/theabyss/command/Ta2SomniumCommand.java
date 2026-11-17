@@ -31,7 +31,7 @@ public final class Ta2SomniumCommand {
                     .executes(context -> setLevel(context, kind))));
         }
         event.getDispatcher().register(Commands.literal("ta2")
-            .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+            .requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS))
             .then(Commands.literal("somnium")
                 .then(level)
                 .then(Commands.literal("set")

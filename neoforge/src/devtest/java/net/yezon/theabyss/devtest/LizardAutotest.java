@@ -9,7 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.phys.AABB;
 import net.yezon.theabyss.entity.LizardEntity;
 import net.yezon.theabyss.init.TheabyssModEntities;
@@ -48,9 +48,9 @@ final class LizardAutotest {
             command.accept("kill @e[type=theabyss:lizard]");
             command.accept("execute in minecraft:overworld run fill 3 200 0 3 207 0 minecraft:oak_log");
             onServer(sp -> {
-                ServerLevel level = (ServerLevel)sp.level();
-                LizardEntity l = TheabyssModEntities.LIZARD.get().create(level, EntitySpawnReason.COMMAND);
-                l.snapTo(2.0 + 0.5 + 0.09, 201.5, 0.5, 0.0F, 0.0F);
+                ServerLevel level = (ServerLevel)sp.serverLevel();
+                LizardEntity l = TheabyssModEntities.LIZARD.get().create(level);
+                l.moveTo(2.0 + 0.5 + 0.09, 201.5, 0.5, 0.0F, 0.0F);
                 l.setPersistenceRequired();
                 level.addFreshEntity(l);
                 l.setWall(Direction.EAST);
@@ -73,12 +73,12 @@ final class LizardAutotest {
         add.add("lz spawn tree", () -> {
             command.accept("kill @e[type=theabyss:lizard]");
             onServer(sp -> {
-                ServerLevel level = (ServerLevel)sp.level();
+                ServerLevel level = (ServerLevel)sp.serverLevel();
                 int attached = 0;
                 for (int i = 0; i < 10; i++) {
-                    LizardEntity l = TheabyssModEntities.LIZARD.get().create(level, EntitySpawnReason.NATURAL);
-                    l.snapTo(1.5, 200, -1.5, 0.0F, 0.0F);
-                    l.finalizeSpawn(level, level.getCurrentDifficultyAt(l.blockPosition()), EntitySpawnReason.NATURAL, null);
+                    LizardEntity l = TheabyssModEntities.LIZARD.get().create(level);
+                    l.moveTo(1.5, 200, -1.5, 0.0F, 0.0F);
+                    l.finalizeSpawn(level, level.getCurrentDifficultyAt(l.blockPosition()), MobSpawnType.NATURAL, null);
                     if (l.wall() != null) {
                         attached++;
                         BlockPos wallBlock = l.blockPosition().relative(l.wall());
@@ -101,7 +101,7 @@ final class LizardAutotest {
 
     private static void lizards(Consumer<LizardEntity> action) {
         onServer(sp -> {
-            for (LizardEntity l : sp.level().getEntitiesOfClass(LizardEntity.class, new AABB(sp.blockPosition()).inflate(32))) {
+            for (LizardEntity l : sp.serverLevel().getEntitiesOfClass(LizardEntity.class, new AABB(sp.blockPosition()).inflate(32))) {
                 action.accept(l);
             }
         });

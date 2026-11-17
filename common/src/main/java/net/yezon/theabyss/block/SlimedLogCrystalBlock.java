@@ -20,7 +20,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
-import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -29,7 +28,6 @@ import net.yezon.theabyss.block.hooks.ClimbableBlock;
 import net.yezon.theabyss.block.hooks.FlammableBlock;
 import net.yezon.theabyss.events.BreakVinesEvents;
 import net.yezon.theabyss.init.TheabyssModItems;
-import org.jspecify.annotations.Nullable;
 
 public class SlimedLogCrystalBlock extends Block implements FlammableBlock, ClimbableBlock {
     public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
@@ -41,16 +39,16 @@ public class SlimedLogCrystalBlock extends Block implements FlammableBlock, Clim
                 .sound(SoundType.GLASS)
                 .strength(1.0F, 10.0F)
                 .lightLevel(s -> 6)
-                .noCollision()
+                .noCollission()
                 .noOcclusion()
-                .postProcess((bs, br, bp) -> bp)
+                .hasPostProcess((bs, br, bp) -> true)
                 .isRedstoneConductor((bs, br, bp) -> false)
         );
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
     @Override
-    protected boolean propagatesSkylightDown(BlockState state) {
+    protected boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
         return true;
     }
 
@@ -106,8 +104,8 @@ public class SlimedLogCrystalBlock extends Block implements FlammableBlock, Clim
     }
 
     @Override
-    protected void neighborChanged(BlockState blockstate, Level world, BlockPos pos, Block neighborBlock, @Nullable Orientation orientation, boolean moving) {
-        super.neighborChanged(blockstate, world, pos, neighborBlock, orientation, moving);
+    protected void neighborChanged(BlockState blockstate, Level world, BlockPos pos, Block neighborBlock, BlockPos fromPos, boolean moving) {
+        super.neighborChanged(blockstate, world, pos, neighborBlock, fromPos, moving);
         BreakVinesEvents.execute(world, pos.getX(), pos.getY(), pos.getZ());
     }
 }

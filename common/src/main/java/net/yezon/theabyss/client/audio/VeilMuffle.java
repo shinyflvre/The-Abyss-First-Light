@@ -1,6 +1,5 @@
 package net.yezon.theabyss.client.audio;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
@@ -8,8 +7,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.ChannelAccess;
-import net.minecraft.client.sounds.SoundEngine;
-import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.sounds.SoundSource;
 import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
@@ -18,6 +15,8 @@ import net.yezon.theabyss.platform.client.event.ClientTickEvent;
 import net.yezon.theabyss.platform.client.event.sound.SoundEngineLoadEvent;
 import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.client.fx.ShadowVeilClient;
+import net.yezon.theabyss.mixin.accessor.client.SoundEngineAccessor;
+import net.yezon.theabyss.mixin.accessor.client.SoundManagerAccessor;
 import org.jspecify.annotations.Nullable;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.EXTEfx;
@@ -29,15 +28,14 @@ public final class VeilMuffle {
     private static volatile int strongFilter;
     private static volatile int softFilter;
     private static volatile boolean ready;
-    private static Field engineField;
-    private static Field channelsField;
     private static boolean unreachable;
 
     private VeilMuffle() {
     }
 
-    private static boolean clear(SoundSource category) {
-        return category == SoundSource.HOSTILE || category == SoundSource.NEUTRAL || category == SoundSource.UI;
+    private static boolean clear(SoundInstance sound) {
+        SoundSource category = sound.getSource();
+        return category == SoundSource.HOSTILE || category == SoundSource.NEUTRAL || UiSounds.isUi(sound);
     }
 
     private static boolean strong(SoundSource category) {
@@ -48,17 +46,17 @@ public final class VeilMuffle {
         return strong(category) ? strongFilter : softFilter;
     }
 
-    static void register(int source, SoundSource category) {
+    static void register(int source, SoundInstance sound) {
         if (!ready) {
             return;
         }
-        if (clear(category) || applied <= 0.001F) {
+        if (clear(sound) || applied <= 0.001F) {
             if (TOUCHED.remove(source)) {
                 AL10.alSourcei(source, EXTEfx.AL_DIRECT_FILTER, EXTEfx.AL_FILTER_NULL);
             }
             return;
         }
-        AL10.alSourcei(source, EXTEfx.AL_DIRECT_FILTER, filterFor(category));
+        AL10.alSourcei(source, EXTEfx.AL_DIRECT_FILTER, filterFor(sound.getSource()));
         TOUCHED.add(source);
     }
 
@@ -81,21 +79,14 @@ public final class VeilMuffle {
         return ready;
     }
 
-    @SuppressWarnings("unchecked")
     private static @Nullable Map<SoundInstance, ChannelAccess.ChannelHandle> channels() {
         if (unreachable) {
             return null;
         }
         try {
-            if (engineField == null || channelsField == null) {
-                engineField = SoundManager.class.getDeclaredField("soundEngine");
-                engineField.setAccessible(true);
-                channelsField = SoundEngine.class.getDeclaredField("instanceToChannel");
-                channelsField.setAccessible(true);
-            }
-            Object engine = engineField.get(Minecraft.getInstance().getSoundManager());
-            return (Map<SoundInstance, ChannelAccess.ChannelHandle>)channelsField.get(engine);
-        } catch (ReflectiveOperationException | RuntimeException e) {
+            Object engine = ((SoundManagerAccessor)Minecraft.getInstance().getSoundManager()).theabyss$soundEngine();
+            return ((SoundEngineAccessor)engine).theabyss$instanceToChannel();
+        } catch (RuntimeException | LinkageError e) {
             unreachable = true;
             TheabyssMod.LOGGER.warn("[VeilMuffle] cannot reach the playing sounds, muffle disabled", e);
             return null;
@@ -129,11 +120,11 @@ public final class VeilMuffle {
             return;
         }
         for (Map.Entry<SoundInstance, ChannelAccess.ChannelHandle> entry : new ArrayList<>(channels.entrySet())) {
-            SoundSource category = entry.getKey().getSource();
-            if (clear(category)) {
+            SoundInstance sound = entry.getKey();
+            if (clear(sound)) {
                 continue;
             }
-            int filter = on ? filterFor(category) : EXTEfx.AL_FILTER_NULL;
+            int filter = on ? filterFor(sound.getSource()) : EXTEfx.AL_FILTER_NULL;
             entry.getValue().execute(channel -> {
                 int source = AbyssReverb.source(channel);
                 if (source != 0) {

@@ -1,7 +1,6 @@
-#version 330
-#extension GL_ARB_separate_shader_objects : require
+#version 150
 
-#include <minecraft:globals.glsl>
+uniform float GameTime;
 
 // The Infected Gauntlet's spell wheel (client/fx/SpellWheelClient, owner 12.10.2026: "mystical, smoke, cooler than the
 // reference"). Drawn on one quad around the wheel (texCoord 0..1 = 240 GUI units across), vanilla position_tex_color
@@ -15,19 +14,12 @@
 // mode (the quad covers the screen, b = fade).
 // Opening the smoke gathers out of loose shreds while the ring grows into place; closing it tears and blows away.
 
-layout(std140) uniform DynamicTransforms {
-    mat4 ModelViewMat;
-    mat4 TextureMat;
-    vec4 ColorModulator;
-    vec3 ModelOffset;
-};
+uniform vec4 ColorModulator;
 
-uniform sampler2D Sampler0;
+in vec2 texCoord0;
+in vec4 vertexColor;
 
-layout(location = 0) in vec2 texCoord0;
-layout(location = 1) in vec4 vertexColor;
-
-layout(location = 0) out vec4 fragColor;
+out vec4 fragColor;
 
 const float PI = 3.14159265;
 const float SLICE = 2.0 * PI / 5.0;

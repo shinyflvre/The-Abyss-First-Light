@@ -3,7 +3,7 @@ package net.yezon.theabyss.entity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnPlacementTypes;
@@ -25,7 +25,12 @@ public class VigilantHummingbirdEntity extends HummingbirdEntity {
     }
 
     @Override
-    public boolean isPreventingPlayerRest(ServerLevel level, Player player) {
+    protected boolean shouldDespawnInPeaceful() {
+        return false;
+    }
+
+    @Override
+    public boolean isPreventingPlayerRest(Player player) {
         return false;
     }
 
@@ -34,12 +39,12 @@ public class VigilantHummingbirdEntity extends HummingbirdEntity {
             VigilantHummingbirdEntity::checkSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
     }
 
-    private static boolean checkSpawnRules(EntityType<VigilantHummingbirdEntity> type, ServerLevelAccessor level, EntitySpawnReason reason, BlockPos pos,
+    private static boolean checkSpawnRules(EntityType<VigilantHummingbirdEntity> type, ServerLevelAccessor level, MobSpawnType reason, BlockPos pos,
         RandomSource random) {
         if (!Mob.checkMobSpawnRules(type, level, reason, pos, random)) {
             return false;
         }
-        if (reason != EntitySpawnReason.NATURAL && reason != EntitySpawnReason.CHUNK_GENERATION) {
+        if (reason != MobSpawnType.NATURAL && reason != MobSpawnType.CHUNK_GENERATION) {
             return true;
         }
         return random.nextInt(3) == 0 && level.getEntitiesOfClass(VigilantHummingbirdEntity.class, new AABB(pos).inflate(NEARBY_RANGE)).size() < MAX_NEARBY;

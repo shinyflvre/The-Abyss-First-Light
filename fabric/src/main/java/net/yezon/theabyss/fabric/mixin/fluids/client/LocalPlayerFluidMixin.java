@@ -10,10 +10,27 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(LocalPlayer.class)
 public abstract class LocalPlayerFluidMixin {
     @ModifyExpressionValue(
-        method = "shouldStopSwimSprinting",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isInWater()Z")
+        method = "aiStep",
+        at = {
+            @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isUnderWater()Z", ordinal = 0),
+            @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isUnderWater()Z", ordinal = 1),
+            @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isUnderWater()Z", ordinal = 2)
+        }
     )
-    private boolean theabyss$keepSwimSprintInOwnFluids(boolean original) {
-        return original || FluidContact.height((LocalPlayer)(Object)this, FluidType::canSwim) > 0.0;
+    private boolean theabyss$startSwimmingInOwnFluids(boolean original) {
+        return original || FluidContact.canStartSwimming((LocalPlayer)(Object)this);
+    }
+
+    @ModifyExpressionValue(
+        method = "aiStep",
+        at = {
+            @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isInWater()Z", ordinal = 0),
+            @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isInWater()Z", ordinal = 1),
+            @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isInWater()Z", ordinal = 2),
+            @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isInWater()Z", ordinal = 3)
+        }
+    )
+    private boolean theabyss$swimSprintInOwnFluids(boolean original) {
+        return original || FluidContact.present((LocalPlayer)(Object)this, FluidType::canSwim);
     }
 }

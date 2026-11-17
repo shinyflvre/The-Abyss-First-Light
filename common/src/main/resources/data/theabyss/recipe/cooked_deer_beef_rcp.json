@@ -3,7 +3,9 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 1,
-  "ingredient": "theabyss:deer_beef",
+  "ingredient": {
+    "item": "theabyss:deer_beef"
+  },
   "result": {
     "id": "theabyss:cooked_deer_beef"
   }

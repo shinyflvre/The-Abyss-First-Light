@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:fixed_bone",
-    "b": "#c:rods/wooden"
+    "a": {
+      "item": "theabyss:fixed_bone"
+    },
+    "b": {
+      "tag": "c:rods/wooden"
+    }
   },
   "pattern": [
     "aa",

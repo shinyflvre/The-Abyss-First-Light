@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "C": "theabyss:abyss_crystal_shard",
-    "#": "theabyss:luna_stick",
-    "X": "minecraft:string"
+    "C": {
+      "item": "theabyss:abyss_crystal_shard"
+    },
+    "#": {
+      "item": "theabyss:luna_stick"
+    },
+    "X": {
+      "item": "minecraft:string"
+    }
   },
   "pattern": [
     " CX",

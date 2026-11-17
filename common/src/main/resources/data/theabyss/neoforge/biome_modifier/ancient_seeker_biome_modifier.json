@@ -6,7 +6,8 @@
   ],
   "spawners": {
     "type": "theabyss:ancient_seeker",
-    "weight": 10,
-    "count": 1
+    "maxCount": 1,
+    "minCount": 1,
+    "weight": 10
   }
 }

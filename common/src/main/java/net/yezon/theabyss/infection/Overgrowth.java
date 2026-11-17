@@ -6,7 +6,7 @@ import java.util.UUID;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -41,9 +41,9 @@ import net.yezon.theabyss.ring.fx.RingFx;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID)
 public final class Overgrowth {
-    public static final ResourceKey<DamageType> INFECTION = ResourceKey.create(Registries.DAMAGE_TYPE, Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "infection"));
+    public static final ResourceKey<DamageType> INFECTION = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "infection"));
     public static final ResourceKey<DamageType> COLLAPSE = ResourceKey.create(Registries.DAMAGE_TYPE,
-        Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "infection_collapse"));
+        ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "infection_collapse"));
     public static final int COLLAPSE_AFTER = 1200;
     public static final int COLLAPSE_TICKS = 100;
     private static final int SHRINK_EVERY = 200;
@@ -51,9 +51,9 @@ public final class Overgrowth {
     private static final float LAST_HEART = 2.0F;
     private static final double HUNT_RANGE = 20.0;
     private static final double FRIEND_RANGE = 32.0;
-    private static final Identifier SHRINK = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "overgrowth_shrink");
-    private static final Identifier ROOTED = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "overgrowth_rooted");
-    private static final Identifier ROOTED_JUMP = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "overgrowth_rooted_jump");
+    private static final ResourceLocation SHRINK = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "overgrowth_shrink");
+    private static final ResourceLocation ROOTED = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "overgrowth_rooted");
+    private static final ResourceLocation ROOTED_JUMP = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "overgrowth_rooted_jump");
     private static final String[] VOICE = {"overgrowth.1", "overgrowth.2", "overgrowth.3", "overgrowth.4"};
     private static final float[] VOICE_AT = {0.0F, 0.3F, 0.6F, 0.9F};
     private static final int DARK = 0x05080C;
@@ -87,7 +87,7 @@ public final class Overgrowth {
             STATES.put(player.getUUID(), s);
             loseInfected(player);
         }
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         if (s.collapse >= 0) {
             tickCollapse(level, player, s);
             return;
@@ -132,7 +132,7 @@ public final class Overgrowth {
         }
         float damage = Math.min(1.0F + stage, player.getHealth() - LAST_HEART);
         if (damage > 0.0F) {
-            player.hurtServer(level, source(level, INFECTION), damage);
+            player.hurt(source(level, INFECTION), damage);
         }
         send(player, stage, OvergrowthMessage.BEAT | (stagger ? OvergrowthMessage.STAGGER : 0), -1);
     }
@@ -194,7 +194,7 @@ public final class Overgrowth {
         }
         if (s.collapse >= COLLAPSE_TICKS) {
             sound(level, feet, "minecraft:block.sculk_shrieker.break", 1.0F, 0.5F);
-            player.hurtServer(level, source(level, COLLAPSE), Float.MAX_VALUE);
+            player.hurt(source(level, COLLAPSE), Float.MAX_VALUE);
             if (player.isAlive()) {
                 end(player);
             }
@@ -209,7 +209,7 @@ public final class Overgrowth {
         send(player, -1.0F, 0, -1);
     }
 
-    private static void removeModifier(ServerPlayer player, net.minecraft.core.Holder<net.minecraft.world.entity.ai.attributes.Attribute> attribute, Identifier id) {
+    private static void removeModifier(ServerPlayer player, net.minecraft.core.Holder<net.minecraft.world.entity.ai.attributes.Attribute> attribute, ResourceLocation id) {
         AttributeInstance instance = player.getAttribute(attribute);
         if (instance != null) {
             instance.removeModifier(id);
@@ -225,14 +225,14 @@ public final class Overgrowth {
     }
 
     private static void sound(ServerLevel level, Vec3 at, String id, float volume, float pitch) {
-        SoundEvent sound = BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse(id));
+        SoundEvent sound = BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse(id));
         if (sound != null) {
             level.playSound(null, at.x, at.y, at.z, sound, SoundSource.PLAYERS, volume, pitch);
         }
     }
 
     public static boolean infected(Entity entity) {
-        Identifier id = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
+        ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
         return TheabyssMod.MODID.equals(id.getNamespace()) && (id.getPath().startsWith("infected_") || id.getPath().startsWith("infceted_"));
     }
 

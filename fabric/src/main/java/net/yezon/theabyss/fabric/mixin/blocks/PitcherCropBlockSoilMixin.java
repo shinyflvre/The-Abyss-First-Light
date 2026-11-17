@@ -1,7 +1,9 @@
 package net.yezon.theabyss.fabric.mixin.blocks;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.TriState;
+import net.yezon.theabyss.compat.TriState;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.PitcherCropBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,5 +31,10 @@ public abstract class PitcherCropBlockSoilMixin {
         if (isLower(state) && !sufficientLight(level, pos) && FabricSoil.below(level, pos, state) == TriState.TRUE) {
             cir.setReturnValue(true);
         }
+    }
+
+    @ModifyReturnValue(method = "mayPlaceOn", at = @At("RETURN"))
+    private boolean theabyss$modFarmland(boolean original, @Local(argsOnly = true) BlockState soil) {
+        return original || FabricSoil.isAbyssFarmland(soil);
     }
 }

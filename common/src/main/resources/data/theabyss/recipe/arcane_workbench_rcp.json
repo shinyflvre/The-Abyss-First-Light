@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:cobble_stone",
-    "b": "theabyss:blaru_planks",
-    "c": "theabyss:loran_energy"
+    "a": {
+      "item": "theabyss:cobble_stone"
+    },
+    "b": {
+      "item": "theabyss:blaru_planks"
+    },
+    "c": {
+      "item": "theabyss:loran_energy"
+    }
   },
   "pattern": [
     "aba",

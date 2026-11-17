@@ -3,6 +3,7 @@ package net.yezon.theabyss.neoforge.fluids;
 import java.util.Map;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.SoundAction;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -20,7 +21,7 @@ public final class NeoForgeAbyssFluidType extends FluidType {
     }
 
     @Override
-    public boolean move(LivingEntity entity, Vec3 movementVector, double gravity) {
+    public boolean move(FluidState state, LivingEntity entity, Vec3 movementVector, double gravity) {
         return this.common.move(entity, movementVector, gravity);
     }
 

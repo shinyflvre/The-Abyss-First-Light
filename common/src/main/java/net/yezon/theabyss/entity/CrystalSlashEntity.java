@@ -1,5 +1,7 @@
 package net.yezon.theabyss.entity;
 
+
+import net.minecraft.nbt.CompoundTag;
 import java.util.HashSet;
 import java.util.Set;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -14,8 +16,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.yezon.theabyss.compat.ValueInput;
+import net.yezon.theabyss.compat.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -125,7 +127,7 @@ public class CrystalSlashEntity extends Entity {
     private void cut(ServerLevel level, LivingEntity victim) {
         float before = victim.getHealth();
         DamageSource source = this.damageSources().indirectMagic(this, this.owner);
-        if (victim.hurtServer(level, source, this.damage)) {
+        if (victim.hurt(source, this.damage)) {
             float dealt = Math.max(0.0F, before - victim.getHealth());
             if (dealt > 0.0F && this.owner.isAlive()) {
                 this.owner.heal(dealt * 0.15F);
@@ -137,7 +139,10 @@ public class CrystalSlashEntity extends Entity {
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+    public boolean hurt(DamageSource source, float amount) {
+        if (!(this.level() instanceof ServerLevel level)) {
+            return false;
+        }
         return false;
     }
 
@@ -152,10 +157,12 @@ public class CrystalSlashEntity extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(ValueInput input) {
+    public void readAdditionalSaveData(CompoundTag inputTag) {
+        ValueInput input = ValueInput.of(inputTag, this.registryAccess());
     }
 
     @Override
-    protected void addAdditionalSaveData(ValueOutput output) {
+    public void addAdditionalSaveData(CompoundTag outputTag) {
+        ValueOutput output = ValueOutput.of(outputTag, this.registryAccess());
     }
 }

@@ -7,7 +7,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ItemSupplier;
-import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -65,13 +65,13 @@ public class RingOfBlackStrikeAttackProjectileEntity extends AbstractArrow imple
 
     private boolean outOfRange() {
         net.minecraft.nbt.CompoundTag data = net.yezon.theabyss.platform.PersistentData.get(this);
-        double range = data.getDoubleOr(RANGE_KEY, 0.0);
+        double range = net.yezon.theabyss.compat.NbtCompat.getDoubleOr(data, RANGE_KEY, 0.0);
         if (range <= 0.0) {
             return false;
         }
-        double dx = this.getX() - data.getDoubleOr(START_X_KEY, this.getX());
-        double dy = this.getY() - data.getDoubleOr(START_Y_KEY, this.getY());
-        double dz = this.getZ() - data.getDoubleOr(START_Z_KEY, this.getZ());
+        double dx = this.getX() - net.yezon.theabyss.compat.NbtCompat.getDoubleOr(data, START_X_KEY, this.getX());
+        double dy = this.getY() - net.yezon.theabyss.compat.NbtCompat.getDoubleOr(data, START_Y_KEY, this.getY());
+        double dz = this.getZ() - net.yezon.theabyss.compat.NbtCompat.getDoubleOr(data, START_Z_KEY, this.getZ());
         return dx * dx + dy * dy + dz * dz >= range * range || this.getDeltaMovement().lengthSqr() < MIN_SPEED_SQR;
     }
 
@@ -108,7 +108,7 @@ public class RingOfBlackStrikeAttackProjectileEntity extends AbstractArrow imple
         super.onHitEntity(entityHitResult);
         if (this.level() instanceof net.minecraft.server.level.ServerLevel level) {
             net.yezon.theabyss.ring.RingVisuals.blackStrikeHit(level, entityHitResult.getEntity().getBoundingBox().getCenter());
-            if (net.yezon.theabyss.platform.PersistentData.get(this).getDoubleOr(RANGE_KEY, 0.0) > 0.0) {
+            if (net.yezon.theabyss.compat.NbtCompat.getDoubleOr(net.yezon.theabyss.platform.PersistentData.get(this), RANGE_KEY, 0.0) > 0.0) {
                 net.yezon.theabyss.ring.RingVisuals.sound(level, entityHitResult.getEntity().getBoundingBox().getCenter(), net.yezon.theabyss.init.TheabyssModSounds.SPELL_OF_BLACKSTRIKE_HIT.get(), HIT_VOLUME,
                     net.yezon.theabyss.ring.RingVisuals.castPitch(this.getRandom()));
             }
@@ -120,8 +120,8 @@ public class RingOfBlackStrikeAttackProjectileEntity extends AbstractArrow imple
             return;
         }
         if (entityHitResult.getEntity() instanceof net.minecraft.world.entity.LivingEntity victim && !victim.level().isClientSide()) {
-            victim.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS, 200, 3));
-            victim.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.NAUSEA, 200, 1));
+            victim.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 200, 3));
+            victim.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.CONFUSION, 200, 1));
             victim.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.WEAKNESS, 200, 1));
         }
     }
@@ -130,7 +130,7 @@ public class RingOfBlackStrikeAttackProjectileEntity extends AbstractArrow imple
     public void tick() {
         super.tick();
         RingOfBlackStrikeParticleEvents.execute(this.level(), this);
-        if (this.isInGround()) {
+        if (this.inGround) {
             if (this.level() instanceof net.minecraft.server.level.ServerLevel level) {
                 net.yezon.theabyss.ring.RingVisuals.blackStrikeHit(level, this.position());
             }

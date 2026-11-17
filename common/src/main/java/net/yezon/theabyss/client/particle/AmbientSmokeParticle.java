@@ -4,25 +4,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.util.ARGB;
+import net.yezon.theabyss.compat.ARGB;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.client.fx.ScreenFx;
 
-public class AmbientSmokeParticle extends SingleQuadParticle {
-    public static final com.mojang.renderpearl.api.pipeline.RenderPipeline PIPELINE = com.mojang.renderpearl.api.pipeline.RenderPipeline
-        .builder(net.yezon.theabyss.mixin.accessor.client.RenderPipelinesAccessor.theabyss$particleSnippet())
-        .withLocation(net.minecraft.resources.Identifier.fromNamespaceAndPath("theabyss", "pipeline/ambient_smoke"))
-        .withColorTargetState(new com.mojang.renderpearl.api.pipeline.ColorTargetState(com.mojang.renderpearl.api.pipeline.BlendFunction.TRANSLUCENT))
-        .withDepthStencilState(new com.mojang.renderpearl.api.pipeline.DepthStencilState(com.mojang.renderpearl.api.pipeline.CompareOp.GREATER_THAN_OR_EQUAL, false))
-        .withCull(false)
-        .build();
-    private static final SingleQuadParticle.Layer LAYER = new SingleQuadParticle.Layer(
-        true, net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_PARTICLES, PIPELINE, net.minecraft.client.renderer.RenderPipelines.OIT_PARTICLE);
+public class AmbientSmokeParticle extends TextureSheetParticle {
 
     private static final java.util.List<AmbientSmokeParticle> LIVE = new java.util.ArrayList<>();
     private long lastTick;
@@ -42,7 +33,8 @@ public class AmbientSmokeParticle extends SingleQuadParticle {
     }
 
     protected AmbientSmokeParticle(ClientLevel level, double x, double y, double z, double vx, double vy, double vz, SpriteSet sprites) {
-        super(level, x, y, z, sprites.first());
+        super(level, x, y, z);
+        this.setSprite(sprites.get(0, 1));
         this.setSprite(sprites.get(this.random));
         this.lifetime = 240 + this.random.nextInt(200);
         this.gravity = 0.0F;
@@ -72,7 +64,7 @@ public class AmbientSmokeParticle extends SingleQuadParticle {
         this.updateColour();
         float fadeIn = Math.min(1.0F, this.age / 30.0F);
         float fadeOut = Math.min(1.0F, (this.lifetime - this.age) / 60.0F);
-        Vec3 camera = Minecraft.getInstance().gameRenderer.mainCamera().position();
+        Vec3 camera = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
         float distance = (float)camera.distanceTo(new Vec3(this.x, this.y, this.z));
         if (distance > FAR_LIMIT) {
             this.remove();
@@ -93,13 +85,13 @@ public class AmbientSmokeParticle extends SingleQuadParticle {
     }
 
     @Override
-    public int getLightCoords(float partialTick) {
+    public int getLightColor(float partialTick) {
         return 15728880;
     }
 
     @Override
-    public SingleQuadParticle.Layer getLayer() {
-        return LAYER;
+    public ParticleRenderType getRenderType() {
+        return AbyssParticleRenderTypes.SOFT;
     }
 
     public static class AmbientSmokeParticleProvider implements ParticleProvider<SimpleParticleType> {
@@ -111,8 +103,7 @@ public class AmbientSmokeParticle extends SingleQuadParticle {
 
         @Override
         public Particle createParticle(
-            SimpleParticleType type, ClientLevel level, double x, double y, double z, double vx, double vy, double vz, RandomSource random
-        ) {
+            SimpleParticleType type, ClientLevel level, double x, double y, double z, double vx, double vy, double vz) {
             return new AmbientSmokeParticle(level, x, y, z, vx, vy, vz, this.spriteSet);
         }
     }

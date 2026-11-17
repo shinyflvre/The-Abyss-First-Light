@@ -7,9 +7,15 @@
     "CPC"
   ],
   "key": {
-    "C": "theabyss:stone_brick_chiseled",
-    "L": "theabyss:loran",
-    "P": "theabyss:stone_brick_pillar"
+    "C": {
+      "item": "theabyss:stone_brick_chiseled"
+    },
+    "L": {
+      "item": "theabyss:loran"
+    },
+    "P": {
+      "item": "theabyss:stone_brick_pillar"
+    }
   },
   "result": {
     "id": "theabyss:abyssal_energetica",

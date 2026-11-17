@@ -1,10 +1,13 @@
 package net.yezon.theabyss.client.screens;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.LevelLoadingScreen;
+import net.minecraft.client.gui.screens.ReceivingLevelScreen;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.yezon.theabyss.compat.GuiGraphicsCompat;
 import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.EventPriority;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
@@ -24,13 +27,17 @@ public final class TheAbyssScreenOverlay {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onScreenRender(ScreenEvent.Render.Post event) {
         LocalPlayer player = Minecraft.getInstance().player;
-        if (event.getScreen() instanceof LevelLoadingScreen && player != null && TheAbyssScreenHandlerEvents.execute(player)) {
+        if (levelLoading(event.getScreen()) && player != null && TheAbyssScreenHandlerEvents.execute(player)) {
             drawEnteringScreen(event.getGuiGraphics(), event.getScreen().width, event.getScreen().height, "gui.theabyss.the_abyss_screen.label_entering_the_abyss");
         }
     }
 
-    static void drawEnteringScreen(GuiGraphicsExtractor graphics, int w, int h, String labelKey) {
+    static void drawEnteringScreen(GuiGraphics graphics, int w, int h, String labelKey) {
         graphics.fill(0, 0, w, h, BLACK_COLOUR);
-        graphics.text(Minecraft.getInstance().font, Component.translatable(labelKey), w / 2 - 52, h / 2 - 13, -16711732, false);
+        GuiGraphicsCompat.text(graphics, Minecraft.getInstance().font, Component.translatable(labelKey), w / 2 - 52, h / 2 - 13, -16711732, false);
+    }
+
+    static boolean levelLoading(Screen screen) {
+        return screen instanceof LevelLoadingScreen || screen instanceof ReceivingLevelScreen;
     }
 }

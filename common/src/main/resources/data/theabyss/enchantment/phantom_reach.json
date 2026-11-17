@@ -21,13 +21,13 @@
     "minecraft:attributes": [
       {
         "amount": 2.0,
-        "attribute": "minecraft:block_interaction_range",
+        "attribute": "minecraft:player.block_interaction_range",
         "id": "theabyss:enchantment.phantom_reach_block",
         "operation": "add_value"
       },
       {
         "amount": 2.0,
-        "attribute": "minecraft:entity_interaction_range",
+        "attribute": "minecraft:player.entity_interaction_range",
         "id": "theabyss:enchantment.phantom_reach_entity",
         "operation": "add_value"
       }

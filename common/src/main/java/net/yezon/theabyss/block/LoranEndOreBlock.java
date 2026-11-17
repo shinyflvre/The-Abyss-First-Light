@@ -21,7 +21,8 @@ public class LoranEndOreBlock extends Block implements HoverTextBlock {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, Consumer<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, List<Component> tooltipLines, TooltipFlag flag) {
+        Consumer<Component> tooltip = tooltipLines::add;
         tooltip.accept(Component.translatable("tooltip.theabyss.craft_armor_1"));
         tooltip.accept(Component.translatable("tooltip.theabyss.craft_armor_2"));
     }

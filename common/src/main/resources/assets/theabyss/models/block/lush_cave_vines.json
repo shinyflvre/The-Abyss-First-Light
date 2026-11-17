@@ -2,5 +2,6 @@
   "parent": "minecraft:block/cross",
   "textures": {
     "cross": "theabyss:block/lush_cave_vines"
-  }
+  },
+  "render_type": "minecraft:cutout"
 }

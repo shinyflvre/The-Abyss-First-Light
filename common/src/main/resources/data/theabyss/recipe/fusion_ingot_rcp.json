@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "minecraft:iron_ingot",
-    "b": "theabyss:fusion_ore"
+    "a": {
+      "item": "minecraft:iron_ingot"
+    },
+    "b": {
+      "item": "theabyss:fusion_ore"
+    }
   },
   "pattern": [
     "aaa",

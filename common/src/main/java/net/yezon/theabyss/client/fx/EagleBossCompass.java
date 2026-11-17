@@ -6,11 +6,12 @@ import java.util.List;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
+import net.minecraft.resources.ResourceLocation;
+import net.yezon.theabyss.compat.ARGB;
+import net.yezon.theabyss.compat.GuiGraphicsCompat;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.phys.Vec3;
@@ -37,11 +38,11 @@ public final class EagleBossCompass {
         return FxClock.nanos() < untilNanos ? markers.size() : 0;
     }
 
-    public static void render(GuiGraphicsExtractor g, DeltaTracker deltaTracker) {
+    public static void render(GuiGraphics g, DeltaTracker deltaTracker) {
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         long left = untilNanos - FxClock.nanos();
-        if (player == null || markers.isEmpty() || left <= 0 || mc.gui.hud.isHidden()) {
+        if (player == null || markers.isEmpty() || left <= 0 || mc.options.hideGui) {
             return;
         }
         float fade = Mth.clamp(left / 1_500_000_000.0F, 0.0F, 1.0F);
@@ -84,9 +85,9 @@ public final class EagleBossCompass {
                     continue;
                 }
                 int ax = onLeft ? cx - HALF - 10 : cx + HALF + 4;
-                g.text(font, onLeft ? "◀" : "▶", ax, TOP - 4, color, true);
+                GuiGraphicsCompat.text(g, font, onLeft ? "◀" : "▶", ax, TOP - 4, color, true);
                 String label = distance + "m" + height;
-                g.text(font, label, onLeft ? ax - font.width(label) - 2 : ax + 9, TOP - 4, color, true);
+                GuiGraphicsCompat.text(g, font, label, onLeft ? ax - font.width(label) - 2 : ax + 9, TOP - 4, color, true);
                 if (onLeft) {
                     leftArrow = true;
                 } else {
@@ -95,7 +96,7 @@ public final class EagleBossCompass {
                 continue;
             }
             int x = cx + Math.round(diff / 90.0F * HALF);
-            g.centeredText(font, "◆", x, TOP - 4, color);
+            GuiGraphicsCompat.centeredText(g, font, "◆", x, TOP - 4, color);
             xs[i] = x;
             texts[i] = i == 0 || Math.abs(diff) < 12.0F ? name(m) + " " + distance + "m" + (height.isEmpty() ? "" : " " + height) : height;
         }
@@ -113,7 +114,7 @@ public final class EagleBossCompass {
             }
             labels.add(new int[] {x0, x1});
             int rgb = isNightblade(sorted.get(i)) ? NIGHTBLADE : PINK;
-            g.centeredText(font, label, xs[i], TOP + 6, ARGB.color(alpha, rgb));
+            GuiGraphicsCompat.centeredText(g, font, label, xs[i], TOP + 6, ARGB.color(alpha, rgb));
         }
     }
 
@@ -122,8 +123,8 @@ public final class EagleBossCompass {
     }
 
     private static String name(EagleBossesMessage.Marker m) {
-        Identifier id = Identifier.tryParse(m.type());
-        EntityType<?> type = id == null ? null : BuiltInRegistries.ENTITY_TYPE.getValue(id);
+        ResourceLocation id = ResourceLocation.tryParse(m.type());
+        EntityType<?> type = id == null ? null : BuiltInRegistries.ENTITY_TYPE.get(id);
         return type == null ? m.type() : type.getDescription().getString();
     }
 }

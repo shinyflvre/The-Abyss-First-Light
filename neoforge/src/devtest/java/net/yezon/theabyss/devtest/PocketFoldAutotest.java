@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -19,7 +19,7 @@ import net.yezon.theabyss.network.TheabyssModVariables;
 import net.yezon.theabyss.pocket.PocketCells;
 
 final class PocketFoldAutotest {
-    private static final ResourceKey<Level> ABYSS = ResourceKey.create(Registries.DIMENSION, Identifier.parse("theabyss:the_abyss"));
+    private static final ResourceKey<Level> ABYSS = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse("theabyss:the_abyss"));
     private static final List<String> failures = new ArrayList<>();
     private static int checks;
     private static Vec3 start = Vec3.ZERO;
@@ -45,18 +45,18 @@ final class PocketFoldAutotest {
         }
         add.add("pf settle", () -> {
         }, 20);
-        add.add("pf in pocket", () -> onServer(sp -> check("from the Abyss into the pocket box (" + sp.level().dimension().identifier() + ")",
-            sp.level().dimension() == PocketCells.DIMENSION)), 4);
+        add.add("pf in pocket", () -> onServer(sp -> check("from the Abyss into the pocket box (" + sp.serverLevel().dimension().location() + ")",
+            sp.serverLevel().dimension() == PocketCells.DIMENSION)), 4);
         add.add("pf cast out", () -> cast(), 40);
-        add.add("pf back", () -> onServer(sp -> check("back in the Abyss where it started (" + sp.level().dimension().identifier() + " " + sp.position() + ")",
-            sp.level().dimension() == ABYSS && sp.position().distanceTo(start) < 2.5)), 4);
+        add.add("pf back", () -> onServer(sp -> check("back in the Abyss where it started (" + sp.serverLevel().dimension().location() + " " + sp.position() + ")",
+            sp.serverLevel().dimension() == ABYSS && sp.position().distanceTo(start) < 2.5)), 4);
         add.add("pf result", () -> TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] RESULT pocket_fold {} ({} checks{})", failures.isEmpty() ? "PASS" : "FAIL",
             checks, failures.isEmpty() ? "" : ", failed: " + failures), 2);
     }
 
     private static void cast() {
         onServer(sp -> {
-            if (sp.level().dimension() == ABYSS) {
+            if (sp.serverLevel().dimension() == ABYSS) {
                 start = sp.position();
             }
             ItemStack ring = new ItemStack(TheabyssModItems.RING_OF_POCKET_BOX.get());
@@ -65,9 +65,9 @@ final class PocketFoldAutotest {
                 v.Mana = 100.0;
                 v.syncPlayerVariables(sp);
             });
-            sp.getCooldowns().removeCooldown(sp.getCooldowns().getCooldownGroup(ring));
-            boolean ok = ApplyRingOfPocketRoomEvents.execute(sp.level(), sp.getX(), sp.getY(), sp.getZ(), sp, sp.getMainHandItem());
-            check("pocket box journey starts in " + sp.level().dimension().identifier(), ok);
+            sp.getCooldowns().removeCooldown(ring.getItem());
+            boolean ok = ApplyRingOfPocketRoomEvents.execute(sp.serverLevel(), sp.getX(), sp.getY(), sp.getZ(), sp, sp.getMainHandItem());
+            check("pocket box journey starts in " + sp.serverLevel().dimension().location(), ok);
         });
     }
 

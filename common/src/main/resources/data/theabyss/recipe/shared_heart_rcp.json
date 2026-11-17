@@ -1,12 +1,24 @@
 {
   "type": "theabyss:infuser_recipe_type",
   "ingredients": [
-    "theabyss:soul_heart",
-    "theabyss:roka_horn",
-    "theabyss:soul_heart",
-    "theabyss:roka_horn",
-    "theabyss:somnium",
-    "theabyss:loran_energy"
+    {
+      "item": "theabyss:soul_heart"
+    },
+    {
+      "item": "theabyss:roka_horn"
+    },
+    {
+      "item": "theabyss:soul_heart"
+    },
+    {
+      "item": "theabyss:roka_horn"
+    },
+    {
+      "item": "theabyss:somnium"
+    },
+    {
+      "item": "theabyss:loran_energy"
+    }
   ],
   "output": {
     "id": "theabyss:shared_heart",

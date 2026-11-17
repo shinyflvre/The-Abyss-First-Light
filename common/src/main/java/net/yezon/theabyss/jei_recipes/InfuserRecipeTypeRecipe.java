@@ -1,14 +1,14 @@
 package net.yezon.theabyss.jei_recipes;
 
 import java.util.List;
-import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.yezon.theabyss.init.TheabyssModRecipeTypes;
 
 public class InfuserRecipeTypeRecipe extends AbstractWorkstationRecipe {
-    public InfuserRecipeTypeRecipe(List<Ingredient> ingredients, ItemStackTemplate output) {
+    public InfuserRecipeTypeRecipe(List<Ingredient> ingredients, ItemStack output) {
         super(ingredients, output);
     }
 

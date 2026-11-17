@@ -3,13 +3,13 @@ package net.yezon.theabyss.entity;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -53,8 +53,9 @@ public class VersaWhaleEntity extends Monster {
     }
 
     @Override
-    protected void customServerAiStep(ServerLevel level) {
-        super.customServerAiStep(level);
+    protected void customServerAiStep() {
+        ServerLevel level = (ServerLevel) this.level();
+        super.customServerAiStep();
         if (this.home == null) {
             this.home = this.position();
         }
@@ -89,7 +90,7 @@ public class VersaWhaleEntity extends Monster {
             this.wantedHeading = this.heading + (this.freeSide(level, eye) ? 1.0F : -1.0F) * Mth.HALF_PI;
             wantedY += 8.0;
         }
-        wantedY = Math.min(wantedY, level.getMaxY() - 12.0);
+        wantedY = Math.min(wantedY, (level.getMaxBuildHeight() - 1) - 12.0);
 
         float turn = Mth.wrapDegrees((this.wantedHeading - this.heading) * Mth.RAD_TO_DEG) * Mth.DEG_TO_RAD;
         this.heading += Mth.clamp(turn, -MAX_TURN * (this.fleeTicks > 0 ? 2.5F : 1.0F), MAX_TURN * (this.fleeTicks > 0 ? 2.5F : 1.0F));
@@ -139,8 +140,11 @@ public class VersaWhaleEntity extends Monster {
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
-        boolean hurt = super.hurtServer(level, source, amount);
+    public boolean hurt(DamageSource source, float amount) {
+        if (!(this.level() instanceof ServerLevel level)) {
+            return false;
+        }
+        boolean hurt = super.hurt(source, amount);
         if (hurt) {
             this.fleeTicks = 120;
             if (source.getEntity() != null) {
@@ -152,7 +156,7 @@ public class VersaWhaleEntity extends Monster {
 
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(
-        ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason, @Nullable SpawnGroupData groupData
+        ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData groupData
     ) {
         SpawnGroupData data = super.finalizeSpawn(level, difficulty, reason, groupData);
         var scale = this.getAttribute(Attributes.SCALE);
@@ -160,7 +164,7 @@ public class VersaWhaleEntity extends Monster {
             float spread = this.random.nextFloat() * this.random.nextFloat();
             scale.setBaseValue(this.random.nextBoolean() ? 1.0 - 0.3 * spread : 1.0 + 0.35 * spread);
         }
-        if (reason == EntitySpawnReason.NATURAL || reason == EntitySpawnReason.CHUNK_GENERATION) {
+        if (reason == MobSpawnType.NATURAL || reason == MobSpawnType.CHUNK_GENERATION) {
             double ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, this.getBlockX(), this.getBlockZ());
             double y = ground + 18.0 + this.random.nextDouble() * 16.0;
             if (level.noCollision(this, this.getBoundingBox().move(0.0, y - this.getY(), 0.0))) {
@@ -196,7 +200,7 @@ public class VersaWhaleEntity extends Monster {
 
     @Override
     public SoundEvent getAmbientSound() {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:versa_whale_idle"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:versa_whale_idle"));
     }
 
     @Override
@@ -211,16 +215,16 @@ public class VersaWhaleEntity extends Monster {
 
     @Override
     public SoundEvent getHurtSound(DamageSource ds) {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.generic.hurt"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.generic.hurt"));
     }
 
     @Override
     public SoundEvent getDeathSound() {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("entity.generic.death"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.generic.death"));
     }
 
     @Override
-    public boolean causeFallDamage(double fallDistance, float damageModifier, DamageSource damageSource) {
+    public boolean causeFallDamage(float fallDistance, float damageModifier, DamageSource damageSource) {
         return false;
     }
 

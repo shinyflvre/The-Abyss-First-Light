@@ -8,7 +8,7 @@ import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -18,7 +18,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CropBlock;
-import net.minecraft.world.level.block.FarmlandBlock;
+import net.minecraft.world.level.block.FarmBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -36,9 +36,9 @@ final class FarmlandAutotest {
     static void addSteps(PossessionAutotest.StepAdder add, Consumer<String> command, Consumer<String> shot) {
         add.add("fl arena", () -> {
             command.accept("gamemode creative @s");
-            command.accept("gamerule spawn_mobs false");
+            command.accept("gamerule doMobSpawning false");
             command.accept("time set noon");
-            command.accept("gamerule random_tick_speed 0");
+            command.accept("gamerule randomTickSpeed 0");
             command.accept("execute in theabyss:the_abyss run forceload add -16 -16 16 16");
             command.accept("execute in theabyss:the_abyss run fill -9 117 -9 9 119 9 minecraft:stone");
             command.accept("execute in theabyss:the_abyss run fill -9 120 -9 9 126 9 minecraft:air");
@@ -86,15 +86,15 @@ final class FarmlandAutotest {
                 check(BuiltInRegistries.ITEM.getKey(SEEDS[i]) + " planted on " + id(level.getBlockState(new BlockPos(i - 3, 119, 2))) + " (" + id(crop) + ")", !crop.isAir());
             }
         }), 4);
-        add.add("fl fast ticks", () -> command.accept("gamerule random_tick_speed 1000"), 300);
+        add.add("fl fast ticks", () -> command.accept("gamerule randomTickSpeed 1000"), 300);
         add.add("fl check growth", () -> onServer(level -> {
             for (int i = 0; i < SEEDS.length; i++) {
                 BlockPos soil = new BlockPos(i - 3, 119, 2);
                 BlockState farm = level.getBlockState(soil);
                 BlockState crop = level.getBlockState(soil.above());
-                TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] farmland {} moisture {} crop {}", id(farm), farm.hasProperty(FarmlandBlock.MOISTURE) ? farm.getValue(FarmlandBlock.MOISTURE) : -1, crop);
-                check("soil stays farmland under " + BuiltInRegistries.ITEM.getKey(SEEDS[i]), farm.getBlock() instanceof FarmlandBlock);
-                check("farmland near water is wet " + soil, farm.hasProperty(FarmlandBlock.MOISTURE) && farm.getValue(FarmlandBlock.MOISTURE) == FarmlandBlock.MAX_MOISTURE);
+                TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] farmland {} moisture {} crop {}", id(farm), farm.hasProperty(FarmBlock.MOISTURE) ? farm.getValue(FarmBlock.MOISTURE) : -1, crop);
+                check("soil stays farmland under " + BuiltInRegistries.ITEM.getKey(SEEDS[i]), farm.getBlock() instanceof FarmBlock);
+                check("farmland near water is wet " + soil, farm.hasProperty(FarmBlock.MOISTURE) && farm.getValue(FarmBlock.MOISTURE) == FarmBlock.MAX_MOISTURE);
             }
             BlockState wheat = level.getBlockState(new BlockPos(-3, 120, 2));
             BlockState potato = level.getBlockState(new BlockPos(-1, 120, 2));
@@ -102,7 +102,7 @@ final class FarmlandAutotest {
             check("potato on infected farmland grew (" + potato + ")", potato.getBlock() instanceof CropBlock c && c.getAge(potato) > 0);
         }), 4);
         add.add("fl shot", () -> {
-            command.accept("gamerule random_tick_speed 3");
+            command.accept("gamerule randomTickSpeed 3");
             command.accept("execute in theabyss:the_abyss run setblock -3 119 -5 theabyss:nightgrove_farmland");
             command.accept("execute in theabyss:the_abyss run setblock -2 119 -5 theabyss:nightgrove_path");
             command.accept("execute in theabyss:the_abyss run setblock 0 119 -5 theabyss:infected_farmland");
@@ -126,12 +126,12 @@ final class FarmlandAutotest {
             check("infected path under stone -> infected dirt", is(level, new BlockPos(1, 119, -5), "theabyss:dirt"));
             BlockPos dry = new BlockPos(-1, 119, -2);
             BlockState farm = level.getBlockState(dry);
-            if (farm.getBlock() instanceof FarmlandBlock block) {
+            if (farm.getBlock() instanceof net.yezon.theabyss.block.AbyssFarmlandBlock block) {
                 block.turnToBaseBlock(null, farm, level, dry);
             }
             check("trampled infected farmland -> infected dirt", is(level, dry, "theabyss:dirt"));
             for (String b : List.of("nightgrove_farmland", "infected_farmland", "nightgrove_path", "infected_path")) {
-                Block block = BuiltInRegistries.BLOCK.getValue(Identifier.fromNamespaceAndPath("theabyss", b));
+                Block block = BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath("theabyss", b));
                 List<ItemStack> drops = Block.getDrops(block.defaultBlockState(), level, BlockPos.ZERO, null);
                 String expected = b.startsWith("nightgrove") ? "theabyss:nightgrove_dirt" : "theabyss:dirt";
                 check(b + " drops " + expected + " " + drops, drops.size() == 1 && BuiltInRegistries.ITEM.getKey(drops.get(0).getItem()).toString().equals(expected));
@@ -175,11 +175,11 @@ final class FarmlandAutotest {
             ServerPlayer sp = server.getPlayerList().getPlayer(mc.player.getUUID());
             if (sp != null) {
                 sp.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(item, 16));
-                String before = id(sp.level().getBlockState(pos));
-                Object result = sp.gameMode.useItemOn(sp, sp.level(), sp.getMainHandItem(), InteractionHand.MAIN_HAND,
+                String before = id(sp.serverLevel().getBlockState(pos));
+                Object result = sp.gameMode.useItemOn(sp, sp.serverLevel(), sp.getMainHandItem(), InteractionHand.MAIN_HAND,
                     new BlockHitResult(Vec3.atCenterOf(pos).add(0.0, 0.5, 0.0), Direction.UP, pos, false));
                 TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] farmland use {} on {} {} -> {} ({})", BuiltInRegistries.ITEM.getKey(item), pos, before,
-                    id(sp.level().getBlockState(pos)), result);
+                    id(sp.serverLevel().getBlockState(pos)), result);
             }
         });
     }
@@ -201,7 +201,7 @@ final class FarmlandAutotest {
         server.execute(() -> {
             ServerPlayer sp = server.getPlayerList().getPlayer(mc.player.getUUID());
             if (sp != null) {
-                action.accept(sp.level());
+                action.accept(sp.serverLevel());
             }
         });
     }

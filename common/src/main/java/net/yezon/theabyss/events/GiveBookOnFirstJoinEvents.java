@@ -30,7 +30,7 @@ public class GiveBookOnFirstJoinEvents {
             if (entity instanceof net.minecraft.world.entity.player.Player player && !player.level().isClientSide()) {
                 net.minecraft.world.item.ItemStack book = new net.minecraft.world.item.ItemStack(net.yezon.theabyss.init.TheabyssModItems.ABYSS_GUIDE.get());
                 if (!player.getInventory().add(book)) {
-                    player.spawnAtLocation((net.minecraft.server.level.ServerLevel)player.level(), book);
+                    player.spawnAtLocation(book);
                 }
             }
 

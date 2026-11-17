@@ -3,9 +3,8 @@ package net.yezon.theabyss.client.fx;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.SectionPos;
-import net.minecraft.server.level.ParticleStatus;
+import net.minecraft.client.ParticleStatus;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
@@ -40,7 +39,7 @@ public final class GroundFog {
         if (level == null || mc.player == null || mc.isPaused() || !enabled()) {
             return;
         }
-        String dimension = level.dimension().identifier().toString();
+        String dimension = level.dimension().location().toString();
         if (!dimension.equals("theabyss:the_abyss") && !dimension.equals("theabyss:frost_world")) {
             return;
         }
@@ -50,7 +49,7 @@ public final class GroundFog {
         }
         int target = particles == ParticleStatus.DECREASED ? TARGET / 2 : TARGET;
         RandomSource random = level.getRandom();
-        Vec3 camera = mc.gameRenderer.mainCamera().position();
+        Vec3 camera = mc.gameRenderer.getMainCamera().getPosition();
         int alive = GroundFogParticle.alive(level);
         int perTick = alive < target / 2 ? PER_TICK * 4 : PER_TICK;
         for (int i = 0; i < perTick && alive < target; i++, alive++) {
@@ -61,14 +60,14 @@ public final class GroundFog {
             if (!level.hasChunk(SectionPos.blockToSectionCoord(blockX), SectionPos.blockToSectionCoord(blockZ))) {
                 continue;
             }
-            int ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, blockX, blockZ);
+            int ground = ClientGroundHeight.noLeaves(level, blockX, blockZ);
             if (Math.abs(ground - camera.y) > 40.0) {
                 continue;
             }
             double y = ground + 0.05 + random.nextDouble() * 0.35;
             double vx = (random.nextDouble() - 0.5) * 0.004;
             double vz = (random.nextDouble() - 0.5) * 0.004;
-            level.addParticle(TheabyssModParticleTypes.GROUND_FOG.get(), true, true, x, y, z, vx, 0.0, vz);
+            level.addAlwaysVisibleParticle(TheabyssModParticleTypes.GROUND_FOG.get(), true, x, y, z, vx, 0.0, vz);
         }
     }
 }

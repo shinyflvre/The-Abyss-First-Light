@@ -6,7 +6,7 @@ import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.resources.sounds.TickableSoundInstance;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.Dist;
@@ -180,7 +180,7 @@ public final class EchoVisionClient {
             double arc = Math.min(6.0, flyFrom.distanceTo(eye) * 0.12) * Mth.sin(k * Mth.PI);
             Vec3 path = flyFrom.lerp(eye, k).add(0.0, arc, 0.0);
             Camera camera = event.getCamera();
-            TeleportDashClient.moveCamera(camera, camera.position().add(path.subtract(eye)));
+            TeleportDashClient.moveCamera(camera, camera.getPosition().add(path.subtract(eye)));
         }
         event.setFOV(event.getFOV() * (1.0F + FOV_SWELL * Mth.sin(t * Mth.PI)));
     }

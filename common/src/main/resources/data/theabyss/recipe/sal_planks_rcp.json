@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:sal_shroom_log"
+    "a": {
+      "item": "theabyss:sal_shroom_log"
+    }
   },
   "pattern": [
     "a"

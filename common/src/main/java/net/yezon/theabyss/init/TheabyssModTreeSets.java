@@ -61,22 +61,22 @@ public final class TheabyssModTreeSets {
         DeferredBlock<Block> slab = block(name + "_slab", p -> new SlabBlock(wood(p, colour, 2.0F, 10.0F)));
         DeferredBlock<Block> fence = block(name + "_fence", p -> new FenceBlock(wood(p, colour, 2.0F, 10.0F).forceSolidOn()));
         DeferredBlock<Block> fenceGate = block(name + "_fence_gate", p -> new FenceGateBlock(WoodType.OAK, wood(p, colour, 3.0F, 10.0F).forceSolidOn()));
-        DeferredBlock<Block> door = block(name + "_door", p -> DoorBlockInvoker.theabyss$create(BlockSetType.OAK, wood(p, colour, 3.0F, 10.0F).noOcclusion().pushReaction(PushReaction.POPPED)));
+        DeferredBlock<Block> door = block(name + "_door", p -> DoorBlockInvoker.theabyss$create(BlockSetType.OAK, wood(p, colour, 3.0F, 10.0F).noOcclusion().pushReaction(PushReaction.DESTROY)));
         DeferredBlock<Block> trapdoor = block(name + "_trapdoor", p -> TrapDoorBlockInvoker.theabyss$create(BlockSetType.OAK,
             wood(p, colour, 1.0F, 10.0F).noOcclusion().isValidSpawn((state, level, pos, type) -> false)));
         DeferredBlock<Block> button = block(name + "_button", p -> ButtonBlockInvoker.theabyss$create(BlockSetType.OAK, 30,
-            wood(p, colour, 1.5F, 10.0F).noCollision().pushReaction(PushReaction.POPPED)));
+            wood(p, colour, 1.5F, 10.0F).noCollission().pushReaction(PushReaction.DESTROY)));
         DeferredBlock<Block> pressurePlate = block(name + "_pressure_plate", p -> PressurePlateBlockInvoker.theabyss$create(BlockSetType.OAK,
-            wood(p, colour, 1.0F, 10.0F).forceSolidOn().noCollision().pushReaction(PushReaction.POPPED)));
+            wood(p, colour, 1.0F, 10.0F).forceSolidOn().noCollission().pushReaction(PushReaction.DESTROY)));
         DeferredBlock<Block> leaves = block(name + "_leaves", p -> new AbyssLeavesBlock(p.mapColor(MapColor.PLANT).sound(SoundType.CHERRY_LEAVES)
             .strength(0.3F, 5.0F).noOcclusion().isRedstoneConductor((s, l, pos) -> false).isSuffocating((s, l, pos) -> false)
-            .isValidSpawn((s, l, pos, type) -> false).ignitedByLava().pushReaction(PushReaction.POPPED)));
+            .isValidSpawn((s, l, pos, type) -> false).ignitedByLava().pushReaction(PushReaction.DESTROY)));
 
         List<DeferredItem<Item>> items = new ArrayList<>();
         for (DeferredBlock<Block> b : List.of(log, wood, strippedLog, strippedWood, planks, stairs, slab, fence, fenceGate, door, trapdoor, button, pressurePlate, leaves)) {
             boolean doubleHigh = b == door;
             items.add(TheabyssModItems.REGISTRY.registerItem(b.getId().getPath(),
-                p -> doubleHigh ? new DoubleHighBlockItem(b.get(), p) : new BlockItem(b.get(), p), Item.Properties::useBlockDescriptionPrefix));
+                p -> doubleHigh ? new DoubleHighBlockItem(b.get(), p) : new BlockItem(b.get(), p), p -> p));
         }
         TreeSet set = new TreeSet(name, log, strippedLog, wood, strippedWood, planks, stairs, slab, fence, fenceGate, door, trapdoor, button, pressurePlate, leaves, items);
         ALL.add(set);

@@ -28,7 +28,7 @@ final class BlossomAutotest {
     static void addSteps(PossessionAutotest.StepAdder add, Consumer<String> command, Consumer<String> shot) {
         add.add("blossom go", () -> {
             command.accept("gamemode creative @s");
-            command.accept("gamerule spawn_mobs false");
+            command.accept("gamerule doMobSpawning false");
             command.accept("effect clear @s");
             command.accept("execute in theabyss:the_abyss run forceload add -16 -16 16 16");
             command.accept("execute in theabyss:the_abyss run fill -6 200 -6 6 207 6 minecraft:air");
@@ -41,7 +41,7 @@ final class BlossomAutotest {
             command.accept("execute in theabyss:the_abyss run tp @s -1 202 5.5 180 -15");
         }, 160);
         add.add("growing place", () -> onServer(sp -> {
-            ServerLevel level = (ServerLevel)sp.level();
+            ServerLevel level = (ServerLevel)sp.serverLevel();
             BlockPos base = new BlockPos(-3, 200, 0);
             ItemStack stack = new ItemStack(TheabyssModItems.BLOSSOM_RANK.get());
             sp.setItemInHand(InteractionHand.MAIN_HAND, stack);
@@ -68,11 +68,11 @@ final class BlossomAutotest {
         add.add("blossom dark", () -> command.accept("execute in theabyss:the_abyss run tp @s 0.5 201 3.5 180 -35"), 20);
         add.add("blossom shot close", () -> shot.accept("129_blossom_rank_close"), 6);
         add.add("growing break", () -> onServer(sp -> {
-            ServerLevel level = (ServerLevel)sp.level();
+            ServerLevel level = (ServerLevel)sp.serverLevel();
             level.destroyBlock(new BlockPos(-3, 200, 0), true, sp);
         }), 20);
         add.add("growing check break", () -> onServer(sp -> {
-            ServerLevel level = (ServerLevel)sp.level();
+            ServerLevel level = (ServerLevel)sp.serverLevel();
             check("breaking the base pops the whole rank (" + segments(level, new BlockPos(-3, 200, 0), 6) + ")", segments(level, new BlockPos(-3, 200, 0), 6).isEmpty());
         }), 4);
         add.add("blossom result", () -> TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] RESULT blossom {} ({} checks{})", failures.isEmpty() ? "PASS" : "FAIL", checks,

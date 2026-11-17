@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
+import net.minecraft.resources.ResourceLocation;
+import net.yezon.theabyss.compat.ARGB;
+import net.yezon.theabyss.compat.GuiGraphicsCompat;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.Dist;
@@ -21,7 +21,7 @@ import net.yezon.theabyss.entity.NightbladeBladeEntity;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public final class ParryCue {
-    private static final Identifier RING = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "textures/gui/parry_ring.png");
+    private static final ResourceLocation RING = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "textures/gui/parry_ring.png");
     private static final float LEAD = 1.0F;
     private static final int TARGET_SIZE = 22;
     private static final int START_SIZE = 110;
@@ -72,9 +72,9 @@ public final class ParryCue {
         }
     }
 
-    public static void render(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
+    public static void render(GuiGraphics graphics, DeltaTracker deltaTracker) {
         Minecraft mc = Minecraft.getInstance();
-        if (CUES.isEmpty() || mc.player == null || mc.gui.hud.isHidden()) {
+        if (CUES.isEmpty() || mc.player == null || mc.options.hideGui) {
             return;
         }
         long now = FxClock.nanos();
@@ -109,7 +109,7 @@ public final class ParryCue {
         }
     }
 
-    private static void ring(GuiGraphicsExtractor graphics, int cx, int cy, int size, int color) {
-        graphics.blit(RenderPipelines.GUI_TEXTURED, RING, cx - size / 2, cy - size / 2, 0.0F, 0.0F, size, size, size, size, color);
+    private static void ring(GuiGraphics graphics, int cx, int cy, int size, int color) {
+        GuiGraphicsCompat.blit(graphics, RING, cx - size / 2, cy - size / 2, 0.0F, 0.0F, size, size, size, size, color);
     }
 }

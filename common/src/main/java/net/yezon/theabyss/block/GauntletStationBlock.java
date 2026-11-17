@@ -39,6 +39,6 @@ public class GauntletStationBlock extends Block {
             serverPlayer.openMenu(new SimpleMenuProvider((id, inventory, menuPlayer) -> new GauntletStationMenu(id, inventory, ContainerLevelAccess.create(level, pos)),
                 Component.translatable("block.theabyss.gauntlet_station")));
         }
-        return InteractionResult.SUCCESS;
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 }

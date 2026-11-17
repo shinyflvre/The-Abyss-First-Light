@@ -3,7 +3,7 @@ package net.yezon.theabyss.entity;
 import java.util.EnumSet;
 import java.util.List;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -156,7 +156,7 @@ public class PhantomAttackGoal extends Goal {
         } else if (kind == InfectedPhantomEntity.MIASMA) {
             this.miasmaCooldown = 150;
             SpellFxMessage.around(level, at, SpellFxMessage.PHANTOM_GATHER, List.of(id), List.of(MIASMA_RADIUS), InfectedPhantomEntity.MIASMA_BURST);
-            this.sound(level, BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:phantom_ambient")), 1.2F, 0.7F);
+            this.sound(level, BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:phantom_ambient")), 1.2F, 0.7F);
             this.sound(level, SoundEvents.BREWING_STAND_BREW, 1.0F, 0.6F);
         } else if (kind == InfectedPhantomEntity.REND) {
             this.rendCooldown = 160;
@@ -206,7 +206,7 @@ public class PhantomAttackGoal extends Goal {
                 Vec3 from = InfectedPhantomEntity.hand(this.phantom.position(), this.phantom.yBodyRot);
                 Vec3 aim = target.getEyePosition().subtract(0.0, 0.35, 0.0);
                 this.phantom.hazards.fire(level, from, aim.subtract(from));
-                this.sound(level, BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:phantom_attack")), 1.0F, 1.2F);
+                this.sound(level, BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:phantom_attack")), 1.0F, 1.2F);
             }
             if (this.tick >= InfectedPhantomEntity.VENOM_END) {
                 this.end();
@@ -241,13 +241,13 @@ public class PhantomAttackGoal extends Goal {
             if (level.clip(new ClipContext(centre, body, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this.phantom)).getType() != HitResult.Type.MISS) {
                 continue;
             }
-            if (e.hurtServer(level, this.phantom.damageSources().indirectMagic(this.phantom, this.phantom), MIASMA_DAMAGE)) {
+            if (e.hurt(this.phantom.damageSources().indirectMagic(this.phantom, this.phantom), MIASMA_DAMAGE)) {
                 e.addEffect(new MobEffectInstance(MobEffects.POISON, 60, 1), this.phantom);
             }
             Vec3 push = new Vec3(body.x - centre.x, 0.0, body.z - centre.z);
             push = push.lengthSqr() < 1.0E-4 ? Vec3.ZERO : push.normalize().scale(0.9);
             e.push(push.x, 0.35, push.z);
-            e.syncVelocity = true;
+            e.hurtMarked = true;
         }
         this.phantom.hazards.cloud(level, ground);
         SpellFxMessage.around(level, centre, SpellFxMessage.PHANTOM_MIASMA, List.of(this.phantom.getId()),
@@ -286,11 +286,11 @@ public class PhantomAttackGoal extends Goal {
             this.phantom.setDeltaMovement(this.lungeDir.scale(REND_SPEED));
             if (alive && !this.rendHit && this.phantom.getBoundingBox().inflate(0.45).intersects(target.getBoundingBox())) {
                 this.rendHit = true;
-                if (target.hurtServer(level, this.phantom.damageSources().mobAttack(this.phantom), REND_DAMAGE)) {
-                    target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 1), this.phantom);
+                if (target.hurt(this.phantom.damageSources().mobAttack(this.phantom), REND_DAMAGE)) {
+                    target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 1), this.phantom);
                 }
                 target.push(this.lungeDir.x * 0.8, 0.3, this.lungeDir.z * 0.8);
-                target.syncVelocity = true;
+                target.hurtMarked = true;
                 PhantomHazards.splash(level, target.getBoundingBox().getCenter(), -1);
             }
         }

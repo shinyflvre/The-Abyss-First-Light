@@ -1,25 +1,24 @@
 package net.yezon.theabyss.client.particle;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.util.ARGB;
+import net.yezon.theabyss.compat.ARGB;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.client.fx.ScreenFx;
 import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
-public class GroundFogParticle extends SingleQuadParticle {
-    private static final SingleQuadParticle.Layer LAYER = new SingleQuadParticle.Layer(
-        true, net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_PARTICLES, AmbientSmokeParticle.PIPELINE,
-        net.minecraft.client.renderer.RenderPipelines.OIT_PARTICLE);
+public class GroundFogParticle extends TextureSheetParticle {
     private static final java.util.List<GroundFogParticle> LIVE = new java.util.ArrayList<>();
     private static final float RANGE = 48.0F;
     private static final float EDGE = 12.0F;
@@ -45,7 +44,8 @@ public class GroundFogParticle extends SingleQuadParticle {
     }
 
     protected GroundFogParticle(ClientLevel level, double x, double y, double z, double vx, double vy, double vz, SpriteSet sprites) {
-        super(level, x, y, z, sprites.first());
+        super(level, x, y, z);
+        this.setSprite(sprites.get(0, 1));
         this.setSprite(sprites.get(this.random));
         this.lifetime = 200 + this.random.nextInt(100);
         this.gravity = 0.0F;
@@ -75,7 +75,7 @@ public class GroundFogParticle extends SingleQuadParticle {
         }
         this.move(this.xd, 0.0, this.zd);
         this.updateColour();
-        Vec3 camera = Minecraft.getInstance().gameRenderer.mainCamera().position();
+        Vec3 camera = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
         double dx = this.x - camera.x;
         double dz = this.z - camera.z;
         if (dx * dx + dz * dz > (RANGE + 4.0) * (RANGE + 4.0)) {
@@ -97,8 +97,8 @@ public class GroundFogParticle extends SingleQuadParticle {
     }
 
     @Override
-    public void extract(QuadParticleRenderState state, Camera camera, float partialTick) {
-        Vec3 pos = camera.position();
+    public void render(VertexConsumer buffer, Camera camera, float partialTick) {
+        Vec3 pos = camera.getPosition();
         float dx = (float)(Mth.lerp(partialTick, this.xo, this.x) - pos.x);
         float dy = (float)(Mth.lerp(partialTick, this.yo, this.y) - pos.y);
         float dz = (float)(Mth.lerp(partialTick, this.zo, this.z) - pos.z);
@@ -128,18 +128,44 @@ public class GroundFogParticle extends SingleQuadParticle {
         } else {
             rotation.rotationX((float)(-Math.PI / 2.0)).rotateZ(this.spin);
         }
-        state.add(this.getLayer(), dx, y, dz, rotation.x, rotation.y, rotation.z, rotation.w, size, this.getU0(), this.getU1(), this.getV0(),
-            this.getV1(), ARGB.colorFromFloat(this.alpha, this.rCol, this.gCol, this.bCol), this.getLightCoords(partialTick));
+        int light = this.getLightColor(partialTick);
+        this.quad(buffer, rotation, dx, y, dz, size, light, false);
+        if (!this.band) {
+            this.quad(buffer, rotation, dx, y, dz, size, light, true);
+        }
+    }
+
+    private void quad(VertexConsumer buffer, Quaternionf rotation, float x, float y, float z, float size, int light, boolean back) {
+        float u0 = this.getU0();
+        float u1 = this.getU1();
+        float v0 = this.getV0();
+        float v1 = this.getV1();
+        if (back) {
+            this.vertex(buffer, rotation, x, y, z, -1.0F, -1.0F, size, u0, v1, light);
+            this.vertex(buffer, rotation, x, y, z, -1.0F, 1.0F, size, u0, v0, light);
+            this.vertex(buffer, rotation, x, y, z, 1.0F, 1.0F, size, u1, v0, light);
+            this.vertex(buffer, rotation, x, y, z, 1.0F, -1.0F, size, u1, v1, light);
+        } else {
+            this.vertex(buffer, rotation, x, y, z, 1.0F, -1.0F, size, u1, v1, light);
+            this.vertex(buffer, rotation, x, y, z, 1.0F, 1.0F, size, u1, v0, light);
+            this.vertex(buffer, rotation, x, y, z, -1.0F, 1.0F, size, u0, v0, light);
+            this.vertex(buffer, rotation, x, y, z, -1.0F, -1.0F, size, u0, v1, light);
+        }
+    }
+
+    private void vertex(VertexConsumer buffer, Quaternionf rotation, float x, float y, float z, float cornerX, float cornerY, float size, float u, float v, int light) {
+        Vector3f corner = new Vector3f(cornerX, cornerY, 0.0F).rotate(rotation).mul(size).add(x, y, z);
+        buffer.addVertex(corner.x(), corner.y(), corner.z()).setUv(u, v).setColor(this.rCol, this.gCol, this.bCol, this.alpha).setLight(light);
     }
 
     @Override
-    public int getLightCoords(float partialTick) {
+    public int getLightColor(float partialTick) {
         return 15728880;
     }
 
     @Override
-    public SingleQuadParticle.Layer getLayer() {
-        return LAYER;
+    public ParticleRenderType getRenderType() {
+        return AbyssParticleRenderTypes.SOFT;
     }
 
     public static class GroundFogParticleProvider implements ParticleProvider<SimpleParticleType> {
@@ -151,8 +177,7 @@ public class GroundFogParticle extends SingleQuadParticle {
 
         @Override
         public Particle createParticle(
-            SimpleParticleType type, ClientLevel level, double x, double y, double z, double vx, double vy, double vz, RandomSource random
-        ) {
+            SimpleParticleType type, ClientLevel level, double x, double y, double z, double vx, double vy, double vz) {
             return new GroundFogParticle(level, x, y, z, vx, vy, vz, this.spriteSet);
         }
     }

@@ -3,14 +3,14 @@ package net.yezon.theabyss.client.fx;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.configuration.ConfigConfiguration;
 
 public final class RingFinisherClient {
-    private static final Identifier SOUND = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "ring_finisher");
+    private static final ResourceLocation SOUND = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "ring_finisher");
     private static final RandomSource RANDOM = RandomSource.create();
     private static final long SAME_FINISHER_MS = 250L;
     private static long lastPlayed;
@@ -32,7 +32,7 @@ public final class RingFinisherClient {
         float pitch = 0.9F + RANDOM.nextFloat() * 0.2F;
         SoundInstance sound = new SimpleSoundInstance(SOUND, SoundSource.PLAYERS, 1.0F, pitch, RANDOM, false, 0, SoundInstance.Attenuation.NONE, 0.0, 0.0,
             0.0, true);
-        var result = mc.getSoundManager().play(sound);
-        TheabyssMod.LOGGER.info("[RingFinisher] client play {} pitch {}", result, pitch);
+        mc.getSoundManager().play(sound);
+        TheabyssMod.LOGGER.info("[RingFinisher] client play pitch {}", pitch);
     }
 }

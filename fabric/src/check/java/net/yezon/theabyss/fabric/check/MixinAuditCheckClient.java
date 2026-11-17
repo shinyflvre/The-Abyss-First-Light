@@ -27,7 +27,7 @@ public final class MixinAuditCheckClient implements ClientModInitializer {
         }
         worldTicks++;
         if (worldTicks == 1) {
-            MixinAuditCheck.LOGGER.info("[ABYSS-CHECK] joined world {}", client.level.dimension().identifier());
+            MixinAuditCheck.LOGGER.info("[ABYSS-CHECK] joined world {}", client.level.dimension().location());
         }
         if (worldTicks == WORLD_TICKS) {
             MixinAuditCheck.LOGGER.info("[ABYSS-CHECK] {} ticks in world, quitting", WORLD_TICKS);

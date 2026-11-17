@@ -1,0 +1,9 @@
+{
+  "type": "theabyss:structure_feature",
+  "config": {
+    "ignored_blocks": "minecraft:structure_block",
+    "random_mirror": true,
+    "random_rotation": true,
+    "structure": "theabyss:phantom_pillar_3"
+  }
+}

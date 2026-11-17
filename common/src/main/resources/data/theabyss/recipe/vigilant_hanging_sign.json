@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "group": "wooden_hanging_sign",
   "key": {
-    "#": "theabyss:vigilant_log",
-    "X": "minecraft:iron_chain"
+    "#": {
+      "item": "theabyss:vigilant_log"
+    },
+    "X": {
+      "item": "minecraft:chain"
+    }
   },
   "pattern": [
     "X X",

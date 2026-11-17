@@ -3,11 +3,12 @@ package net.yezon.theabyss.possession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.network.chat.Component;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -16,38 +17,28 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.decoration.Mannequin;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.monster.Blaze;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Ghast;
-import net.minecraft.world.entity.projectile.hurtingprojectile.LargeFireball;
-import net.minecraft.world.entity.projectile.hurtingprojectile.SmallFireball;
+import net.minecraft.world.entity.projectile.LargeFireball;
+import net.minecraft.world.entity.projectile.SmallFireball;
 import net.minecraft.world.entity.monster.RangedAttackMob;
-import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ResolvableProfile;
-import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -68,6 +59,7 @@ import net.yezon.theabyss.platform.event.tick.PlayerTickEvent;
 import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.astral.AstralData;
 import net.yezon.theabyss.mixin.accessor.MobSelectorsAccessor;
+import net.yezon.theabyss.init.TheabyssModEntities;
 import net.yezon.theabyss.init.TheabyssModItems;
 import net.yezon.theabyss.network.TheabyssModVariables;
 import org.jspecify.annotations.Nullable;
@@ -80,15 +72,38 @@ public final class PossessionManager {
     private static final double DRAIN_PER_SECOND = 2.0;
     private static final double ABILITY_RANGE = 32.0;
     private static final String BODY_TAG = "theabyss.possession_body";
-    private static final TagKey<EntityType<?>> BOSSES = TagKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath("c", "bosses"));
+    private static final TagKey<EntityType<?>> BOSSES = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("c", "bosses"));
+
+    private record Keys(float strafe, float forward, boolean jump) {
+        static final Keys NONE = new Keys(0.0F, 0.0F, false);
+    }
 
     private record Session(UUID mob, ResourceKey<Level> bodyLevel, Vec3 bodyPos, float bodyYRot, float bodyXRot, @Nullable UUID body) {
     }
 
     private static final Map<UUID, Session> SESSIONS = new HashMap<>();
     private static final Map<UUID, UUID> POSSESSED = new HashMap<>();
+    private static final Set<UUID> SPRINTING = new HashSet<>();
+    private static final Map<UUID, Keys> KEYS = new HashMap<>();
 
     private PossessionManager() {
+    }
+
+    public static void setSprinting(ServerPlayer player, boolean sprint) {
+        if (sprint && SESSIONS.containsKey(player.getUUID())) {
+            SPRINTING.add(player.getUUID());
+        } else {
+            SPRINTING.remove(player.getUUID());
+        }
+    }
+
+    public static boolean captureInput(ServerPlayer player, float strafe, float forward, boolean jump) {
+        if (!SESSIONS.containsKey(player.getUUID())) {
+            KEYS.remove(player.getUUID());
+            return false;
+        }
+        KEYS.put(player.getUUID(), new Keys(strafe, forward, jump));
+        return true;
     }
 
     public static boolean isPossessing(Player player) {
@@ -112,32 +127,32 @@ public final class PossessionManager {
             return false;
         }
         if (AstralData.isAstral(player)) {
-            player.sendOverlayMessage(Component.translatable("possession.theabyss.cannot_astral"));
+            player.displayClientMessage(Component.translatable("possession.theabyss.cannot_astral"), true);
             return false;
         }
-        if (!(target instanceof Mob mob) || !mob.isAlive() || mob.is(BOSSES) || mob.isVehicle()
+        if (!(target instanceof Mob mob) || !mob.isAlive() || mob.getType().is(BOSSES) || mob.isVehicle()
             || POSSESSED.containsKey(mob.getUUID())) {
-            player.sendOverlayMessage(Component.translatable("possession.theabyss.cannot"));
+            player.displayClientMessage(Component.translatable("possession.theabyss.cannot"), true);
             return false;
         }
         if (player.isPassenger() || player.distanceTo(mob) > RANGE + mob.getBbWidth()) {
-            player.sendOverlayMessage(Component.translatable("possession.theabyss.cannot"));
+            player.displayClientMessage(Component.translatable("possession.theabyss.cannot"), true);
             return false;
         }
         TheabyssModVariables.PlayerVariables vars = TheabyssModVariables.getPlayerVariables(player);
         double cost = START_COST * SomniumUpgrades.costFactor(vars);
         if (vars.Mana < cost) {
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.low_energy"));
+            player.displayClientMessage(Component.translatable("ring.theabyss.low_energy"), true);
             return false;
         }
 
-        ServerLevel level = player.level();
-        Mannequin body = createBody(player);
+        ServerLevel level = player.serverLevel();
+        PossessionBodyEntity body = createBody(player);
         Session session = new Session(
             mob.getUUID(), level.dimension(), player.position(), player.getYRot(), player.getXRot(), body != null ? body.getUUID() : null
         );
-        if (!player.startRiding(mob, true, false)) {
-            player.sendOverlayMessage(Component.translatable("possession.theabyss.cannot"));
+        if (!PossessionRide.start(player, mob)) {
+            player.displayClientMessage(Component.translatable("possession.theabyss.cannot"), true);
             return false;
         }
         SESSIONS.put(player.getUUID(), session);
@@ -154,7 +169,7 @@ public final class PossessionManager {
         freezeMind(mob);
         level.playSound(null, mob.blockPosition(), SoundEvents.EVOKER_CAST_SPELL, SoundSource.PLAYERS, 1.0F, 0.7F);
         net.yezon.theabyss.ring.RingVisuals.possessionEnter(level, player, mob);
-        player.sendOverlayMessage(Component.translatable("possession.theabyss.start", mob.getDisplayName()));
+        player.displayClientMessage(Component.translatable("possession.theabyss.start", mob.getDisplayName()), true);
         return true;
     }
 
@@ -168,6 +183,8 @@ public final class PossessionManager {
 
     private static void end(ServerPlayer player, String messageKey, boolean returnToBody) {
         Session session = SESSIONS.remove(player.getUUID());
+        SPRINTING.remove(player.getUUID());
+        KEYS.remove(player.getUUID());
         if (session == null) {
             return;
         }
@@ -175,7 +192,7 @@ public final class PossessionManager {
         MinecraftServer server = player.level().getServer();
         Entity mobEntity = player.getVehicle();
         if (!(mobEntity instanceof Mob)) {
-            mobEntity = player.level().getEntity(session.mob());
+            mobEntity = player.serverLevel().getEntity(session.mob());
         }
         net.yezon.theabyss.platform.attachment.Attachments.setData(player, PossessionData.TYPE, PossessionData.NONE);
         player.stopRiding();
@@ -188,33 +205,30 @@ public final class PossessionManager {
         }
         ServerLevel bodyLevel = server.getLevel(session.bodyLevel());
         if (bodyLevel == null) {
-            bodyLevel = player.level();
+            bodyLevel = player.serverLevel();
         }
         removeBody(server, session);
         if (!returnToBody) {
             return;
         }
-        player.getCooldowns().addCooldown(new ItemStack(TheabyssModItems.RING_OF_POSSESSION.get()), 40);
-        player.teleportTo(bodyLevel, session.bodyPos().x, session.bodyPos().y, session.bodyPos().z, Set.of(), session.bodyYRot(), session.bodyXRot(), true);
+        player.getCooldowns().addCooldown(TheabyssModItems.RING_OF_POSSESSION.get(), 40);
+        net.yezon.theabyss.util.AbyssTeleport.level(player, bodyLevel, session.bodyPos().x, session.bodyPos().y, session.bodyPos().z, session.bodyYRot(), session.bodyXRot());
         player.resetFallDistance();
         bodyLevel.playSound(null, player.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 0.8F, 1.2F);
-        player.sendOverlayMessage(Component.translatable(messageKey));
+        player.displayClientMessage(Component.translatable(messageKey), true);
     }
 
-    private static @Nullable Mannequin createBody(ServerPlayer player) {
-        Mannequin body = EntityTypes.MANNEQUIN.create(player.level(), EntitySpawnReason.COMMAND);
+    private static @Nullable PossessionBodyEntity createBody(ServerPlayer player) {
+        PossessionBodyEntity body = TheabyssModEntities.POSSESSION_BODY.get().create(player.serverLevel());
         if (body == null) {
             return null;
         }
-        body.snapTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0.0F);
-        TagValueOutput out = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, player.level().registryAccess());
-        body.saveWithoutId(out);
-        var tag = out.buildResult();
-        tag.putBoolean("immovable", true);
-        tag.putBoolean("hide_description", true);
-        tag.putBoolean("Invulnerable", true);
-        body.load(TagValueInput.create(ProblemReporter.DISCARDING, player.level().registryAccess(), tag));
-        body.setComponent(DataComponents.PROFILE, ResolvableProfile.createResolved(player.getGameProfile()));
+        body.moveTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0.0F);
+        body.setYHeadRot(body.getYRot());
+        body.setYBodyRot(body.getYRot());
+        body.setImmovable(true);
+        body.setInvulnerable(true);
+        body.setProfile(new ResolvableProfile(player.getGameProfile()));
         body.setCustomName(player.getDisplayName());
         body.setCustomNameVisible(false);
         body.addTag(BODY_TAG);
@@ -253,7 +267,7 @@ public final class PossessionManager {
         if (session == null) {
             return null;
         }
-        return player.level().getEntity(session.mob()) instanceof Mob mob ? mob : null;
+        return player.serverLevel().getEntity(session.mob()) instanceof Mob mob ? mob : null;
     }
 
     public static int useAbility(ServerPlayer player) {
@@ -261,7 +275,7 @@ public final class PossessionManager {
         if (mob == null) {
             return 0;
         }
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         Vec3 eye = mob.getEyePosition();
         Vec3 look = player.getLookAngle();
         Vec3 end = eye.add(look.scale(ABILITY_RANGE));
@@ -295,27 +309,27 @@ public final class PossessionManager {
         if (mob instanceof RangedAttackMob ranged && canShoot(mob)) {
             LivingEntity aim = target;
             if (aim == null) {
-                ArmorStand dummy = EntityTypes.ARMOR_STAND.create(level, EntitySpawnReason.COMMAND);
+                ArmorStand dummy = EntityType.ARMOR_STAND.create(level);
                 if (dummy == null) {
                     return 0;
                 }
                 dummy.setPos(aimPoint.x, aimPoint.y - dummy.getBbHeight() / 3.0, aimPoint.z);
                 aim = dummy;
             }
-            mob.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT);
+            mob.swing(InteractionHand.MAIN_HAND);
             ranged.performRangedAttack(aim, 1.0F);
             return 20;
         }
         if (target != null && mob.isWithinMeleeAttackRange(target)) {
-            mob.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT);
-            mob.doHurtTarget(level, target);
+            mob.swing(InteractionHand.MAIN_HAND);
+            mob.doHurtTarget(target);
             return 10;
         }
         return 0;
     }
 
     private static boolean canShoot(Mob mob) {
-        if (mob instanceof net.minecraft.world.entity.monster.skeleton.AbstractSkeleton) {
+        if (mob instanceof net.minecraft.world.entity.monster.AbstractSkeleton) {
             return mob.isHolding(stack -> stack.getItem() instanceof net.minecraft.world.item.BowItem);
         }
         return true;
@@ -374,9 +388,10 @@ public final class PossessionManager {
     }
 
     private static void steer(Mob mob, ServerPlayer player) {
-        Input input = player.getLastClientInput();
-        double forward = (input.forward() ? 1 : 0) - (input.backward() ? 1 : 0);
-        double strafe = (input.left() ? 1 : 0) - (input.right() ? 1 : 0);
+        Keys keys = KEYS.getOrDefault(player.getUUID(), Keys.NONE);
+        boolean jump = keys.jump();
+        double forward = (keys.forward() > 0.0F ? 1 : 0) - (keys.forward() < 0.0F ? 1 : 0);
+        double strafe = (keys.strafe() > 0.0F ? 1 : 0) - (keys.strafe() < 0.0F ? 1 : 0);
         boolean free3d = mob.isNoGravity() || mob.getMoveControl() instanceof FlyingMoveControl || mob instanceof Ghast
             || mob.getNavigation() instanceof FlyingPathNavigation || mob.isInWater();
         double yaw = Math.toRadians(player.getYRot());
@@ -389,15 +404,15 @@ public final class PossessionManager {
         }
         double dy = 0;
         if (free3d) {
-            dy = -Math.sin(Math.toRadians(player.getXRot())) * forward + (input.jump() ? 1 : 0);
+            dy = -Math.sin(Math.toRadians(player.getXRot())) * forward + (jump ? 1 : 0);
         }
         if (len == 0 && dy == 0) {
             mob.getMoveControl().setWantedPosition(mob.getX(), mob.getY(), mob.getZ(), 0.0);
         } else {
             double reach = 3.0;
-            mob.getMoveControl().setWantedPosition(mob.getX() + dx * reach, mob.getY() + dy * reach, mob.getZ() + dz * reach, input.sprint() ? 1.4 : 1.0);
+            mob.getMoveControl().setWantedPosition(mob.getX() + dx * reach, mob.getY() + dy * reach, mob.getZ() + dz * reach, SPRINTING.contains(player.getUUID()) ? 1.4 : 1.0);
         }
-        if (input.jump() && !free3d && mob.onGround()) {
+        if (jump && !free3d && mob.onGround()) {
             mob.getJumpControl().jump();
         }
     }
@@ -431,8 +446,8 @@ public final class PossessionManager {
             event.setCanceled(true);
             Mob mob = possessedMob(player);
             if (mob != null && event.getTarget() instanceof LivingEntity target && target != mob && mob.isWithinMeleeAttackRange(target)) {
-                mob.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT);
-                mob.doHurtTarget(player.level(), target);
+                mob.swing(InteractionHand.MAIN_HAND);
+                mob.doHurtTarget(target);
             }
         }
     }
@@ -471,7 +486,7 @@ public final class PossessionManager {
 
     @SubscribeEvent
     public static void onEntityJoin(EntityJoinLevelEvent event) {
-        if (!event.getLevel().isClientSide() && event.getEntity() instanceof Mannequin body && body.entityTags().contains(BODY_TAG)
+        if (!event.getLevel().isClientSide() && event.getEntity() instanceof PossessionBodyEntity body && body.getTags().contains(BODY_TAG)
             && SESSIONS.values().stream().noneMatch(session -> body.getUUID().equals(session.body()))) {
             event.setCanceled(true);
         }
@@ -494,5 +509,7 @@ public final class PossessionManager {
         }
         SESSIONS.clear();
         POSSESSED.clear();
+        SPRINTING.clear();
+        KEYS.clear();
     }
 }

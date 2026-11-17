@@ -43,7 +43,7 @@ public abstract class Effect {
     }
 
     protected static void emit(ClientLevel level, ParticleOptions options, Vec3 at, Vec3 velocity) {
-        level.addParticle(options, true, true, at.x, at.y, at.z, velocity.x, velocity.y, velocity.z);
+        level.addAlwaysVisibleParticle(options, true, at.x, at.y, at.z, velocity.x, velocity.y, velocity.z);
     }
 
     protected static FxOptions flame(int colour, float size, int life) {

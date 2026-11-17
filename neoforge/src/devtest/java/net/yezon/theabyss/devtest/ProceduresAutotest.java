@@ -14,7 +14,7 @@ import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -24,8 +24,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.monster.zombie.Zombie;
-import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
+import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
@@ -43,7 +43,7 @@ import net.yezon.theabyss.network.TheabyssModVariables;
 final class ProceduresAutotest {
     private static final Map<String, AtomicInteger> SOUNDS = new ConcurrentHashMap<>();
     private static final net.minecraft.client.sounds.SoundEventListener LISTENER = (sound, events, range) ->
-        SOUNDS.computeIfAbsent(sound.getIdentifier().toString(), k -> new AtomicInteger()).incrementAndGet();
+        SOUNDS.computeIfAbsent(sound.getLocation().toString(), k -> new AtomicInteger()).incrementAndGet();
     private static final AtomicInteger UNLUCK_ADDS = new AtomicInteger();
     private static int infectChanges;
     private static double lastInfected = Double.NaN;
@@ -54,7 +54,7 @@ final class ProceduresAutotest {
     private static Vec3 deathAt = Vec3.ZERO;
     private static final double[] saved = new double[8];
     private static final net.minecraft.resources.ResourceKey<Level> ABYSS = net.minecraft.resources.ResourceKey.create(
-        net.minecraft.core.registries.Registries.DIMENSION, Identifier.parse("theabyss:the_abyss"));
+        net.minecraft.core.registries.Registries.DIMENSION, ResourceLocation.parse("theabyss:the_abyss"));
     private static int deathsBefore;
 
     private ProceduresAutotest() {
@@ -63,10 +63,10 @@ final class ProceduresAutotest {
     static void addSteps(PossessionAutotest.StepAdder add, Consumer<String> command, Consumer<String> shot) {
         add.add("proc listeners", ProceduresAutotest::listen, 1);
         add.add("proc arena", () -> {
-            command.accept("gamerule spawn_mobs false");
-            command.accept("gamerule immediate_respawn true");
-            command.accept("gamerule advance_time false");
-            command.accept("gamerule advance_weather false");
+            command.accept("gamerule doMobSpawning false");
+            command.accept("gamerule doImmediateRespawn true");
+            command.accept("gamerule doDaylightCycle false");
+            command.accept("gamerule doWeatherCycle false");
             command.accept("execute in theabyss:the_abyss run forceload add -48 -48 48 48");
             command.accept("execute in theabyss:the_abyss run fill -30 149 -30 30 149 30 minecraft:stone");
             command.accept("execute in theabyss:the_abyss run fill -30 150 -30 30 165 30 minecraft:air");
@@ -109,11 +109,11 @@ final class ProceduresAutotest {
             }, 20);
             add.add(key + " lethal", () -> {
                 sounds();
-                server(sp -> sp.hurtServer((ServerLevel)sp.level(), sp.damageSources().generic(), 1000.0F));
+                server(sp -> sp.hurt(sp.damageSources().generic(), 1000.0F));
             }, 6);
             add.add(key + " result", () -> {
                 Minecraft mc = Minecraft.getInstance();
-                fact(key + ".client_activation_item", mc.player.itemActivation().isActive() ? id(mc.player.itemActivation().item()) : "none");
+                fact(key + ".client_activation_item", id(activationItem(mc)));
                 fact(key + ".sound_totem_use", sound("minecraft:item.totem.use"));
                 server(sp -> {
                     fact(key + ".alive", sp.isAlive());
@@ -123,8 +123,8 @@ final class ProceduresAutotest {
                     fact(key + ".zombie_health", zombie == null ? "gone" : r1(zombie.getHealth()));
                     fact(key + ".zombie_frozen", zombie != null && zombie.hasEffect(effect("theabyss:time_stop_potion_irator")));
                     fact(key + ".caster_time_effect", sp.hasEffect(effect("theabyss:time_stop_potion_effect")));
-                    fact(key + ".lightning", sp.level().getEntitiesOfClass(LightningBolt.class, ARENA).size());
-                    fact(key + ".item_entity_survived", !sp.level().getEntitiesOfClass(ItemEntity.class, ARENA).isEmpty());
+                    fact(key + ".lightning", sp.serverLevel().getEntitiesOfClass(LightningBolt.class, ARENA).size());
+                    fact(key + ".item_entity_survived", !sp.serverLevel().getEntitiesOfClass(ItemEntity.class, ARENA).isEmpty());
                 });
             }, 10);
         }
@@ -135,7 +135,7 @@ final class ProceduresAutotest {
             command.accept("item replace entity @s inventory.2 with theabyss:totem_of_time");
             command.accept("item replace entity @s inventory.3 with theabyss:totem_of_thunder");
         }, 10);
-        add.add("totem.multi lethal", () -> server(sp -> sp.hurtServer((ServerLevel)sp.level(), sp.damageSources().generic(), 1000.0F)), 10);
+        add.add("totem.multi lethal", () -> server(sp -> sp.hurt(sp.damageSources().generic(), 1000.0F)), 10);
         add.add("totem.multi result", () -> server(sp -> {
             fact("totem.multi.alive", sp.isAlive());
             fact("totem.multi.left", count(sp, "theabyss:totem_of_abyss") + "/" + count(sp, "theabyss:totem_of_time") + "/" + count(sp, "theabyss:totem_of_thunder"));
@@ -229,19 +229,19 @@ final class ProceduresAutotest {
         add.add("afterlife.found die", () -> server(sp -> {
             deathAt = sp.position();
             sampling = true;
-            sp.hurtServer((ServerLevel)sp.level(), sp.damageSources().generic(), 1000.0F);
+            sp.hurt(sp.damageSources().generic(), 1000.0F);
         }), 10);
         add.add("afterlife.found state", () -> server(sp -> {
             MobEffectInstance life = sp.getEffect(effect("theabyss:after_life"));
             fact("afterlife.found.alive", sp.isAlive());
-            fact("afterlife.found.gamemode", sp.gameMode().getName());
+            fact("afterlife.found.gamemode", sp.gameMode.getGameModeForPlayer().getName());
             fact("afterlife.found.effect", life == null ? "none" : life.getAmplifier() + "/" + (life.getDuration() > 760 && life.getDuration() <= 800));
             fact("afterlife.found.health", r1(sp.getHealth()));
             double dx = sp.getX() - deathAt.x;
             double dz = sp.getZ() - deathAt.z;
             fact("afterlife.found.moved_away_in_range", dx >= 0.0 && dx <= 128.0 && dz >= 0.0 && dz <= 128.0 && (dx > 0.0 || dz > 0.0));
             fact("afterlife.found.same_y", Math.abs(sp.getY() - deathAt.y) < 0.01);
-            fact("afterlife.found.bodies_at_death", bodies(sp.level(), deathAt, 2.0));
+            fact("afterlife.found.bodies_at_death", bodies(sp.serverLevel(), deathAt, 2.0));
             fact("afterlife.found.artifacts_left", count(sp, "theabyss:artifact_of_after_life"));
         }), 20);
         add.add("afterlife.found message", () -> server(sp -> sp.teleportTo(deathAt.x + 20.0, deathAt.y + 1.0, deathAt.z)), 10);
@@ -250,12 +250,12 @@ final class ProceduresAutotest {
             MobEffectInstance tantrum = sp.getEffect(effect("theabyss:tantrum"));
             fact("afterlife.found.after_life_removed", !sp.hasEffect(effect("theabyss:after_life")));
             fact("afterlife.found.tantrum", tantrum == null ? "none" : tantrum.getAmplifier() + "/" + (tantrum.getDuration() > 180));
-            fact("afterlife.found.gamemode_right_after", sp.gameMode().getName());
+            fact("afterlife.found.gamemode_right_after", sp.gameMode.getGameModeForPlayer().getName());
         }), 30);
         add.add("afterlife.found revived", () -> server(sp -> {
-            fact("afterlife.found.gamemode_revived", sp.gameMode().getName());
+            fact("afterlife.found.gamemode_revived", sp.gameMode.getGameModeForPlayer().getName());
             fact("afterlife.found.health_revived", r1(sp.getHealth()));
-            fact("afterlife.found.bodies_left", bodies(sp.level(), deathAt, 4.0));
+            fact("afterlife.found.bodies_left", bodies(sp.serverLevel(), deathAt, 4.0));
         }), 5);
 
         reset(add, command, "the_abyss", "afterlife.timeout");
@@ -266,20 +266,20 @@ final class ProceduresAutotest {
         }, 10);
         add.add("afterlife.timeout die", () -> server(sp -> {
             deathAt = sp.position();
-            sp.hurtServer((ServerLevel)sp.level(), sp.damageSources().generic(), 1000.0F);
+            sp.hurt(sp.damageSources().generic(), 1000.0F);
         }), 10);
         add.add("afterlife.timeout expire", () -> server(sp -> sp.removeEffect(effect("theabyss:after_life"))), 2);
-        add.add("afterlife.timeout mode", () -> server(sp -> fact("afterlife.timeout.gamemode_after_end", sp.gameMode().getName())), 40);
+        add.add("afterlife.timeout mode", () -> server(sp -> fact("afterlife.timeout.gamemode_after_end", sp.gameMode.getGameModeForPlayer().getName())), 40);
         add.add("afterlife.timeout result", () -> server(sp -> {
             fact("afterlife.timeout.died", deaths(sp) > deathsBefore);
-            fact("afterlife.timeout.gamemode_now", sp.gameMode().getName());
+            fact("afterlife.timeout.gamemode_now", sp.gameMode.getGameModeForPlayer().getName());
         }), 5);
         add.add("afterlife.despawn wait", () -> {
         }, 760);
         add.add("afterlife.despawn result", () -> {
             sampling = false;
             fact("afterlife.max_scheduled_tasks", maxQueue);
-            server(sp -> fact("afterlife.despawn.bodies_after_800t", bodies(sp.level().getServer().getLevel(ABYSS), deathAt, 300.0)));
+            server(sp -> fact("afterlife.despawn.bodies_after_800t", bodies(sp.serverLevel().getServer().getLevel(ABYSS), deathAt, 300.0)));
         }, 5);
     }
 
@@ -302,7 +302,7 @@ final class ProceduresAutotest {
             fact("dash.ground.speed", effectInfo(sp, "minecraft:speed"));
             fact("dash.ground.dash", effectInfo(sp, "theabyss:dash"));
             fact("dash.ground.flying", effectInfo(sp, "theabyss:flying"));
-            fact("dash.ground.cooldown", sp.getCooldowns().isOnCooldown(sp.getMainHandItem()));
+            fact("dash.ground.cooldown", sp.getCooldowns().isOnCooldown(sp.getMainHandItem().getItem()));
         }), 25);
         add.add("dash.ground result", () -> {
             fact("dash.ground.sound_dash", sound("theabyss:dash"));
@@ -311,7 +311,7 @@ final class ProceduresAutotest {
                 Zombie zombie = first(sp, Zombie.class);
                 fact("dash.ground.zombie_health", zombie == null ? "gone" : r1(zombie.getHealth()));
                 fact("dash.ground.zombie_burning", zombie != null && zombie.getRemainingFireTicks() > 0);
-                fact("dash.ground.item_entity_survived", !sp.level().getEntitiesOfClass(ItemEntity.class, ARENA).isEmpty());
+                fact("dash.ground.item_entity_survived", !sp.serverLevel().getEntitiesOfClass(ItemEntity.class, ARENA).isEmpty());
             });
         }, 5);
 
@@ -336,7 +336,7 @@ final class ProceduresAutotest {
         add.add("slice setup", () -> {
             command.accept("item replace entity @s weapon.mainhand with theabyss:abyss_sword");
             command.accept("tp @s 0.5 150 0.5 0 0");
-            command.accept("execute in theabyss:the_abyss run summon minecraft:zombie 0.5 150 2.0 {NoAI:1b,PersistenceRequired:1b,Tags:[\"proc\"],attributes:[{id:\"minecraft:max_health\",base:2000.0}],Health:2000.0f}");
+            command.accept("execute in theabyss:the_abyss run summon minecraft:zombie 0.5 150 2.0 {NoAI:1b,PersistenceRequired:1b,Tags:[\"proc\"],attributes:[{id:\"minecraft:generic.max_health\",base:2000.0}],Health:2000.0f}");
             saved[3] = 0;
             saved[4] = 0;
             saved[5] = 0;
@@ -394,16 +394,16 @@ final class ProceduresAutotest {
             mc.gameMode.useItem(mc.player, InteractionHand.MAIN_HAND);
         }, 5);
         add.add("shifter waiting", () -> server(sp -> {
-            fact("shifter.to_abyss.cooldown_at_start", sp.getCooldowns().isOnCooldown(sp.getMainHandItem()));
-            fact("shifter.to_abyss.dimension_at_5t", sp.level().dimension().identifier().toString());
+            fact("shifter.to_abyss.cooldown_at_start", sp.getCooldowns().isOnCooldown(sp.getMainHandItem().getItem()));
+            fact("shifter.to_abyss.dimension_at_5t", sp.serverLevel().dimension().location().toString());
         }), 40);
         add.add("shifter arrived", () -> {
             fact("shifter.to_abyss.sound_entering", sound("theabyss:warp_entering"));
             fact("shifter.to_abyss.sound_entered", sound("theabyss:warp_entered"));
             server(sp -> {
-                fact("shifter.to_abyss.dimension", sp.level().dimension().identifier().toString());
+                fact("shifter.to_abyss.dimension", sp.serverLevel().dimension().location().toString());
                 fact("shifter.to_abyss.position", r1(sp.getX()) + "," + r1(sp.getY()) + "," + r1(sp.getZ()));
-                fact("shifter.to_abyss.cooldown", sp.getCooldowns().isOnCooldown(sp.getMainHandItem()));
+                fact("shifter.to_abyss.cooldown", sp.getCooldowns().isOnCooldown(sp.getMainHandItem().getItem()));
             });
         }, 600);
         add.add("shifter use back", () -> {
@@ -411,7 +411,7 @@ final class ProceduresAutotest {
             mc.gameMode.useItem(mc.player, InteractionHand.MAIN_HAND);
         }, 45);
         add.add("shifter back", () -> server(sp -> {
-            fact("shifter.back.dimension", sp.level().dimension().identifier().toString());
+            fact("shifter.back.dimension", sp.serverLevel().dimension().location().toString());
             fact("shifter.back.position", r1(sp.getX()) + "," + r1(sp.getY()) + "," + r1(sp.getZ()));
         }), 5);
     }
@@ -485,8 +485,8 @@ final class ProceduresAutotest {
             }, 2);
             add.add(key + " projectile", () -> server(sp -> {
                 fact(key + ".mana_spent", r1(200.0 - TheabyssModVariables.getPlayerVariables(sp).Mana));
-                fact(key + ".cooldown", sp.getCooldowns().isOnCooldown(sp.getMainHandItem()));
-                fact(key + ".projectiles", sp.level().getEntitiesOfClass(AbstractArrow.class, ARENA).size());
+                fact(key + ".cooldown", sp.getCooldowns().isOnCooldown(sp.getMainHandItem().getItem()));
+                fact(key + ".projectiles", sp.serverLevel().getEntitiesOfClass(AbstractArrow.class, ARENA).size());
                 fact(key + ".ring_damage", sp.getMainHandItem().getDamageValue());
             }), 30);
             add.add(key + " result", () -> {
@@ -521,7 +521,7 @@ final class ProceduresAutotest {
         }
         add.add("ring.fangs result", () -> server(sp -> {
             fact("ring.fangs.mana_spent", r1(200.0 - TheabyssModVariables.getPlayerVariables(sp).Mana));
-            fact("ring.fangs.cooldown", sp.getCooldowns().isOnCooldown(sp.getMainHandItem()));
+            fact("ring.fangs.cooldown", sp.getCooldowns().isOnCooldown(sp.getMainHandItem().getItem()));
             fact("ring.fangs.ring_damage", sp.getMainHandItem().getDamageValue());
             fact("ring.fangs.spike_entities_created", spikeTotal);
             fact("ring.fangs.spike_near_item", spikeNearItem);
@@ -585,7 +585,7 @@ final class ProceduresAutotest {
                 int grown = 0;
                 for (int dx = -1; dx <= 1; dx++) {
                     for (int dz = -1; dz <= 1; dz++) {
-                        var state = sp.level().getBlockState(new BlockPos(dx, 150, dz));
+                        var state = sp.serverLevel().getBlockState(new BlockPos(dx, 150, dz));
                         if (state.getBlock() instanceof CropBlock crop && crop.getAge(state) > 0) {
                             grown++;
                         }
@@ -594,7 +594,7 @@ final class ProceduresAutotest {
                 fact("ring.nature.grown_around", grown);
                 fact("ring.nature.mana_spent", r1(200.0 - TheabyssModVariables.getPlayerVariables(sp).Mana));
                 fact("ring.nature.ring_damage", sp.getMainHandItem().getDamageValue());
-                fact("ring.nature.cooldown", sp.getCooldowns().isOnCooldown(sp.getMainHandItem()));
+                fact("ring.nature.cooldown", sp.getCooldowns().isOnCooldown(sp.getMainHandItem().getItem()));
             });
         }, 5);
         add.add("ring.nature cleanup", () -> command.accept("execute in theabyss:the_abyss run fill -2 149 -2 2 150 2 minecraft:stone"), 5);
@@ -620,7 +620,7 @@ final class ProceduresAutotest {
         }, 3);
         add.add("ring.slide air state", () -> server(sp -> {
             fact("ring.slide.air.flying", sp.hasEffect(effect("theabyss:flying")));
-            fact("ring.slide.air.cooldown", sp.getCooldowns().isOnCooldown(sp.getMainHandItem()));
+            fact("ring.slide.air.cooldown", sp.getCooldowns().isOnCooldown(sp.getMainHandItem().getItem()));
             fact("ring.slide.air.ring_damage", sp.getMainHandItem().getDamageValue());
             saved[0] = TheabyssModVariables.getPlayerVariables(sp).Mana;
         }), 10);
@@ -690,7 +690,7 @@ final class ProceduresAutotest {
             mc.gameMode.useItem(mc.player, InteractionHand.MAIN_HAND);
         }, 90);
         add.add("clock dim result", () -> server(sp -> {
-            fact("clock.cross_dimension.dimension", sp.level().dimension().identifier().toString());
+            fact("clock.cross_dimension.dimension", sp.serverLevel().dimension().location().toString());
             fact("clock.cross_dimension.position", r1(sp.getX()) + "," + r1(sp.getY()) + "," + r1(sp.getZ()));
         }), 5);
     }
@@ -700,9 +700,9 @@ final class ProceduresAutotest {
         int y = dimension.equals("the_abyss") ? 150 : 200;
         add.add(key + " reset", () -> {
             Minecraft mc = Minecraft.getInstance();
-            if (mc.player != null && (mc.player.isDeadOrDying() || mc.gui.screen() instanceof net.minecraft.client.gui.screens.DeathScreen)) {
+            if (mc.player != null && (mc.player.isDeadOrDying() || mc.screen instanceof net.minecraft.client.gui.screens.DeathScreen)) {
                 mc.player.respawn();
-                mc.gui.setScreen(null);
+                mc.setScreen(null);
             }
             command.accept("kill @e[type=!minecraft:player,distance=..80]");
             command.accept("kill @e[type=minecraft:item,distance=..80]");
@@ -738,7 +738,7 @@ final class ProceduresAutotest {
     private static final java.util.Set<java.util.UUID> SEEN_SPIKES = ConcurrentHashMap.newKeySet();
 
     private static int spikes(ServerPlayer sp) {
-        List<Entity> list = sp.level().getEntities((Entity)null, ARENA, e -> BuiltInRegistries.ENTITY_TYPE.getKey(e.getType()).toString().equals("theabyss:nightblade_spike"));
+        List<Entity> list = sp.serverLevel().getEntities((Entity)null, ARENA, e -> BuiltInRegistries.ENTITY_TYPE.getKey(e.getType()).toString().equals("theabyss:nightblade_spike"));
         for (Entity e : list) {
             if (SEEN_SPIKES.add(e.getUUID())) {
                 spikeTotal++;
@@ -808,7 +808,7 @@ final class ProceduresAutotest {
     }
 
     private static Holder<MobEffect> effect(String id) {
-        return BuiltInRegistries.MOB_EFFECT.get(Identifier.parse(id)).orElseThrow();
+        return BuiltInRegistries.MOB_EFFECT.getHolder(ResourceLocation.parse(id)).orElseThrow();
     }
 
     private static String effectInfo(LivingEntity entity, String id) {
@@ -822,11 +822,11 @@ final class ProceduresAutotest {
     }
 
     private static <T extends Entity> T first(ServerPlayer sp, Class<T> type) {
-        return sp.level().getEntitiesOfClass(type, ARENA).stream().findFirst().orElse(null);
+        return sp.serverLevel().getEntitiesOfClass(type, ARENA).stream().findFirst().orElse(null);
     }
 
     private static int count(ServerPlayer sp, String id) {
-        Item item = BuiltInRegistries.ITEM.getValue(Identifier.parse(id));
+        Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(id));
         int n = 0;
         for (int i = 0; i < sp.getInventory().getContainerSize(); i++) {
             ItemStack stack = sp.getInventory().getItem(i);
@@ -842,12 +842,24 @@ final class ProceduresAutotest {
     }
 
     private static boolean done(ServerPlayer sp, String id) {
-        AdvancementHolder holder = sp.level().getServer().getAdvancements().get(Identifier.parse(id));
+        AdvancementHolder holder = sp.serverLevel().getServer().getAdvancements().get(ResourceLocation.parse(id));
         return holder != null && sp.getAdvancements().getOrStartProgress(holder).isDone();
     }
 
     private static String id(ItemStack stack) {
         return stack == null ? "none" : BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
+    }
+
+    private static ItemStack activationItem(Minecraft mc) {
+        try {
+            Field ticks = net.minecraft.client.renderer.GameRenderer.class.getDeclaredField("itemActivationTicks");
+            Field item = net.minecraft.client.renderer.GameRenderer.class.getDeclaredField("itemActivationItem");
+            ticks.setAccessible(true);
+            item.setAccessible(true);
+            return ticks.getInt(mc.gameRenderer) > 0 && item.get(mc.gameRenderer) instanceof ItemStack stack ? stack : null;
+        } catch (ReflectiveOperationException e) {
+            return null;
+        }
     }
 
     private static void fact(String key, Object value) {

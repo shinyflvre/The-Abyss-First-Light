@@ -1,7 +1,7 @@
 package net.yezon.theabyss.entity;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -10,7 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ItemSupplier;
-import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -94,7 +94,7 @@ public class PhantomAttackProjectileEntity extends AbstractArrow implements Item
     public void tick() {
         super.tick();
         PhantomTrailEvents.execute(this.level(), this.getX(), this.getY(), this.getZ());
-        if (this.isInGround()) {
+        if (this.inGround) {
             this.discard();
         }
     }
@@ -120,7 +120,7 @@ public class PhantomAttackProjectileEntity extends AbstractArrow implements Item
             entity.getX(),
             entity.getY(),
             entity.getZ(),
-            BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:phantom_attack")),
+            BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:phantom_attack")),
             SoundSource.PLAYERS,
             1.0F,
             1.0F / (random.nextFloat() * 0.5F + 1.0F) + power / 2.0F
@@ -146,7 +146,7 @@ public class PhantomAttackProjectileEntity extends AbstractArrow implements Item
             entity.getX(),
             entity.getY(),
             entity.getZ(),
-            BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:phantom_attack")),
+            BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:phantom_attack")),
             SoundSource.PLAYERS,
             1.0F,
             1.0F / (RandomSource.create().nextFloat() * 0.5F + 1.0F)

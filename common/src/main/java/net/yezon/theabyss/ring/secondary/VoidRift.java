@@ -50,7 +50,7 @@ public final class VoidRift {
     }
 
     static boolean cast(ServerPlayer player, ItemStack ring, TheabyssModVariables.PlayerVariables vars) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         Vec3 centre = Aim.spot(level, player, RANGE).add(0.0, HOVER, 0.0);
         RIFTS.add(new Rift(level, player, centre, (float)damage(vars.ManaDamage), new int[1]));
         SpellFxMessage.around(level, centre, SpellFxMessage.VOID, List.of(player.getId()), SpellFxMessage.points(centre), end());
@@ -97,11 +97,11 @@ public final class VoidRift {
                 e.setDeltaMovement(v.scale(0.78).add(dir.scale(strength * 2.2)).add(swirl).add(0.0, 0.04, 0.0));
             }
             e.resetFallDistance();
-            e.needsSync = true;
+            e.hasImpulse = true;
             if (e instanceof LivingEntity living) {
                 FallGuard.protect(living, 60);
             }
-            e.syncVelocity = true;
+            e.hurtMarked = true;
         }
         if (age % 10 == 0) {
             RingVisuals.sound(rift.level(), c, SoundEvents.RESPAWN_ANCHOR_AMBIENT, 1.6F, 0.5F + age * 0.01F);
@@ -121,14 +121,14 @@ public final class VoidRift {
             if (d > BLAST_RADIUS) {
                 continue;
             }
-            victim.damageCooldownTime = 0;
-            victim.hurtServer(level, level.damageSources().indirectMagic(rift.caster(), rift.caster()), rift.damage());
+            victim.invulnerableTime = 0;
+            victim.hurt(level.damageSources().indirectMagic(rift.caster(), rift.caster()), rift.damage());
             Vec3 out = at.subtract(c);
             out = out.lengthSqr() < 1.0E-4 ? new Vec3(0.0, 1.0, 0.0) : out.normalize();
             double push = 1.4 * (1.0 - d / BLAST_RADIUS) + 0.5;
             victim.setDeltaMovement(out.x * push, 0.45 + Math.max(0.0, out.y) * 0.5, out.z * push);
-            victim.needsSync = true;
-            victim.syncVelocity = true;
+            victim.hasImpulse = true;
+            victim.hurtMarked = true;
             FallGuard.protect(victim, 80);
         }
         RingFx.implode(level, c, 6.0F, 10, RingVisuals.BLACKSTRIKE);

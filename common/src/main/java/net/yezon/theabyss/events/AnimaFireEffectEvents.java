@@ -10,7 +10,7 @@ public class AnimaFireEffectEvents {
         if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
             _entity.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 100, 1));
             _entity.addEffect(new MobEffectInstance(MobEffects.GLOWING, 120, 1));
-            _entity.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 120, 1));
+            _entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 120, 1));
         }
     }
 }

@@ -17,7 +17,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -26,7 +26,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -68,17 +67,17 @@ public final class Skills {
     private static final Map<Projectile, UUID> TURNED = new WeakHashMap<>();
     private static final Map<Projectile, UUID> ROLLED = new WeakHashMap<>();
     private static final RandomSource FORESIGHT_RANDOM = RandomSource.create();
-    private static final Identifier SPEED = id("skill_light_feet");
-    private static final Identifier OXYGEN = id("skill_deep_lungs");
-    private static final Identifier FALL = id("skill_root_grip");
-    private static final Identifier KNOCKBACK = id("skill_unbroken");
+    private static final ResourceLocation SPEED = id("skill_light_feet");
+    private static final ResourceLocation OXYGEN = id("skill_deep_lungs");
+    private static final ResourceLocation FALL = id("skill_root_grip");
+    private static final ResourceLocation KNOCKBACK = id("skill_unbroken");
     private static boolean scaling;
 
     private Skills() {
     }
 
-    private static Identifier id(String path) {
-        return Identifier.fromNamespaceAndPath(TheabyssMod.MODID, path);
+    private static ResourceLocation id(String path) {
+        return ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, path);
     }
 
     private static CompoundTag data(ServerPlayer player) {
@@ -86,13 +85,13 @@ public final class Skills {
         if (!root.contains(DATA)) {
             root.put(DATA, new CompoundTag());
         }
-        return root.getCompoundOrEmpty(DATA);
+        return net.yezon.theabyss.compat.NbtCompat.getCompoundOrEmpty(root, DATA);
     }
 
     public static Set<Skill> learned(ServerPlayer player) {
         return CACHE.computeIfAbsent(player.getUUID(), uuid -> {
             Set<Skill> set = EnumSet.of(Skill.REFLECTION);
-            for (String part : data(player).getStringOr("learned", "").split(",")) {
+            for (String part : net.yezon.theabyss.compat.NbtCompat.getStringOr(data(player), "learned", "").split(",")) {
                 Skill skill = Skill.byId(part);
                 if (skill != null) {
                     set.add(skill);
@@ -107,7 +106,7 @@ public final class Skills {
     }
 
     public static int spent(ServerPlayer player) {
-        return data(player).getIntOr("spent", 0);
+        return net.yezon.theabyss.compat.NbtCompat.getIntOr(data(player), "spent", 0);
     }
 
     private static void store(ServerPlayer player, Set<Skill> set, int spent) {
@@ -134,15 +133,15 @@ public final class Skills {
             return;
         }
         if (player.experienceLevel < skill.cost()) {
-            player.sendOverlayMessage(Component.translatable("skill.theabyss.not_enough", skill.cost()));
+            player.displayClientMessage(Component.translatable("skill.theabyss.not_enough", skill.cost()), true);
             sync(player, false);
             return;
         }
         player.giveExperienceLevels(-skill.cost());
         set.add(skill);
         store(player, set, spent(player) + skill.cost());
-        sound(player.level(), player.blockPosition(), "minecraft:block.respawn_anchor.charge", 0.7F, 1.2F);
-        sound(player.level(), player.blockPosition(), "minecraft:particle.soul_escape", 1.4F, 0.6F);
+        sound(player.serverLevel(), player.blockPosition(), "minecraft:block.respawn_anchor.charge", 0.7F, 1.2F);
+        sound(player.serverLevel(), player.blockPosition(), "minecraft:particle.soul_escape", 1.4F, 0.6F);
     }
 
     public static void forget(ServerPlayer player) {
@@ -151,7 +150,7 @@ public final class Skills {
         if (refund > 0) {
             player.giveExperienceLevels(refund);
         }
-        sound(player.level(), player.blockPosition(), "minecraft:block.respawn_anchor.deplete", 0.8F, 0.8F);
+        sound(player.serverLevel(), player.blockPosition(), "minecraft:block.respawn_anchor.deplete", 0.8F, 0.8F);
     }
 
     public static void debugReset(ServerPlayer player) {
@@ -181,7 +180,7 @@ public final class Skills {
             return;
         }
         CompoundTag data = data(player);
-        int done = data.getIntOr("story", 0);
+        int done = net.yezon.theabyss.compat.NbtCompat.getIntOr(data, "story", 0);
         if ((done & 1 << page) != 0) {
             return;
         }
@@ -189,8 +188,17 @@ public final class Skills {
         player.giveExperienceLevels(STORY_LEVELS);
     }
 
+    private static MobEffectInstance scaled(MobEffectInstance instance, float scale) {
+        if (!(instance.save() instanceof net.minecraft.nbt.CompoundTag tag)) {
+            return instance;
+        }
+        tag.putInt("duration", Math.max(net.minecraft.util.Mth.floor(instance.getDuration() * scale), 1));
+        MobEffectInstance copy = MobEffectInstance.load(tag);
+        return copy != null ? copy : instance;
+    }
+
     static void sound(ServerLevel level, BlockPos pos, String id, float volume, float pitch) {
-        SoundEvent sound = BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse(id));
+        SoundEvent sound = BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse(id));
         if (sound != null) {
             level.playSound(null, pos, sound, SoundSource.PLAYERS, volume, pitch);
         }
@@ -204,7 +212,7 @@ public final class Skills {
         modifier(player, Attributes.KNOCKBACK_RESISTANCE, KNOCKBACK, set.contains(Skill.UNBROKEN), 0.4, AttributeModifier.Operation.ADD_VALUE);
     }
 
-    private static void modifier(ServerPlayer player, Holder<Attribute> attribute, Identifier id, boolean on, double amount, AttributeModifier.Operation op) {
+    private static void modifier(ServerPlayer player, Holder<Attribute> attribute, ResourceLocation id, boolean on, double amount, AttributeModifier.Operation op) {
         AttributeInstance instance = player.getAttribute(attribute);
         if (instance == null) {
             return;
@@ -272,11 +280,11 @@ public final class Skills {
             }
             long left = entry.getValue() - level.getGameTime();
             if (left % 20 == 0) {
-                victim.setInvulnerableTime(0);
-                victim.hurtServer(level, level.damageSources().magic(), 1.0F);
+                victim.invulnerableTime = 0;
+                victim.hurt(level.damageSources().magic(), 1.0F);
             }
             if (left % 4 == 0) {
-                level.sendParticles(new DustParticleOptions(0x7A0A12, 1.0F), victim.getX(), victim.getY() + victim.getBbHeight() * 0.6, victim.getZ(), 2,
+                level.sendParticles(new DustParticleOptions(Vec3.fromRGB24(0x7A0A12).toVector3f(), 1.0F), victim.getX(), victim.getY() + victim.getBbHeight() * 0.6, victim.getZ(), 2,
                     victim.getBbWidth() * 0.3, victim.getBbHeight() * 0.25, victim.getBbWidth() * 0.3, 0.0);
             }
         }
@@ -289,7 +297,7 @@ public final class Skills {
         if (event.getSource().getEntity() instanceof ServerPlayer killer && victim instanceof Enemy && has(killer, Skill.FEAST)
             && killer.getRandom().nextBoolean()) {
             killer.heal(1.0F);
-            killer.level().sendParticles(ParticleTypes.SOUL, killer.getX(), killer.getY() + 1.0, killer.getZ(), 4, 0.3, 0.4, 0.3, 0.01);
+            killer.serverLevel().sendParticles(ParticleTypes.SOUL, killer.getX(), killer.getY() + 1.0, killer.getZ(), 4, 0.3, 0.4, 0.3, 0.01);
         }
     }
 
@@ -317,7 +325,7 @@ public final class Skills {
         event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
         scaling = true;
         try {
-            player.addEffect(instance.withScaledDuration(factor), event.getEffectSource());
+            player.addEffect(scaled(instance, factor), event.getEffectSource());
         } finally {
             scaling = false;
         }
@@ -330,7 +338,7 @@ public final class Skills {
         if ((effect.is(MobEffects.BLINDNESS) || effect.is(MobEffects.DARKNESS)) && has(player, Skill.CLEAR_EYES)) {
             return 0.5F;
         }
-        if ((effect.is(MobEffects.POISON) || effect.is(MobEffects.WEAKNESS) || effect.is(MobEffects.SLOWNESS) || effect.is(MobEffects.MINING_FATIGUE))
+        if ((effect.is(MobEffects.POISON) || effect.is(MobEffects.WEAKNESS) || effect.is(MobEffects.MOVEMENT_SLOWDOWN) || effect.is(MobEffects.DIG_SLOWDOWN))
             && has(player, Skill.IRON_WILL)) {
             return 0.75F;
         }
@@ -366,7 +374,7 @@ public final class Skills {
     private static void turnBack(ServerPlayer player, Projectile projectile) {
         Entity shooter = projectile.getOwner();
         double speed = Math.max(0.9, projectile.getDeltaMovement().length() * 0.85);
-        projectile.deflect(ProjectileDeflection.REVERSE, player, EntityReference.of(player), false, 1.0);
+        projectile.deflect(ProjectileDeflection.REVERSE, player, player, false);
         Vec3 at = projectile.position();
         if (shooter != null && shooter.isAlive() && shooter.level() == projectile.level() && shooter.distanceToSqr(at) < 64.0 * 64.0) {
             Vec3 way = shooter.position().add(0.0, shooter.getBbHeight() * 0.6, 0.0).subtract(at);
@@ -375,8 +383,8 @@ public final class Skills {
         } else {
             projectile.setDeltaMovement(projectile.getDeltaMovement().normalize().scale(speed));
         }
-        projectile.needsSync = true;
-        ServerLevel level = player.level();
+        projectile.hasImpulse = true;
+        ServerLevel level = player.serverLevel();
         RingFx.burst(level, RingVisuals.smoke(0x0D0A12, 0.45F, 22).gravity(-0.002F).drag(0.85F), at, 10, 0.18, 0.04);
         RingFx.burst(level, RingVisuals.sparkle(0x9C8BD0, 0.12F, 10), at, 6, 0.1, 0.12);
         level.sendParticles(ParticleTypes.SQUID_INK, at.x, at.y, at.z, 5, 0.15, 0.15, 0.15, 0.03);

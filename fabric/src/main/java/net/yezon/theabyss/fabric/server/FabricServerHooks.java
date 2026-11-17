@@ -2,14 +2,16 @@ package net.yezon.theabyss.fabric.server;
 
 import io.netty.buffer.Unpooled;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.RecordComponent;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.function.Consumer;
-import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
-import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -28,7 +30,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.yezon.theabyss.platform.common.world.ModifiableBiomeInfo;
@@ -46,8 +47,8 @@ public final class FabricServerHooks implements ServerHooks {
     }
 
     @Override
-    public @Nullable ItemStackTemplate getCraftingRemainder(ItemStack stack) {
-        return stack.getCraftingRemainder();
+    public ItemStack getCraftingRemainder(ItemStack stack) {
+        return stack.getRecipeRemainder();
     }
 
     @Override
@@ -60,7 +61,7 @@ public final class FabricServerHooks implements ServerHooks {
         if (!openedWithExtraData) {
             return new MenuType<>((id, inventory) -> factory.create(id, inventory, null), FeatureFlags.DEFAULT_FLAGS);
         }
-        MenuType<T> type = new ExtendedMenuType<>((id, inventory, data) -> factory.create(id, inventory, data.map(bytes -> buffer(inventory, bytes)).orElse(null)),
+        MenuType<T> type = new ExtendedScreenHandlerType<>((id, inventory, data) -> factory.create(id, inventory, data.map(bytes -> buffer(inventory, bytes)).orElse(null)),
             ByteBufCodecs.optional(ByteBufCodecs.BYTE_ARRAY));
         EXTENDED_TYPES.add(type);
         return type;
@@ -79,7 +80,7 @@ public final class FabricServerHooks implements ServerHooks {
     }
 
     private static MenuProvider withData(MenuProvider provider, Optional<byte[]> data) {
-        return new ExtendedMenuProvider<Optional<byte[]>>() {
+        return new ExtendedScreenHandlerFactory<Optional<byte[]>>() {
             @Override
             public Optional<byte[]> getScreenOpeningData(ServerPlayer opener) {
                 return data;
@@ -123,14 +124,14 @@ public final class FabricServerHooks implements ServerHooks {
 
     @Override
     public ModifiableBiomeInfo.BiomeInfo biomeInfo(Biome biome) {
-        return new ModifiableBiomeInfo.BiomeInfo(climateSettings(biome), biome.getAttributes(), biome.getSpecialEffects(), biome.getGenerationSettings());
+        return new ModifiableBiomeInfo.BiomeInfo(climateSettings(biome), biome.getSpecialEffects(), biome.getGenerationSettings(), biome.getMobSettings());
     }
 
     private static Object climateSettings(Biome biome) {
         try {
             Field field = climateSettings;
             if (field == null) {
-                field = Biome.class.getDeclaredField("climateSettings");
+                field = climateField();
                 field.setAccessible(true);
                 climateSettings = field;
             }
@@ -138,6 +139,19 @@ public final class FabricServerHooks implements ServerHooks {
         } catch (ReflectiveOperationException e) {
             throw new IllegalStateException("Cannot read the climate settings of " + biome, e);
         }
+    }
+
+    private static Field climateField() throws NoSuchFieldException {
+        for (Field field : Biome.class.getDeclaredFields()) {
+            Class<?> type = field.getType();
+            if (!Modifier.isStatic(field.getModifiers()) && type.isRecord() && type.getEnclosingClass() == Biome.class) {
+                RecordComponent[] parts = type.getRecordComponents();
+                if (parts.length == 4 && parts[2].getType() == Biome.TemperatureModifier.class) {
+                    return field;
+                }
+            }
+        }
+        throw new NoSuchFieldException("climate settings of " + Biome.class.getName());
     }
 
     @Override

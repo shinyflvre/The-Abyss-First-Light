@@ -8,18 +8,20 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.TriState;
+import net.yezon.theabyss.compat.TriState;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.BlockItem;
@@ -32,8 +34,6 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
-import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
@@ -55,8 +55,8 @@ import net.yezon.theabyss.util.FallGuard;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID)
 public final class RiftOfSins {
-    public static final ResourceKey<Level> DIMENSION = ResourceKey.create(Registries.DIMENSION, Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "riftofsins"));
-    private static final Identifier STRUCTURE = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "rift_of_sins");
+    public static final ResourceKey<Level> DIMENSION = ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "riftofsins"));
+    private static final ResourceLocation STRUCTURE = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "rift_of_sins");
     private static final BlockPos ORIGIN = new BlockPos(0, 100, 0);
     private static final Vec3 SPAWN = new Vec3(ORIGIN.getX() + 28.5, ORIGIN.getY() + 1.0, ORIGIN.getZ() + 7.5);
     private static final float SPAWN_YAW = 90.0F;
@@ -147,7 +147,7 @@ public final class RiftOfSins {
 
     private static void remember(ServerPlayer player) {
         CompoundTag data = net.yezon.theabyss.platform.PersistentData.get(player);
-        data.putString(RETURN_DIMENSION, player.level().dimension().identifier().toString());
+        data.putString(RETURN_DIMENSION, player.level().dimension().location().toString());
         data.putDouble(RETURN_X, player.getX());
         data.putDouble(RETURN_Y, player.getY());
         data.putDouble(RETURN_Z, player.getZ());
@@ -172,20 +172,16 @@ public final class RiftOfSins {
     private static void leave(ServerPlayer player) {
         CompoundTag data = net.yezon.theabyss.platform.PersistentData.get(player);
         MinecraftServer server = player.level().getServer();
-        Identifier saved = Identifier.tryParse(data.getStringOr(RETURN_DIMENSION, ""));
+        ResourceLocation saved = ResourceLocation.tryParse(net.yezon.theabyss.compat.NbtCompat.getStringOr(data, RETURN_DIMENSION, ""));
         ServerLevel destination = saved == null ? null : server.getLevel(ResourceKey.create(Registries.DIMENSION, saved));
         if (destination != null && destination.dimension() != DIMENSION) {
-            Vec3 pos = new Vec3(data.getDoubleOr(RETURN_X, 0.0), data.getDoubleOr(RETURN_Y, 0.0), data.getDoubleOr(RETURN_Z, 0.0));
-            arrive(player, destination, pos, data.getFloatOr(RETURN_YAW, player.getYRot()), data.getFloatOr(RETURN_PITCH, 0.0F));
+            Vec3 pos = new Vec3(net.yezon.theabyss.compat.NbtCompat.getDoubleOr(data, RETURN_X, 0.0), net.yezon.theabyss.compat.NbtCompat.getDoubleOr(data, RETURN_Y, 0.0), net.yezon.theabyss.compat.NbtCompat.getDoubleOr(data, RETURN_Z, 0.0));
+            arrive(player, destination, pos, net.yezon.theabyss.compat.NbtCompat.getFloatOr(data, RETURN_YAW, player.getYRot()), net.yezon.theabyss.compat.NbtCompat.getFloatOr(data, RETURN_PITCH, 0.0F));
         } else {
-            LevelData.RespawnData spawn = server.overworld().getRespawnData();
-            ServerLevel level = server.getLevel(spawn.dimension());
-            if (level == null || level.dimension() == DIMENSION) {
-                level = server.overworld();
-            }
-            BlockPos pos = spawn.pos();
+            ServerLevel level = server.overworld();
+            BlockPos pos = level.getSharedSpawnPos();
             int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ());
-            arrive(player, level, new Vec3(pos.getX() + 0.5, Math.max(y, pos.getY()), pos.getZ() + 0.5), spawn.yaw(), spawn.pitch());
+            arrive(player, level, new Vec3(pos.getX() + 0.5, Math.max(y, pos.getY()), pos.getZ() + 0.5), level.getSharedSpawnAngle(), 0.0F);
         }
         for (String key : RETURN_KEYS) {
             data.remove(key);
@@ -202,18 +198,18 @@ public final class RiftOfSins {
 
     private static void arrive(ServerPlayer player, ServerLevel level, Vec3 pos, float yaw, float pitch) {
         player.stopRiding();
-        player.teleportTo(level, pos.x, pos.y, pos.z, Set.of(), yaw, pitch, true);
+        net.yezon.theabyss.util.AbyssTeleport.level(player, level, pos.x, pos.y, pos.z, yaw, pitch);
         player.setDeltaMovement(Vec3.ZERO);
         player.resetFallDistance();
         FallGuard.protect(player, FALL_GUARD);
     }
 
     private static void ensureStructure(ServerLevel rift) {
-        Placed placed = rift.getDataStorage().computeIfAbsent(Placed.TYPE);
+        Placed placed = net.yezon.theabyss.util.AbyssSavedData.level(rift, "rift_of_sins", Placed.FACTORY, Placed.DATA_NAME);
         if (placed.done) {
             return;
         }
-        StructureTemplate template = rift.getServer().getStructureTemplateManager().getOrCreate(STRUCTURE);
+        StructureTemplate template = rift.getServer().getStructureManager().getOrCreate(STRUCTURE);
         StructurePlaceSettings settings = new StructurePlaceSettings().setIgnoreEntities(false);
         if (template.placeInWorld(rift, ORIGIN, ORIGIN, settings, rift.getRandom(), Block.UPDATE_CLIENTS)) {
             placed.done = true;
@@ -222,17 +218,17 @@ public final class RiftOfSins {
     }
 
     private static void ensureNightblade(ServerLevel rift) {
-        Placed placed = rift.getDataStorage().computeIfAbsent(Placed.TYPE);
+        Placed placed = net.yezon.theabyss.util.AbyssSavedData.level(rift, "rift_of_sins", Placed.FACTORY, Placed.DATA_NAME);
         BlockPos at = BlockPos.containing(NIGHTBLADE);
-        if (placed.nightblade || !placed.done || !rift.areEntitiesLoaded(ChunkPos.containing(at).pack())) {
+        if (placed.nightblade || !placed.done || !rift.areEntitiesLoaded(new ChunkPos(at).toLong())) {
             return;
         }
         if (rift.getEntitiesOfClass(RiftNightbladeEntity.class, new AABB(at).inflate(16.0)).isEmpty()) {
-            RiftNightbladeEntity nightblade = TheabyssModEntities.RIFT_NIGHTBLADE.get().create(rift, EntitySpawnReason.STRUCTURE);
+            RiftNightbladeEntity nightblade = TheabyssModEntities.RIFT_NIGHTBLADE.get().create(rift);
             if (nightblade == null) {
                 return;
             }
-            nightblade.snapTo(NIGHTBLADE.x, NIGHTBLADE.y, NIGHTBLADE.z, NIGHTBLADE_YAW, 0.0F);
+            nightblade.moveTo(NIGHTBLADE.x, NIGHTBLADE.y, NIGHTBLADE.z, NIGHTBLADE_YAW, 0.0F);
             nightblade.setYHeadRot(NIGHTBLADE_YAW);
             nightblade.setYBodyRot(NIGHTBLADE_YAW);
             rift.addFreshEntity(nightblade);
@@ -267,7 +263,7 @@ public final class RiftOfSins {
             FOOD.remove(player.getUUID());
             return;
         }
-        ServerLevel rift = player.level();
+        ServerLevel rift = player.serverLevel();
         if (!ConfigConfiguration.storyEnabled()) {
             if (!SHIFTING.contains(player.getUUID())) {
                 leave(player);
@@ -347,7 +343,9 @@ public final class RiftOfSins {
             Codec.BOOL.optionalFieldOf("placed", false).forGetter(p -> p.done),
             Codec.BOOL.optionalFieldOf("nightblade", false).forGetter(p -> p.nightblade)
         ).apply(i, Placed::new));
-        static final SavedDataType<Placed> TYPE = new SavedDataType<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "rift_of_sins"), Placed::new, CODEC, null);
+        static final String DATA_NAME = "theabyss_rift_of_sins";
+        static final SavedData.Factory<Placed> FACTORY = new SavedData.Factory<>(Placed::new,
+            (tag, registries) -> CODEC.parse(NbtOps.INSTANCE, tag).result().orElseGet(Placed::new), null);
 
         boolean done;
         boolean nightblade;
@@ -358,6 +356,12 @@ public final class RiftOfSins {
         Placed(boolean done, boolean nightblade) {
             this.done = done;
             this.nightblade = nightblade;
+        }
+
+        @Override
+        public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+            CODEC.encodeStart(NbtOps.INSTANCE, this).result().ifPresent(encoded -> tag.merge((CompoundTag)encoded));
+            return tag;
         }
     }
 }

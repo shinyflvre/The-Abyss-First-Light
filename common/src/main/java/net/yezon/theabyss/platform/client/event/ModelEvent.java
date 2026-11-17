@@ -1,18 +1,28 @@
 package net.yezon.theabyss.platform.client.event;
 
+import java.util.Map;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.yezon.theabyss.platform.event.Event;
 
 public abstract class ModelEvent extends Event {
 
     public static class ModifyBakingResult extends ModelEvent {
-        private final net.minecraft.client.resources.model.ModelBakery.BakingResult bakingResult;
+        private final Map<ModelResourceLocation, BakedModel> models;
+        private final ModelBakery modelBakery;
 
-        public ModifyBakingResult(net.minecraft.client.resources.model.ModelBakery.BakingResult bakingResult) {
-            this.bakingResult = bakingResult;
+        public ModifyBakingResult(Map<ModelResourceLocation, BakedModel> models, ModelBakery modelBakery) {
+            this.models = models;
+            this.modelBakery = modelBakery;
         }
 
-        public net.minecraft.client.resources.model.ModelBakery.BakingResult getBakingResult() {
-            return this.bakingResult;
+        public Map<ModelResourceLocation, BakedModel> getModels() {
+            return this.models;
+        }
+
+        public ModelBakery getModelBakery() {
+            return this.modelBakery;
         }
     }
 }

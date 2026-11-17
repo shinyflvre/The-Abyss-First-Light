@@ -1,5 +1,8 @@
 package net.yezon.theabyss.client.model;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import java.util.EnumSet;
 import java.util.Set;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -9,24 +12,29 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.Util;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.properties.ChestType;
 import net.yezon.theabyss.TheabyssMod;
 
-public class AbyssChestModel extends Model<Float> {
-    public static final ModelLayerLocation SINGLE = new ModelLayerLocation(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "abyss_chest"), "single");
-    public static final ModelLayerLocation LEFT = new ModelLayerLocation(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "abyss_chest"), "left");
-    public static final ModelLayerLocation RIGHT = new ModelLayerLocation(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "abyss_chest"), "right");
-    private static final Set<Direction> EXCEPT_EAST = Util.allOfEnumExcept(Direction.EAST);
-    private static final Set<Direction> EXCEPT_WEST = Util.allOfEnumExcept(Direction.WEST);
+public class AbyssChestModel extends Model {
+    public static final ModelLayerLocation SINGLE = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "abyss_chest"), "single");
+    public static final ModelLayerLocation LEFT = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "abyss_chest"), "left");
+    public static final ModelLayerLocation RIGHT = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "abyss_chest"), "right");
+    private static final Set<Direction> EXCEPT_EAST = EnumSet.complementOf(EnumSet.of(Direction.EAST));
+    private static final Set<Direction> EXCEPT_WEST = EnumSet.complementOf(EnumSet.of(Direction.WEST));
+    private final ModelPart root;
     private final ModelPart lid;
 
     public AbyssChestModel(ModelPart root) {
-        super(root, RenderTypes::entityCutoutCull);
+        super(RenderType::entityCutout);
+        this.root = root;
         this.lid = root.getChild("lid");
+    }
+
+    public ModelPart root() {
+        return this.root;
     }
 
     public static ModelLayerLocation layer(ChestType type) {
@@ -37,10 +45,14 @@ public class AbyssChestModel extends Model<Float> {
         };
     }
 
-    @Override
-    public void setupAnim(Float open) {
-        super.setupAnim(open);
+    public void setupAnim(float open) {
+        this.root.getAllParts().forEach(ModelPart::resetPose);
         this.lid.xRot = -(open * (float)(Math.PI / 2));
+    }
+
+    @Override
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int light, int overlay, int color) {
+        this.root.render(poseStack, buffer, light, overlay, color);
     }
 
     public static LayerDefinition createSingleLayer() {

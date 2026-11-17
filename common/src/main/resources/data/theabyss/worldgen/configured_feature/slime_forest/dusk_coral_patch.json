@@ -1,0 +1,25 @@
+{
+  "type": "theabyss:plant_cluster",
+  "config": {
+    "count": {
+      "type": "minecraft:uniform",
+      "min_inclusive": 4,
+      "max_inclusive": 5
+    },
+    "plant": {
+      "Name": "theabyss:dusk_coral"
+    },
+    "spread": 2,
+    "tall": {
+      "Name": "theabyss:tall_dusk_coral",
+      "Properties": {
+        "half": "lower"
+      }
+    },
+    "tall_count": {
+      "type": "minecraft:uniform",
+      "min_inclusive": 1,
+      "max_inclusive": 2
+    }
+  }
+}

@@ -3,13 +3,13 @@ package net.yezon.theabyss.client.particle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.util.RandomSource;
 import net.yezon.theabyss.init.TheabyssModParticleTypes;
 
-public class CrystalDropParticle extends SingleQuadParticle {
+public class CrystalDropParticle extends TextureSheetParticle {
     private final SpriteSet sprites;
 
     public static Provider provider(SpriteSet sprites) {
@@ -17,7 +17,8 @@ public class CrystalDropParticle extends SingleQuadParticle {
     }
 
     protected CrystalDropParticle(ClientLevel level, double x, double y, double z, double vx, double vy, double vz, SpriteSet sprites) {
-        super(level, x, y, z, sprites.first());
+        super(level, x, y, z);
+        this.setSprite(sprites.get(0, 1));
         this.sprites = sprites;
         this.xd = vx;
         this.yd = vy;
@@ -43,13 +44,13 @@ public class CrystalDropParticle extends SingleQuadParticle {
     }
 
     @Override
-    public int getLightCoords(float partialTick) {
+    public int getLightColor(float partialTick) {
         return 15728880;
     }
 
     @Override
-    public SingleQuadParticle.Layer getLayer() {
-        return SingleQuadParticle.Layer.OPAQUE;
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     public static class Provider implements ParticleProvider<SimpleParticleType> {
@@ -60,7 +61,7 @@ public class CrystalDropParticle extends SingleQuadParticle {
         }
 
         @Override
-        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double vx, double vy, double vz, RandomSource random) {
+        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double vx, double vy, double vz) {
             return new CrystalDropParticle(level, x, y, z, vx, vy, vz, this.sprites);
         }
     }

@@ -3,7 +3,7 @@ package net.yezon.theabyss.events;
 import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,7 +21,7 @@ public final class SwitchRealityEvents {
     private static final int COOLDOWN = 600;
     private static final int WARP_DELAY = 25;
     private static final int ARRIVAL_SOUND_DELAY = 10;
-    private static final ResourceKey<Level> THE_ABYSS = ResourceKey.create(Registries.DIMENSION, Identifier.parse("theabyss:the_abyss"));
+    private static final ResourceKey<Level> THE_ABYSS = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse("theabyss:the_abyss"));
 
     private SwitchRealityEvents() {
     }
@@ -35,7 +35,7 @@ public final class SwitchRealityEvents {
         if (target == null) {
             return;
         }
-        player.getCooldowns().addCooldown(itemstack, COOLDOWN);
+        player.getCooldowns().addCooldown(itemstack.getItem(), COOLDOWN);
         if (!(player instanceof ServerPlayer serverPlayer) || !(world instanceof ServerLevel level)) {
             return;
         }
@@ -46,9 +46,8 @@ public final class SwitchRealityEvents {
             if (destination == null || serverPlayer.isRemoved()) {
                 return;
             }
-            serverPlayer.teleportTo(destination, Math.round(serverPlayer.getX()) + 0.5, Math.round(serverPlayer.getY()), Math.round(serverPlayer.getZ()) + 0.5,
-                Set.of(), serverPlayer.getYRot(), serverPlayer.getXRot(), true);
-            serverPlayer.getCooldowns().addCooldown(itemstack, COOLDOWN - WARP_DELAY);
+            net.yezon.theabyss.util.AbyssTeleport.level(serverPlayer, destination, Math.round(serverPlayer.getX()) + 0.5, Math.round(serverPlayer.getY()), Math.round(serverPlayer.getZ()) + 0.5, serverPlayer.getYRot(), serverPlayer.getXRot());
+            serverPlayer.getCooldowns().addCooldown(itemstack.getItem(), COOLDOWN - WARP_DELAY);
             TheabyssMod.queueServerWork(ARRIVAL_SOUND_DELAY, () -> serverPlayer.level().playSound(null, serverPlayer.blockPosition(),
                 TheabyssModSounds.WARP_ENTERED.get(), SoundSource.NEUTRAL, 2.0F, 1.0F));
         });

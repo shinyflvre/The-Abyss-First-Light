@@ -4,26 +4,24 @@ import io.netty.buffer.Unpooled;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.TagValueOutput;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.yezon.theabyss.compat.ValueInput;
+import net.yezon.theabyss.compat.ValueOutput;
 import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.platform.attachment.AttachmentSyncHandler;
 import net.yezon.theabyss.platform.attachment.AttachmentType;
@@ -34,8 +32,8 @@ import org.jspecify.annotations.Nullable;
 
 public final class FabricAttachments {
     public static final String SAVE_KEY = "theabyss:attachments";
-    private static final Map<Identifier, AttachmentType<?>> BY_ID = new LinkedHashMap<>();
-    private static final Map<AttachmentType<?>, Identifier> IDS = new LinkedHashMap<>();
+    private static final Map<ResourceLocation, AttachmentType<?>> BY_ID = new LinkedHashMap<>();
+    private static final Map<AttachmentType<?>, ResourceLocation> IDS = new LinkedHashMap<>();
 
     private FabricAttachments() {
     }
@@ -50,12 +48,12 @@ public final class FabricAttachments {
     }
 
     static void registerPayloads() {
-        PayloadTypeRegistry.clientboundPlay().register(SyncPayload.TYPE, SyncPayload.STREAM_CODEC);
+        PayloadTypeRegistry.playS2C().register(SyncPayload.TYPE, SyncPayload.STREAM_CODEC);
         EntityTrackingEvents.START_TRACKING.register((entity, player) -> syncAll(entity, player, true));
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> syncAll(handler.getPlayer(), handler.getPlayer(), true));
         ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> copy(oldPlayer, newPlayer, alive));
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> syncAll(newPlayer, newPlayer, true));
-        ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((player, origin, destination) -> syncAll(player, player, true));
+        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, origin, destination) -> syncAll(player, player, true));
     }
 
     private static Map<AttachmentType<?>, Object> storage(Entity entity) {
@@ -109,7 +107,7 @@ public final class FabricAttachments {
     @SuppressWarnings("unchecked")
     private static <T> void send(Entity holder, AttachmentType<T> type, ServerPlayer to, boolean initial) {
         AttachmentSyncHandler<T> handler = type.syncHandler();
-        Identifier id = IDS.get(type);
+        ResourceLocation id = IDS.get(type);
         if (handler == null || id == null || !handler.sendToPlayer((IAttachmentHolder)holder, to)) {
             return;
         }
@@ -129,7 +127,7 @@ public final class FabricAttachments {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> void receive(Entity holder, Identifier id, byte[] data, RegistryAccess access) {
+    public static <T> void receive(Entity holder, ResourceLocation id, byte[] data, RegistryAccess access) {
         AttachmentType<T> type = (AttachmentType<T>)BY_ID.get(id);
         if (type == null || type.syncHandler() == null) {
             TheabyssMod.LOGGER.warn("Received sync for unknown attachment {}", id);
@@ -159,7 +157,7 @@ public final class FabricAttachments {
         for (Map.Entry<AttachmentType<?>, Object> entry : map.entrySet()) {
             AttachmentType<Object> type = (AttachmentType<Object>)entry.getKey();
             AttachmentType.Serializer<Object> serializer = type.serializer();
-            Identifier id = IDS.get(type);
+            ResourceLocation id = IDS.get(type);
             if (serializer == null || id == null) {
                 continue;
             }
@@ -175,7 +173,7 @@ public final class FabricAttachments {
 
     public static void load(Entity holder, ValueInput input) {
         input.child(SAVE_KEY).ifPresent(all -> {
-            for (Map.Entry<Identifier, AttachmentType<?>> entry : BY_ID.entrySet()) {
+            for (Map.Entry<ResourceLocation, AttachmentType<?>> entry : BY_ID.entrySet()) {
                 AttachmentType.Serializer<?> serializer = entry.getValue().serializer();
                 if (serializer == null) {
                     continue;
@@ -198,19 +196,18 @@ public final class FabricAttachments {
             if (serializer == null || !(alive || type.copyOnDeath())) {
                 continue;
             }
-            TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, from.registryAccess());
-            if (serializer.write(entry.getValue(), output)) {
-                ValueInput input = TagValueInput.create(ProblemReporter.DISCARDING, to.registryAccess(), output.buildResult());
-                storage(to).put(type, serializer.read((IAttachmentHolder)to, input));
+            CompoundTag tag = new CompoundTag();
+            if (serializer.write(entry.getValue(), ValueOutput.of(tag, from.registryAccess()))) {
+                storage(to).put(type, serializer.read((IAttachmentHolder)to, ValueInput.of(tag, to.registryAccess())));
             }
         }
     }
 
-    public record SyncPayload(int entityId, Identifier attachment, byte[] data) implements CustomPacketPayload {
-        public static final CustomPacketPayload.Type<SyncPayload> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "attachment_sync"));
+    public record SyncPayload(int entityId, ResourceLocation attachment, byte[] data) implements CustomPacketPayload {
+        public static final CustomPacketPayload.Type<SyncPayload> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "attachment_sync"));
         public static final StreamCodec<FriendlyByteBuf, SyncPayload> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SyncPayload::entityId,
-            Identifier.STREAM_CODEC, SyncPayload::attachment,
+            ResourceLocation.STREAM_CODEC, SyncPayload::attachment,
             ByteBufCodecs.BYTE_ARRAY, SyncPayload::data,
             SyncPayload::new);
 

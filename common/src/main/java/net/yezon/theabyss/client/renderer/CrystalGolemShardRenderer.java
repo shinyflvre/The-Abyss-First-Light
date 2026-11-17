@@ -2,39 +2,27 @@ package net.yezon.theabyss.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.item.ItemModelResolver;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.entity.CrystalGolemShardEntity;
 
-public class CrystalGolemShardRenderer extends EntityRenderer<CrystalGolemShardEntity, CrystalGolemShardRenderer.State> {
-    private final ItemModelResolver itemModelResolver;
+public class CrystalGolemShardRenderer extends EntityRenderer<CrystalGolemShardEntity> {
+    private final ItemRenderer itemRenderer;
     private ItemStack crystal;
-
-    public static class State extends EntityRenderState {
-        final ItemStackRenderState item = new ItemStackRenderState();
-        float spin;
-        Vec3 smoothing = Vec3.ZERO;
-    }
 
     public CrystalGolemShardRenderer(EntityRendererProvider.Context context) {
         super(context);
-        this.itemModelResolver = context.getItemModelResolver();
-    }
-
-    @Override
-    public State createRenderState() {
-        return new State();
+        this.itemRenderer = context.getItemRenderer();
     }
 
     @Override
@@ -43,25 +31,24 @@ public class CrystalGolemShardRenderer extends EntityRenderer<CrystalGolemShardE
     }
 
     @Override
-    public void extractRenderState(CrystalGolemShardEntity entity, State state, float partialTick) {
-        super.extractRenderState(entity, state, partialTick);
+    public void render(CrystalGolemShardEntity entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffers, int light) {
         if (this.crystal == null) {
             this.crystal = new ItemStack(Items.AMETHYST_CLUSTER);
         }
-        this.itemModelResolver.updateForNonLiving(state.item, this.crystal, ItemDisplayContext.FIXED, entity);
-        state.spin = (entity.tickCount + partialTick) * 23.0F;
-        state.smoothing = entity.clientVelocity().scale(partialTick - 1.0F);
+        float spin = (entity.tickCount + partialTick) * 23.0F;
+        Vec3 smoothing = entity.clientVelocity().scale(partialTick - 1.0F);
+        poseStack.pushPose();
+        poseStack.translate(smoothing.x, smoothing.y + 0.3, smoothing.z);
+        poseStack.mulPose(Axis.XP.rotationDegrees(spin));
+        poseStack.mulPose(Axis.YP.rotationDegrees(spin * 0.6F));
+        poseStack.scale(1.7F, 1.7F, 1.7F);
+        this.itemRenderer.renderStatic(this.crystal, ItemDisplayContext.FIXED, light, OverlayTexture.NO_OVERLAY, poseStack, buffers, entity.level(), entity.getId());
+        poseStack.popPose();
+        super.render(entity, entityYaw, partialTick, poseStack, buffers, light);
     }
 
     @Override
-    public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
-        poseStack.pushPose();
-        poseStack.translate(state.smoothing.x, state.smoothing.y + 0.3, state.smoothing.z);
-        poseStack.rotateDegrees(Axis.XP, state.spin);
-        poseStack.rotateDegrees(Axis.YP, state.spin * 0.6F);
-        poseStack.scale(1.7F, 1.7F, 1.7F);
-        state.item.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
-        poseStack.popPose();
-        super.submit(state, poseStack, collector, camera);
+    public ResourceLocation getTextureLocation(CrystalGolemShardEntity entity) {
+        return TextureAtlas.LOCATION_BLOCKS;
     }
 }

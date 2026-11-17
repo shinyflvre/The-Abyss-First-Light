@@ -2,14 +2,13 @@ package net.yezon.theabyss.astral.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.Mth;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.EventPriority;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
@@ -35,12 +34,10 @@ public final class AstralClient {
         if (mc.level == null || mc.player == null) {
             return;
         }
-        AvatarRenderState state = event.getRenderState();
-        if (mc.level.getEntity(state.id) instanceof Player player && player != mc.player && AstralData.isAstral(player)
+        if (event.getEntity() instanceof Player player && player != mc.player && AstralData.isAstral(player)
             && !AstralData.isAstral(mc.player)) {
             event.setCanceled(true);
-            state.shadowPieces.clear();
-            state.displayFireAnimation = false;
+            event.hideShadowAndFire();
         }
     }
 

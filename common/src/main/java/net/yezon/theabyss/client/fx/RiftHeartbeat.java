@@ -35,7 +35,7 @@ public final class RiftHeartbeat {
             return;
         }
         nextBeat = INTERVAL;
-        mc.getSoundManager().play(new SimpleSoundInstance(SoundEvents.WARDEN_HEARTBEAT.location(), SoundSource.MASTER, VOLUME, PITCH, RANDOM, false, 0,
+        mc.getSoundManager().play(new SimpleSoundInstance(SoundEvents.WARDEN_HEARTBEAT.getLocation(), SoundSource.MASTER, VOLUME, PITCH, RANDOM, false, 0,
             SoundInstance.Attenuation.NONE, 0.0, 0.0, 0.0, true));
     }
 }

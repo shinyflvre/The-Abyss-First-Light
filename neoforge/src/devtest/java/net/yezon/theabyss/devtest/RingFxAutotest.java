@@ -30,7 +30,7 @@ final class RingFxAutotest {
             command.accept("time set 13000");
             command.accept("weather clear");
             command.accept("difficulty normal");
-            command.accept("gamerule spawn_mobs false");
+            command.accept("gamerule doMobSpawning false");
             command.accept("gamemode creative @s");
             command.accept("ta2 somnium set infinite");
         }, 80);

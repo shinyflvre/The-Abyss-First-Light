@@ -12,7 +12,7 @@ public class UnoritheArmorLeggingsAbilityEvents {
             if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
                 _entity.addEffect(
                     new MobEffectInstance(
-                        MobEffects.SPEED,
+                        MobEffects.MOVEMENT_SPEED,
                         60,
                         (int)(
                             0.0

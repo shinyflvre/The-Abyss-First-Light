@@ -1,17 +1,14 @@
 package net.yezon.theabyss.entity.layer;
 
-import com.geckolib.renderer.base.GeoRenderState;
-import com.geckolib.renderer.base.GeoRenderer;
-import com.geckolib.renderer.layer.builtin.TextureLayerGeoLayer;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.yezon.theabyss.entity.HummingbirdEntity;
+import software.bernie.geckolib.renderer.GeoRenderer;
 
-public class HummingbirdLayer<R extends GeoRenderState> extends TextureLayerGeoLayer<HummingbirdEntity, Void, R> {
-    public static final Identifier INFECTED = Identifier.fromNamespaceAndPath("theabyss", "textures/entity/infected_hummingbird_glow.png");
-    public static final Identifier VIGILANT = Identifier.fromNamespaceAndPath("theabyss", "textures/entity/vigilant_hummingbird_glow.png");
+public class HummingbirdLayer extends GlowGeoLayer<HummingbirdEntity> {
+    public static final ResourceLocation INFECTED = ResourceLocation.fromNamespaceAndPath("theabyss", "textures/entity/infected_hummingbird_glow.png");
+    public static final ResourceLocation VIGILANT = ResourceLocation.fromNamespaceAndPath("theabyss", "textures/entity/vigilant_hummingbird_glow.png");
 
-    public HummingbirdLayer(GeoRenderer<HummingbirdEntity, Void, R> entityRenderer, Identifier texture) {
-        super(entityRenderer, texture, RenderTypes::eyes);
+    public HummingbirdLayer(GeoRenderer<HummingbirdEntity> entityRenderer, ResourceLocation texture) {
+        super(entityRenderer, texture);
     }
 }

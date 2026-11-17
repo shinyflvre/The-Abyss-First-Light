@@ -17,7 +17,6 @@
         15.9,
         15
       ],
-      "shade_direction_override": "up",
       "faces": {
         "up": {
           "uv": [
@@ -37,7 +36,8 @@
           ],
           "texture": "#base"
         }
-      }
+      },
+      "shade": false
     },
     {
       "from": [
@@ -60,7 +60,6 @@
         "angle": -22.5,
         "rescale": false
       },
-      "shade_direction_override": "up",
       "faces": {
         "up": {
           "uv": [
@@ -82,7 +81,8 @@
           "texture": "#flower",
           "rotation": 270
         }
-      }
+      },
+      "shade": false
     },
     {
       "from": [
@@ -105,7 +105,6 @@
         "angle": 22.5,
         "rescale": false
       },
-      "shade_direction_override": "up",
       "faces": {
         "up": {
           "uv": [
@@ -127,7 +126,8 @@
           "texture": "#flower",
           "rotation": 90
         }
-      }
+      },
+      "shade": false
     },
     {
       "from": [
@@ -150,7 +150,6 @@
         "angle": 22.5,
         "rescale": false
       },
-      "shade_direction_override": "up",
       "faces": {
         "up": {
           "uv": [
@@ -170,7 +169,8 @@
           ],
           "texture": "#flower"
         }
-      }
+      },
+      "shade": false
     },
     {
       "from": [
@@ -193,7 +193,6 @@
         "angle": -22.5,
         "rescale": false
       },
-      "shade_direction_override": "up",
       "faces": {
         "up": {
           "uv": [
@@ -213,7 +212,9 @@
           ],
           "texture": "#flower"
         }
-      }
+      },
+      "shade": false
     }
-  ]
+  ],
+  "render_type": "minecraft:cutout"
 }

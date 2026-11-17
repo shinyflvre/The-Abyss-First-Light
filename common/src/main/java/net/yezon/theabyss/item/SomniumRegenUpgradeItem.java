@@ -1,5 +1,6 @@
 package net.yezon.theabyss.item;
 
+import java.util.List;
 import java.util.function.Consumer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
@@ -7,20 +8,16 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.Consumables;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.yezon.theabyss.events.ManaRegenUpgradeResultEvents;
 
-public class SomniumRegenUpgradeItem extends Item {
+public class SomniumRegenUpgradeItem extends AbyssDrinkItem {
     public SomniumRegenUpgradeItem(Item.Properties properties) {
         super(
             properties.stacksTo(16)
-                .food(
-                    new FoodProperties.Builder().nutrition(4).saturationModifier(0.2F).alwaysEdible().build(),
-                    Consumables.defaultDrink().consumeSeconds(1.5F).build()
-                )
+                .food(AbyssFoods.consumeSeconds(new FoodProperties.Builder().nutrition(4).saturationModifier(0.2F).alwaysEdible().build(), 1.5F)),
+            1.5F
         );
     }
 
@@ -30,9 +27,8 @@ public class SomniumRegenUpgradeItem extends Item {
     }
 
     @Override
-    public void appendHoverText(
-        ItemStack itemstack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag
-    ) {
+    public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, List<Component> tooltipLines, TooltipFlag flag) {
+        Consumer<Component> tooltip = tooltipLines::add;
         tooltip.accept(Component.translatable("tooltip.theabyss.somnium_regen_upgrade.1"));
         tooltip.accept(Component.translatable("tooltip.theabyss.somnium_regen_upgrade.2"));
     }

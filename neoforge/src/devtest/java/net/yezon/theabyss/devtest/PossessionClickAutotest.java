@@ -8,7 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.phys.AABB;
 import net.yezon.theabyss.network.TheabyssModVariables;
 import net.yezon.theabyss.possession.PossessionManager;
@@ -34,7 +34,7 @@ final class PossessionClickAutotest {
             command.accept("execute in minecraft:overworld run tp @s 0.5 200 0.5 0 0");
             command.accept("item replace entity @s weapon.mainhand with theabyss:ring_of_possession");
             command.accept("execute in minecraft:overworld run summon minecraft:skeleton 0.5 200 5.5 {Rotation:[0f,0f],PersistenceRequired:1b,NoAI:1b,"
-                + "equipment:{mainhand:{id:\"minecraft:bow\",count:1}}}");
+                + "HandItems:[{id:\"minecraft:bow\",count:1},{}]}");
         }, 80);
         add.add("pc mana", () -> onServer(sp -> TheabyssModVariables.updatePlayerVariables(sp, c -> {
             c.Mana = 1000.0;
@@ -61,8 +61,8 @@ final class PossessionClickAutotest {
             KeyMapping.click(mc.options.keyUse.getKey());
         }, 12);
         add.add("pc check ability", () -> onServer(sp -> {
-            int arrows = sp.level().getEntitiesOfClass(AbstractArrow.class, new AABB(-12, 195, -6, 12, 210, 30)).size();
-            check("a real right click while possessing shoots (" + arrows + " arrows, cooldown " + sp.getCooldowns().isOnCooldown(sp.getMainHandItem()) + ")",
+            int arrows = sp.serverLevel().getEntitiesOfClass(AbstractArrow.class, new AABB(-12, 195, -6, 12, 210, 30)).size();
+            check("a real right click while possessing shoots (" + arrows + " arrows, cooldown " + sp.getCooldowns().isOnCooldown(sp.getMainHandItem().getItem()) + ")",
                 arrows > 0);
         }), 4);
         add.add("pc leave", () -> mc.options.keyShift.setDown(true), 10);
@@ -76,15 +76,15 @@ final class PossessionClickAutotest {
             command.accept("execute in minecraft:overworld run tp @s 0.5 200 10.5");
         }, 100);
         add.add("pc check hunted", () -> onServer(sp -> {
-            List<Mob> mobs = sp.level().getEntitiesOfClass(Mob.class, new AABB(-12, 195, -6, 12, 210, 30));
+            List<Mob> mobs = sp.serverLevel().getEntitiesOfClass(Mob.class, new AABB(-12, 195, -6, 12, 210, 30));
             StringBuilder info = new StringBuilder();
             boolean skeleton = false;
             boolean zombie = false;
             for (Mob mob : mobs) {
                 info.append(mob.getType().toShortString()).append("->").append(mob.getTarget() == null ? "none" : mob.getTarget().getName().getString()).append(' ');
                 if (mob.getTarget() == sp) {
-                    skeleton |= mob.getType() == net.minecraft.world.entity.EntityTypes.SKELETON;
-                    zombie |= mob.getType() == net.minecraft.world.entity.EntityTypes.ZOMBIE;
+                    skeleton |= mob.getType() == net.minecraft.world.entity.EntityType.SKELETON;
+                    zombie |= mob.getType() == net.minecraft.world.entity.EntityType.ZOMBIE;
                 }
             }
             check("the freed skeleton hunts the player again (" + info + ", health " + sp.getHealth() + ")", skeleton);

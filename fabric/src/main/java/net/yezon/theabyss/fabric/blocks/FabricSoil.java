@@ -2,9 +2,10 @@ package net.yezon.theabyss.fabric.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.TriState;
+import net.yezon.theabyss.compat.TriState;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import net.yezon.theabyss.block.AbyssFarmlandBlock;
 import net.yezon.theabyss.block.hooks.PlantSoilBlock;
 
 public final class FabricSoil {
@@ -12,7 +13,7 @@ public final class FabricSoil {
     }
 
     public static TriState decision(BlockState soil, BlockGetter level, BlockPos soilPosition, Direction facing, BlockState plant) {
-        return soil.getBlock() instanceof PlantSoilBlock block ? block.canSustainPlant(soil, level, soilPosition, facing, plant) : TriState.DEFAULT;
+        return soil.getBlock() instanceof PlantSoilBlock block ? block.sustainsPlant(soil, level, soilPosition, facing, plant) : TriState.DEFAULT;
     }
 
     public static TriState below(BlockGetter level, BlockPos plantPos, BlockState plant) {
@@ -22,5 +23,9 @@ public final class FabricSoil {
 
     public static boolean decide(TriState decision, boolean fallback) {
         return decision == TriState.DEFAULT ? fallback : decision == TriState.TRUE;
+    }
+
+    public static boolean isAbyssFarmland(BlockState state) {
+        return state.getBlock() instanceof AbyssFarmlandBlock;
     }
 }

@@ -31,6 +31,6 @@ final class LushVines {
             serverLevel.setBlock(pos, picked, 2);
             serverLevel.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(picker, picked));
         }
-        return InteractionResult.SUCCESS;
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 }

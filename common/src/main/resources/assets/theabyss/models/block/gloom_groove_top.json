@@ -28,7 +28,6 @@
         "angle": 45,
         "rescale": true
       },
-      "shade_direction_override": "up",
       "faces": {
         "north": {
           "uv": [
@@ -48,7 +47,8 @@
           ],
           "texture": "#cross"
         }
-      }
+      },
+      "shade": false
     },
     {
       "from": [
@@ -71,7 +71,6 @@
         "angle": 45,
         "rescale": true
       },
-      "shade_direction_override": "up",
       "faces": {
         "west": {
           "uv": [
@@ -91,7 +90,8 @@
           ],
           "texture": "#cross"
         }
-      }
+      },
+      "shade": false
     },
     {
       "from": [
@@ -134,8 +134,10 @@
           "texture": "#glow"
         }
       },
-      "shade": false,
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     },
     {
       "from": [
@@ -178,8 +180,10 @@
           "texture": "#glow"
         }
       },
-      "shade": false,
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
     }
   ],
   "render_type": "cutout"

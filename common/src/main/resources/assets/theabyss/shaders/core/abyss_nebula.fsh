@@ -1,20 +1,20 @@
-#version 330
-#extension GL_ARB_separate_shader_objects : require
+#version 150
 
-#include <minecraft:globals.glsl>
-#include <minecraft:fog.glsl>
-#include <minecraft:dynamictransforms.glsl>
+uniform float GameTime;
+uniform vec4 FogColor;
+uniform vec4 Eclipse;
+uniform vec2 SkyFlags;
 
 // Abyss nebula sky (owner request, config Visuals/AbyssNebulaSky): the dark sibling of the astral sky.
 // A dark nebula flowing slowly over a near-black dome, faint aurora veils, twinkling stars and an eclipse instead of the
 // moon (black orb with a glowing corona). All colours follow the biome fog (owner: the sky must match every biome).
 // The horizon takes the current fog colour, so the terrain fog of every biome melts into the sky; below the horizon
-// the fog sinks into the abyss. ColorModulator: xyz = direction of the eclipse, w = rain brightness; ModelOffset.x =
+// the fog sinks into the abyss. Eclipse: xyz = direction of the eclipse, w = rain brightness; SkyFlags.x =
 // red lightning flash.
 
-layout(location = 0) in vec3 direction;
+in vec3 direction;
 
-layout(location = 0) out vec4 fragColor;
+out vec4 fragColor;
 
 float hash(vec3 p) {
     p = fract(p * 0.3183099 + 0.1);
@@ -83,9 +83,9 @@ vec3 abyssColour(float h, vec3 tint) {
 }
 
 void main() {
-    // Minecraft like sky (config, ModelOffset.y): the sky in coarse pixels on the sky cube, like a sky texture (colours
+    // Minecraft like sky (config, SkyFlags.y): the sky in coarse pixels on the sky cube, like a sky texture (colours
     // are not reduced - that turned the dark sky into blotches of wrong colours)
-    bool pixelStyle = ModelOffset.y > 0.5;
+    bool pixelStyle = SkyFlags.y > 0.5;
     vec3 d = normalize(pixelStyle ? (floor(direction / 1.6) + 0.5) * 1.6 : direction);
     float t = GameTime * 1200.0;
     float height = d.y;
@@ -117,20 +117,20 @@ void main() {
     float pick = hash(cell);
     float star = step(0.9955, pick) * (0.55 + 0.45 * sin(t * (1.5 + hash(cell + 3.0) * 3.0) + pick * 60.0));
     vec3 starColour = mix(vec3(0.85, 0.9, 1.0), mix(tint, vec3(1.0), 0.45), step(0.6, hash(cell + 5.0)));
-    sky += starColour * star * 0.85 * (1.0 - density * 0.7) * smoothstep(-0.02, 0.25, height) * ColorModulator.a;
+    sky += starColour * star * 0.85 * (1.0 - density * 0.7) * smoothstep(-0.02, 0.25, height) * Eclipse.a;
 
     // eclipse: a black orb with a cyan corona
-    vec3 eclipse = normalize(ColorModulator.xyz);
+    vec3 eclipse = normalize(Eclipse.xyz);
     float angle = acos(clamp(dot(d, eclipse), -1.0, 1.0));
     float radius = 0.075;
     float outside = max(angle - radius, 0.0);
     float corona = exp(-outside * 45.0) * 0.75 + exp(-outside * 10.0) * 0.18;
     corona *= 0.85 + 0.15 * sin(t * 0.7 + atan(d.z - eclipse.z, d.x - eclipse.x) * 7.0);
-    sky += mix(tint, vec3(1.0), 0.2) * 0.9 * corona * ColorModulator.a;
+    sky += mix(tint, vec3(1.0), 0.2) * 0.9 * corona * Eclipse.a;
     sky = mix(sky, vec3(0.0, 0.004, 0.006), 1.0 - smoothstep(radius - 0.003, radius + 0.003, angle));
 
-    // lightning (ModelOffset.x, AbyssLightningClient): the sky takes the lightning colour, like The Midnight
-    sky = mix(sky, vec3(1.0, 0.349, 0.349), ModelOffset.x); // #FF5959
+    // lightning (SkyFlags.x, AbyssLightningClient): the sky takes the lightning colour
+    sky = mix(sky, vec3(1.0, 0.349, 0.349), SkyFlags.x); // #FF5959
 
     // the horizon melts into the fog of the biome, below it the fog sinks into the abyss
     sky = mix(sky, fog, (1.0 - smoothstep(-0.02, 0.3, height)) * 0.92);

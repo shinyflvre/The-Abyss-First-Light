@@ -16,7 +16,7 @@ public class FearPotionStartedappliedEvents {
         if (!(entity instanceof ServerPlayer player) || !(world instanceof ServerLevel level)) {
             return;
         }
-        player.sendOverlayMessage(Component.translatable("event.theabyss.fear"));
+        player.displayClientMessage(Component.translatable("event.theabyss.fear"), true);
         for (ServerPlayer other : level.players()) {
             if (other != player && !other.isSpectator() && other.distanceToSqr(player) < SPREAD_RADIUS * SPREAD_RADIUS
                 && !other.hasEffect(TheabyssModMobEffects.FEAR.getDelegate()) && !other.hasEffect(TheabyssModMobEffects.ANTI_FEAR_POTION.getDelegate())) {

@@ -39,7 +39,7 @@ public final class ShadowDash {
         if (!player.isAlive() || player.isSpectator() || !Skills.has(player, Skill.SHADOW_DASH)) {
             return;
         }
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         long now = level.getGameTime();
         Long ready = READY.get(player.getUUID());
         if (ready != null && now < ready) {
@@ -59,8 +59,8 @@ public final class ShadowDash {
         depart(level, player, dir);
         PacketDistributor.sendToPlayer(player, new TeleportDashMessage(fromEye.x, fromEye.y, fromEye.z, player.getYRot(), player.getXRot()));
         Vec3 motion = player.getDeltaMovement();
-        player.teleportTo(dest.x, dest.y, dest.z);
-        player.connection.teleport(dest.x, dest.y, dest.z, player.getYRot(), player.getXRot());
+        net.yezon.theabyss.util.AbyssTeleport.to(player, dest.x, dest.y, dest.z);
+        net.yezon.theabyss.util.AbyssTeleport.connection(player, dest.x, dest.y, dest.z, player.getYRot(), player.getXRot());
         player.setDeltaMovement(motion.x, Math.max(0.0, motion.y), motion.z);
         player.resetFallDistance();
         NO_FALL_UNTIL.put(player.getUUID(), now + NO_FALL_TICKS);

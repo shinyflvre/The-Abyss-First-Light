@@ -26,10 +26,10 @@ public final class Swap {
     }
 
     static boolean cast(ServerPlayer player, ItemStack ring, TheabyssModVariables.PlayerVariables vars) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         LivingEntity target = Aim.creature(level, player, RANGE);
         if (target == null) {
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.secondary.no_target", Component.translatable("tooltip.theabyss.ring_of_teleport.secondary.ability")));
+            player.displayClientMessage(Component.translatable("ring.theabyss.secondary.no_target", Component.translatable("tooltip.theabyss.ring_of_teleport.secondary.ability")), true);
             return false;
         }
         Vec3 mine = player.position();
@@ -51,22 +51,22 @@ public final class Swap {
         if (target.isPassenger()) {
             target.stopRiding();
         }
-        player.teleportTo(theirs.x, theirs.y, theirs.z);
+        net.yezon.theabyss.util.AbyssTeleport.to(player, theirs.x, theirs.y, theirs.z);
         player.setYRot(yaw);
         player.setXRot(pitch);
         player.setYHeadRot(yaw);
-        player.connection.teleport(theirs.x, theirs.y, theirs.z, yaw, pitch);
+        net.yezon.theabyss.util.AbyssTeleport.connection(player, theirs.x, theirs.y, theirs.z, yaw, pitch);
         if (target instanceof ServerPlayer other) {
-            other.connection.teleport(mine.x, mine.y, mine.z, other.getYRot(), other.getXRot());
+            net.yezon.theabyss.util.AbyssTeleport.connection(other, mine.x, mine.y, mine.z, other.getYRot(), other.getXRot());
         } else {
-            target.teleportTo(mine.x, mine.y, mine.z);
+            net.yezon.theabyss.util.AbyssTeleport.to(target, mine.x, mine.y, mine.z);
         }
         player.resetFallDistance();
         target.resetFallDistance();
         FallGuard.protect(player, 60);
         FallGuard.protect(target, 60);
-        target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 2, false, false));
-        target.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 60, 0, false, false));
+        target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 2, false, false));
+        target.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 60, 0, false, false));
         if (target instanceof Mob mob) {
             mob.getNavigation().stop();
         }
@@ -74,7 +74,7 @@ public final class Swap {
         RingVisuals.sound(level, theirs, SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.6F, 0.8F);
         RingVisuals.sound(level, mine, SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.6F, 1.1F);
         RingVisuals.sound(level, theirs, SoundEvents.ENDERMAN_TELEPORT, 1.0F, 0.6F);
-        var sound = net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.getValue(net.minecraft.resources.Identifier.parse("theabyss:spell_of_teleport"));
+        var sound = net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.get(net.minecraft.resources.ResourceLocation.parse("theabyss:spell_of_teleport"));
         if (sound != null) {
             RingVisuals.sound(level, theirs, sound, 1.0F, 1.2F);
         }

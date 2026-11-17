@@ -38,8 +38,8 @@ final class WoodSetAutotest {
             }
         }, 60);
         add.add("wood hud", () -> {
-            if (!mc.gui.hud.isHidden()) {
-                mc.gui.hud.toggle();
+            if (!mc.options.hideGui) {
+                mc.options.hideGui = !mc.options.hideGui;
             }
         }, 5);
         add.add("wood view all", () -> command.accept("execute in minecraft:overworld run tp @s 16 207 -18 facing 16 200 1"), 200);
@@ -50,6 +50,6 @@ final class WoodSetAutotest {
         add.add("wood shot signs 2", () -> shot.accept("90_woodsets_signs_right"), 20);
         add.add("wood view boats", () -> command.accept("execute in minecraft:overworld run tp @s 16 205 -14 facing 16 200 -6"), 80);
         add.add("wood shot boats", () -> shot.accept("90_woodsets_boats"), 20);
-        add.add("wood hud back", () -> mc.gui.hud.toggle(), 5);
+        add.add("wood hud back", () -> mc.options.hideGui = !mc.options.hideGui, 5);
     }
 }

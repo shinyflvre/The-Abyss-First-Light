@@ -1,5 +1,6 @@
 package net.yezon.theabyss.item;
 
+import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -15,8 +16,12 @@ public class SomniumItem extends Item {
     }
 
     @Override
-    public void inventoryTick(ItemStack itemstack, ServerLevel world, Entity entity, @Nullable EquipmentSlot slot) {
-        super.inventoryTick(itemstack, world, entity, slot);
+    public void inventoryTick(ItemStack itemstack, Level level, Entity entity, int slotId, boolean selected) {
+        super.inventoryTick(itemstack, level, entity, slotId, selected);
+        if (!(level instanceof ServerLevel world)) {
+            return;
+        }
+        EquipmentSlot slot = InventoryTickSlot.of(entity, itemstack);
         if (!(entity instanceof Player)) {
             return;
         }
@@ -28,8 +33,8 @@ public class SomniumItem extends Item {
     }
 
     @Override
-    public void onCraftedBy(ItemStack itemstack, Player entity) {
-        super.onCraftedBy(itemstack, entity);
+    public void onCraftedBy(ItemStack itemstack, Level level, Player entity) {
+        super.onCraftedBy(itemstack, level, entity);
         GetSomniumAdvEvents.execute(entity);
     }
 }

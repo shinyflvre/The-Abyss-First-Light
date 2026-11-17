@@ -10,7 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.monster.zombie.Husk;
+import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.phys.AABB;
 import net.yezon.theabyss.client.fx.NightbladeParryClient;
 import net.yezon.theabyss.client.fx.TelekinesisClient;
@@ -35,7 +35,7 @@ final class TelekinesisAutotest {
             command.accept("time set noon");
             command.accept("weather clear");
             command.accept("difficulty normal");
-            command.accept("gamerule spawn_mobs false");
+            command.accept("gamerule doMobSpawning false");
             command.accept("kill @e[type=minecraft:husk]");
         }, 60);
         add.add("tele player", () -> {
@@ -51,7 +51,7 @@ final class TelekinesisAutotest {
                 vars.Mana = 100.0;
                 vars.syncPlayerVariables(sp);
             });
-            sp.getCooldowns().removeCooldown(sp.getCooldowns().getCooldownGroup(sp.getMainHandItem()));
+            sp.getCooldowns().removeCooldown(sp.getMainHandItem().getItem());
             startY.clear();
             for (Husk h : husks(sp)) {
                 startY.put(h.getId(), h.getY());
@@ -131,7 +131,7 @@ final class TelekinesisAutotest {
     }
 
     private static List<Husk> husks(ServerPlayer sp) {
-        return sp.level().getEntitiesOfClass(Husk.class, new AABB(sp.blockPosition()).inflate(40));
+        return sp.serverLevel().getEntitiesOfClass(Husk.class, new AABB(sp.blockPosition()).inflate(40));
     }
 
     private static void check(String name, boolean ok) {

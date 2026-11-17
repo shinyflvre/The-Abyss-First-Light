@@ -13,7 +13,7 @@ final class RangedItemHelper {
     static ItemStack findAmmo(Player player, Item ammo) {
         ItemStack stack = ProjectileWeaponItem.getHeldProjectile(player, candidate -> candidate.is(ammo));
         if (stack.isEmpty()) {
-            for (ItemStack candidate : player.getInventory().getNonEquipmentItems()) {
+            for (ItemStack candidate : player.getInventory().items) {
                 if (candidate.is(ammo)) {
                     return candidate;
                 }
@@ -27,7 +27,7 @@ final class RangedItemHelper {
             return;
         }
         if (ammo.isDamageableItem()) {
-            ammo.hurtAndBreak(1, player.level(), player, broken -> {
+            ammo.hurtAndBreak(1, player.serverLevel(), player, broken -> {
             });
         } else {
             ammo.shrink(1);

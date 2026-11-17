@@ -1,11 +1,21 @@
 {
   "type": "theabyss:mortar_recipe_type",
   "ingredients": [
-    "theabyss:loran",
-    "theabyss:vitae_nugget",
-    "theabyss:loran",
-    "theabyss:vitae_nugget",
-    "theabyss:bottle_of_somnium"
+    {
+      "item": "theabyss:loran"
+    },
+    {
+      "item": "theabyss:vitae_nugget"
+    },
+    {
+      "item": "theabyss:loran"
+    },
+    {
+      "item": "theabyss:vitae_nugget"
+    },
+    {
+      "item": "theabyss:bottle_of_somnium"
+    }
   ],
   "output": {
     "id": "theabyss:ardor_powder",

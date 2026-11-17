@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -23,13 +22,13 @@ public class ArenoBlock extends LiquidBlock {
             properties
                 .mapColor(MapColor.WATER)
                 .strength(100.0F)
-                .postProcess((bs, br, bp) -> bp)
-                .emissiveRendering(bs -> true)
+                .hasPostProcess((bs, br, bp) -> true)
+                .emissiveRendering((bs, br, bp) -> true)
                 .lightLevel(s -> 8)
-                .noCollision()
+                .noCollission()
                 .noLootTable()
                 .liquid()
-                .pushReaction(PushReaction.POPPED)
+                .pushReaction(PushReaction.DESTROY)
                 .sound(SoundType.EMPTY)
                 .replaceable()
         );
@@ -49,8 +48,8 @@ public class ArenoBlock extends LiquidBlock {
     }
 
     @Override
-    protected void entityInside(BlockState blockstate, Level world, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
-        super.entityInside(blockstate, world, pos, entity, effectApplier, isPrecise);
+    protected void entityInside(BlockState blockstate, Level world, BlockPos pos, Entity entity) {
+        super.entityInside(blockstate, world, pos, entity);
         ArenoDamageHandlerEvents.execute(world, entity);
     }
 }

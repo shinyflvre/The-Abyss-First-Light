@@ -1,16 +1,16 @@
 package net.yezon.theabyss.entity;
 
-import com.geckolib.animatable.GeoEntity;
-import com.geckolib.animatable.instance.AnimatableInstanceCache;
-import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.animation.AnimationController;
-import com.geckolib.animation.RawAnimation;
-import com.geckolib.animation.object.PlayState;
-import com.geckolib.animation.state.AnimationTest;
-import com.geckolib.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.PlayState;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Mth;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.Difficulty;
@@ -145,25 +145,25 @@ public class AbyssaurEntity extends Monster implements GeoEntity, MultipartEntit
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<AbyssaurEntity>("base", 6, this::baseAnimation));
-        AnimationController<AbyssaurEntity> action = new AnimationController<>("action", 3, test -> PlayState.STOP);
+        controllers.add(new AnimationController<AbyssaurEntity>(this, "base", 6, this::baseAnimation));
+        AnimationController<AbyssaurEntity> action = new AnimationController<>(this, "action", 3, test -> PlayState.STOP);
         for (String name : ACTIONS) {
             action.triggerableAnim(name, RawAnimation.begin().thenPlay(ANIM + name));
         }
         controllers.add(action);
     }
 
-    private PlayState baseAnimation(AnimationTest<AbyssaurEntity> test) {
+    private PlayState baseAnimation(AnimationState<AbyssaurEntity> test) {
         if (test.isMoving()) {
             float speed = this.walkAnimation.speed();
             if (speed > 0.7F) {
-                test.controller().setAnimationSpeed(1.0);
+                test.getController().setAnimationSpeed(1.0);
                 return test.setAndContinue(RUN);
             }
-            test.controller().setAnimationSpeed(Mth.clamp(speed * 1.7F, 0.6F, 1.4F));
+            test.getController().setAnimationSpeed(Mth.clamp(speed * 1.7F, 0.6F, 1.4F));
             return test.setAndContinue(WALK);
         }
-        test.controller().setAnimationSpeed(1.0);
+        test.getController().setAnimationSpeed(1.0);
         return test.setAndContinue(IDLE);
     }
 
@@ -194,25 +194,28 @@ public class AbyssaurEntity extends Monster implements GeoEntity, MultipartEntit
 
     @Override
     public SoundEvent getAmbientSound() {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:abyssaur_idle"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:abyssaur_idle"));
     }
 
     @Override
     public SoundEvent getHurtSound(DamageSource ds) {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:abyssaur_hurt"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:abyssaur_hurt"));
     }
 
     @Override
     public SoundEvent getDeathSound() {
-        return BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:abyssaur_death"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:abyssaur_death"));
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource damagesource, float amount) {
+    public boolean hurt(DamageSource damagesource, float amount) {
+        if (!(this.level() instanceof ServerLevel level)) {
+            return false;
+        }
         if (damagesource.is(DamageTypes.IN_FIRE) || damagesource.is(DamageTypes.CAMPFIRE)) {
             return false;
         }
-        return super.hurtServer(level, damagesource, amount);
+        return super.hurt(damagesource, amount);
     }
 
     @Override

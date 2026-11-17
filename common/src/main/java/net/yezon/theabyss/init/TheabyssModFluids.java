@@ -1,10 +1,7 @@
 package net.yezon.theabyss.init;
 
-import net.minecraft.client.color.block.BlockTintSource;
-import net.minecraft.client.renderer.block.FluidModel;
-import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.yezon.theabyss.platform.Dist;
@@ -32,9 +29,9 @@ public class TheabyssModFluids {
             event.register(translucentModel("block/infused_magma"), INFUSED_LAVA, FLOWING_INFUSED_LAVA);
         }
 
-        private static FluidModel.Unbaked translucentModel(String texture) {
-            Material material = new Material(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, texture), true);
-            return new FluidModel.Unbaked(material, material, null, (BlockTintSource) null);
+        private static RegisterFluidModelsEvent.FluidModel translucentModel(String texture) {
+            ResourceLocation location = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, texture);
+            return new RegisterFluidModelsEvent.FluidModel(location, location, null, 0xFFFFFFFF, true);
         }
     }
 }

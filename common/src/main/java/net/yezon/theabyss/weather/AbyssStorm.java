@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -24,7 +24,7 @@ import net.yezon.theabyss.TheabyssMod;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID)
 public final class AbyssStorm {
-    public static final ResourceKey<Level> THE_ABYSS = ResourceKey.create(Registries.DIMENSION, Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "the_abyss"));
+    public static final ResourceKey<Level> THE_ABYSS = ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "the_abyss"));
     private static final int MIN_GAP_TICKS = 600;
     private static final int MAX_GAP_TICKS = 900;
     private static final double MIN_DISTANCE = 24.0;
@@ -69,9 +69,9 @@ public final class AbyssStorm {
             return;
         }
         BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, column);
-        LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(level, EntitySpawnReason.EVENT);
+        LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level);
         if (bolt != null) {
-            bolt.snapTo(Vec3.atBottomCenterOf(ground));
+            bolt.moveTo(Vec3.atBottomCenterOf(ground));
             bolt.setVisualOnly(true);
             level.addFreshEntity(bolt);
         }

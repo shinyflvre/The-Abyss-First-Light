@@ -16,17 +16,17 @@ public class LunaShroomLeaveBlock extends Block implements FireSpreadingBlock {
                 .ignitedByLava()
                 .sound(SoundType.CHERRY_LEAVES)
                 .strength(0.3F, 5.0F)
-                .postProcess((bs, br, bp) -> bp)
+                .hasPostProcess((bs, br, bp) -> true)
         );
     }
 
     @Override
-    protected boolean propagatesSkylightDown(BlockState state) {
+    protected boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
         return true;
     }
 
     @Override
-    protected int getLightDampening(BlockState state) {
+    protected int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
         return 0;
     }
 

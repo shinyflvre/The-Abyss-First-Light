@@ -3,22 +3,23 @@ package net.yezon.theabyss.client.particle;
 import java.util.function.Supplier;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.util.LightCoordsUtil;
 
-public class FluidEmberParticle extends SingleQuadParticle {
+public class FluidEmberParticle extends TextureSheetParticle {
     private final SpriteSet sprites;
     private final ParticleOptions smoke;
 
     public static ParticleProvider<SimpleParticleType> provider(SpriteSet sprites, Supplier<? extends ParticleOptions> smoke) {
-        return (type, level, x, y, z, vx, vy, vz, random) -> new FluidEmberParticle(level, x, y, z, sprites, smoke.get());
+        return (type, level, x, y, z, vx, vy, vz) -> new FluidEmberParticle(level, x, y, z, sprites, smoke.get());
     }
 
     protected FluidEmberParticle(ClientLevel level, double x, double y, double z, SpriteSet sprites, ParticleOptions smoke) {
-        super(level, x, y, z, 0.0, 0.0, 0.0, sprites.first());
+        super(level, x, y, z, 0.0, 0.0, 0.0);
+        this.setSprite(sprites.get(0, 1));
         this.sprites = sprites;
         this.smoke = smoke;
         this.gravity = 0.75F;
@@ -33,13 +34,14 @@ public class FluidEmberParticle extends SingleQuadParticle {
     }
 
     @Override
-    public SingleQuadParticle.Layer getLayer() {
-        return SingleQuadParticle.Layer.OPAQUE;
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     @Override
-    public int getLightCoords(float partialTick) {
-        return LightCoordsUtil.withBlock(super.getLightCoords(partialTick), 15);
+    public int getLightColor(float partialTick) {
+        int light = super.getLightColor(partialTick);
+        return light & 0xFF0000 | 15 << 4;
     }
 
     @Override

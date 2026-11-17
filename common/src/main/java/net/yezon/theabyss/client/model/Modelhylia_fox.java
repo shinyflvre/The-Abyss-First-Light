@@ -1,6 +1,6 @@
 package net.yezon.theabyss.client.model;
 
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -9,12 +9,12 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 
-public class Modelhylia_fox<S extends LivingEntityRenderState> extends EntityModel<S> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath("theabyss", "modelhylia_fox"), "main");
+public class Modelhylia_fox<T extends Entity> extends HierarchicalModel<T> {
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("theabyss", "modelhylia_fox"), "main");
     public final ModelPart mob_head;
     public final ModelPart right_leg2;
     public final ModelPart left_leg2;
@@ -23,8 +23,10 @@ public class Modelhylia_fox<S extends LivingEntityRenderState> extends EntityMod
     public final ModelPart mob_tail;
     public final ModelPart body;
 
+    private final ModelPart root;
+
     public Modelhylia_fox(ModelPart root) {
-        super(root);
+        this.root = root;
         this.mob_head = root.getChild("mob_head");
         this.right_leg2 = root.getChild("right_leg2");
         this.left_leg2 = root.getChild("left_leg2");
@@ -94,12 +96,8 @@ public class Modelhylia_fox<S extends LivingEntityRenderState> extends EntityMod
     }
 
     @Override
-    public void setupAnim(S state) {
-        super.setupAnim(state);
-        float limbSwing = state.walkAnimationPos;
-        float limbSwingAmount = state.walkAnimationSpeed;
-        float netHeadYaw = state.yRot;
-        float headPitch = state.xRot;
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.root.getAllParts().forEach(ModelPart::resetPose);
         this.right_leg1.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
         this.mob_tail.yRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
         this.right_leg2.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
@@ -107,5 +105,10 @@ public class Modelhylia_fox<S extends LivingEntityRenderState> extends EntityMod
         this.mob_head.xRot = headPitch / (180.0F / (float)Math.PI);
         this.left_leg1.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
         this.left_leg2.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
+    }
+
+    @Override
+    public ModelPart root() {
+        return this.root;
     }
 }

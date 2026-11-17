@@ -10,17 +10,16 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
-import net.minecraft.util.BlockUtil;
-import net.minecraft.util.BlockUtil.FoundRectangle;
+import net.minecraft.BlockUtil;
+import net.minecraft.BlockUtil.FoundRectangle;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.ai.village.poi.PoiRecord;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
@@ -33,7 +32,7 @@ import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.portal.PortalShape;
-import net.minecraft.world.level.portal.TeleportTransition;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
 import net.yezon.theabyss.platform.event.EventBusSubscriber;
@@ -44,7 +43,7 @@ import net.yezon.theabyss.init.TheabyssModBlocks;
 @EventBusSubscriber(modid = TheabyssMod.MODID)
 public class TheAbyssDimTeleporter {
     public static final ResourceKey<PoiType> POI = ResourceKey.create(
-        Registries.POINT_OF_INTEREST_TYPE, Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "the_abyss_portal")
+        Registries.POINT_OF_INTEREST_TYPE, ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "the_abyss_portal")
     );
     private final ServerLevel level;
     private final BlockPos entityEnterPos;
@@ -53,7 +52,7 @@ public class TheAbyssDimTeleporter {
     public static void registerPointOfInterest(RegisterEvent event) {
         event.register(
             Registries.POINT_OF_INTEREST_TYPE,
-            POI.identifier(),
+            POI.location(),
             () -> new PoiType(ImmutableSet.copyOf(TheabyssModBlocks.THE_ABYSS_PORTAL.get().getStateDefinition().getPossibleStates()), 0, 1)
         );
     }
@@ -73,7 +72,7 @@ public class TheAbyssDimTeleporter {
             .filter(poiPos -> this.level.getBlockState(poiPos).hasProperty(BlockStateProperties.HORIZONTAL_AXIS))
             .min(Comparator.<BlockPos>comparingDouble(poiPos -> poiPos.distSqr(pos)).thenComparingInt(Vec3i::getY))
             .map(poiPos -> {
-                this.level.getChunkSource().addTicketWithRadius(TicketType.PORTAL, ChunkPos.containing(poiPos), 3);
+                this.level.getChunkSource().addRegionTicket(TicketType.PORTAL, new ChunkPos(poiPos), 3, poiPos);
                 BlockState portalState = this.level.getBlockState(poiPos);
                 return BlockUtil.getLargestRectangleAround(
                     poiPos,
@@ -93,7 +92,7 @@ public class TheAbyssDimTeleporter {
         double closestPartialDistanceSqr = -1.0;
         BlockPos closestPartialPosition = null;
         WorldBorder worldBorder = this.level.getWorldBorder();
-        int maxPlaceableY = Math.min(this.level.getMaxY(), this.level.getMinY() + this.level.getLogicalHeight() - 1);
+        int maxPlaceableY = Math.min(this.level.getMaxBuildHeight() - 1, this.level.getMinBuildHeight() + this.level.getLogicalHeight() - 1);
         MutableBlockPos mutable = origin.mutable();
 
         for (MutableBlockPos columnPos : BlockPos.spiralAround(origin, 16, Direction.EAST, Direction.SOUTH)) {
@@ -101,12 +100,12 @@ public class TheAbyssDimTeleporter {
             if (worldBorder.isWithinBounds(columnPos) && worldBorder.isWithinBounds(columnPos.move(direction, 1))) {
                 columnPos.move(direction.getOpposite(), 1);
 
-                for (int y = height; y >= this.level.getMinY(); y--) {
+                for (int y = height; y >= this.level.getMinBuildHeight(); y--) {
                     columnPos.setY(y);
                     if (this.canPortalReplaceBlock(columnPos)) {
                         int firstEmptyY = y;
 
-                        while (y > this.level.getMinY() && this.canPortalReplaceBlock(columnPos.move(Direction.DOWN))) {
+                        while (y > this.level.getMinBuildHeight() && this.canPortalReplaceBlock(columnPos.move(Direction.DOWN))) {
                             y--;
                         }
 
@@ -141,7 +140,7 @@ public class TheAbyssDimTeleporter {
         }
 
         if (closestFullDistanceSqr == -1.0) {
-            int minStartY = Math.max(this.level.getMinY() + 1, 70);
+            int minStartY = Math.max(this.level.getMinBuildHeight() + 1, 70);
             int maxStartY = maxPlaceableY - 9;
             if (maxStartY < minStartY) {
                 return Optional.empty();
@@ -211,14 +210,14 @@ public class TheAbyssDimTeleporter {
         return true;
     }
 
-    public TeleportTransition getPortalDestination(Entity entity) {
+    public DimensionTransition getPortalDestination(Entity entity) {
         WorldBorder worldBorder = this.level.getWorldBorder();
         double scale = DimensionType.getTeleportationScale(entity.level().dimensionType(), this.level.dimensionType());
         BlockPos approximateExitPos = worldBorder.clampToBounds(entity.getX() * scale, entity.getY(), entity.getZ() * scale);
         return this.getExitPortal(entity, approximateExitPos, worldBorder)
             .map(exitPortal -> this.createTransition(entity, exitPortal))
-            .orElseGet(() -> new TeleportTransition(
-                this.level, entity.position(), Vec3.ZERO, entity.getYRot(), entity.getXRot(), TeleportTransition.PLAY_PORTAL_SOUND
+            .orElseGet(() -> new DimensionTransition(
+                this.level, entity.position(), Vec3.ZERO, entity.getYRot(), entity.getXRot(), DimensionTransition.PLAY_PORTAL_SOUND
             ));
     }
 
@@ -232,7 +231,7 @@ public class TheAbyssDimTeleporter {
         return this.createPortal(pos, entryAxis);
     }
 
-    private TeleportTransition createTransition(Entity entity, FoundRectangle exitPortal) {
+    private DimensionTransition createTransition(Entity entity, FoundRectangle exitPortal) {
         BlockState entryState = entity.level().getBlockState(this.entityEnterPos);
         Axis entryAxis;
         Vec3 offset;
@@ -261,14 +260,14 @@ public class TheAbyssDimTeleporter {
             bottomLeft.getZ() + (xAligned ? offsetForward : offsetRight)
         );
         Vec3 collisionFreePos = PortalShape.findCollisionFreePosition(targetPos, this.level, entity, dimensions);
-        return new TeleportTransition(
+        Vec3 speed = entryAxis == exitAxis ? entity.getDeltaMovement() : new Vec3(entity.getDeltaMovement().z, entity.getDeltaMovement().y, -entity.getDeltaMovement().x);
+        return new DimensionTransition(
             this.level,
             collisionFreePos,
-            Vec3.ZERO,
-            outputRotation,
-            0.0F,
-            Relative.union(Relative.DELTA, Relative.ROTATION),
-            TeleportTransition.PLAY_PORTAL_SOUND
+            speed,
+            entity.getYRot() + outputRotation,
+            entity.getXRot(),
+            DimensionTransition.PLAY_PORTAL_SOUND
         );
     }
 

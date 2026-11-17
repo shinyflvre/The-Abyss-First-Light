@@ -13,12 +13,11 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.yezon.theabyss.init.TheabyssModBlockEntities;
 import net.yezon.theabyss.world.inventory.MortarMenu;
 import org.jspecify.annotations.Nullable;
@@ -31,20 +30,20 @@ public class MortarAndPestleBlockEntity extends RandomizableContainerBlockEntity
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
-        if (!this.tryLoadLootTable(input)) {
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        if (!this.tryLoadLootTable(tag)) {
             this.stacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         }
 
-        ContainerHelper.loadAllItems(input, this.stacks);
+        ContainerHelper.loadAllItems(tag, this.stacks, registries);
     }
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
-        if (!this.trySaveLootTable(output)) {
-            ContainerHelper.saveAllItems(output, this.stacks);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        if (!this.trySaveLootTable(tag)) {
+            ContainerHelper.saveAllItems(tag, this.stacks, registries);
         }
     }
 
@@ -118,5 +117,15 @@ public class MortarAndPestleBlockEntity extends RandomizableContainerBlockEntity
     @Override
     public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction) {
         return false;
+    }
+
+    @Override
+    public boolean canOpen(Player player) {
+        return AbyssContainerLock.canOpen(this, player);
+    }
+
+    @Override
+    public @Nullable AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
+        return AbyssContainerLock.createMenu(this, containerId, inventory, player, this::createMenu);
     }
 }

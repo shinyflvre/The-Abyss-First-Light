@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:incorythe_gem",
-    "b": "minecraft:diamond",
-    "c": "theabyss:incorythe_sword"
+    "a": {
+      "item": "theabyss:incorythe_gem"
+    },
+    "b": {
+      "item": "minecraft:diamond"
+    },
+    "c": {
+      "item": "theabyss:incorythe_sword"
+    }
   },
   "pattern": [
     "aba",

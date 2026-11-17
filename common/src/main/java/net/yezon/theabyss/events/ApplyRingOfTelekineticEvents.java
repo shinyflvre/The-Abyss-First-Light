@@ -32,7 +32,7 @@ public class ApplyRingOfTelekineticEvents {
             .stream().sorted(Comparator.comparingDouble(e -> e.distanceToSqr(caster))).limit(Telekinesis.MAX_TARGETS).toList();
         if (targets.isEmpty()) {
             if (caster instanceof ServerPlayer player) {
-                player.sendOverlayMessage(Component.translatable("ring.theabyss.telekinetic.nothing_in_reach"));
+                player.displayClientMessage(Component.translatable("ring.theabyss.telekinetic.nothing_in_reach"), true);
             }
             return;
         }

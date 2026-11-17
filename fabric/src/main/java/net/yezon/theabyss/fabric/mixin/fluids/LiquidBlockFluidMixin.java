@@ -20,10 +20,13 @@ public abstract class LiquidBlockFluidMixin {
     protected FlowingFluid fluid;
 
     @WrapOperation(
-        method = "neighborChanged",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/LiquidBlock;shouldSpreadLiquid(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z")
+        method = {"onPlace", "neighborChanged"},
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/world/level/block/LiquidBlock;shouldSpreadLiquid(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"
+        )
     )
-    private boolean theabyss$noNeighbourReactionForOwnFluids(LiquidBlock block, Level level, BlockPos pos, BlockState state, Operation<Boolean> original) {
+    private boolean theabyss$noReactionForOwnFluids(LiquidBlock block, Level level, BlockPos pos, BlockState state, Operation<Boolean> original) {
         if (FluidContact.typeOf(this.fluid) != null) {
             return true;
         }

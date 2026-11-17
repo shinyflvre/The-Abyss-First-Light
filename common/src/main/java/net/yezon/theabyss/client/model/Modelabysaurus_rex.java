@@ -1,6 +1,6 @@
 package net.yezon.theabyss.client.model;
 
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -9,12 +9,12 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 
-public class Modelabysaurus_rex<S extends LivingEntityRenderState> extends EntityModel<S> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath("theabyss", "modelabysaurus_rex"), "main");
+public class Modelabysaurus_rex<T extends Entity> extends HierarchicalModel<T> {
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("theabyss", "modelabysaurus_rex"), "main");
     public final ModelPart entity_tail;
     public final ModelPart entity_leg_left;
     public final ModelPart entity_head;
@@ -23,8 +23,10 @@ public class Modelabysaurus_rex<S extends LivingEntityRenderState> extends Entit
     public final ModelPart body;
     public final ModelPart entity_leg_right;
 
+    private final ModelPart root;
+
     public Modelabysaurus_rex(ModelPart root) {
-        super(root);
+        this.root = root;
         this.entity_tail = root.getChild("entity_tail");
         this.entity_leg_left = root.getChild("entity_leg_left");
         this.entity_head = root.getChild("entity_head");
@@ -255,12 +257,8 @@ public class Modelabysaurus_rex<S extends LivingEntityRenderState> extends Entit
     }
 
     @Override
-    public void setupAnim(S state) {
-        super.setupAnim(state);
-        float limbSwing = state.walkAnimationPos;
-        float limbSwingAmount = state.walkAnimationSpeed;
-        float netHeadYaw = state.yRot;
-        float headPitch = state.xRot;
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.root.getAllParts().forEach(ModelPart::resetPose);
         this.entity_head.yRot = netHeadYaw / (180.0F / (float)Math.PI);
         this.entity_head.xRot = headPitch / (180.0F / (float)Math.PI);
         this.entity_tail.yRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
@@ -268,5 +266,10 @@ public class Modelabysaurus_rex<S extends LivingEntityRenderState> extends Entit
         this.entity_leg_right.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
         this.entitiy_arm_left.xRot = Mth.cos(limbSwing * 0.6662F) * limbSwingAmount;
         this.entity_leg_left.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
+    }
+
+    @Override
+    public ModelPart root() {
+        return this.root;
     }
 }

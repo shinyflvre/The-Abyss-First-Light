@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "theabyss:phantom_armor_leggings",
-    "b": "theabyss:unorithe_ingot"
+    "a": {
+      "item": "theabyss:phantom_armor_leggings"
+    },
+    "b": {
+      "item": "theabyss:unorithe_ingot"
+    }
   },
   "pattern": [
     "ab"

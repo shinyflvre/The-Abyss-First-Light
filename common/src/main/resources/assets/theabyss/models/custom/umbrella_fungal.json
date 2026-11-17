@@ -80,7 +80,6 @@
         30,
         6
       ],
-      "shade": false,
       "faces": {
         "north": {
           "uv": [
@@ -140,7 +139,6 @@
         11,
         22
       ],
-      "shade": false,
       "rotation": {
         "angle": -45,
         "axis": "y",
@@ -182,7 +180,6 @@
         11,
         22
       ],
-      "shade": false,
       "rotation": {
         "angle": 45,
         "axis": "y",
@@ -224,7 +221,6 @@
         22,
         22
       ],
-      "shade": false,
       "rotation": {
         "angle": -45,
         "axis": "y",
@@ -266,7 +262,6 @@
         22,
         22
       ],
-      "shade": false,
       "rotation": {
         "angle": 45,
         "axis": "y",
@@ -308,7 +303,6 @@
         11,
         13.5
       ],
-      "shade": false,
       "rotation": {
         "angle": -45,
         "axis": "y",
@@ -350,7 +344,6 @@
         11,
         13.5
       ],
-      "shade": false,
       "rotation": {
         "angle": 45,
         "axis": "y",
@@ -392,7 +385,6 @@
         22,
         13.5
       ],
-      "shade": false,
       "rotation": {
         "angle": -45,
         "axis": "y",
@@ -434,7 +426,6 @@
         22,
         13.5
       ],
-      "shade": false,
       "rotation": {
         "angle": 45,
         "axis": "y",
@@ -476,7 +467,6 @@
         32,
         13.5
       ],
-      "shade": false,
       "rotation": {
         "angle": -45,
         "axis": "y",
@@ -518,7 +508,6 @@
         32,
         13.5
       ],
-      "shade": false,
       "rotation": {
         "angle": 45,
         "axis": "y",
@@ -628,7 +617,6 @@
         23,
         15
       ],
-      "shade": false,
       "faces": {
         "north": {
           "uv": [
@@ -688,7 +676,6 @@
         11,
         12
       ],
-      "shade": false,
       "rotation": {
         "angle": -45,
         "axis": "y",
@@ -730,7 +717,6 @@
         11,
         12
       ],
-      "shade": false,
       "rotation": {
         "angle": 45,
         "axis": "y",
@@ -840,7 +826,6 @@
         11.5,
         4.5
       ],
-      "shade": false,
       "faces": {
         "north": {
           "uv": [

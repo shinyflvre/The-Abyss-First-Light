@@ -1,5 +1,7 @@
 package net.yezon.theabyss.item;
 
+import net.minecraft.world.InteractionResultHolder;
+import java.util.List;
 import java.util.function.Consumer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -10,7 +12,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,17 +29,16 @@ public class RingOfTimeItem extends Item {
     }
 
     @Override
-    public void appendHoverText(
-        ItemStack itemstack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag
-    ) {
+    public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, List<Component> tooltipLines, TooltipFlag flag) {
+        Consumer<Component> tooltip = tooltipLines::add;
         AbyssTooltip.ring(tooltip, "tooltip.theabyss.ring_of_time.ability", "tooltip.theabyss.ring_of_time.text", "tooltip.theabyss.ring_of_time.action", 80);
         tooltip.accept(AbyssTooltip.cooldown(net.yezon.theabyss.timestop.TimeStop.RING_COOLDOWN));
         net.yezon.theabyss.ring.secondary.Secondary.tooltip(this, tooltip);
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        return cast(player, player.getItemInHand(hand));
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        return new InteractionResultHolder<>(cast(player, player.getItemInHand(hand)), player.getItemInHand(hand));
     }
 
     @Override
@@ -48,7 +48,7 @@ public class RingOfTimeItem extends Item {
 
     private static InteractionResult cast(Player player, ItemStack ring) {
         if (player instanceof ServerPlayer caster) {
-            return TimeStop.useRing(caster, ring) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
+            return TimeStop.useRing(caster, ring) ? InteractionResult.CONSUME : InteractionResult.FAIL;
         }
         return InteractionResult.SUCCESS;
     }

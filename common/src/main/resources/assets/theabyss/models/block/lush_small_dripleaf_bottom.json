@@ -26,7 +26,6 @@
         "angle": 45,
         "rescale": false
       },
-      "shade_direction_override": "up",
       "faces": {
         "north": {
           "uv": [
@@ -46,7 +45,8 @@
           ],
           "texture": "#stem"
         }
-      }
+      },
+      "shade": false
     },
     {
       "from": [
@@ -69,7 +69,6 @@
         "angle": -45,
         "rescale": false
       },
-      "shade_direction_override": "up",
       "faces": {
         "north": {
           "uv": [
@@ -89,7 +88,9 @@
           ],
           "texture": "#stem"
         }
-      }
+      },
+      "shade": false
     }
-  ]
+  ],
+  "render_type": "minecraft:cutout"
 }

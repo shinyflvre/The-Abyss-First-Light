@@ -12,7 +12,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.phys.Vec3;
 import net.yezon.theabyss.init.TheabyssModItems;
 import net.yezon.theabyss.init.TheabyssModMobEffects;
@@ -32,10 +31,10 @@ public final class UseDashEvents {
         }
         if (entity instanceof LivingEntity living && !living.level().isClientSide()) {
             if (entity.onGround()) {
-                living.addEffect(new MobEffectInstance(MobEffects.SPEED, 14, 2, false, false));
+                living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 14, 2, false, false));
                 living.addEffect(new MobEffectInstance(TheabyssModMobEffects.DASH.getDelegate(), 20, 0, false, false));
             } else {
-                living.addEffect(new MobEffectInstance(MobEffects.SPEED, 50, 2, false, false));
+                living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 50, 2, false, false));
                 living.addEffect(new MobEffectInstance(TheabyssModMobEffects.FLYING.getDelegate(), 50, 2, false, false));
                 living.addEffect(new MobEffectInstance(TheabyssModMobEffects.DASH.getDelegate(), 40, 0, false, false));
             }
@@ -45,7 +44,7 @@ public final class UseDashEvents {
             playToSelf(player, TheabyssModSounds.NIGHTBLADE_ATTACK.getDelegate());
         }
         if (entity instanceof LivingEntity living) {
-            living.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, true);
+            living.swing(InteractionHand.MAIN_HAND, true);
         }
         entity.setDeltaMovement(new Vec3(
             Math.sin(Math.toRadians(entity.getYRot() + 180.0F)) * SPEED,
@@ -53,7 +52,7 @@ public final class UseDashEvents {
             Math.cos(Math.toRadians(entity.getYRot())) * SPEED
         ));
         if (entity instanceof Player player) {
-            player.getCooldowns().addCooldown(new ItemStack(TheabyssModItems.ABYSS_SWORD.get()), COOLDOWN);
+            player.getCooldowns().addCooldown(TheabyssModItems.ABYSS_SWORD.get(), COOLDOWN);
         }
     }
 

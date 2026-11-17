@@ -57,15 +57,15 @@ public final class WraithForm {
         long now = player.level().getGameTime();
         Long ready = READY.get(player.getUUID());
         if (ready != null && now < ready) {
-            player.sendOverlayMessage(Component.translatable("skill.theabyss.cooldown", Component.translatable("skill.theabyss.wraith_form"),
-                (int)Math.ceil((ready - now) / 20.0)));
+            player.displayClientMessage(Component.translatable("skill.theabyss.cooldown", Component.translatable("skill.theabyss.wraith_form"),
+                (int)Math.ceil((ready - now) / 20.0)), true);
             return;
         }
         start(player);
     }
 
     private static void start(ServerPlayer player) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         ACTIVE.put(player.getUUID(), level.getGameTime() + DURATION);
         player.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, DURATION, 0, false, false, true));
         TrueInvisibility.startStep(player, DURATION);
@@ -79,7 +79,7 @@ public final class WraithForm {
         if (ACTIVE.remove(player.getUUID()) == null) {
             return;
         }
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         READY.put(player.getUUID(), level.getGameTime() + COOLDOWN);
         MobEffectInstance invisible = player.getEffect(MobEffects.INVISIBILITY);
         if (invisible != null && invisible.getDuration() <= DURATION) {

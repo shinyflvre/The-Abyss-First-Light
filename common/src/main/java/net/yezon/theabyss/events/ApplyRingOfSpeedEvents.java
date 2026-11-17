@@ -25,7 +25,7 @@ public class ApplyRingOfSpeedEvents {
         }
         ServerLevel level = cast.server();
         if (level != null && entity instanceof LivingEntity living) {
-            living.addEffect(new MobEffectInstance(MobEffects.SPEED, 400, (int)(3.0 * cast.vars().ManaDamage)));
+            living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 400, (int)(3.0 * cast.vars().ManaDamage)));
             RingVisuals.speed(level, living);
         }
         cast.durability(TheabyssModItems.RING_OF_SPEED.get(), 2).cooldown(600).sound("theabyss:spell_of_misc").charge(15.0);

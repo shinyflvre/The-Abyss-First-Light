@@ -5,7 +5,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
@@ -58,7 +58,7 @@ public record SpellFxMessage(int kind, List<Integer> ids, List<Double> data, int
     public static final int FREEZE_BURST = 41;
     public static final int CIRCLE = 42;
 
-    public static final Type<SpellFxMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "spell_fx"));
+    public static final Type<SpellFxMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "spell_fx"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SpellFxMessage> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.VAR_INT, SpellFxMessage::kind,
         ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list()), SpellFxMessage::ids,

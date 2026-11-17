@@ -5,15 +5,15 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.ARGB;
+import net.yezon.theabyss.compat.ARGB;
+import net.yezon.theabyss.compat.GuiGraphicsCompat;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -34,7 +34,7 @@ public final class NightGraceClient {
     private static final int STRIKE_LEAD = 16;
     private static final int STRIKE_FADE = 12;
     private static final int FADE_IN = 5;
-    private static final Identifier EDGE_GLOW = Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "textures/gui/night/edge_glow.png");
+    private static final ResourceLocation EDGE_GLOW = ResourceLocation.fromNamespaceAndPath(TheabyssMod.MODID, "textures/gui/night/edge_glow.png");
     private static final int GLOW_ALONG = 110;
     private static final int GLOW_ACROSS = 44;
     private static final int GLOW_DARK = 0x8A45FF;
@@ -129,10 +129,10 @@ public final class NightGraceClient {
         }
     }
 
-    public static void render(GuiGraphicsExtractor g, DeltaTracker deltaTracker) {
+    public static void render(GuiGraphics g, DeltaTracker deltaTracker) {
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
-        if (player == null || mc.level == null || GRACES.isEmpty() || mc.gui.hud.isHidden()) {
+        if (player == null || mc.level == null || GRACES.isEmpty() || mc.options.hideGui) {
             return;
         }
         float partial = deltaTracker.getGameTimeDeltaPartialTick(false);
@@ -178,7 +178,7 @@ public final class NightGraceClient {
             int w = reachY <= reachX ? along : across;
             int h = reachY <= reachX ? across : along;
             int colour = ARGB.color(Math.round(170 * alpha), ARGB.srgbLerp(heat, GLOW_DARK, GLOW_LIGHT));
-            g.blit(RenderPipelines.GUI_TEXTURED, EDGE_GLOW, Math.round(ex - w * 0.5F), Math.round(ey - h * 0.5F), 0.0F, 0.0F, w, h, w, h, colour);
+            GuiGraphicsCompat.blit(g, EDGE_GLOW, Math.round(ex - w * 0.5F), Math.round(ey - h * 0.5F), 0.0F, 0.0F, w, h, w, h, colour);
         }
     }
 }

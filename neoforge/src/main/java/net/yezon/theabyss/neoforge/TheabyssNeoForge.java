@@ -26,7 +26,7 @@ import net.yezon.theabyss.platform.services.ServerHooks;
 @Mod(TheabyssMod.MODID)
 public final class TheabyssNeoForge {
     public TheabyssNeoForge(IEventBus bus, ModContainer container) {
-        boolean client = FMLEnvironment.getDist().isClient();
+        boolean client = FMLEnvironment.dist.isClient();
         Platform.install(new NeoForgePlatform());
         ServerHooks.install(new NeoForgeServerHooks());
         EntityHooks.install(new NeoForgeEntityHooks());
@@ -48,6 +48,6 @@ public final class TheabyssNeoForge {
         if (client) {
             TheabyssNeoForgeClient.init(bus, container);
         }
-        container.registerConfig(ModConfig.Type.LOCAL, ConfigConfiguration.SPEC, "ta_theotherside.toml");
+        container.registerConfig(ModConfig.Type.COMMON, ConfigConfiguration.SPEC, "ta_theotherside.toml");
     }
 }

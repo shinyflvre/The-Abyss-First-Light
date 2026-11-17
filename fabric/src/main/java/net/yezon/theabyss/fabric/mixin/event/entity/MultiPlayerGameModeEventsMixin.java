@@ -14,14 +14,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.network.protocol.game.ServerboundUseItemPacket;
-import net.minecraft.util.TriState;
+import net.yezon.theabyss.compat.TriState;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.yezon.theabyss.fabric.event.LevelFabricEvents;
 import net.yezon.theabyss.fabric.event.PlayerFabricEvents;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.objectweb.asm.Opcodes;
@@ -39,22 +37,10 @@ public abstract class MultiPlayerGameModeEventsMixin {
     @Final
     private Minecraft minecraft;
 
-    @Shadow
-    private GameType localPlayerMode;
-
     @Unique
     private boolean theabyss$startCanceled;
 
-    @Inject(method = "destroyBlock", at = @At("HEAD"), cancellable = true)
-    private void theabyss$breakBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-        LocalPlayer player = this.minecraft.player;
-        if (player != null && this.minecraft.level != null
-            && LevelFabricEvents.breakBlock(this.minecraft.level, this.localPlayerMode, player, pos, this.minecraft.level.getBlockState(pos))) {
-            cir.setReturnValue(false);
-        }
-    }
-
-    @WrapOperation(method = {"lambda$startDestroyBlock$0", "lambda$continueDestroyBlock$0"}, at = @At(value = "INVOKE",
+    @WrapOperation(method = {"method_41936", "method_41935"}, at = @At(value = "INVOKE",
         target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;destroyBlock(Lnet/minecraft/core/BlockPos;)Z"))
     private boolean theabyss$creativeLeftClick(MultiPlayerGameMode gameMode, BlockPos pos, Operation<Boolean> original) {
         LocalPlayer player = this.minecraft.player;
@@ -65,13 +51,13 @@ public abstract class MultiPlayerGameModeEventsMixin {
     }
 
     @Inject(method = "startDestroyBlock", at = @At(value = "INVOKE",
-        target = "Lnet/minecraft/client/multiplayer/ClientLevel;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;", ordinal = 2))
+        target = "Lnet/minecraft/client/multiplayer/ClientLevel;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;", ordinal = 1))
     private void theabyss$leftClick(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
         LocalPlayer player = this.minecraft.player;
         this.theabyss$startCanceled = player != null && PlayerFabricEvents.leftClickBlock(player, pos);
     }
 
-    @WrapMethod(method = "lambda$startDestroyBlock$1")
+    @WrapMethod(method = "method_41930")
     private Packet<?> theabyss$leftClickPrediction(BlockState state, BlockPos pos, Direction direction, int sequence, Operation<Packet<?>> original) {
         if (this.theabyss$startCanceled) {
             this.theabyss$startCanceled = false;
@@ -109,8 +95,8 @@ public abstract class MultiPlayerGameModeEventsMixin {
         }
     }
 
-    @Inject(method = "lambda$useItem$0", at = @At(value = "INVOKE",
-        target = "Lnet/minecraft/world/item/ItemStack;use(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;"),
+    @Inject(method = "method_41929", at = @At(value = "INVOKE",
+        target = "Lnet/minecraft/world/item/ItemStack;use(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResultHolder;"),
         cancellable = true)
     private void theabyss$rightClickItem(InteractionHand hand, Player player, MutableObject<InteractionResult> interactionResult, int sequence,
         CallbackInfoReturnable<Packet<?>> cir, @Local ServerboundUseItemPacket packet) {

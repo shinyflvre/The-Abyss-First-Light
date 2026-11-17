@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "group": "boat",
   "key": {
-    "#": "theabyss:rena_planks"
+    "#": {
+      "item": "theabyss:rena_planks"
+    }
   },
   "pattern": [
     "# #",

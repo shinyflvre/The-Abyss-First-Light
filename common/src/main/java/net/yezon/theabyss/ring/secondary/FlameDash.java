@@ -44,7 +44,7 @@ public final class FlameDash {
     }
 
     static boolean cast(ServerPlayer player, ItemStack ring, TheabyssModVariables.PlayerVariables vars) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         Vec3 dir = Dash.ahead(player);
         float hit = (float)damage(vars.ManaDamage);
         float burn = (float)(1.0 + 0.5 * vars.ManaDamage);
@@ -58,8 +58,8 @@ public final class FlameDash {
             for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(1.4, 1.2, 1.4).move(0.0, 0.8, 0.0),
                 v -> v != player && v.isAlive() && !RingMode.spares(player, v) && !cut.contains(v.getId()))) {
                 cut.add(e.getId());
-                e.damageCooldownTime = 0;
-                e.hurtServer(level, level.damageSources().indirectMagic(player, player), hit);
+                e.invulnerableTime = 0;
+                e.hurt(level.damageSources().indirectMagic(player, player), hit);
                 e.igniteForSeconds(4.0F);
                 Vec3 aside = e.position().subtract(at).multiply(1.0, 0.0, 1.0);
                 aside = aside.lengthSqr() < 1.0E-4 ? new Vec3(-dir.z, 0.0, dir.x) : aside.normalize();
@@ -110,7 +110,7 @@ public final class FlameDash {
                 }
                 trail.burnt().put(e.getId(), now);
                 e.igniteForSeconds(4.0F);
-                e.hurtServer(trail.level(), trail.level().damageSources().inFire(), trail.damage());
+                e.hurt(trail.level().damageSources().inFire(), trail.damage());
             }
         }
     }

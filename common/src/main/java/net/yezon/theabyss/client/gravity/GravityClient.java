@@ -3,16 +3,11 @@ package net.yezon.theabyss.client.gravity;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -25,7 +20,6 @@ import net.yezon.theabyss.platform.fml.event.lifecycle.FMLClientSetupEvent;
 import net.yezon.theabyss.platform.client.event.ClientPlayerNetworkEvent;
 import net.yezon.theabyss.platform.client.event.RenderLivingEvent;
 import net.yezon.theabyss.platform.client.network.ClientPacketDistributor;
-import net.yezon.theabyss.platform.client.renderstate.RegisterRenderStateModifiersEvent;
 import net.yezon.theabyss.platform.event.tick.EntityTickEvent;
 import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.gravity.Gravity;
@@ -39,12 +33,13 @@ import org.jspecify.annotations.Nullable;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public final class GravityClient {
-    public static final ContextKey<Quaternionf> POSE = new ContextKey<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "gravity_pose"));
     private static final Quaternionfc IDENTITY = new Quaternionf();
     private static final long TURN_NANOS = 380_000_000L;
     private static final int DETACH_COOLDOWN = 10;
     private static final Int2ObjectOpenHashMap<Turn> TURNS = new Int2ObjectOpenHashMap<>();
     private static int cooldown;
+    private static boolean inventoryRender;
+    private static @Nullable Entity shadowHidden;
 
     private GravityClient() {
     }
@@ -231,7 +226,7 @@ public final class GravityClient {
         if (before == Direction.DOWN && !GravityIndex.any(player.level())) {
             return;
         }
-        boolean detach = before != Direction.DOWN && player.input.keyPresses.shift() && player.input.keyPresses.jump();
+        boolean detach = before != Direction.DOWN && player.input.shiftKeyDown && player.input.jumping;
         Gravity.tick(player, detach, cooldown == 0);
         Direction after = Gravity.of(player);
         if (after != before) {
@@ -248,39 +243,51 @@ public final class GravityClient {
         cooldown = 0;
     }
 
-    @SubscribeEvent
-    @SuppressWarnings("unchecked")
-    public static void registerModifiers(RegisterRenderStateModifiersEvent event) {
-        event.registerEntityModifier((Class<EntityRenderer<Entity, EntityRenderState>>)(Class<?>)EntityRenderer.class, (entity, state) -> {
-            if (!(entity instanceof LivingEntity living) || !(state instanceof LivingEntityRenderState livingState)) {
-                return;
-            }
-            if (!Gravity.active(living) && (TURNS.isEmpty() || !TURNS.containsKey(living.getId()))) {
-                return;
-            }
-            Quaternionf pose = frameAt(living, livingState.bodyRot);
-            if (pose != null) {
-                net.yezon.theabyss.platform.client.renderstate.RenderData.set(state, POSE, pose);
-            }
-            Direction gravity = Gravity.of(living);
-            if (!(living instanceof Player) && gravity != Direction.DOWN) {
-                if (gravity == Direction.UP) {
-                    livingState.xRot = -livingState.xRot;
-                } else {
-                    livingState.yRot = 0.0F;
-                    livingState.xRot = 0.0F;
-                }
-            }
-        });
+    public static void inventoryRender(boolean active) {
+        inventoryRender = active;
+    }
+
+    public static boolean isShadowHidden(Entity entity) {
+        return shadowHidden == entity;
+    }
+
+    public static void clearShadow() {
+        shadowHidden = null;
+    }
+
+    public static float headYaw(LivingEntity living, float headYaw) {
+        if (living instanceof Player || !Gravity.active(living)) {
+            return headYaw;
+        }
+        Direction gravity = Gravity.of(living);
+        return gravity == Direction.DOWN || gravity == Direction.UP ? headYaw : 0.0F;
+    }
+
+    public static float headPitch(LivingEntity living, float headPitch) {
+        if (living instanceof Player || !Gravity.active(living)) {
+            return headPitch;
+        }
+        Direction gravity = Gravity.of(living);
+        if (gravity == Direction.DOWN) {
+            return headPitch;
+        }
+        return gravity == Direction.UP ? -headPitch : 0.0F;
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onRenderLiving(RenderLivingEvent.Pre event) {
-        Quaternionf pose = net.yezon.theabyss.platform.client.renderstate.RenderData.get(event.getRenderState(), POSE);
+        if (inventoryRender) {
+            return;
+        }
+        LivingEntity living = event.getEntity();
+        if (!Gravity.active(living) && (TURNS.isEmpty() || !TURNS.containsKey(living.getId()))) {
+            return;
+        }
+        Quaternionf pose = frameAt(living, Mth.rotLerp(event.getPartialTick(), living.yBodyRotO, living.yBodyRot));
         if (pose == null) {
             return;
         }
-        event.getPoseStack().rotate(pose);
-        event.getRenderState().shadowPieces.clear();
+        event.getPoseStack().mulPose(pose);
+        shadowHidden = living;
     }
 }

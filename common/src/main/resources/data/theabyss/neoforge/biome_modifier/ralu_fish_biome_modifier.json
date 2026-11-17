@@ -14,11 +14,8 @@
   ],
   "spawners": {
     "type": "theabyss:ralu_fish",
-    "weight": 1,
-    "count": {
-      "type": "minecraft:uniform",
-      "max_inclusive": 6,
-      "min_inclusive": 3
-    }
+    "maxCount": 6,
+    "minCount": 3,
+    "weight": 1
   }
 }

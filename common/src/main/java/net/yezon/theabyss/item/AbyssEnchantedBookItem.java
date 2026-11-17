@@ -4,7 +4,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -20,7 +19,7 @@ public class AbyssEnchantedBookItem extends Item implements GameplayEnchantments
     }
 
     @Override
-    public int getEnchantmentLevel(ItemInstance stack, Holder<Enchantment> enchantment) {
+    public int getEnchantmentLevel(ItemStack stack, Holder<Enchantment> enchantment) {
         return 0;
     }
 

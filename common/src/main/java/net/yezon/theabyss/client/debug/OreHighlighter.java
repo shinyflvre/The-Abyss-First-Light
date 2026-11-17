@@ -1,5 +1,13 @@
 package net.yezon.theabyss.client.debug;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.MeshData;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -7,25 +15,29 @@ import java.util.List;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.FogRenderer;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.gizmos.GizmoStyle;
-import net.minecraft.gizmos.Gizmos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix4fStack;
 import net.yezon.theabyss.platform.Dist;
 import net.yezon.theabyss.platform.event.EventPriority;
 import net.yezon.theabyss.platform.event.SubscribeEvent;
 import net.yezon.theabyss.platform.event.EventBusSubscriber;
 import net.yezon.theabyss.platform.client.event.ClientTickEvent;
+import net.yezon.theabyss.platform.client.event.RenderLevelStageEvent;
 import net.yezon.theabyss.platform.client.event.ViewportEvent;
 import net.yezon.theabyss.TheabyssMod;
 
@@ -51,7 +63,7 @@ public final class OreHighlighter {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onFog(ViewportEvent.RenderFog event) {
-        if (active()) {
+        if (active() && event.getMode() == FogRenderer.FogMode.FOG_TERRAIN) {
             event.setNearPlaneDistance(9000.0F);
             event.setFarPlaneDistance(10000.0F);
         }
@@ -60,7 +72,7 @@ public final class OreHighlighter {
     public static List<Block> ores(boolean crystals) {
         List<Block> ores = new ArrayList<>();
         for (Block block : BuiltInRegistries.BLOCK) {
-            Identifier id = BuiltInRegistries.BLOCK.getKey(block);
+            ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
             if (id.getNamespace().equals(TheabyssMod.MODID) && id.getPath().endsWith("_ore") && id.getPath().endsWith("_crystal_ore") == crystals) {
                 ores.add(block);
             }
@@ -108,7 +120,7 @@ public final class OreHighlighter {
             TARGETS.put(match, crystals ? 0xFFFFD23D : 0xFFFF40E0);
         }
         rescan = 0;
-        mc.schedule(() -> {
+        mc.tell(() -> {
             scan(mc);
             MutableComponent legend = Component.literal("Highlighting within " + RADIUS_CHUNKS * 16 + " blocks: ");
             boolean first = true;
@@ -130,7 +142,7 @@ public final class OreHighlighter {
     }
 
     private static void say(Minecraft mc, Component message) {
-        mc.gui.hud.getChat().addClientSystemMessage(message);
+        mc.gui.getChat().addMessage(message);
     }
 
     @SubscribeEvent
@@ -142,9 +154,54 @@ public final class OreHighlighter {
         if (mc.level != scannedLevel || --rescan <= 0) {
             scan(mc);
         }
+    }
+
+    @SubscribeEvent
+    public static void onRender(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL || TARGETS.isEmpty() || FOUND.isEmpty()) {
+            return;
+        }
+        Vec3 camera = event.getCamera().getPosition();
+        Matrix4fStack modelView = RenderSystem.getModelViewStack();
+        modelView.pushMatrix();
+        modelView.mul(event.getModelViewMatrix());
+        RenderSystem.applyModelViewMatrix();
+        RenderSystem.disableDepthTest();
+        RenderSystem.depthMask(false);
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.disableCull();
+        PoseStack pose = new PoseStack();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        BufferBuilder fill = Tesselator.getInstance().begin(VertexFormat.Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION_COLOR);
         for (Found found : FOUND) {
-            Gizmos.cuboid(new AABB(found.pos()).inflate(0.003), GizmoStyle.strokeAndFill(found.color(), 3.0F, (found.color() & 0xFFFFFF) | 0x55000000))
-                .setAlwaysOnTop();
+            AABB box = new AABB(found.pos()).inflate(0.003).move(-camera.x, -camera.y, -camera.z);
+            int c = found.color();
+            LevelRenderer.addChainedFilledBoxVertices(pose, fill, box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ,
+                (c >> 16 & 255) / 255.0F, (c >> 8 & 255) / 255.0F, (c & 255) / 255.0F, 0x55 / 255.0F);
+        }
+        draw(fill.build());
+        RenderSystem.setShader(GameRenderer::getRendertypeLinesShader);
+        RenderSystem.lineWidth(3.0F);
+        BufferBuilder lines = Tesselator.getInstance().begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR_NORMAL);
+        for (Found found : FOUND) {
+            AABB box = new AABB(found.pos()).inflate(0.003).move(-camera.x, -camera.y, -camera.z);
+            int c = found.color();
+            LevelRenderer.renderLineBox(pose, lines, box, (c >> 16 & 255) / 255.0F, (c >> 8 & 255) / 255.0F, (c & 255) / 255.0F, (c >>> 24) / 255.0F);
+        }
+        draw(lines.build());
+        RenderSystem.lineWidth(1.0F);
+        RenderSystem.enableCull();
+        RenderSystem.disableBlend();
+        RenderSystem.depthMask(true);
+        RenderSystem.enableDepthTest();
+        modelView.popMatrix();
+        RenderSystem.applyModelViewMatrix();
+    }
+
+    private static void draw(MeshData mesh) {
+        if (mesh != null) {
+            BufferUploader.drawWithShader(mesh);
         }
     }
 

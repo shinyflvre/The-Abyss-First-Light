@@ -20,8 +20,8 @@ final class VillageAutotest {
     }
 
     private static void setHudHidden(Minecraft mc, boolean hidden) {
-        if (mc.gui.hud.isHidden() != hidden) {
-            mc.gui.hud.toggle();
+        if (mc.options.hideGui != hidden) {
+            mc.options.hideGui = !mc.options.hideGui;
         }
     }
 

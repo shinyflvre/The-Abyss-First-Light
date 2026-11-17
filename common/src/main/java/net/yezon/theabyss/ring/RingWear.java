@@ -2,7 +2,7 @@ package net.yezon.theabyss.ring;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -28,12 +28,12 @@ public final class RingWear {
     }
 
     public static boolean isRing(ItemStack stack) {
-        Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
         return TheabyssMod.MODID.equals(id.getNamespace()) && id.getPath().startsWith("ring_of_") && !id.getPath().endsWith("_attack");
     }
 
     public static int pending(ItemStack stack) {
-        return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getIntOr(KEY, 0);
+        return net.yezon.theabyss.compat.NbtCompat.getIntOr(stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag(), KEY, 0);
     }
 
     public static void wear(ItemStack stack, ServerLevel level, Entity user, int uses) {

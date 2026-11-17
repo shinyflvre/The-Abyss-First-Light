@@ -53,7 +53,7 @@ public final class KeptGuide {
         for (ItemStack stack : net.yezon.theabyss.platform.attachment.Attachments.getData(player, TYPE)) {
             ItemStack give = stack.copy();
             if (!player.getInventory().add(give)) {
-                player.spawnAtLocation(player.level(), give);
+                player.spawnAtLocation(give);
             }
         }
         net.yezon.theabyss.platform.attachment.Attachments.setData(player, TYPE, List.of());

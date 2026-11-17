@@ -12,7 +12,7 @@ public class IncorytheArmorBodyAbilityEvents {
             if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
                 _entity.addEffect(
                     new MobEffectInstance(
-                        MobEffects.STRENGTH,
+                        MobEffects.DAMAGE_BOOST,
                         60,
                         (int)(
                             0.0

@@ -3,7 +3,7 @@ package net.yezon.theabyss.block;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -22,11 +22,11 @@ public class BlaruPlanksBlock extends Block {
                     new DeferredSoundType(
                         1.0F,
                         1.0F,
-                        () -> BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:wood_place")),
-                        () -> BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:wood_step")),
-                        () -> BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("theabyss:wood_place")),
-                        () -> BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("block.wood.hit")),
-                        () -> BuiltInRegistries.SOUND_EVENT.getValue(Identifier.parse("block.wood.fall"))
+                        () -> BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:wood_place")),
+                        () -> BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:wood_step")),
+                        () -> BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("theabyss:wood_place")),
+                        () -> BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.wood.hit")),
+                        () -> BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.wood.fall"))
                     )
                 )
                 .strength(2.0F, 10.0F)

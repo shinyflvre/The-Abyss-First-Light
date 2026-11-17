@@ -3,7 +3,9 @@
   "category": "misc",
   "group": "abyss_chest",
   "key": {
-    "a": "theabyss:nightgrove_planks"
+    "a": {
+      "item": "theabyss:nightgrove_planks"
+    }
   },
   "pattern": [
     "aaa",

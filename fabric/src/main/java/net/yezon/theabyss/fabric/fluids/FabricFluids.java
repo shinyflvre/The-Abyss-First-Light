@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.yezon.theabyss.init.TheabyssModFluids;
@@ -46,7 +46,7 @@ public final class FabricFluids {
         }
 
         @Override
-        public int getLightEmission(FluidVariant variant) {
+        public int getLuminance(FluidVariant variant) {
             return this.type.get().getLightLevel();
         }
 

@@ -10,7 +10,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
-import net.minecraft.util.valueproviders.IntProviders;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoublePlantBlock;
@@ -24,15 +23,15 @@ import net.yezon.theabyss.TheabyssMod;
 import net.yezon.theabyss.block.flora.HangingPlantBodyBlock;
 import net.yezon.theabyss.block.flora.HangingPlantHeadBlock;
 
-public record PlantPatchFeature(Block plant, IntProvider count, int spread, IntProvider height) implements Feature {
+public record PlantPatchFeature(Block plant, IntProvider count, int spread, IntProvider height) implements AbyssFeature.Config {
     public static final MapCodec<PlantPatchFeature> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
         BuiltInRegistries.BLOCK.byNameCodec().fieldOf("plant").forGetter(PlantPatchFeature::plant),
-        IntProviders.codec(1, 32).fieldOf("count").forGetter(PlantPatchFeature::count),
+        IntProvider.codec(1, 32).fieldOf("count").forGetter(PlantPatchFeature::count),
         Codec.intRange(0, 8).fieldOf("spread").forGetter(PlantPatchFeature::spread),
-        IntProviders.codec(1, 32).fieldOf("height").forGetter(PlantPatchFeature::height)
+        IntProvider.codec(1, 32).fieldOf("height").forGetter(PlantPatchFeature::height)
     ).apply(i, PlantPatchFeature::new));
-    public static final DeferredRegister<MapCodec<? extends Feature>> REGISTRY = DeferredRegister.create(Registries.FEATURE_TYPE, TheabyssMod.MODID);
-    public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<PlantPatchFeature>> PLANT_PATCH = REGISTRY.register("plant_patch", () -> CODEC);
+    public static final DeferredRegister<Feature<?>> REGISTRY = DeferredRegister.create(Registries.FEATURE, TheabyssMod.MODID);
+    public static final DeferredHolder<Feature<?>, AbyssFeature<PlantPatchFeature>> PLANT_PATCH = REGISTRY.register("plant_patch", () -> new AbyssFeature<>(CODEC));
 
     @Override
     public MapCodec<PlantPatchFeature> codec() {
@@ -64,7 +63,7 @@ public record PlantPatchFeature(Block plant, IntProvider count, int spread, IntP
             int wanted = this.height.sample(random);
             int length = 0;
             pos.set(base);
-            while (length < wanted && level.isInsideBuildHeight(pos) && free(level.getBlockState(pos))) {
+            while (length < wanted && !level.isOutsideBuildHeight(pos) && free(level.getBlockState(pos))) {
                 length++;
                 pos.move(Direction.UP);
             }

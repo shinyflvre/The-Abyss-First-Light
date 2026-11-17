@@ -6,11 +6,8 @@
   ],
   "spawners": {
     "type": "theabyss:raptor",
-    "weight": 12,
-    "count": {
-      "type": "minecraft:uniform",
-      "max_inclusive": 3,
-      "min_inclusive": 1
-    }
+    "maxCount": 3,
+    "minCount": 1,
+    "weight": 12
   }
 }

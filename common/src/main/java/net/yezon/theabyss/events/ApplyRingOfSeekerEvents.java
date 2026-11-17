@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
@@ -22,7 +22,7 @@ public class ApplyRingOfSeekerEvents {
         TheabyssModVariables.PlayerVariables vars = TheabyssModVariables.getPlayerVariables(entity);
         if (vars.Mana < 50.0 * SomniumUpgrades.costFactor(vars)) {
             if (entity instanceof Player _player && !_player.level().isClientSide()) {
-                _player.sendOverlayMessage(Component.translatable("ring.theabyss.low_energy"));
+                _player.displayClientMessage(Component.translatable("ring.theabyss.low_energy"), true);
             }
             return;
         }
@@ -36,7 +36,7 @@ public class ApplyRingOfSeekerEvents {
             net.yezon.theabyss.ring.fx.RingAccent.send(_level, net.yezon.theabyss.ring.fx.RingAccent.SEEKER, new net.minecraft.world.phys.Vec3(x, y, z));
             double attack = net.yezon.theabyss.ring.RingDamage.HOLLOW_SEEKERS.at(vars.ManaDamage);
             for (int i = 0; i < 8; i++) {
-                var seeker = TheabyssModEntities.SUMMONED_SEEKER.get().spawn(_level, BlockPos.containing(x, y, z), EntitySpawnReason.MOB_SUMMONED);
+                var seeker = TheabyssModEntities.SUMMONED_SEEKER.get().spawn(_level, BlockPos.containing(x, y, z), MobSpawnType.MOB_SUMMONED);
                 var damage = seeker == null ? null : seeker.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE);
                 if (damage != null) {
                     damage.setBaseValue(attack);

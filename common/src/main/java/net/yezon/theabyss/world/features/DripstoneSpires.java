@@ -8,25 +8,25 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.core.registries.codec.RegistryCodecs;
+import net.minecraft.core.RegistryCodecs;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SpeleothemBlock;
+import net.minecraft.world.level.block.PointedDripstoneBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.SpeleothemThickness;
+import net.minecraft.world.level.block.state.properties.DripstoneThickness;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.yezon.theabyss.init.TheabyssModBlocks;
 
-public record DripstoneSpires(String mode, int minHeight, int maxHeight, int rise, Optional<HolderSet<Block>> ground) implements Feature {
+public record DripstoneSpires(String mode, int minHeight, int maxHeight, int rise, Optional<HolderSet<Block>> ground) implements AbyssFeature.Config {
     public static final MapCodec<DripstoneSpires> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.STRING.optionalFieldOf("mode", "ground").forGetter(DripstoneSpires::mode),
             Codec.INT.optionalFieldOf("min_height", 1).forGetter(DripstoneSpires::minHeight),
             Codec.INT.optionalFieldOf("max_height", 6).forGetter(DripstoneSpires::maxHeight),
             Codec.INT.optionalFieldOf("rise", 3).forGetter(DripstoneSpires::rise),
-            RegistryCodecs.holderSet(Registries.BLOCK).optionalFieldOf("ground").forGetter(DripstoneSpires::ground))
+            RegistryCodecs.homogeneousList(Registries.BLOCK).optionalFieldOf("ground").forGetter(DripstoneSpires::ground))
         .apply(i, DripstoneSpires::new));
     private static final int PROBE = 3;
 
@@ -73,20 +73,20 @@ public record DripstoneSpires(String mode, int minHeight, int maxHeight, int ris
         if (room == 0) {
             return 0;
         }
-        BlockState base = TheabyssModBlocks.POINTED_ABYSS_DRIPSTONE.get().defaultBlockState().setValue(SpeleothemBlock.TIP_DIRECTION, Direction.UP);
+        BlockState base = TheabyssModBlocks.POINTED_ABYSS_DRIPSTONE.get().defaultBlockState().setValue(PointedDripstoneBlock.TIP_DIRECTION, Direction.UP);
         for (int i = 0; i < room; i++) {
-            SpeleothemThickness thickness;
+            DripstoneThickness thickness;
             int fromTip = room - 1 - i;
             if (fromTip == 0) {
-                thickness = SpeleothemThickness.TIP;
+                thickness = DripstoneThickness.TIP;
             } else if (fromTip == 1) {
-                thickness = SpeleothemThickness.FRUSTUM;
+                thickness = DripstoneThickness.FRUSTUM;
             } else if (i == 0) {
-                thickness = SpeleothemThickness.BASE;
+                thickness = DripstoneThickness.BASE;
             } else {
-                thickness = SpeleothemThickness.MIDDLE;
+                thickness = DripstoneThickness.MIDDLE;
             }
-            level.setBlock(pos.set(x, y + i, z), base.setValue(SpeleothemBlock.THICKNESS, thickness), 2);
+            level.setBlock(pos.set(x, y + i, z), base.setValue(PointedDripstoneBlock.THICKNESS, thickness), 2);
         }
         return room;
     }

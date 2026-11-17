@@ -60,7 +60,7 @@ public final class Rewind {
     }
 
     static boolean cast(ServerPlayer player, ItemStack ring, TheabyssModVariables.PlayerVariables vars) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         Deque<Moment> history = HISTORY.get(player.getUUID());
         List<Moment> path = new ArrayList<>();
         if (history != null) {
@@ -74,7 +74,7 @@ public final class Rewind {
             }
         }
         if (path.size() < 10 || path.get(path.size() - 1).pos().distanceToSqr(player.position()) < 0.25) {
-            player.sendOverlayMessage(Component.translatable("ring.theabyss.time.no_past"));
+            player.displayClientMessage(Component.translatable("ring.theabyss.time.no_past"), true);
             return false;
         }
         Moment then = path.get(path.size() - 1);
@@ -94,11 +94,11 @@ public final class Rewind {
         if (player.isPassenger()) {
             player.stopRiding();
         }
-        player.teleportTo(then.pos().x, then.pos().y, then.pos().z);
+        net.yezon.theabyss.util.AbyssTeleport.to(player, then.pos().x, then.pos().y, then.pos().z);
         player.setYRot(then.yaw());
         player.setXRot(then.pitch());
         player.setYHeadRot(then.yaw());
-        player.connection.teleport(then.pos().x, then.pos().y, then.pos().z, then.yaw(), then.pitch());
+        net.yezon.theabyss.util.AbyssTeleport.connection(player, then.pos().x, then.pos().y, then.pos().z, then.yaw(), then.pitch());
         player.setDeltaMovement(Vec3.ZERO);
         player.resetFallDistance();
         player.clearFire();
@@ -106,7 +106,7 @@ public final class Rewind {
         history.clear();
         RingFx.wave(level, from.add(0.0, 0.1, 0.0), 5.0F, 16, RingVisuals.REG_GOLD);
         RingFx.wave(level, then.pos().add(0.0, 0.1, 0.0), 5.0F, 16, 0x7FE8FF);
-        var timeSound = net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.getValue(net.minecraft.resources.Identifier.parse("theabyss:spell_of_time"));
+        var timeSound = net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.get(net.minecraft.resources.ResourceLocation.parse("theabyss:spell_of_time"));
         if (timeSound != null) {
             RingVisuals.sound(level, then.pos(), timeSound, 1.0F, 1.4F);
         }

@@ -3,7 +3,8 @@
   "biomes": "theabyss:waywardsea",
   "spawners": {
     "type": "theabyss:frost_spider",
-    "weight": 20,
-    "count": 1
+    "maxCount": 1,
+    "minCount": 1,
+    "weight": 20
   }
 }
