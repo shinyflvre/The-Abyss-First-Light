@@ -396,7 +396,7 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> ROMA_MUD = block(TheabyssModBlocks.ROMA_MUD);
     public static final DeferredItem<Item> BLARU_LOG = block(TheabyssModBlocks.BLARU_LOG);
     public static final DeferredItem<Item> STRIPPED_BLARU_LOG = block(TheabyssModBlocks.STRIPPED_BLARU_LOG);
-    public static final DeferredItem<Item> BLARU_PLANKS = block(TheabyssModBlocks.BLARU_PLANKS);
+    public static final DeferredItem<Item> BLARU_PLANKS = block(TheabyssModBlocks.BLARU_PLANKS, p -> p.cookingFuel(ContextIntProviders.COOKING_TIME_WOOD_BLOCKS));
     public static final DeferredItem<Item> BLARU_STAIRS = block(TheabyssModBlocks.BLARU_STAIRS);
     public static final DeferredItem<Item> BLARU_SLAB = block(TheabyssModBlocks.BLARU_SLAB);
     public static final DeferredItem<Item> BLARU_TRAP_DOOR = block(TheabyssModBlocks.BLARU_TRAP_DOOR);
@@ -407,7 +407,7 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> BLARU_BUTTON = block(TheabyssModBlocks.BLARU_BUTTON);
     public static final DeferredItem<Item> NIGHTGROVE_LOG = block(TheabyssModBlocks.NIGHTGROVE_LOG);
     public static final DeferredItem<Item> STRIPPED_NIGHTGROVE_LOG = block(TheabyssModBlocks.STRIPPED_NIGHTGROVE_LOG);
-    public static final DeferredItem<Item> NIGHTGROVE_PLANKS = block(TheabyssModBlocks.NIGHTGROVE_PLANKS);
+    public static final DeferredItem<Item> NIGHTGROVE_PLANKS = block(TheabyssModBlocks.NIGHTGROVE_PLANKS, p -> p.cookingFuel(ContextIntProviders.COOKING_TIME_WOOD_BLOCKS));
     public static final DeferredItem<Item> NIGHTGROVE_STAIRS = block(TheabyssModBlocks.NIGHTGROVE_STAIRS);
     public static final DeferredItem<Item> NIGHTGROVE_SLAB = block(TheabyssModBlocks.NIGHTGROVE_SLAB);
     public static final DeferredItem<Item> NIGHTGROVE_TRAP_DOOR = block(TheabyssModBlocks.NIGHTGROVE_TRAP_DOOR);
@@ -418,7 +418,7 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> NIGHTGROVE_BUTTON = block(TheabyssModBlocks.NIGHTGROVE_BUTTON);
     public static final DeferredItem<Item> BOG_SHROOM_LOG = block(TheabyssModBlocks.BOG_SHROOM_LOG);
     public static final DeferredItem<Item> STRIPPED_BOG_SHROOM_LOG = block(TheabyssModBlocks.STRIPPED_BOG_SHROOM_LOG);
-    public static final DeferredItem<Item> BOG_PLANKS = block(TheabyssModBlocks.BOG_PLANKS);
+    public static final DeferredItem<Item> BOG_PLANKS = block(TheabyssModBlocks.BOG_PLANKS, p -> p.cookingFuel(ContextIntProviders.COOKING_TIME_WOOD_BLOCKS));
     public static final DeferredItem<Item> BOG_STAIRS = block(TheabyssModBlocks.BOG_STAIRS);
     public static final DeferredItem<Item> BOG_SLAB = block(TheabyssModBlocks.BOG_SLAB);
     public static final DeferredItem<Item> BOG_TRAP_DOOR = block(TheabyssModBlocks.BOG_TRAP_DOOR);
@@ -429,7 +429,7 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> BOG_BUTTON = block(TheabyssModBlocks.BOG_BUTTON);
     public static final DeferredItem<Item> SAL_SHROOM_LOG = block(TheabyssModBlocks.SAL_SHROOM_LOG);
     public static final DeferredItem<Item> STRIPPED_SAL_SHROOM_LOG = block(TheabyssModBlocks.STRIPPED_SAL_SHROOM_LOG);
-    public static final DeferredItem<Item> SAL_PLANKS = block(TheabyssModBlocks.SAL_PLANKS);
+    public static final DeferredItem<Item> SAL_PLANKS = block(TheabyssModBlocks.SAL_PLANKS, p -> p.cookingFuel(ContextIntProviders.COOKING_TIME_WOOD_BLOCKS));
     public static final DeferredItem<Item> SAL_STAIRS = block(TheabyssModBlocks.SAL_STAIRS);
     public static final DeferredItem<Item> SAL_SLAB = block(TheabyssModBlocks.SAL_SLAB);
     public static final DeferredItem<Item> SAL_TRAP_DOOR = block(TheabyssModBlocks.SAL_TRAP_DOOR);
@@ -440,7 +440,7 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> SAL_BUTTON = block(TheabyssModBlocks.SAL_BUTTON);
     public static final DeferredItem<Item> SLIMED_LOG = block(TheabyssModBlocks.SLIMED_LOG);
     public static final DeferredItem<Item> STRIPPED_SLIMED_LOG = block(TheabyssModBlocks.STRIPPED_SLIMED_LOG);
-    public static final DeferredItem<Item> SLIMED_PLANKS = block(TheabyssModBlocks.SLIMED_PLANKS);
+    public static final DeferredItem<Item> SLIMED_PLANKS = block(TheabyssModBlocks.SLIMED_PLANKS, p -> p.cookingFuel(ContextIntProviders.COOKING_TIME_WOOD_BLOCKS));
     public static final DeferredItem<Item> SLIMED_STAIRS = block(TheabyssModBlocks.SLIMED_STAIRS);
     public static final DeferredItem<Item> SLIMED_SLAB = block(TheabyssModBlocks.SLIMED_SLAB);
     public static final DeferredItem<Item> SLIMED_TRAP_DOOR = block(TheabyssModBlocks.SLIMED_TRAP_DOOR);
@@ -451,7 +451,7 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> SLIMED_BUTTON = block(TheabyssModBlocks.SLIMED_BUTTON);
     public static final DeferredItem<Item> FROZEN_LOG = block(TheabyssModBlocks.FROZEN_LOG);
     public static final DeferredItem<Item> STRIPPED_FROZEN_LOG = block(TheabyssModBlocks.STRIPPED_FROZEN_LOG);
-    public static final DeferredItem<Item> FROZEN_PLANKS = block(TheabyssModBlocks.FROZEN_PLANKS);
+    public static final DeferredItem<Item> FROZEN_PLANKS = block(TheabyssModBlocks.FROZEN_PLANKS, p -> p.cookingFuel(ContextIntProviders.COOKING_TIME_WOOD_BLOCKS));
     public static final DeferredItem<Item> FROZEN_STAIRS = block(TheabyssModBlocks.FROZEN_STAIRS);
     public static final DeferredItem<Item> FROZEN_SLAB = block(TheabyssModBlocks.FROZEN_SLAB);
     public static final DeferredItem<Item> FROZEN_TRAP_DOOR = block(TheabyssModBlocks.FROZEN_TRAP_DOOR);
@@ -464,7 +464,7 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> STRIPPED_RENA_LOG = block(TheabyssModBlocks.STRIPPED_RENA_LOG);
     public static final DeferredItem<Item> RENA_WOOD = block(TheabyssModBlocks.RENA_WOOD);
     public static final DeferredItem<Item> STRIPPED_RENA_WOOD = block(TheabyssModBlocks.STRIPPED_RENA_WOOD);
-    public static final DeferredItem<Item> RENA_PLANKS = block(TheabyssModBlocks.RENA_PLANKS);
+    public static final DeferredItem<Item> RENA_PLANKS = block(TheabyssModBlocks.RENA_PLANKS, p -> p.cookingFuel(ContextIntProviders.COOKING_TIME_WOOD_BLOCKS));
     public static final DeferredItem<Item> RENA_STAIRS = block(TheabyssModBlocks.RENA_STAIRS);
     public static final DeferredItem<Item> RENA_SLAB = block(TheabyssModBlocks.RENA_SLAB);
     public static final DeferredItem<Item> RENA_TRAP_DOOR = block(TheabyssModBlocks.RENA_TRAP_DOOR);
@@ -477,7 +477,7 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> STRIPPED_LUNA_LOG = block(TheabyssModBlocks.STRIPPED_LUNA_LOG);
     public static final DeferredItem<Item> LUNA_WOOD = block(TheabyssModBlocks.LUNA_WOOD);
     public static final DeferredItem<Item> STRIPPED_LUNA_WOOD = block(TheabyssModBlocks.STRIPPED_LUNA_WOOD);
-    public static final DeferredItem<Item> LUNA_PLANKS = block(TheabyssModBlocks.LUNA_PLANKS);
+    public static final DeferredItem<Item> LUNA_PLANKS = block(TheabyssModBlocks.LUNA_PLANKS, p -> p.cookingFuel(ContextIntProviders.COOKING_TIME_WOOD_BLOCKS));
     public static final DeferredItem<Item> LUNA_STAIRS = block(TheabyssModBlocks.LUNA_STAIRS);
     public static final DeferredItem<Item> LUNA_SLAB = block(TheabyssModBlocks.LUNA_SLAB);
     public static final DeferredItem<Item> LUNA_TRAP_DOOR = block(TheabyssModBlocks.LUNA_TRAP_DOOR);
@@ -487,7 +487,7 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> LUNA_PRESSURE_PLATE = block(TheabyssModBlocks.LUNA_PRESSURE_PLATE);
     public static final DeferredItem<Item> LUNA_BUTTON = block(TheabyssModBlocks.LUNA_BUTTON);
     public static final DeferredItem<Item> VIGILANT_LOG = block(TheabyssModBlocks.VIGILANT_LOG);
-    public static final DeferredItem<Item> VIGILANT_PLANKS = block(TheabyssModBlocks.VIGILANT_PLANKS);
+    public static final DeferredItem<Item> VIGILANT_PLANKS = block(TheabyssModBlocks.VIGILANT_PLANKS, p -> p.cookingFuel(ContextIntProviders.COOKING_TIME_WOOD_BLOCKS));
     public static final DeferredItem<Item> VIGILANT_STAIRS = block(TheabyssModBlocks.VIGILANT_STAIRS);
     public static final DeferredItem<Item> VIGILANT_SLAB = block(TheabyssModBlocks.VIGILANT_SLAB);
     public static final DeferredItem<Item> VIGILANT_TRAP_DOOR = block(TheabyssModBlocks.VIGILANT_TRAP_DOOR);

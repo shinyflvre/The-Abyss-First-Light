@@ -53,6 +53,12 @@
           "location": "theabyss:fx_state",
           "width": 176,
           "height": 1
+        },
+        {
+          "sampler_name": "Hand",
+          "location": "theabyss:hand_depth",
+          "width": 1,
+          "height": 1
         }
       ],
       "output": "swap"

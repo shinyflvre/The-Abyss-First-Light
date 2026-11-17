@@ -5,6 +5,7 @@ uniform sampler2D InSampler;
 uniform sampler2D DepthSampler;
 uniform sampler2D StateSampler;
 uniform sampler2D LightsSampler;
+uniform sampler2D HandSampler;
 
 #include <theabyss:fx_camera.glsl>
 
@@ -28,7 +29,7 @@ void main() {
     vec3 color = texture(InSampler, texCoord).rgb;
     float depth = texture(DepthSampler, texCoord).r;
     int count = int(texelFetch(LightsSampler, ivec2(0, 0), 0).r * 255.0 + 0.5);
-    if (depth <= 1.0e-7 || count == 0) {
+    if (depth <= 1.0e-7 || count == 0 || texture(HandSampler, texCoord).r > 0.0) {
         fragColor = vec4(color, 1.0);
         return;
     }

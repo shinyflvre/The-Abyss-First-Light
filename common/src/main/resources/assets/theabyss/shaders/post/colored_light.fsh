@@ -8,6 +8,7 @@
 uniform sampler2D InSampler;
 uniform sampler2D SurfaceSampler;
 uniform sampler2D StateSampler;
+uniform sampler2D HandSampler;
 
 layout(location = 0) in vec2 texCoord;
 
@@ -23,6 +24,10 @@ vec2 lightLook() {
 
 void main() {
     vec3 color = texture(InSampler, texCoord).rgb;
+    if (texture(HandSampler, texCoord).r > 0.0) {
+        fragColor = vec4(color, 1.0);
+        return;
+    }
     vec4 surface = texture(SurfaceSampler, texCoord);
     vec2 look = lightLook();
     vec3 light = surface.rgb * surface.a;

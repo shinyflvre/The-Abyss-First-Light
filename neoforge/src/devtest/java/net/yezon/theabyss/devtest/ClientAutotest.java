@@ -478,6 +478,14 @@ public final class ClientAutotest {
             }, 0);
             return;
         }
+        if (scenario().equals("handlight")) {
+            HandLightAutotest.addSteps(ClientAutotest::add, ClientAutotest::command, ClientAutotest::shot);
+            add("done", () -> {
+                TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] DONE");
+                mc.stop();
+            }, 0);
+            return;
+        }
         if (scenario().equals("hand")) {
             InfectedHandAutotest.addSteps(ClientAutotest::add, ClientAutotest::command, ClientAutotest::shot);
             add("done", () -> {

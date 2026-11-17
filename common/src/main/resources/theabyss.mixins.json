@@ -35,7 +35,8 @@
     "accessor.client.TextureAtlasAccessor",
     "accessor.client.LivingEntityRendererAccessor",
     "accessor.client.KeyMappingAccessor",
-    "accessor.client.GuiGraphicsExtractorAccessor"
+    "accessor.client.GuiGraphicsExtractorAccessor",
+    "accessor.client.GameRendererAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

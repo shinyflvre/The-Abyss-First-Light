@@ -297,6 +297,7 @@ public final class ScreenFx {
     }
 
     private static void upload(Minecraft mc) {
+        HandDepth.register(mc);
         if (state == null) {
             state = new DynamicTexture(() -> "theabyss fx state", STATE_WIDTH, 1, true);
             java.util.Arrays.fill(uploaded, -1);
