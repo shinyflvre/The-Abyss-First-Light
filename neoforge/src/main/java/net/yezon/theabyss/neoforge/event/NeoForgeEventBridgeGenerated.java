@@ -87,7 +87,9 @@ public final class NeoForgeEventBridgeGenerated {
                 net.yezon.theabyss.platform.event.entity.living.FinalizeSpawnEvent c = new net.yezon.theabyss.platform.event.entity.living.FinalizeSpawnEvent(e.getEntity(), e.getSpawnType(), e.isSpawnCancelled());
                 c.setCanceled(e.isCanceled());
                 AbyssEventBus.post(p, c);
-                e.setSpawnCancelled(c.getSpawnCancelled());
+                if (c.getSpawnCancelled() != e.isSpawnCancelled()) {
+                    e.setSpawnCancelled(c.getSpawnCancelled());
+                }
                 e.setCanceled(c.isCanceled());
             });
         }
