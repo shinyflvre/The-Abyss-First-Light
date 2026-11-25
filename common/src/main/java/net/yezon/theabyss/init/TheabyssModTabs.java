@@ -179,6 +179,8 @@ public class TheabyssModTabs {
                 tabData.accept(TheabyssModItems.RING_OF_FLIGHT.get());
                 tabData.accept(TheabyssModItems.RING_OF_FANGS.get());
                 tabData.accept(TheabyssModItems.RING_OF_SILENT_ECHOES.get());
+                tabData.accept(TheabyssModItems.RING_OF_METEOROIDS.get());
+                tabData.accept(TheabyssModItems.RING_OF_INVERTED_SKY.get());
                 tabData.accept(TheabyssModItems.RING_OF_RING.get());
                 tabData.accept(TheabyssModItems.CLOCK_OF_TIME.get());
                 tabData.accept(TheabyssModItems.ARTIFACT_OF_AFTER_LIFE.get());

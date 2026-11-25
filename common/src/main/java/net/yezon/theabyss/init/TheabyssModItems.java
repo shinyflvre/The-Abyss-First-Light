@@ -391,6 +391,8 @@ public class TheabyssModItems {
     public static final DeferredItem<Item> RING_OF_FANGS = REGISTRY.registerItem("ring_of_fangs", RingOfFangsItem::new);
     public static final DeferredItem<Item> RING_OF_RING = REGISTRY.registerItem("ring_of_ring", RingOfRingItem::new);
     public static final DeferredItem<Item> RING_OF_SILENT_ECHOES = REGISTRY.registerItem("ring_of_silent_echoes", net.yezon.theabyss.item.RingOfSilentEchoesItem::new);
+    public static final DeferredItem<Item> RING_OF_METEOROIDS = REGISTRY.registerItem("ring_of_meteoroids", net.yezon.theabyss.item.RingOfMeteoroidsItem::new);
+    public static final DeferredItem<Item> RING_OF_INVERTED_SKY = REGISTRY.registerItem("ring_of_inverted_sky", net.yezon.theabyss.item.RingOfInvertedSkyItem::new);
     public static final DeferredItem<Item> CLOCK_OF_TIME = REGISTRY.registerItem("clock_of_time", ClockOfTimeItem::new);
     public static final DeferredItem<Item> ARTIFACT_OF_AFTER_LIFE = REGISTRY.registerItem("artifact_of_after_life", ArtifactOfAfterLifeItem::new);
     public static final DeferredItem<Item> ROMA_MUD = block(TheabyssModBlocks.ROMA_MUD);

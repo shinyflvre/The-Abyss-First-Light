@@ -51,6 +51,11 @@ public final class SpellFx {
         prune(mc);
         Effect effect = switch (m.kind()) {
             case SpellFxMessage.METEOR -> new MeteorFx(m);
+            case SpellFxMessage.METEOR_SHOWER -> new MeteorShowerFx(m);
+            case SpellFxMessage.METEOR_BOLT -> new MeteorBoltFx(m);
+            case SpellFxMessage.INVERTED_SKY -> new InvertedSkyFx(m);
+            case SpellFxMessage.SKY_STAR -> new SkyStarFx(m);
+            case SpellFxMessage.AURORA_CAGE -> new AuroraCageFx(m);
             case SpellFxMessage.VOID -> new VoidFx(m);
             case SpellFxMessage.TRAIL -> new TrailFx(m);
             case SpellFxMessage.SWAP -> new SwapFx(m);

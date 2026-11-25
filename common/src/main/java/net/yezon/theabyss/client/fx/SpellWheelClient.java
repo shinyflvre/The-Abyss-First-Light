@@ -35,6 +35,7 @@ import net.yezon.theabyss.network.TheabyssModVariables;
 import net.yezon.theabyss.ring.Gauntlet;
 import net.yezon.theabyss.ring.SomniumUpgrades;
 import net.yezon.theabyss.util.AbyssTooltip;
+import net.yezon.theabyss.client.compat.ObscureSkillsClientCompat;
 
 @EventBusSubscriber(modid = TheabyssMod.MODID, value = Dist.CLIENT)
 public final class SpellWheelClient {
@@ -74,11 +75,54 @@ public final class SpellWheelClient {
         testAim = aim;
     }
 
+    private record Entry(int ring, int obscure, ItemStack stack, String spell) {
+        boolean empty() {
+            return this.ring >= 0 ? this.stack.isEmpty() : this.spell == null;
+        }
+    }
+
+    private static List<Entry> entries(LocalPlayer player) {
+        List<Entry> out = new ArrayList<>();
+        ItemStack gauntlet = Gauntlet.held(player);
+        if (!gauntlet.isEmpty()) {
+            NonNullList<ItemStack> rings = Gauntlet.rings(gauntlet);
+            for (int k = 0; k < Gauntlet.SLOTS; k++) {
+                out.add(new Entry(k, -1, rings.get(k), null));
+            }
+        }
+        if (ObscureSkillsClientCompat.present() && (!out.isEmpty() || ObscureSkillsClientCompat.anyAssigned())) {
+            for (int s = 0; s < net.yezon.theabyss.compat.ObscureSkillsCompat.SLOTS; s++) {
+                out.add(new Entry(-1, s, ItemStack.EMPTY, ObscureSkillsClientCompat.spell(s)));
+            }
+        }
+        return out;
+    }
+
+    private static int selectedIndex(LocalPlayer player, List<Entry> entries) {
+        int obscure = ObscureSkillsClientCompat.selected();
+        ItemStack gauntlet = Gauntlet.held(player);
+        int ring = obscure < 0 && !gauntlet.isEmpty() ? Gauntlet.selected(gauntlet) : -1;
+        for (int i = 0; i < entries.size(); i++) {
+            Entry entry = entries.get(i);
+            if (obscure >= 0 && entry.obscure() == obscure || ring >= 0 && entry.ring() == ring) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private static float cooldown(LocalPlayer player, Entry entry, float pt) {
+        if (entry.empty()) {
+            return 0.0F;
+        }
+        return entry.ring() >= 0 ? player.getCooldowns().getCooldownPercent(entry.stack(), pt) : ObscureSkillsClientCompat.cooldown(entry.spell());
+    }
+
     @SubscribeEvent
     public static void onTick(ClientTickEvent.Pre event) {
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
-        boolean holding = player != null && !player.isSpectator() && Gauntlet.hand(player) != null;
+        boolean holding = player != null && !player.isSpectator() && (Gauntlet.hand(player) != null || ObscureSkillsClientCompat.anyAssigned());
         if (open && (mc.gui.screen() != null || !holding)) {
             close(false);
             return;
@@ -91,7 +135,8 @@ public final class SpellWheelClient {
             return;
         }
         if (open) {
-            for (int i = 0; i < Gauntlet.SLOTS; i++) {
+            int count = Math.min(entries(player).size(), mc.options.keyHotbarSlots.length);
+            for (int i = 0; i < count; i++) {
                 while (mc.options.keyHotbarSlots[i].consumeClick()) {
                     hovered = i;
                     close(true);
@@ -119,10 +164,15 @@ public final class SpellWheelClient {
         lastHovered = pick ? hovered : -1;
         mc.getSoundManager().play(SimpleSoundInstance.forUI(net.yezon.theabyss.init.TheabyssModSounds.SPELL_WHEEL_CLOSE.get(), 1.0F, VOLUME));
         if (pick && hovered >= 0 && mc.player != null) {
+            List<Entry> entries = entries(mc.player);
+            Entry entry = hovered < entries.size() ? entries.get(hovered) : null;
             ItemStack gauntlet = Gauntlet.held(mc.player);
-            if (!gauntlet.isEmpty() && !Gauntlet.rings(gauntlet).get(hovered).isEmpty()) {
-                Gauntlet.select(gauntlet, hovered);
-                ClientPacketDistributor.sendToServer(new GauntletMessage(GauntletMessage.SELECT, hovered));
+            if (entry != null && !entry.empty() && entry.ring() >= 0 && !gauntlet.isEmpty()) {
+                Gauntlet.select(gauntlet, entry.ring());
+                ObscureSkillsClientCompat.forget();
+                ClientPacketDistributor.sendToServer(new GauntletMessage(GauntletMessage.SELECT, entry.ring()));
+            } else if (entry != null && !entry.empty() && entry.obscure() >= 0) {
+                ObscureSkillsClientCompat.select(entry.obscure());
             }
         }
         hovered = -1;
@@ -149,12 +199,16 @@ public final class SpellWheelClient {
             return;
         }
         event.setCanceled(true);
-        NonNullList<ItemStack> rings = Gauntlet.rings(Gauntlet.held(Minecraft.getInstance().player));
+        List<Entry> entries = entries(Minecraft.getInstance().player);
+        int count = entries.size();
+        if (count == 0) {
+            return;
+        }
         int step = event.getScrollDeltaY() > 0 ? -1 : 1;
         int start = hovered < 0 ? (step > 0 ? -1 : 0) : hovered;
-        for (int n = 1; n <= Gauntlet.SLOTS; n++) {
-            int i = Math.floorMod(start + step * n, Gauntlet.SLOTS);
-            if (!rings.get(i).isEmpty()) {
+        for (int n = 1; n <= count; n++) {
+            int i = Math.floorMod(start + step * n, count);
+            if (!entries.get(i).empty()) {
                 setHovered(i);
                 return;
             }
@@ -176,13 +230,14 @@ public final class SpellWheelClient {
         if (player == null || mc.gui.hud.isHidden()) {
             return;
         }
-        ItemStack gauntlet = Gauntlet.held(player);
-        if (gauntlet.isEmpty()) {
+        List<Entry> entries = entries(player);
+        if (entries.isEmpty()) {
             return;
         }
+        int count = entries.size();
+        double sliceDeg = 360.0 / count;
         float pt = deltaTracker.getGameTimeDeltaPartialTick(false);
-        NonNullList<ItemStack> rings = Gauntlet.rings(gauntlet);
-        int selected = Gauntlet.selected(gauntlet);
+        int selected = selectedIndex(player, entries);
         float progress;
         if (open) {
             progress = Mth.clamp((FxClock.nanos() - openNanos) / 1.0E9F / OPEN_SECONDS, 0.0F, 1.0F);
@@ -220,7 +275,7 @@ public final class SpellWheelClient {
             if (gaugeHovered >= 0) {
                 setHovered(-1);
             } else if (dist >= DEAD_ZONE) {
-                setHovered(Math.floorMod((int)Math.round(deg / 72.0), Gauntlet.SLOTS));
+                setHovered(Math.floorMod((int)Math.round(deg / sliceDeg), count));
             } else {
                 setHovered(-1);
             }
@@ -236,26 +291,30 @@ public final class SpellWheelClient {
         g.pose().pushMatrix();
         g.pose().translate(cx, cy);
         g.pose().scale(fit, fit);
-        int params = ARGB.color(open ? 255 : 180, Math.round((lit + 1) * 255 / 8.0F), Math.round(selected * 255 / 8.0F), fade);
+        int params = ARGB.color(open ? 255 : 180, Math.max(0, Math.min(lit + 1, 7)) * 32 + count, selected < 0 ? 7 * 32 : selected * 32, fade);
         g.blit(PIPELINE, FRAMES, -120, -120, 0.0F, 0.0F, 240, 240, 64, 32, 64, 32, params);
-        for (int k = 0; k < Gauntlet.SLOTS; k++) {
-            double a = Math.toRadians(72.0 * k);
+        for (int k = 0; k < count; k++) {
+            double a = Math.toRadians(sliceDeg * k);
             int sx = (int)Math.round(Math.sin(a) * RADIUS * spread);
             int sy = (int)Math.round(-Math.cos(a) * RADIUS * spread);
-            ItemStack ring = rings.get(k);
+            Entry entry = entries.get(k);
             g.pose().pushMatrix();
             g.pose().translate(sx, sy);
             g.pose().scale(ICON_SCALE, ICON_SCALE);
-            if (!ring.isEmpty()) {
-                icon(g, ring, -8, -8, alpha);
-                float cd = player.getCooldowns().getCooldownPercent(ring, pt);
+            if (!entry.empty()) {
+                if (entry.ring() >= 0) {
+                    icon(g, entry.stack(), -8, -8, alpha);
+                } else {
+                    obscureIcon(g, entry.spell(), -8, -8, alpha);
+                }
+                float cd = cooldown(player, entry, pt);
                 if (cd > 0.0F) {
                     int h = (int)(16 * cd + 1);
                     g.fill(-8, 8 - h, 8, 8, ARGB.color(Math.min(alpha, 128), 255, 255, 255));
                 }
             }
-            boolean gold = k == selected && !ring.isEmpty();
-            int frameAlpha = ring.isEmpty() ? alpha / 3 : alpha;
+            boolean gold = k == selected && !entry.empty();
+            int frameAlpha = entry.empty() ? alpha / 3 : alpha;
             g.blit(RenderPipelines.GUI_TEXTURED, FRAMES, -16, -16, gold ? 32.0F : 0.0F, 0.0F, 32, 32, 64, 32, ARGB.color(frameAlpha, 255, 255, 255));
             g.pose().popMatrix();
         }
@@ -272,7 +331,12 @@ public final class SpellWheelClient {
         if (open && gaugeHovered >= 0) {
             info(g, mc, stats[gaugeHovered], (int)aimX, (int)aimY, alpha, g.guiHeight() / 2.0F / fit);
         }
-        text(g, mc, player, lit >= 0 ? rings.get(lit) : ItemStack.EMPTY, 0, 0, alpha, pt);
+        Entry shown = lit >= 0 && lit < count ? entries.get(lit) : null;
+        if (shown != null && shown.obscure() >= 0) {
+            obscureText(g, mc, shown, 0, 0, alpha);
+        } else {
+            text(g, mc, player, shown != null ? shown.stack() : ItemStack.EMPTY, 0, 0, alpha, pt);
+        }
         g.pose().popMatrix();
     }
 
@@ -359,6 +423,49 @@ public final class SpellWheelClient {
         }
         if (cd > 0.0F) {
             g.centeredText(mc.font, Component.translatable("gauntlet.theabyss.cooldown"), cx, y, ARGB.color(alpha, 255, 255, 85));
+        }
+    }
+
+    private static void obscureText(GuiGraphicsExtractor g, Minecraft mc, Entry entry, int cx, int cy, int alpha) {
+        if (entry.empty()) {
+            return;
+        }
+        String id = entry.spell();
+        int colour = ObscureSkillsClientCompat.colour(id);
+        MutableComponent row = Component.empty().append(key(AbyssTooltip.RIGHT_CLICK)).append(" ")
+            .append(ObscureSkillsClientCompat.name(id).copy().withStyle(style -> style.withColor(colour)));
+        double mana = ObscureSkillsClientCompat.mana(id);
+        if (!Double.isNaN(mana)) {
+            row.append("  ").append(Component.translatable("obscureskills.magic.cost", number(mana)).withStyle(style -> style.withColor(0x6FB6FF)));
+        }
+        double damage = ObscureSkillsClientCompat.damage(id);
+        if (!Double.isNaN(damage) && damage > 0.0) {
+            row.append("  ").append(AbyssTooltip.icon(AbyssTooltip.DAMAGE)).append(" ")
+                .append(Component.literal(number(Math.round(damage * 5.0) / 10.0)).withStyle(ChatFormatting.WHITE));
+        }
+        double seconds = ObscureSkillsClientCompat.cooldownSeconds(id);
+        if (!Double.isNaN(seconds) && seconds > 0.0) {
+            row.append("  ").append(AbyssTooltip.icon(AbyssTooltip.COOLDOWN)).append(" ")
+                .append(Component.literal(AbyssTooltip.seconds((int)Math.round(seconds * 20.0))).withStyle(ChatFormatting.YELLOW));
+        }
+        float cd = ObscureSkillsClientCompat.cooldown(id);
+        int top = cy - 112 - 10 - (cd > 0.0F ? 10 : 0);
+        g.centeredText(mc.font, ObscureSkillsClientCompat.name(id), cx, top, ARGB.color(alpha, 255, 255, 255));
+        g.centeredText(mc.font, row, cx, top + 12, ARGB.color(alpha, 255, 255, 255));
+        if (cd > 0.0F) {
+            g.centeredText(mc.font, Component.translatable("gauntlet.theabyss.cooldown"), cx, top + 22, ARGB.color(alpha, 255, 255, 85));
+        }
+    }
+
+    private static String number(double value) {
+        double rounded = Math.round(value * 10.0) / 10.0;
+        return rounded == Math.rint(rounded) ? String.valueOf((long)rounded) : String.valueOf(rounded);
+    }
+
+    private static void obscureIcon(GuiGraphicsExtractor g, String id, int x, int y, int alpha) {
+        Identifier sprite = ObscureSkillsClientCompat.icon(id);
+        if (sprite != null) {
+            g.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, x, y, 16, 16, ARGB.color(alpha, 255, 255, 255));
         }
     }
 

@@ -57,6 +57,11 @@ public record SpellFxMessage(int kind, List<Integer> ids, List<Double> data, int
     public static final int ACCENT = 40;
     public static final int FREEZE_BURST = 41;
     public static final int CIRCLE = 42;
+    public static final int METEOR_SHOWER = 43;
+    public static final int METEOR_BOLT = 44;
+    public static final int INVERTED_SKY = 45;
+    public static final int SKY_STAR = 46;
+    public static final int AURORA_CAGE = 47;
 
     public static final Type<SpellFxMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "spell_fx"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SpellFxMessage> STREAM_CODEC = StreamCodec.composite(

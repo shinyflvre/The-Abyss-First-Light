@@ -1,0 +1,18 @@
+{
+  "type": "theabyss:arcane_recipe_type",
+  "ingredients": [
+    "theabyss:ring_of_ring",
+    "theabyss:abyss_crystal_shard",
+    "theabyss:blaru_starpetals",
+    "theabyss:abyss_crystal_shard",
+    "theabyss:blaru_starpetals",
+    "theabyss:abyss_crystal_shard",
+    "theabyss:blaru_starpetals",
+    "theabyss:abyss_crystal_shard",
+    "theabyss:blaru_starpetals"
+  ],
+  "output": {
+    "id": "theabyss:ring_of_inverted_sky",
+    "count": 1
+  }
+}

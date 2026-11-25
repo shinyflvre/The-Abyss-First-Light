@@ -528,6 +528,23 @@ public final class ClientAutotest {
             }, 0);
             return;
         }
+        if (scenario().equals("invertedsky")) {
+            MeteoroidAutotest.addSkySteps(ClientAutotest::add, ClientAutotest::command);
+            add("done", () -> {
+                TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] DONE");
+                mc.stop();
+            }, 0);
+            return;
+        }
+        if (scenario().startsWith("meteoroids")) {
+            String take = scenario().contains(":") ? scenario().substring(scenario().indexOf(':') + 1) : "night";
+            MeteoroidAutotest.addSteps(ClientAutotest::add, ClientAutotest::command, take);
+            add("done", () -> {
+                TheabyssDevTest.LOGGER.info("[ABYSS-AUTOTEST] DONE");
+                mc.stop();
+            }, 0);
+            return;
+        }
         if (scenario().equals("telekinesis")) {
             TelekinesisAutotest.addSteps(ClientAutotest::add, ClientAutotest::command, ClientAutotest::shot);
             add("done", () -> {

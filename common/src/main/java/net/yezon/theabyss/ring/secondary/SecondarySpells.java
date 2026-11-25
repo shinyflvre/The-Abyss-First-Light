@@ -49,7 +49,11 @@ final class SecondarySpells {
                 "tooltip.theabyss.ring_of_speed.secondary.action", Kind.USAGE, 1, 10.0, 40, null, "", false, SpeedDash::cast),
             new Spec(TheabyssModItems.RING_OF_SILENT_ECHOES::get, "tooltip.theabyss.ring_of_silent_echoes.secondary.ability", "tooltip.theabyss.ring_of_silent_echoes.secondary.text",
                 "tooltip.theabyss.ring_of_silent_echoes.secondary.action", Kind.USAGE, 0, net.yezon.theabyss.ring.echo.EchoVision.COST,
-                net.yezon.theabyss.ring.echo.EchoVision.COOLDOWN, null, "", true, net.yezon.theabyss.ring.echo.EchoVision::cast)
+                net.yezon.theabyss.ring.echo.EchoVision.COOLDOWN, null, "", true, net.yezon.theabyss.ring.echo.EchoVision::cast),
+            new Spec(TheabyssModItems.RING_OF_METEOROIDS::get, "tooltip.theabyss.ring_of_meteoroids.secondary.ability", "tooltip.theabyss.ring_of_meteoroids.secondary.text",
+                "tooltip.theabyss.ring_of_meteoroids.secondary.action", Kind.DAMAGE, 2, 20.0, 120, MeteorStrike::damage, "tooltip.theabyss.times_8", false, MeteorStrike::cast),
+            new Spec(TheabyssModItems.RING_OF_INVERTED_SKY::get, "tooltip.theabyss.ring_of_inverted_sky.secondary.ability", "tooltip.theabyss.ring_of_inverted_sky.secondary.text",
+                "tooltip.theabyss.ring_of_inverted_sky.secondary.action", Kind.DAMAGE, 2, 30.0, 400, AuroraCage::damage, "", false, AuroraCage::cast)
         );
     }
 }

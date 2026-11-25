@@ -37,6 +37,11 @@ public class TheabyssModParticleTypes {
     public static final DeferredHolder<ParticleType<?>, net.yezon.theabyss.ring.fx.FxOptions.Type> SP_FX_CROSS_MOTE = REGISTRY.register("sp_fx_cross_mote", net.yezon.theabyss.ring.fx.FxOptions.Type::new);
     public static final DeferredHolder<ParticleType<?>, net.yezon.theabyss.ring.fx.FxOptions.Type> SP_FX_RECT_SPARK = REGISTRY.register("sp_fx_rect_spark", net.yezon.theabyss.ring.fx.FxOptions.Type::new);
     public static final DeferredHolder<ParticleType<?>, net.yezon.theabyss.ring.fx.FxOptions.Type> SP_FX_RING_BUBBLE = REGISTRY.register("sp_fx_ring_bubble", net.yezon.theabyss.ring.fx.FxOptions.Type::new);
+    public static final DeferredHolder<ParticleType<?>, net.yezon.theabyss.ring.fx.FxOptions.Type> SP_VOID_FLAME = REGISTRY.register("sp_void_flame", net.yezon.theabyss.ring.fx.FxOptions.Type::new);
+    public static final DeferredHolder<ParticleType<?>, net.yezon.theabyss.ring.fx.FxOptions.Type> SP_VOID_SHARD = REGISTRY.register("sp_void_shard", net.yezon.theabyss.ring.fx.FxOptions.Type::new);
+    public static final DeferredHolder<ParticleType<?>, net.yezon.theabyss.ring.fx.FxOptions.Type> SP_TRAIL_SPARK = REGISTRY.register("sp_trail_spark", net.yezon.theabyss.ring.fx.FxOptions.Type::new);
+    public static final DeferredHolder<ParticleType<?>, net.yezon.theabyss.ring.fx.FxOptions.Type> SP_SKY_STAR = REGISTRY.register("sp_sky_star", net.yezon.theabyss.ring.fx.FxOptions.Type::new);
+    public static final DeferredHolder<ParticleType<?>, net.yezon.theabyss.ring.fx.FxOptions.Type> SP_AURORA_MOTE = REGISTRY.register("sp_aurora_mote", net.yezon.theabyss.ring.fx.FxOptions.Type::new);
     public static final DeferredHolder<ParticleType<?>, net.yezon.theabyss.ring.fx.FxOptions.Type> FX_FLAME = REGISTRY.register("fx_flame", net.yezon.theabyss.ring.fx.FxOptions.Type::new);
     public static final DeferredHolder<ParticleType<?>, net.yezon.theabyss.ring.fx.FxOptions.Type> FX_WISP = REGISTRY.register("fx_wisp", net.yezon.theabyss.ring.fx.FxOptions.Type::new);
     public static final DeferredHolder<ParticleType<?>, net.yezon.theabyss.ring.fx.FxOptions.Type> FX_SPARKLE = REGISTRY.register("fx_sparkle", net.yezon.theabyss.ring.fx.FxOptions.Type::new);

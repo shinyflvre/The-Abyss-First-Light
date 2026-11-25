@@ -12,6 +12,7 @@ public final class TheabyssSubscribers {
         net.yezon.theabyss.block.HoverTextBlock.Registration.class,
         net.yezon.theabyss.command.ManaboostCommand.class,
         net.yezon.theabyss.command.Ta2SomniumCommand.class,
+        net.yezon.theabyss.compat.ObscureSkillsCompat.class,
         net.yezon.theabyss.difficulty.AbyssDifficulty.class,
         net.yezon.theabyss.enchant.BowEnchantments.class,
         net.yezon.theabyss.enchant.MagmaSmelt.class,

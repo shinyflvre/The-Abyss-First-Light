@@ -57,6 +57,11 @@ public class TheabyssModParticles {
         event.registerSpriteSet(TheabyssModParticleTypes.SP_FX_CROSS_MOTE.get(), sprites -> net.yezon.theabyss.client.particle.SpriteFxParticle.looping(sprites, 4, 2, true));
         event.registerSpriteSet(TheabyssModParticleTypes.SP_FX_RECT_SPARK.get(), sprites -> net.yezon.theabyss.client.particle.SpriteFxParticle.looping(sprites, 4, 1, true));
         event.registerSpriteSet(TheabyssModParticleTypes.SP_FX_RING_BUBBLE.get(), sprites -> net.yezon.theabyss.client.particle.SpriteFxParticle.looping(sprites, 6, 2, true));
+        event.registerSpriteSet(TheabyssModParticleTypes.SP_VOID_FLAME.get(), sprites -> net.yezon.theabyss.client.particle.SpriteFxParticle.looping(sprites, 8, 2, true));
+        event.registerSpriteSet(TheabyssModParticleTypes.SP_VOID_SHARD.get(), sprites -> net.yezon.theabyss.client.particle.SpriteFxParticle.looping(sprites, 4, 2, true));
+        event.registerSpriteSet(TheabyssModParticleTypes.SP_TRAIL_SPARK.get(), net.yezon.theabyss.client.particle.SpriteFxParticle::provider);
+        event.registerSpriteSet(TheabyssModParticleTypes.SP_SKY_STAR.get(), sprites -> net.yezon.theabyss.client.particle.SpriteFxParticle.looping(sprites, 6, 2, true));
+        event.registerSpriteSet(TheabyssModParticleTypes.SP_AURORA_MOTE.get(), sprites -> net.yezon.theabyss.client.particle.SpriteFxParticle.looping(sprites, 6, 2, true));
         event.registerSpriteSet(TheabyssModParticleTypes.FX_FLAME.get(), net.yezon.theabyss.client.particle.SpriteFxParticle::provider);
         event.registerSpriteSet(TheabyssModParticleTypes.FX_WISP.get(), net.yezon.theabyss.client.particle.SpriteFxParticle::provider);
         event.registerSpriteSet(TheabyssModParticleTypes.FX_SPARKLE.get(), net.yezon.theabyss.client.particle.SpriteFxParticle::provider);

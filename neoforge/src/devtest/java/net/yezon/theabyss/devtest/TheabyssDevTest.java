@@ -17,6 +17,7 @@ public class TheabyssDevTest {
         NeoForge.EVENT_BUS.register(MixinAuditCheck.class);
         if (FMLEnvironment.getDist() == Dist.CLIENT) {
             NeoForge.EVENT_BUS.register(ClientAutotest.class);
+            NeoForge.EVENT_BUS.register(MeteoroidAutotest.class);
         }
     }
 }

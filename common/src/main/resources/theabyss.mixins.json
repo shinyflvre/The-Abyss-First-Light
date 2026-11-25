@@ -29,6 +29,7 @@
     "client.CameraMixin",
     "client.InventoryScreenMixin",
     "client.LocalPlayerMixin",
+    "client.MinecraftUseItemMixin",
     "accessor.client.RenderPipelinesAccessor",
     "accessor.client.RenderTypeAccessor",
     "accessor.client.SpriteContentsAccessor",

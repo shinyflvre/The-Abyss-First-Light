@@ -24,6 +24,11 @@ public final class RingDamage {
     public static final Table PARRY = new Table(8, 10, 13, 15, 18, 20);
     public static final Table THUNDER = new Table(6, 8, 12, 16, 18, 20);
     public static final Table OVERCHARGE = new Table(6, 6, 6, 8, 12, 14);
+    public static final Table METEOROID = new Table(4, 5, 6, 7, 8, 9);
+    public static final Table METEOROID_BIG = new Table(8, 10, 12, 14, 16, 18);
+    public static final Table METEOR_STRIKE = new Table(2.5, 3, 3.5, 4, 5, 6);
+    public static final Table SKY_STAR = new Table(3, 4, 5, 6, 7, 8);
+    public static final Table AURORA_CAGE = new Table(2, 2.5, 3, 3.5, 4, 5);
 
     private RingDamage() {
     }

@@ -15,6 +15,7 @@ public final class TheabyssClientSubscribers {
         net.yezon.theabyss.client.audio.NightbladeMusic.class,
         net.yezon.theabyss.client.audio.VeilMuffle.class,
         net.yezon.theabyss.client.codex.CodexMultiblock.class,
+        net.yezon.theabyss.client.compat.ObscureSkillsClientCompat.class,
         net.yezon.theabyss.client.debug.DebugClientCommands.class,
         net.yezon.theabyss.client.debug.OreHighlighter.class,
         net.yezon.theabyss.client.dialogue.DialogueClient.class,

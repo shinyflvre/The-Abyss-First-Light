@@ -5,12 +5,13 @@
 
 // The Infected Gauntlet's spell wheel (client/fx/SpellWheelClient, owner 12.10.2026: "mystical, smoke, cooler than the
 // reference"). Drawn on one quad around the wheel (texCoord 0..1 = 240 GUI units across), vanilla position_tex_color
-// vertex shader. Five slices (slot 0 at 12 o'clock, clockwise):
+// vertex shader. One slice per wheel entry, 2 to 7 (slot 0 at 12 o'clock, clockwise):
 // - a band of abyss smoke from radius 20 to 86 that swirls slowly round the centre (domain-warped noise), navy with
 //   cyan and violet wisps, fraying outwards into loose smoke up to radius ~116,
 // - a pulsing light circle round the hole, thin rays on the slice borders (owner: no rune ring outside),
 // - the hovered slice lights up cyan from the inside out, smoke included; the selected slice keeps a violet ember.
-// vertexColor: r = (hovered + 1) / 8 (0 = none), g = selected / 8, b = open progress 0..1, a = 1 -> wheel opening /
+// vertexColor: r byte = (hovered + 1) * 32 + slice count (hovered 0 = none, count 0 = five), g byte = selected * 32
+// (7 = none), b = open progress 0..1, a = 1 -> wheel opening /
 // open, a ~0.7 -> closing (blown outwards), a 0.25..0.6 -> one upgrade gauge (see gauge()), a < 0.25 -> screen vignette
 // mode (the quad covers the screen, b = fade).
 // Opening the smoke gathers out of loose shreds while the ring grows into place; closing it tears and blows away.
@@ -30,7 +31,6 @@ layout(location = 1) in vec4 vertexColor;
 layout(location = 0) out vec4 fragColor;
 
 const float PI = 3.14159265;
-const float SLICE = 2.0 * PI / 5.0;
 const vec3 NAVY = vec3(0.016, 0.047, 0.066);
 const vec3 TEAL = vec3(0.06, 0.42, 0.44);
 const vec3 CYAN = vec3(0.45, 0.98, 0.9);
@@ -157,8 +157,14 @@ void main() {
     float r = length(uv) * 120.0;
     float ang = atan(uv.x, -uv.y);                        // 0 up, clockwise
     float a01 = mod(ang + PI * 2.0, PI * 2.0);
-    int hovered = int(vertexColor.r * 8.0 + 0.5) - 1;
-    int selected = int(vertexColor.g * 8.0 + 0.5);
+    int packed = int(vertexColor.r * 255.0 + 0.5);
+    int hovered = packed / 32 - 1;
+    int count = packed - (packed / 32) * 32;
+    if (count < 1) {
+        count = 5;
+    }
+    int selected = int(vertexColor.g * 255.0 + 0.5) / 32;
+    float SLICE = 2.0 * PI / float(count);
 
     // swirling smoke: the field turns slowly, faster near the hole, and is warped by itself
     vec2 p = rot(uv, t * 0.12 + 0.9 / (0.3 + length(uv)));

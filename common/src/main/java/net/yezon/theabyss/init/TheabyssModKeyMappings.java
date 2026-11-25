@@ -91,7 +91,8 @@ public class TheabyssModKeyMappings {
                 }
             }
             while (MAIN_MAGIC.consumeClick()) {
-                if (mainMagicOwnKey() && player != null && net.yezon.theabyss.ring.RingMagic.magicHand(player) != null
+                if (mainMagicOwnKey() && player != null && (net.yezon.theabyss.ring.RingMagic.magicHand(player) != null
+                    || net.yezon.theabyss.client.compat.ObscureSkillsClientCompat.selected() >= 0)
                     && !net.yezon.theabyss.client.fx.SpellWheelClient.isOpen()) {
                     ClientPacketDistributor.sendToServer(new net.yezon.theabyss.network.GauntletMessage(net.yezon.theabyss.network.GauntletMessage.MAIN, 0));
                 }

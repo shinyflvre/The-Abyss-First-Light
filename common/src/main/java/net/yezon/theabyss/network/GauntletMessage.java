@@ -16,6 +16,7 @@ public record GauntletMessage(int action, int value) implements CustomPacketPayl
     public static final int SELECT = 1;
     public static final int MAIN = 2;
     public static final int SECOND = 3;
+    public static final int OBSCURE = 4;
     public static final Type<GauntletMessage> TYPE = new Type<>(Identifier.fromNamespaceAndPath(TheabyssMod.MODID, "gauntlet"));
     public static final StreamCodec<RegistryFriendlyByteBuf, GauntletMessage> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.VAR_INT, GauntletMessage::action,
@@ -39,8 +40,10 @@ public record GauntletMessage(int action, int value) implements CustomPacketPayl
                     int slot = message.value();
                     if (!gauntlet.isEmpty() && slot >= 0 && slot < Gauntlet.SLOTS && !Gauntlet.rings(gauntlet).get(slot).isEmpty()) {
                         Gauntlet.select(gauntlet, slot);
+                        net.yezon.theabyss.compat.ObscureSkillsCompat.select(player, -1);
                     }
                 }
+                case OBSCURE -> net.yezon.theabyss.compat.ObscureSkillsCompat.select(player, message.value());
                 case MAIN -> RingMagic.main(player);
                 case SECOND -> RingMagic.secondary(player);
                 default -> {

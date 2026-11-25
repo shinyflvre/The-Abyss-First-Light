@@ -33,6 +33,7 @@ public final class RingMagic {
     public static void main(ServerPlayer player) {
         InteractionHand hand = magicHand(player);
         if (hand == null) {
+            net.yezon.theabyss.compat.ObscureSkillsCompat.castSelected(player);
             return;
         }
         ItemStack held = player.getItemInHand(hand);
@@ -48,6 +49,9 @@ public final class RingMagic {
 
     public static void castFromGauntlet(Player player, InteractionHand hand, ItemStack gauntlet, boolean swing) {
         if (player.level().isClientSide()) {
+            return;
+        }
+        if (net.yezon.theabyss.compat.ObscureSkillsCompat.castSelected(player)) {
             return;
         }
         ItemStack ring = Gauntlet.selectedRing(gauntlet);
@@ -88,7 +92,7 @@ public final class RingMagic {
             }
         }
         ItemStack gauntlet = Gauntlet.held(player);
-        if (gauntlet.isEmpty()) {
+        if (gauntlet.isEmpty() || net.yezon.theabyss.compat.ObscureSkillsCompat.secondaryBlocked(player)) {
             return;
         }
         if (hasSecondary(Gauntlet.selectedRing(gauntlet))) {
